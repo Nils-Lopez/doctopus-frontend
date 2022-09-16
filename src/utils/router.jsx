@@ -2,9 +2,11 @@ import React, {useState, useEffect} from 'react';
 
 //Systems
 import Navbar from '../features/systems/Navbar';
+import Create from '../features/systems/admin/Create';
 
 //Dependencies
 import { bake_cookie, read_cookie, delete_cookie } from 'sfcookies';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 //Atoms
 import Alert from '../features/atoms/Alert';
@@ -47,6 +49,7 @@ const Router = () => {
     }, [responseFindById, loadingClient])
 
     return <>
+        <BrowserRouter>
         <Navbar bake_cookie={bake_cookie} read_cookie={read_cookie} delete_cookie={delete_cookie} client={client} setClient={setClient} setAlert={setAlert} />
         {alert ? <>
             <div className="columns is-flex is-justify-content-center mr-1 mt-3">
@@ -55,6 +58,18 @@ const Router = () => {
                 </div>
             </div>        
         </> : null}
+        
+          <Routes>
+            <Route path="/">
+              <Route index element={<>TRQL DRR</>}/>
+              <Route path="/admin/create" element={<Create client={client} setAlert={setAlert}/>}/>
+              <Route path="/admin/dashboard" element={<>Dashboard</>}/>                 
+              <Route path="/admin/settings" element={<>Settings</>}/>
+                                          
+              <Route path="*" element={<>404 t duper</>}/>
+            </Route>
+          </Routes>
+        </BrowserRouter>
     </>
 }
 
