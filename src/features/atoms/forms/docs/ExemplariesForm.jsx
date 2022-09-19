@@ -1,8 +1,8 @@
 import React, {useState} from "react"
 
-import ExemplaryPreviewCard from "../ExemplaryPreviewCard"
+import ExemplaryPreviewCard from "../../supports/ExemplaryPreviewCard"
 
-const ExemplaryForm = ({setPendingExemplaries, pendingExemplaries}) => {
+const ExemplariesForm= ({setPendingExemplaries, pendingExemplaries}) => {
   const [locationValue, setLocationValue] = useState("")
   const [positionValue, setPositionValue] = useState("")
   const [rankValue, setRankValue] = useState("")
@@ -35,7 +35,7 @@ const ExemplaryForm = ({setPendingExemplaries, pendingExemplaries}) => {
   const editExemplary = (ex) => {
     deleteExemplary(ex)
     setLocationValue(ex.location)
-    setPostionValue(ex.position)
+    setPositionValue(ex.position)
     setRankValue(ex.rank)
   }
   
@@ -52,7 +52,7 @@ const ExemplaryForm = ({setPendingExemplaries, pendingExemplaries}) => {
         Exemplaries
       </label>
       {pendingExemplaries.map((ex) => {
-        return <ExemplaryPreviewCard exemplary={exemplary} editExemplary={editExemplary} deleteExemplary={deleteExemplary}/>
+        return <ExemplaryPreviewCard exemplary={ex} editExemplary={editExemplary} deleteExemplary={deleteExemplary}/>
       })}
       <div className="field">
         <label className="label">
