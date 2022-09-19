@@ -2,8 +2,9 @@ import React, {useState, Fragment} from "react"
 
 import SupportPreviewCard from "../../atoms/supports/SupportPreviewCard"
 import RoleForm from "../../atoms/forms/RoleForm"
+import ExemplariesForm from "../../atoms/forms/docs/ExemplariesForm"
 
-const SupportForm = ({pendingSupports, setPendingSupports}) => {
+const SupportForm = ({pendingSupports, setPendingSupports, selectedRoles, selectRole, pendingExemplaries, setPendingExemplaries}) => {
     
   const [titleEnglish, setTitleEnglish] = useState(false)
   const [titleEnValue, setTitleEnValue] = useState("")
@@ -19,7 +20,7 @@ const SupportForm = ({pendingSupports, setPendingSupports}) => {
   const [durationValue, setDurationValue] = useState("")
   const [thumbValue, setThumbValue] = useState("")
   
-  const [selectedRoles, selectRole] = useState([])
+
   
   const handleTitleEnChange = (e) => {
     e.preventDefault()
@@ -221,6 +222,7 @@ const SupportForm = ({pendingSupports, setPendingSupports}) => {
     </span> : null}
   </label>
 </div>
+  <ExemplariesForm setPendingExemplaries={setPendingExemplaries} pendingExemplaries={pendingExemplaries}/>
     </div>
     <div className="is-flex is-justify-content-end">
       <button onClick={handleNewSupportBtn} className="button is-primary">Create New Support</button>

@@ -23,6 +23,8 @@ const DocForm = ({client, setAlert}) => {
   const [selectedProjects, selectProject] = useState([])
   
   const [pendingSupports, setPendingSupports] = useState([])
+  const [selectedRoles, selectRole] = useState([])
+  const [pendingExemplaries, setPendingExemplaries] = useState([])
   
   const handleTitleChange = (e) => {
     e.preventDefault()
@@ -115,7 +117,7 @@ const DocForm = ({client, setAlert}) => {
         <h3 className="title is-4">Supports</h3>
       </button>
     </div>
-    {showSupportForm ? <SupportForm pendingSupports={pendingSupports} setPendingSupports={setPendingSupports}/> : null}
+    {showSupportForm ? <SupportForm pendingSupports={pendingSupports} setPendingSupports={setPendingSupports} selectedRoles={selectedRoles} selectRole={selectRole} pendingExemplaries={pendingExemplaries} setPendingExemplaries={setPendingExemplaries}/> : null}
     <hr/>
     <div className="is-flex is-justify-content-start">
       <button className="button is-light mb-3" onClick={handleParentsShowing}>

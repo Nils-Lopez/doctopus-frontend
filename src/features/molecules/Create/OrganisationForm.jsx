@@ -1,11 +1,20 @@
 import React, {useState} from "react"
 
+import RoleForm from "../../atoms/forms/RoleForm"
+
+import ActorForm from "../../atoms/forms/orgs/ActorForm"
+import ProjectParentForm from "../../atoms/forms/docs/ProjectParentForm"
+
 const OrganisationForm = ({}) => {
   
   const [nameValue, setNameValue] = useState("")
   const [descValue, setDescValue] = useState("")
   const [urlValue, setUrlValue] = useState("")
   const [locValue, setLocValue] = useState("")
+    
+  const [selectedRoles, selectRole] = useState([])
+  const [selectedActors, selectActor] = useState([])
+  const [selectedProj, selectProj] = useState([])
   
   const handleNameChange = (e) => {
     e.preventDefault()
@@ -26,6 +35,13 @@ const OrganisationForm = ({}) => {
     e.preventDefault()
     setLocValue(e.target.value)
   }
+  
+  const roles = [
+    {slug: "titlmodee", title:"Mode"},
+    {slug: "titldecoe", title:"Deco"},
+    {slug: "titlcorpse", title:"Le corps"},
+    {slug: "titlesprite", title:"L'esprit'"}
+  ]
   
   return <>
     <div className="field">
@@ -54,7 +70,9 @@ const OrganisationForm = ({}) => {
         <input type="text" value={locValue} onChange={handleLocChange} className="input"/>
       </div>
     </div>
-    
+    <RoleForm roles={roles} scope="org" location="org-form" selectedRoles={selectedRoles} selectRole={selectRole}/>
+    <ActorForm selectedPeople={selectedActors} selectPerson={selectActor} />
+    <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj} />
   </>
 }
 
