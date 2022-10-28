@@ -1,16 +1,9 @@
 import React, {useState, Fragment} from "react"
 
-const DocTagsForm = ({selectedTags, selectTag}) => {
+const DocTagsForm = ({selectedTags, selectTag, tags}) => {
   const [tagValue, setTagValue] = useState("")
   const [tagForm, setTagForm] = useState(false)
   const [tagDesc, setTagDesc] = useState("")
-  
-  const tags = [
-    {slug: "titlmodee", title:"Mode"},
-    {slug: "titldecoe", title:"Deco"},
-    {slug: "titlcorpse", title:"Le corps"},
-    {slug: "titlesprite", title:"L'esprit'"}
-  ]
   
   const handleTagChange = (e) => {
     e.preventDefault()

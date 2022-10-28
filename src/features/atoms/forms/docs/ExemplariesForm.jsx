@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React, {useState, Fragment} from "react"
 
 import ExemplaryPreviewCard from "../../supports/ExemplaryPreviewCard"
 
@@ -52,7 +52,9 @@ const ExemplariesForm= ({setPendingExemplaries, pendingExemplaries}) => {
         Exemplaries
       </label>
       {pendingExemplaries.map((ex) => {
-        return <ExemplaryPreviewCard exemplary={ex} editExemplary={editExemplary} deleteExemplary={deleteExemplary}/>
+        return <Fragment key={ex.location}>
+          <ExemplaryPreviewCard exemplary={ex} editExemplary={editExemplary} deleteExemplary={deleteExemplary}/>
+        </Fragment>
       })}
       <div className="field">
         <label className="label">

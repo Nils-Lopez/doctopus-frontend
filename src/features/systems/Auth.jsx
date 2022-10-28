@@ -8,6 +8,8 @@ import LogInModal from '../molecules/Auth/LogInModal'
 //API Hooks
 import {useAuth} from '../../utils/hooks/Auth'
 
+  import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUser, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
 
 const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAlert}) => {
 
@@ -17,6 +19,8 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
     const [loadingSignUp, setLoadingSignUp] = useState(false)
     const [loadingLogin, setLoadingLogin] = useState(false)
     const [loadingLogout, setLoadingLogout] = useState(false)
+
+    const [userDropdown, setUserDropdown] = useState(false)
 
     const [formAlert, setFormAlert] = useState(false)
 
@@ -114,9 +118,43 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
                             Log In
                         </button>
                     </> : <>
-                        <button onClick={() => handleLogOut()} className="button is-danger">
-                            Logout
-                        </button>
+                        
+                            
+                        <div className="dropdown is-active">
+                            <div className="dropdown-trigger">
+                                <button onClick={() => setUserDropdown(!userDropdown)} className={"button is-light is-rounded "} aria-haspopup="true" aria-controls="dropdown-menu">
+                                    <FontAwesomeIcon icon={faUser} size="xl"/>
+                                    <FontAwesomeIcon icon={userDropdown ? faChevronUp : faChevronDown} />
+                                </button>
+                            </div>
+                                {userDropdown ? <>
+                                    <div className="dropdown-menu dropdown-user-logged is-mobile is-tablet" id="dropdown-menu" role="menu">
+                                    <div className="dropdown-content">
+                                        <a href="#" className="dropdown-item pl-6">
+        Watchlist
+                                            </a>
+                                            <a href="#" className="dropdown-item  pl-6">
+        History
+      </a>
+      <a href="#" className="dropdown-item has-text-primary pl-6">
+        Profile
+      </a>
+      <a className="dropdown-item  pl-6">
+        Settings
+      </a>
+      
+      <a href="#" className="dropdown-item pl-6">
+        Help
+      </a>
+      <hr className="dropdown-divider"/>
+      <button className="button is-danger" onClick={() => handleLogOut()}>
+        Logout
+      </button>
+    </div>
+  </div>
+                                </> : null}
+                        </div>
+                            
                     </>}
                 </div>
             </div>

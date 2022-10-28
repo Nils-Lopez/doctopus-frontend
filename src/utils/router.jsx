@@ -3,6 +3,10 @@ import React, {useState, useEffect} from 'react';
 //Systems
 import Navbar from '../features/systems/Navbar';
 import Create from '../features/systems/admin/Create';
+import Dashboard from '../features/systems/admin/Dashboard';
+
+import HomePage from "../features/systems/HomePage"
+import Settings from "../features/systems/Settings"
 
 //Dependencies
 import { bake_cookie, read_cookie, delete_cookie } from 'sfcookies';
@@ -48,6 +52,7 @@ const Router = () => {
         }
     }, [responseFindById, loadingClient])
 
+
     return <>
         <BrowserRouter>
         <Navbar bake_cookie={bake_cookie} read_cookie={read_cookie} delete_cookie={delete_cookie} client={client} setClient={setClient} setAlert={setAlert} />
@@ -58,17 +63,33 @@ const Router = () => {
                 </div>
             </div>        
         </> : null}
-        
           <Routes>
             <Route path="/">
-              <Route index element={<>TRQL DRR</>}/>
-              <Route path="/admin/create" element={<Create client={client} setAlert={setAlert}/>}/>
-              <Route path="/admin/dashboard" element={<>Dashboard</>}/>                 
-              <Route path="/admin/settings" element={<>Settings</>}/>
+              <Route index element={<HomePage/>}/>
+                {client && client.user && client.user.type === "admin" ? <>
+                    <Route path="/admin/create" element={<Create client={client} setAlert={setAlert} />} />
+                    <Route path="/admin/dashboard" element={<Dashboard client={client} setAlert={setAlert} />}/>                 
+                    <Route path="/admin/settings" element={<Settings client={client} setAlert={setAlert} />} />
+                </> : null}
                                           
               <Route path="*" element={<>404 t duper</>}/>
             </Route>
-          </Routes>
+            </Routes>
+        <footer className="footer box footer-app">
+            <div className="content">
+                <div className="columns">
+                        <div className="column has-text-right">
+                            Contredanse
+                        </div>  
+                        <div className="column has-text-centered">
+                            dOctopus by <a href="https://oqto.tech">OQTO Tech   </a>
+                        </div>  
+                        <div className="column has-text-left">
+                            Contact
+                        </div>  
+                </div>
+            </div>
+        </footer>
         </BrowserRouter>
     </>
 }

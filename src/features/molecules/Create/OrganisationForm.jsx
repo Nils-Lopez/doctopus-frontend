@@ -2,10 +2,12 @@ import React, {useState} from "react"
 
 import RoleForm from "../../atoms/forms/RoleForm"
 
+import {useEntities} from "../../../utils/hooks/Entities"
+
 import ActorForm from "../../atoms/forms/orgs/ActorForm"
 import ProjectParentForm from "../../atoms/forms/docs/ProjectParentForm"
 
-const OrganisationForm = ({}) => {
+const OrganisationForm = ({client, setAlert, template, roles, tags, people}) => {
   
   const [nameValue, setNameValue] = useState("")
   const [descValue, setDescValue] = useState("")
@@ -16,6 +18,20 @@ const OrganisationForm = ({}) => {
   const [selectedActors, selectActor] = useState([])
   const [selectedProj, selectProj] = useState([])
   
+  const {
+    findEntityById, 
+    responseFindEntityById, 
+    createEntity, 
+    responseCreateEntity,
+    updateEntity, 
+    responseUpdateEntity,
+    deleteEntity, 
+    responseDeleteEntity,
+    findEntityBySlug, 
+    responseFindEntityBySlug
+  } = useEntities()
+
+
   const handleNameChange = (e) => {
     e.preventDefault()
     setNameValue(e.target.value)
@@ -35,15 +51,25 @@ const OrganisationForm = ({}) => {
     e.preventDefault()
     setLocValue(e.target.value)
   }
+
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault()
+    const reqData = {
+      entity: {
+        name: nameValue,
+        description: [{ lang: "en", content: descValue }],
+        type: "entity",
+        url: urlValue,
+      },
+      roles: selectedRoles,
+      actors: selectedActors,
+      projects: selectedProj
+    } 
+    await createEntity(reqData)
+  }
   
-  const roles = [
-    {slug: "titlmodee", title:"Mode"},
-    {slug: "titldecoe", title:"Deco"},
-    {slug: "titlcorpse", title:"Le corps"},
-    {slug: "titlesprite", title:"L'esprit'"}
-  ]
-  
-  return <>
+  return <form onSubmit={handleFormSubmit}>
     <div className="field">
       <label className="label">
         Name
@@ -71,9 +97,14 @@ const OrganisationForm = ({}) => {
       </div>
     </div>
     <RoleForm roles={roles} scope="org" location="org-form" selectedRoles={selectedRoles} selectRole={selectRole}/>
-    <ActorForm selectedPeople={selectedActors} selectPerson={selectActor} />
+    <ActorForm selectedPeople={selectedActors} selectPerson={selectActor} people={people} />
     <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj} />
-  </>
+     <footer className="card-footer mt-3 pt-4 is-flex is-justify-content-center">
+      <button className="button is-primary is-medium" type="submit">
+        Create
+      </button>
+    </footer>
+  </form>
 }
 
 export default OrganisationForm

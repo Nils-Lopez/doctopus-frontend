@@ -5,6 +5,7 @@ export async function apiFetch (endpoint, options = {} ) {
         headers: {
         Accept: 'application/json'
         },
+        credentials: "include",
         ...options
     }
 
@@ -14,7 +15,7 @@ export async function apiFetch (endpoint, options = {} ) {
         options.body = JSON.stringify(options.body)
         options.headers['Content-Type'] = 'application/json'
     }
-    const response = await fetch(apiUrl + endpoint, options)
+    const response = await fetch(apiUrl + endpoint, {...options, credentials: "include"})
     if (response.status === 204) {
         return null;
     }

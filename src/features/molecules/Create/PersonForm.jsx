@@ -1,6 +1,12 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
   
-const PersonForm = ({client, setAlert}) => {
+import {usePeople} from "../../../utils/hooks/People"
+
+import RoleForm from "../../atoms/forms/RoleForm"
+import ProjectParentForm from "../../atoms/forms/docs/ProjectParentForm"
+import ActivityForm from "../../atoms/forms/people/ActivityForm"
+
+const PersonForm = ({client, setAlert, template}) => {
   
   const [nameValue, setNameValue] = useState("")
   const [descValue, setDescValue] = useState("")
@@ -8,9 +14,22 @@ const PersonForm = ({client, setAlert}) => {
   const [locValue, setLocValue] = useState("")
     
   const [selectedRoles, selectRole] = useState([])
-  const [selectedActors, selectActor] = useState([])
+  const [selectedActivities, selectActivity] = useState([])
   const [selectedProj, selectProj] = useState([])
   
+  const {
+    findPersonById, 
+    responseFindPersonById, 
+    createPerson, 
+    responseCreatePerson,
+    updatePerson, 
+    responseUpdatePerson,
+    deletePerson, 
+    responseDeletePerson,
+    findPersonBySlug, 
+    responseFindPersonBySlug
+  } = usePeople()
+
   const handleNameChange = (e) => {
     e.preventDefault()
     setNameValue(e.target.value)
@@ -37,6 +56,23 @@ const PersonForm = ({client, setAlert}) => {
     {slug: "titlcorpse", title:"Le corps"},
     {slug: "titlesprite", title:"L'esprit'"}
   ]
+
+  const handlePersonSubmit = async (e) => {
+    e.preventDefault()
+    const reqData = {
+      person: {
+        name: nameValue,
+        description: [{ lang: "en", content: descValue }]
+      },
+      activities: selectedActivities,
+      productions: selectedProj
+    }
+    await createPerson(reqData)
+  }
+
+  useEffect(() => {
+    console.log(responseCreatePerson)
+  }, [responseCreatePerson])
   
   return <>
     <div className="field">
@@ -66,9 +102,8 @@ const PersonForm = ({client, setAlert}) => {
       </div>
     </div>
     <RoleForm roles={roles} scope="org" location="org-form" selectedRoles={selectedRoles} selectRole={selectRole}/>
-    <ActorForm selectedPeople={selectedActors} selectPerson={selectActor} />
     <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj} />
-    
+    <ActivityForm selectedActivities={selectedActivities} selectActivity={selectActivity} />
   </>
 }
 

@@ -1,10 +1,12 @@
-import React, {useState, Fragment} from 'react';
+import React, {useState, Fragment, useEffect} from 'react';
   
 import DocTagsForm from "../../atoms/forms/docs/DocTagsForm"
 import SupportForm from "./SupportForm"  
 import ParentForm from "./ParentForm"  
 
-const DocForm = ({client, setAlert}) => {
+import {useDocs} from "../../../utils/hooks/docs/Docs"
+
+const DocForm = ({client, setAlert, template, brotherhood, roles, tags, orgs, people}) => {
   
   const [titleValue, setTitleValue] = useState("")
   const [defaultSlug, setDefaultSlug] = useState("")
@@ -26,6 +28,19 @@ const DocForm = ({client, setAlert}) => {
   const [selectedRoles, selectRole] = useState([])
   const [pendingExemplaries, setPendingExemplaries] = useState([])
   
+  const {
+    findDocById, 
+    responseFindDocById, 
+    createDoc, 
+    responseCreateDoc,
+    updateDoc, 
+    responseUpdateDoc,
+    deleteDoc, 
+    responseDeleteDoc,
+    findDocBySlug, 
+    responseFindDocBySlug
+  } = useDocs()
+
   const handleTitleChange = (e) => {
     e.preventDefault()
     setTitleValue(e.target.value)
@@ -72,8 +87,28 @@ const DocForm = ({client, setAlert}) => {
       setShowParentForm(true)
     }
   }
+
+
+  const handleDocSubmit = async (e) => {
+    e.preventDefault()
+    const reqData = {
+      doc: {
+        slug: slugValue,
+        title: [{ lang: "fr", content: titleValue }],
+        description: [{ lang: "en", content: descValue }]
+      },
+      tags: selectedTags,
+      supports: pendingSupports,
+      parents: [...selectedOrg, ...selectedPeople, ...selectedProjects]
+    }
+    await createDoc(reqData)
+  }
   
-  return <>
+  useEffect(() => {
+    console.log("res create doc : ", responseCreateDoc)
+  }, [responseCreateDoc])
+
+  return <form onSubmit={handleDocSubmit}>
     <div className="is-flex is-justify-content-start">
       <button className="button is-light mb-3" onClick={handleIdentityShowing}>
         <h3 className="title is-4">Identity </h3>
@@ -97,7 +132,7 @@ const DocForm = ({client, setAlert}) => {
         </div>
       </div>
     </div>
-    <div className="field" id="docDesc">
+    {template && template.description ? <div className="field" id="docDesc">
       <label className="label title is-5">
         Description
       </label>
@@ -108,8 +143,8 @@ const DocForm = ({client, setAlert}) => {
         </ul>
       </div>
       <textarea className="textarea" value={descValue} onChange={handleDescChange}></textarea>
-    </div> 
-    <DocTagsForm selectedTags={selectedTags} selectTag={selectTag}/>
+    </div> : null}
+    <DocTagsForm selectedTags={selectedTags} selectTag={selectTag} tags={tags} />
     </>: null}
     <hr/>
     <div className="is-flex is-justify-content-start">
@@ -117,15 +152,20 @@ const DocForm = ({client, setAlert}) => {
         <h3 className="title is-4">Supports</h3>
       </button>
     </div>
-    {showSupportForm ? <SupportForm pendingSupports={pendingSupports} setPendingSupports={setPendingSupports} selectedRoles={selectedRoles} selectRole={selectRole} pendingExemplaries={pendingExemplaries} setPendingExemplaries={setPendingExemplaries}/> : null}
+    {showSupportForm ? <SupportForm pendingSupports={pendingSupports} setPendingSupports={setPendingSupports} selectedRoles={selectedRoles} selectRole={selectRole} pendingExemplaries={pendingExemplaries} setPendingExemplaries={setPendingExemplaries} roles={roles} template={template}/> : null}
     <hr/>
     <div className="is-flex is-justify-content-start">
       <button className="button is-light mb-3" onClick={handleParentsShowing}>
         <h3 className="title is-4">Parents</h3>
       </button>
     </div>
-    {showParentForm ? <ParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} selectedPeople={selectedPeople} selectPerson={selectPerson} selectedProj={selectedProjects} selectProj={selectProject}/> : null}
-  </>
+    {showParentForm ? <ParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} selectedPeople={selectedPeople} selectPerson={selectPerson} selectedProj={selectedProjects} selectProj={selectProject} roles={roles} people={people} orgs={orgs} template={template}/> : null}
+    <footer className="card-footer mt-3 pt-4 is-flex is-justify-content-center">
+      <button className="button is-primary is-medium" type="submit">
+        Create
+      </button>
+    </footer>
+  </form>
 }
 
 export default DocForm

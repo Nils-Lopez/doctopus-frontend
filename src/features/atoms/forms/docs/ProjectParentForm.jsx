@@ -2,7 +2,7 @@ import React, {useState, Fragment} from "react"
 
 import RoleForm from "../RoleForm"
 
-const ProjectParentForm = ({selectedProj, selectProj}) => {
+const ProjectParentForm = ({selectedProj, selectProj, roles, template}) => {
   const [projectValue, setProjectValue] = useState("")
   const [projForm, setProjForm] = useState(false)
   const [isActive, setIsActive] = useState(false)
@@ -15,12 +15,12 @@ const ProjectParentForm = ({selectedProj, selectProj}) => {
     {slug: "titlesprite", name:"L'esprit'"}
   ]
   
-  const roles = [
-    {slug: "titlmodee", title:"Mode"},
-    {slug: "titldecoe", title:"Deco"},
-    {slug: "titlcorpse", title:"Le corps"},
-    {slug: "titlesprite", title:"L'esprit'"}
-]
+  if (projectValue === "" && template && template.parent_role_defaults[0]) {
+    template.parent_role_defaults.map((role) => {
+      selectRole([... selectedRoles, role])
+    })
+  }
+
   
   const handleProjChange = (e) => {
     e.preventDefault()
@@ -51,7 +51,7 @@ const ProjectParentForm = ({selectedProj, selectProj}) => {
     
     if (unique) {
       if (projDoc) {
-      projDoc.parentRoles = selectedRoles
+      projDoc.roles = selectedRoles
       selectProj([...selectedProj, projDoc])
       selectRole([])
       setProjectValue("")
@@ -87,7 +87,7 @@ const ProjectParentForm = ({selectedProj, selectProj}) => {
       </datalist>
       {selectedProj.map((proj) => {
         return <Fragment key={proj.slug}>
-          <span className="tag is-primary is-large mr-3">{proj.name} ({proj.parentRoles.map((role, i) => {
+          <span className="tag is-primary is-large mr-3">{proj.name} ({proj.roles.map((role, i) => {
             const roleStr = i > 0 ? ", " + role.title : role.title
             return roleStr
           })})</span>

@@ -15,7 +15,15 @@ const LogInModal = ({isActive, setLogInModal, handleSubmit, formAlert, setFormAl
                 <div className="modal-card-body has-background-white-ter">
                     <LogInForm handleSubmit={handleSubmit} formAlert={formAlert} setFormAlert={setFormAlert} />
                 </div>
-       
+                <div className="modal-card-foot is-flex is-justify-content-center">
+                   
+                    <div>
+                        <p>Don't have an account yet ?</p>
+                 
+                        <p>I forgot my password</p>
+                    </div>
+                       
+                </div>
             </div>
             
         </div>

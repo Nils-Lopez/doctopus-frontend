@@ -1,10 +1,16 @@
 import React, {useState, Fragment} from "react"
 
-const RoleForm = ({roles, scope, location, selectedRoles, selectRole}) => {
+const RoleForm = ({roles, scope, location, selectedRoles, selectRole, defaults}) => {
  const [roleValue, setRoleValue] = useState("")
   const [roleForm, setRoleForm] = useState(false)
   const [roleDesc, setRoleDesc] = useState("")
   
+  if (defaults && defaults[0]) {
+    defaults.map((role) => {
+      selectRole([...selectedRoles, role])
+    })
+  }
+
   const handleRoleChange = (e) => {
     e.preventDefault()
     setRoleValue(e.target.value)
@@ -13,7 +19,7 @@ const RoleForm = ({roles, scope, location, selectedRoles, selectRole}) => {
   const isRoleExisting = (r) =>  {
     let retrievedRole = undefined
     roles.map((role) => {
-      if (role.title.toLowerCase() === r.toLowerCase()) {
+      if (role.title[0].content.toLowerCase() === r.toLowerCase()) {
         retrievedRole = role
       } 
     })
@@ -27,7 +33,7 @@ const RoleForm = ({roles, scope, location, selectedRoles, selectRole}) => {
     const roleDoc = isRoleExisting(roleValue)
     let unique = true
     selectedRoles.map((role) => {
-      if (role.title === roleValue) {
+      if (role.title[0].content === roleValue) {
         unique = false
       }
     })
@@ -54,13 +60,14 @@ const RoleForm = ({roles, scope, location, selectedRoles, selectRole}) => {
     setRoleDesc(e.target.value)
   }
   
+ 
   
   return <>
     <div className="field">
-      <label className="label title is-5">Roles</label>
+      {location !== "templates" && location !== "templates-parents" ? <label className="label title is-5">Roles</label> : null}
       <div className="columns">
         <div className="column is-four-fifth">
-          <input type="text" list="tags" className="input" value={roleValue} onChange={handleRoleChange}/>
+          <input type="text" list={"roles" + location} placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default roles" : ""} className="input" value={roleValue} onChange={handleRoleChange}/>
         </div>
         <div className="column is-one-fifth">
           {!roleForm ? <>{roleValue !== "" ? <button className="button is-primary " onClick={handleRoleBtn}>
@@ -72,16 +79,16 @@ const RoleForm = ({roles, scope, location, selectedRoles, selectRole}) => {
         <label className="label subtitle is-6 is-flex is-justify-content-start">Role description</label>
         <textarea className="textarea" onChange={handleRoleDescChange} value={roleDesc}/>
       </div> : null}
-      <datalist id="tags">
+      <datalist id={"roles" + location}>
         {roles.map((t) => {
           return <Fragment key={t.slug}>
-            <option>{t.title}</option>
+            <option>{t.title[0].content}</option>
           </Fragment>
         })}
       </datalist>
       {selectedRoles.map((role) => {
         return <Fragment key={role.slug}>
-          <span className="tag is-success is-medium mr-3" onClick={() => console.log(role)}>{role.title}</span>
+          <span className="tag is-success is-medium mr-3" onClick={() => console.log(role)}>{role.title[0].content}</span>
         </Fragment>
       })}
     </div>

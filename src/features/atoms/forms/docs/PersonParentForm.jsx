@@ -2,25 +2,24 @@ import React, {useState, Fragment} from "react"
 
 import RoleForm from "../RoleForm"
 
-const PersonParentForm = ({selectedPeople, selectPerson}) => {
+const PersonParentForm = ({selectedPeople, selectPerson, location, roles, people, template}) => {
   const [personValue, setPersonValue] = useState("")
   const [personForm, setPersonForm] = useState(false)
-  const [isActive, setIsActive] = useState(false)
+  const [isActive, setIsActive] = useState(false)
   const [selectedRoles, selectRole] = useState([])
   
-  const people = [
-    {slug: "titlmodee", name:"Mode"},
-    {slug: "titldecoe", name:"Deco"},
-    {slug: "titlcorpse", name:"Le corps"},
-    {slug: "titlesprite", name:"L'esprit'"}
-  ]
-  
-  const roles = [
-    {slug: "titlmodee", title:"Mode"},
-    {slug: "titldecoe", title:"Deco"},
-    {slug: "titlcorpse", title:"Le corps"},
-    {slug: "titlesprite", title:"L'esprit'"}
-]
+  if (template && template.parent_person_defaults[0]) {
+    template.parent_person_defaults.map((person) => {
+      selectPerson([... selectedPeople, person])
+    })
+  }
+
+  if (personValue === "" && template && template.parent_role_defaults[0]) {
+    template.parent_role_defaults.map((role) => {
+      selectRole([... selectedRoles, role])
+    })
+  }
+
   
   const handlePersonChange = (e) => {
     e.preventDefault()
@@ -51,7 +50,7 @@ const PersonParentForm = ({selectedPeople, selectPerson}) => {
     
     if (unique) {
       if (personDoc) {
-      personDoc.parentRoles = selectedRoles
+      personDoc.roles = selectedRoles
       selectPerson([...selectedPeople, personDoc])
       selectRole([])
       setPersonValue("")
@@ -66,10 +65,10 @@ const PersonParentForm = ({selectedPeople, selectPerson}) => {
   
   return <>
     <div className="field">
-      <label className="label title is-5">People</label>
+      {location !== "templates-parents" ? <label className="label title is-5">People</label> : null}
       <div className="columns">
         <div className="column is-three-fifth">
-          <input type="text" list="people" className="input" value={personValue} onChange={handlePersonChange}/>
+          <input type="text" list="people" className="input" placeholder={location === "templates-parents" ? "Default people" : ""} value={personValue} onChange={handlePersonChange}/>
         </div>
         <div className="column is-one-fifth">
           {personValue !== "" && selectedRoles[0] || personValue !== "" && !isPersonExisting(personValue) ? <button className="button is-primary " onClick={handlePersonBtn}>
@@ -80,15 +79,15 @@ const PersonParentForm = ({selectedPeople, selectPerson}) => {
       {personValue !== "" ? <RoleForm roles={roles} scope="people" location="people-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole}/> : null}
       <datalist id="people">
         {people.map((person) => {
-          return <Fragment key={person.slug}>
+          return <Fragment key={person.name + "display"}>
             <option>{person.name}</option>
           </Fragment>
         })}
       </datalist>
       {selectedPeople.map((person) => {
-        return <Fragment key={person.slug}>
-          <span className="tag is-primary is-large mr-3">{person.name} ({person.parentRoles.map((role, i) => {
-            const roleStr = i > 0 ? ", " + role.title : role.title
+        return <Fragment key={person.name + "selected"}>
+          <span className="tag is-primary is-large mr-3">{person.name} ({person.roles.map((role, i) => {
+            const roleStr = i > 0 ? ", " + role.title[0].content : role.title[0].content
             return roleStr
           })})</span>
         </Fragment>

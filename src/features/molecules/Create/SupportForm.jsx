@@ -4,7 +4,7 @@ import SupportPreviewCard from "../../atoms/supports/SupportPreviewCard"
 import RoleForm from "../../atoms/forms/RoleForm"
 import ExemplariesForm from "../../atoms/forms/docs/ExemplariesForm"
 
-const SupportForm = ({pendingSupports, setPendingSupports, selectedRoles, selectRole, pendingExemplaries, setPendingExemplaries}) => {
+const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selectRole, pendingExemplaries, setPendingExemplaries, roles, template}) => {
     
   const [titleEnglish, setTitleEnglish] = useState(false)
   const [titleEnValue, setTitleEnValue] = useState("")
@@ -77,11 +77,14 @@ const SupportForm = ({pendingSupports, setPendingSupports, selectedRoles, select
       pages: pagesValue,
       duration: durationValue,
       isbn: isbnValue,
-      date: publiDateValue
+      date: publiDateValue,
+      exemplaries: pendingExemplaries, 
+      roles: selectedRoles
     }
     setPendingSupports([...pendingSupports, newSupport])
     setTitleEnValue("")
     setTitleFrValue("")
+    selectRole([])
     setDescEnValue("")
     setDescFrValue("")
     setUrlValue("")
@@ -90,6 +93,7 @@ const SupportForm = ({pendingSupports, setPendingSupports, selectedRoles, select
     setThumbValue("")
     setPubliDateValue("")
     setDurationValue("")
+    setPendingExemplaries([])
   }
   
   const deleteSupportPreview = (support) => {
@@ -109,16 +113,11 @@ const SupportForm = ({pendingSupports, setPendingSupports, selectedRoles, select
     setThumbValue(support.thumb)
     setPubliDateValue(support.date)
     setDurationValue(support.duration)
+    selectRole(support.roles)
   }
   
-    const roles = [
-    {slug: "titlmodee", title:"Mode"},
-    {slug: "titldecoe", title:"Deco"},
-    {slug: "titlcorpse", title:"Le corps"},
-    {slug: "titlesprite", title:"L'esprit'"}
-]
-  
-  
+  console.log('template : ', template)
+
   return <>
     {pendingSupports.map((support) => {
       return <Fragment key={support.title["fr"] + support.title["en"] + support.date}>
@@ -145,22 +144,22 @@ const SupportForm = ({pendingSupports, setPendingSupports, selectedRoles, select
       </div>
       {descEnglish ? <textarea className="textarea" value={descEnValue} onChange={handleDescEnChange}/> : <textarea  className="textarea" value={descFrValue} onChange={handleDescFrChange}/>}
     </div>
-    <RoleForm roles={roles} scope="support" location="support-form-doc" selectedRoles={selectedRoles} selectRole={selectRole}/>
-    <div className="field">
+    {template && template.support_role ? <RoleForm roles={roles} scope="support" location="support-form-doc" selectedRoles={selectedRoles} selectRole={selectRole} defaults={template.support_role_defaults} /> : null}
+    {template && template.support_url ? <div className="field">
       <label className="label">
         Url
       </label>
       
       <input type="text" className="input" value={urlValue} onChange={handleUrlChange}/>
-    </div>
-    <div className="field">
+    </div> : null}
+    {template && template.support_publishedAt ? <div className="field">
       <label className="label">
         Publication Date
       </label>
       
       <input type="date" className="input" value={publiDateValue} onChange={handlePubliDateChange}/>
-    </div>
-    <div className="field">
+    </div> : null}
+    {template && template.support_pdf ? <div className="field">
        <label className="label">
         PDF
       </label>
@@ -180,29 +179,29 @@ const SupportForm = ({pendingSupports, setPendingSupports, selectedRoles, select
     </span> : null}
   </label>
 </div>
-    </div>
-     <div className="field">
+    </div> : null}
+    {template && template.support_eanIsbn ?  <div className="field">
       <label className="label">
         EAN/ISBN
       </label>
       
       <input type="text" className="input" value={isbnValue} onChange={handleIsbnChange}/>
-    </div>
-     <div className="field">
+    </div> : null}
+     {template && template.support_pages ? <div className="field">
       <label className="label">
         Pages number
       </label>
       
       <input type="text" className="input" value={pagesValue} onChange={handlePagesChange}/>
-    </div>
-     <div className="field">
+    </div> : null}
+    {template && template.support_duration ?  <div className="field">
       <label className="label">
         Duration
       </label>
       
       <input type="time" className="input" step="1" value={durationValue} onChange={handleDurationChange}/>
-    </div>
-    <div className="field">
+    </div> : null}
+    {template && template.support_thumb ? <div className="field">
        <label className="label">
         Thumbnail
       </label>
@@ -221,9 +220,10 @@ const SupportForm = ({pendingSupports, setPendingSupports, selectedRoles, select
       {thumbValue}
     </span> : null}
   </label>
-</div>
+      </div>
+      </div> : null}
   <ExemplariesForm setPendingExemplaries={setPendingExemplaries} pendingExemplaries={pendingExemplaries}/>
-    </div>
+    
     <div className="is-flex is-justify-content-end">
       <button onClick={handleNewSupportBtn} className="button is-primary">Create New Support</button>
     </div>
