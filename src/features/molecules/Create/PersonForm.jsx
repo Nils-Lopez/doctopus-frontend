@@ -1,20 +1,33 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, Fragment, useState} from 'react';
   
 import {usePeople} from "../../../utils/hooks/People"
 
 import RoleForm from "../../atoms/forms/RoleForm"
 import ProjectParentForm from "../../atoms/forms/docs/ProjectParentForm"
-import ActivityForm from "../../atoms/forms/people/ActivityForm"
+import OrganisationParentForm from "../../atoms/forms/docs/OrganisationParentForm"
 
-const PersonForm = ({client, setAlert, template}) => {
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
+
+const PersonForm = ({client, setAlert, template, projects, roles, people, tags, orgs, setCreated}) => {
   
   const [nameValue, setNameValue] = useState("")
-  const [descValue, setDescValue] = useState("")
+  const [descEnValue, setDescEnValue] = useState("")
+  const [descFrValue, setDescFrValue] = useState("")
   const [urlValue, setUrlValue] = useState("")
-  const [locValue, setLocValue] = useState("")
-    
+  const [idLang, setIdLang] = useState("fr")
+    const [firstNameValue, setFirstNameValue] = useState("")
+  const [lastNameValue, setLastNameValue] = useState("")
+  const [birthDateValue, setBirthDateValue] = useState("")
+  const [deathDateValue, setDeathDateValue] = useState("")
+  const [cityValue, setCityValue] = useState("")
+  const [countryValue, setCountryValue] = useState("")
+    const [langEnValue, setLangEnValue] = useState("")
+  const [langFrValue, setLangFrValue] = useState("")
+  const [selectedLangs, selectLang] = useState([])
+
   const [selectedRoles, selectRole] = useState([])
-  const [selectedActivities, selectActivity] = useState([])
+  const [selectedOrg, selectOrg] = useState([])
   const [selectedProj, selectProj] = useState([])
   
   const {
@@ -30,6 +43,14 @@ const PersonForm = ({client, setAlert, template}) => {
     responseFindPersonBySlug
   } = usePeople()
 
+     const getContent = (value, lang) => {
+      if (value) {
+        return value.filter(obj => obj.lang === lang)[0] ? value.filter(obj => obj.lang === lang)[0].content : value.filter(obj => obj.lang === "en")[0] ? value.filter(obj => obj.lang === "en")[0].content : value.filter(obj => obj.lang === "fr")[0].content
+      } else {
+        return "Error"
+      }
+    }
+
   const handleNameChange = (e) => {
     e.preventDefault()
     setNameValue(e.target.value)
@@ -37,7 +58,11 @@ const PersonForm = ({client, setAlert, template}) => {
   
   const handleDescChange = (e) => {
     e.preventDefault()
-    setDescValue(e.target.value)
+    if (idLang === "en") {
+      setDescEnValue(e.target.value)
+    } else {
+      setDescFrValue(e.target.value)
+    }
   }
   
   const handleUrlChange = (e) => {
@@ -45,66 +70,193 @@ const PersonForm = ({client, setAlert, template}) => {
     setUrlValue(e.target.value)
   }
   
-  const handleLocChange = (e) => {
+   const handleFirstNameChange = (e) => {
     e.preventDefault()
-    setLocValue(e.target.value)
+    setFirstNameValue(e.target.value)
   }
   
-  const roles = [
-    {slug: "titlmodee", title:"Mode"},
-    {slug: "titldecoe", title:"Deco"},
-    {slug: "titlcorpse", title:"Le corps"},
-    {slug: "titlesprite", title:"L'esprit'"}
-  ]
-
-  const handlePersonSubmit = async (e) => {
+  const handleLastNameChange = (e) => {
     e.preventDefault()
+    setLastNameValue(e.target.value)
+  }
+
+  const handleBirthDateChange = (e) => {
+    e.preventDefault()
+    setBirthDateValue(e.target.value)
+  }
+
+  const handleDeathDateChange = (e) => {
+    e.preventDefault()
+    setDeathDateValue(e.target.value)
+  }
+
+  const handleCityChange = (e) => {
+    e.preventDefault()
+    setCityValue(e.target.value)
+  }
+
+  const handleCountryChange = (e) => {
+    e.preventDefault()
+    setCountryValue(e.target.value)
+  }
+
+    const handleLangChange = (e) => {
+    e.preventDefault()
+      if (idLang === "en") {
+        setLangEnValue(e.target.value)
+      } else {
+        setLangFrValue(e.target.value)
+      }
+  }
+
+   const addLang = (e) => {
+      e.preventDefault()
+      const newLang = {
+        labels: [
+          { lang: "en", content: langEnValue },
+          {lang: "fr", content: langFrValue}
+        ],
+        code: langEnValue !== "" ? langEnValue.slice(0, 2).toLowerCase() : langFrValue.slice(0, 2).toLowerCase()
+      }
+      selectLang([...selectedLangs, newLang])
+      setLangEnValue("")
+      setLangFrValue("")
+    }
+      
+    const handleDeleteLang = (e, lang) => {
+      e.preventDefault()
+      const filtered = selectedLangs.filter((l) => {
+        return l.code !== lang.code
+      })
+      selectLang(filtered)
+    }
+
+  const handlePersonSubmit = (e) => {
+    e.preventDefault()    
     const reqData = {
       person: {
         name: nameValue,
-        description: [{ lang: "en", content: descValue }]
+        description: [{ lang: "en", content: descEnValue }, {lang: "fr", content: descFrValue}],
+        birthDate: birthDateValue,
+        deathDate: deathDateValue,
+        city: cityValue,
+        country: countryValue,
+        fristName: firstNameValue,
+        lastName: lastNameValue,
+        website: urlValue,
+        languages: selectedLangs
       },
-      activities: selectedActivities,
-      productions: selectedProj
+      activities: [...selectedOrg, ...selectedProj],
+      projects: selectedProj,
+      roles: selectedRoles
     }
-    await createPerson(reqData)
+    createPerson(reqData)
   }
 
   useEffect(() => {
-    console.log(responseCreatePerson)
+    if (responseCreatePerson && responseCreatePerson.success) {
+      setAlert({ type: "success", message: { en: "Person has been successfully created.", fr: "La personne a été créé avec succès" } })
+      if (setCreated) {
+        setCreated(responseCreatePerson.data)
+      }
+    } else if (responseCreatePerson && !responseCreatePerson.success) {
+      setAlert({ type: "error", message: { en: "An error occured while creating a new person.", fr: "Un problème est survenu lors de la création d'une nouvelle personne"}})
+
+    }
   }, [responseCreatePerson])
   
   return <>
+    <div className="tabs">
+        <ul>
+          <li onClick={() => setIdLang("fr")} className={idLang === "fr" ? "is-active" : ""}><a href="#" onClick={(e) => e.preventDefault()}>Français</a></li>
+          <li onClick={() => setIdLang("en")} className={idLang === "en" ? "is-active" : ""}><a href="#" onClick={(e) => e.preventDefault()}>English</a></li>
+        </ul>
+     </div>
     <div className="field">
       <label className="label">
         Name
       </label>
       <input type="text" value={nameValue} onChange={handleNameChange} className="input"/>
     </div>
+      <div className="columns">
+      <div className="column field">
+      <label className="label">
+        First Name
+      </label>
+      <input type="text" value={firstNameValue} onChange={handleFirstNameChange} className="input"/>
+    </div>
+    <div className="column field">
+      <label className="label">
+        Last Name
+      </label>
+      <input type="text" value={lastNameValue} onChange={handleLastNameChange} className="input"/>
+    </div>
+    </div>
+    <div className="field" id="docLang">
+      <label className="label title is-5">
+        Language
+      </label>
+      
+      <div className="is-flex">
+                <input type="text" placeholder="Default language" className="input" value={idLang === "en" ? langEnValue : langFrValue} onChange={handleLangChange} />
+                <button onClick={addLang} className="button is-small is-primary mt-1 ml-2">Add</button>
+                
+        </div>
+        {selectedLangs.map((lang) => {
+        return <Fragment key={lang.code}>
+          <span className="tag is-success is-medium mr-1 mt-2">{getContent(lang.labels, idLang)}</span>
+          <span className="tag is-danger is-medium mr-2 button mt-2" onClick={(e) => handleDeleteLang(e, lang)}><FontAwesomeIcon icon={faTrash}/></span>
+        </Fragment>
+        })}
+      </div>
+    <div className="columns">
+      <div className="column field">
+      <label className="label">
+        Birthdate
+      </label>
+      <input type="date" value={birthDateValue} onChange={handleBirthDateChange} className="input"/>
+    </div>
+    <div className="column field">
+      <label className="label">
+        Deathdate
+      </label>
+      <input type="date" value={deathDateValue} onChange={handleDeathDateChange} className="input"/>
+    </div>
+    </div>
+    <div className="columns">
+      <div className="column field">
+      <label className="label">
+        City
+      </label>
+      <input type="text" value={cityValue} onChange={handleCityChange} className="input"/>
+    </div>
+    <div className="column field">
+      <label className="label">
+        Country
+      </label>
+      <input type="text" value={countryValue} onChange={handleCountryChange} className="input"/>
+    </div>
+    </div>
     <div className="field">
       <label className="label">
         Description
       </label>
-      <textarea value={descValue} onChange={handleDescChange} className="textarea"></textarea>
+      <textarea value={idLang === "en" ? descEnValue : descFrValue} onChange={handleDescChange} className="textarea"></textarea>
     </div>
-    <div className="columns">
-      <div className="column field">
+      <div className="field">
         <label className="label">
           Website
         </label>
         <input type="text" value={urlValue} onChange={handleUrlChange} className="input"/>
       </div>
-      <div className="column field">
-        <label className="label">
-          Location
-        </label>
-        <input type="text" value={locValue} onChange={handleLocChange} className="input"/>
-      </div>
-    </div>
-    <RoleForm roles={roles} scope="org" location="org-form" selectedRoles={selectedRoles} selectRole={selectRole}/>
-    <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj} />
-    <ActivityForm selectedActivities={selectedActivities} selectActivity={selectActivity} />
-  </>
+      
+    <RoleForm roles={roles} scope="parents" location="org-form" selectedRoles={selectedRoles} selectRole={selectRole} lang={idLang} />
+    <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj} projects={projects} lang={idLang} roles={roles} client={client} setAlert={setAlert} tags={tags} orgs={orgs} people={people}/>
+    <OrganisationParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} roles={roles} orgs={orgs} lang={idLang} client={client} setAlert={setAlert} tags={tags} people={people} projects={projects}/>
+    <button className="button is-large is-primary" onClick={handlePersonSubmit}>
+      Create
+    </button>
+  </> 
 }
 
 export default PersonForm

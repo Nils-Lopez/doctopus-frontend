@@ -87,7 +87,7 @@ const SignUpForm = ({handleSubmit, formAlert, setFormAlert}) => {
                 </div>
                 <div className="is-flex is-justify-content-center mt-5">
                     <div className="field">
-                        <button className="button is-dark" role="submit" disabled={formValid ? false : true}>Confirm</button>
+                        <button className="button is-primary" role="submit" disabled={formValid ? false : true}>Confirm</button>
                     </div>
                 </div>
                 <div className="mt-3">

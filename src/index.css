@@ -6,6 +6,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
+  
 }
 
 html {
@@ -17,7 +18,22 @@ code {
     monospace;
 }
 
+.background-landing-ctn {
+  width: 120%;
+  margin-left: -10%;
+  position: relative;
+  z-index: 0;
+  margin-top: -15%;
 
+}
+
+.image404 {
+  width: 50%;
+}
+
+.landing-content {
+  margin-top: -100px;
+}
 
 .dropdown-user-logged {
   margin-left:-145%;
@@ -25,11 +41,14 @@ code {
 
 .landing-container {
   padding: 50px;
+
 }
 .landing-container .search-box {
   height: 80px;
     width: 700px;
-  margin-left: -135px;
+  position: relative;
+  z-index: 1;
+ 
 }
 
 @media only screen and (max-width: 1023px) {
@@ -46,6 +65,13 @@ code {
   .landing-container .search-box {
     width: 450px;
   }
+}
+
+.footer {
+
+  width: 100%;
+  bottom: 0;
+  height: 50px;
 }
 
 .search-block,
@@ -210,7 +236,7 @@ code {
   top: 15px;
   left: 10px;
   color: #5a6674;
-  z-index: 999;
+  z-index: 9;
 }
 
 .search-input {

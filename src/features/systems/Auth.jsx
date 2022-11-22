@@ -111,7 +111,7 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
             <div className="navbar-item">
                 <div className="buttons">
                     {!client ? <>
-                        <button onClick={() => setSignUpModal(true)} className="button is-dark">
+                        <button onClick={() => setSignUpModal(true)} className="button is-primary">
                             <strong>Sign Up</strong>
                         </button>
                         <button onClick={() => setLogInModal(true)} className="button is-light">
@@ -122,7 +122,7 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
                             
                         <div className="dropdown is-active">
                             <div className="dropdown-trigger">
-                                <button onClick={() => setUserDropdown(!userDropdown)} className={"button is-light is-rounded "} aria-haspopup="true" aria-controls="dropdown-menu">
+                                <button onClick={() => setUserDropdown(!userDropdown)} className={"button is-primary has-text-white is-rounded "} aria-haspopup="true" aria-controls="dropdown-menu">
                                     <FontAwesomeIcon icon={faUser} size="xl"/>
                                     <FontAwesomeIcon icon={userDropdown ? faChevronUp : faChevronDown} />
                                 </button>
@@ -136,7 +136,7 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
                                             <a href="#" className="dropdown-item  pl-6">
         History
       </a>
-      <a href="#" className="dropdown-item has-text-primary pl-6">
+      <a href="#" className="dropdown-item pl-6">
         Profile
       </a>
       <a className="dropdown-item  pl-6">
@@ -147,7 +147,7 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
         Help
       </a>
       <hr className="dropdown-divider"/>
-      <button className="button is-danger" onClick={() => handleLogOut()}>
+      <button className="button is-small mt-2 is-dark" onClick={() => handleLogOut()}>
         Logout
       </button>
     </div>

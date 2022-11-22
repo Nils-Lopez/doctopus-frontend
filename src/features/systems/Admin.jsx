@@ -10,11 +10,7 @@ const Admin = () => {
 
 
     return <div className="navbar-end"> 
-      <div className="navbar-item">
-        <Link to="/admin/dashboard">
-          <p className="has-text-primary">Dashboard</p>
-        </Link>
-      </div>
+
       <div className="navbar-item">
         <Link to="/admin/settings">
           <p className="has-text-primary">Settings</p>

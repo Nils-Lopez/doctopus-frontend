@@ -1,24 +1,45 @@
-import React, {useState, Fragment} from "react"
+import React, {useState, useEffect, Fragment} from "react"
 
 import RoleForm from "../RoleForm"
+import OrganisationForm from "../../../molecules/Create/OrganisationForm"
 
-const OrganisationParentForm = ({selectedOrg, selectOrg, location, roles, orgs, template}) => {
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
+
+
+const OrganisationParentForm = ({selectedOrg, selectOrg, location, roles, orgs, template, lang, hideRoles, client, setAlert, tags, people, projects}) => {
   const [organisationValue, setOrganisationValue] = useState("")
   const [orgForm, setOrgForm] = useState(false)
   const [isActive, setIsActive] = useState(false)
   const [selectedRoles, selectRole] = useState([])
-  
-  if (organisationValue === "" && template && template.parent_entity_defaults[0] && template.parent_entity_defaults) {
-    template.parent_entity_defaults.map((org) => {
-      selectOrg([... selectedOrg, org])
-    })
+  const [idLang, setIdLang] = useState("fr")
+  const [created, setCreated] = useState({})
+
+  const getContent = (value, lang) => {
+    if (value) {
+      return value.filter(obj => obj.lang === lang)[0] ? value.filter(obj => obj.lang === lang)[0].content : value.filter(obj => obj.lang === "en")[0] ? value.filter(obj => obj.lang === "en")[0].content : value.filter(obj => obj.lang === "fr")[0].content
+    } else {
+      return "Error"
+    }
   }
 
-  if (organisationValue === "" && template && template.parent_role_defaults[0]) {
-    template.parent_role_defaults.map((role) => {
-      selectRole([... selectedRoles, role])
-    })
-  }
+  useEffect(() => {
+    if (organisationValue === "" && template && template.parent_entity_defaults && template.parent_entity_defaults[0]) {
+      template.parent_entity_defaults.map((org) => {
+        if (!selectedOrg.includes(org)) {
+          selectOrg([... selectedOrg, org])
+        }
+      })
+    }
+
+    if (organisationValue === "" && template && template.parent_role_defaults && template.parent_role_defaults[0]) {
+      template.parent_role_defaults.map((role) => {
+        if (!selectedRoles.includes(role)) {
+          selectRole([... selectedRoles, role])
+        }
+      })
+    }
+  }, [organisationValue, template])
 
   const handleOrgChange = (e) => {
     e.preventDefault()
@@ -42,14 +63,13 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, roles, orgs, 
     const orgDoc = isOrgExisting(organisationValue)
     let unique = true
     selectedOrg.map((org) => {
-      if (org.name === organisationValue) {
+      if (org.entity.name === organisationValue) {
         unique = false
       }
     })
     if (unique) {
       if (orgDoc) {
-      orgDoc.roles = selectedRoles
-      selectOrg([...selectedOrg, orgDoc])
+      selectOrg([...selectedOrg, {entity: orgDoc, roles: selectedRoles}])
       selectRole([])
       setOrganisationValue("")
     } else {
@@ -59,7 +79,21 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, roles, orgs, 
    }  
   }
 
-  
+  const handleDeleteOrg = (e, org) => {
+    e.preventDefault()
+    const filtered = selectedOrg.filter((r) => {
+      return r !== org
+    })
+    selectOrg(filtered)
+  }
+
+  useEffect(() => {
+    if (created && created.name && !orgs.includes(created)) {
+      orgs.push(created)
+      setOrganisationValue(created.name)
+      setOrgForm(false)
+    }
+  }, [created])
   
   return <>
     <div className="field">
@@ -69,26 +103,31 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, roles, orgs, 
           <input type="text" list="orgs" placeholder={location === "templates-parents" ? "Default orgs" : ""} className="input" value={organisationValue} onChange={handleOrgChange}/>
         </div>
         <div className="column is-one-fifth">
-          {(organisationValue !== "" && selectedRoles[0]) || (organisationValue !== "" && !isOrgExisting(organisationValue)) ? <button className="button is-primary " onClick={handleOrgBtn}>
+          {(organisationValue !== "" && selectedRoles[0]) || (organisationValue !== "" && !isOrgExisting(organisationValue)) || (organisationValue !== "" && hideRoles) ? <button className="button is-primary " onClick={handleOrgBtn}>
             {isOrgExisting(organisationValue) ? "Add" : "Create"}
           </button> : <button className="button is-primary is-disabled" disabled>Add</button>}
         </div>
       </div>
-      {organisationValue !== "" && location !== "activity-form" ? <RoleForm roles={roles} scope="orgs" location="org-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole}/> : null}
+      {organisationValue !== "" && location !== "activity-form" && (template && template.parent_role || !template) && !hideRoles ? <RoleForm roles={roles} scope="parents" location="org-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
       <datalist id="orgs">
-        {orgs.map((org) => {
+        {orgs && orgs[0] ? orgs.map((org) => {
           return <Fragment key={org.slug}>
             <option>{org.name}</option>
           </Fragment>
-        })}
+        }) : null}
       </datalist>
       {selectedOrg.map((org) => {
-        return <Fragment key={org.slug}>
-          <span className="tag is-primary is-large mr-3">{org.name} ({org.roles.map((role, i) => {
-            const roleStr = i > 0 ? ", " + role.title[0].content : role.title[0].content
-            return roleStr
-          })})</span>
+        if (org.entity) {
+          return <Fragment key={org.entity.slug}>
+            <span className="tag is-primary is-large mr-3">{org.entity.name} {!hideRoles && (!template || template && template.parent_role) && org.roles[0] ? <>({
+              org.roles.map((role, i) => {
+                const roleStr = i > 0 ? (", " + (role.title) ? getContent(role.title, lang) : "") : getContent(role.title, lang)
+                return roleStr
+              })
+            })</> : null}</span>
+             <span className="tag is-danger is-large mr-2 button" onClick={(e) => handleDeleteOrg(e, org)}><FontAwesomeIcon icon={faTrash}/></span>
         </Fragment>
+        }
       })}
     </div>
     {orgForm ? <div className={"modal " + (isActive ? "is-active" : "")}>
@@ -99,7 +138,7 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, roles, orgs, 
               <button onClick={() => setOrgForm(false)} className="delete is-large ml-4" aria-label="close"></button>
               </div>
               <div className="modal-card-body has-background-white-ter">
-                C ici qu'on va gerer les bails tqt
+                <OrganisationForm client={client} setAlert={setAlert} roles={roles} tags={tags} people={people} projects={projects} setCreated={setCreated}/>
               </div>
        
             </div>

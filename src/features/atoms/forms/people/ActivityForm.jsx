@@ -3,7 +3,7 @@ import React, {useState, Fragment} from "react"
 import RoleForm from "../RoleForm"
 import OrganisationParentForm from "../docs/OrganisationParentForm"
 
-const ActivityForm = ({activites, selectedActivities, selectActivity}) => {
+const ActivityForm = ({activites, selectedActivities, selectActivity, lang, roles}) => {
  const [activityValue, setActivityValue] = useState("")
   const [activityForm, setActivityForm] = useState(false)
   const [selectedRoles, selectRole] = useState([])
@@ -77,7 +77,7 @@ const ActivityForm = ({activites, selectedActivities, selectActivity}) => {
         </div>
       </div>
       {activityForm ? <>
-        <RoleForm roles={activities} scope="people" location="activity-form-people" selectedRoles={selectedRoles} selectRole={selectRole} />       
+        <RoleForm roles={roles} scope="parents" location="activity-form-people" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang} />       
         <OrganisationParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} location="activity-form"/>
       </> : null}
       <datalist id="tags">

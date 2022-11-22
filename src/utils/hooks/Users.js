@@ -17,29 +17,29 @@ function reducer (state, action) {
 const useUsers = () => {
     const [state, dispatch] = useReducer(reducer, {
         loading: false,
-        responseFindById: null,
-        responseUpdate: null,
-        responseDelete: null
+        responseFindUserById: null,
+        responseUpdateUser: null,
+        responseDeleteUser: null
     })
 
     return {
-        responseFindById: state.responseFindById,
-        responseUpdate: state.responseUpdate,
-        responseDelete: state.responseDelete,
-        findById : async function (id) {
+        responseFindUserById: state.responseFindById,
+        responseUpdateUser: state.responseUpdate,
+        responseDeleteUser: state.responseDelete,
+        findUserById : async function (id) {
             const user = await apiFetch('/users/' + id, {
                 method: 'GET'
             })
             dispatch({type: 'FindById', payload: user})
         },
-        update : async function (data, id) {
+        updateUser : async function (data, id) {
             const user = await apiFetch('/users/' + id, {
                 method: 'PUT',
                 body: data
             })
             dispatch({type: 'Update', payload: user})
         }, 
-        delete : async function (id) {
+        deleteUser : async function (id) {
             const user = await apiFetch('/users/' + id, {
                 method: 'DELETE'
             })

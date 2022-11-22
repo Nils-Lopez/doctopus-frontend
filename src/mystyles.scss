@@ -1,0 +1,24 @@
+// 1. Import the initial variables
+@import "../node_modules/bulma/sass/utilities/initial-variables";
+@import "../node_modules/bulma/sass/utilities/functions";
+
+// 2. Set your own initial variables
+// Update blue
+$blue: #0984e3;
+// Add pink and its invert
+$pink: #6c5ce7;
+$purple: #a29bfe;
+$pink-invert: #fff;
+$red: #d63031;
+
+// 3. Set the derived variables
+// Use the new pink as the primary color
+$primary: $pink;
+$primary-invert: $pink-invert;
+$info: $blue;
+$danger: $red;
+$success: #00b894;
+
+// 6. Import the rest of Bulma
+@import "../node_modules/bulma";
+@import "../node_modules/bulma-switch"

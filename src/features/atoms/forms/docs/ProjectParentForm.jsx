@@ -1,25 +1,45 @@
-import React, {useState, Fragment} from "react"
+import React, {useState, useEffect, Fragment} from "react"
 
 import RoleForm from "../RoleForm"
+import ProjectForm from "../orgs/ProjectForm"
 
-const ProjectParentForm = ({selectedProj, selectProj, roles, template}) => {
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
+
+const ProjectParentForm = ({location, selectedProj, selectProj, roles, template, projects, lang, hideRoles, client, tags, setAlert, orgs, people}) => {
   const [projectValue, setProjectValue] = useState("")
   const [projForm, setProjForm] = useState(false)
-  const [isActive, setIsActive] = useState(false)
+  const [isActive, setIsActive] = useState(false)
   const [selectedRoles, selectRole] = useState([])
+  const [idLang, setIdLang] = useState("fr")
   
-  const projects = [
-    {slug: "titlmodee", name:"Mode"},
-    {slug: "titldecoe", name:"Deco"},
-    {slug: "titlcorpse", name:"Le corps"},
-    {slug: "titlesprite", name:"L'esprit'"}
-  ]
-  
-  if (projectValue === "" && template && template.parent_role_defaults[0]) {
-    template.parent_role_defaults.map((role) => {
-      selectRole([... selectedRoles, role])
-    })
+  const [created, setCreated] = useState(false)
+
+  const getContent = (value, lang) => {
+    if (value) {
+      return value.filter(obj => obj.lang === lang)[0] ? value.filter(obj => obj.lang === lang)[0].content : value.filter(obj => obj.lang === "en")[0] ? value.filter(obj => obj.lang === "en")[0].content : value.filter(obj => obj.lang === "fr")[0].content
+    } else {
+      return "Error"
+    }
   }
+
+  useEffect(() => {
+    if (projectValue === "" && template && template.parent_role_defaults[0]) {
+      template.parent_role_defaults.map((role) => {
+        if (!selectedRoles.includes(role)) {
+          selectRole([...selectedRoles, role])
+        }
+      })
+    }
+
+    if (template && template.parent_project_defaults[0]) {
+      template.parent_project_defaults.map((project) => {
+        if (!selectedProj.includes(project)) {
+          selectProj([...selectedProj, project])
+        }
+      })
+    }
+  }, [template, projectValue])
 
   
   const handleProjChange = (e) => {
@@ -30,7 +50,7 @@ const ProjectParentForm = ({selectedProj, selectProj, roles, template}) => {
   const isProjExisting = (project) =>  {
     let retrievedProj = undefined
     projects.map((proj) => {
-      if (proj.name.toLowerCase() === project.toLowerCase()) {
+      if (proj.title && proj.title.toLowerCase() === project.toLowerCase()) {
         retrievedProj = proj
       } 
     })
@@ -44,15 +64,14 @@ const ProjectParentForm = ({selectedProj, selectProj, roles, template}) => {
     const projDoc = isProjExisting(projectValue)
     let unique = true
     selectedProj.map((proj) => {
-      if (proj.name === projectValue) {
+      if (proj.title === projectValue) {
         unique = false
       }
     })
     
     if (unique) {
       if (projDoc) {
-      projDoc.roles = selectedRoles
-      selectProj([...selectedProj, projDoc])
+      selectProj([...selectedProj, {project: projDoc, roles: selectedRoles}])
       selectRole([])
       setProjectValue("")
     } else {
@@ -62,36 +81,61 @@ const ProjectParentForm = ({selectedProj, selectProj, roles, template}) => {
    }
   }
 
-  
+  const handleDeleteProj = (e, proj) => {
+    e.preventDefault()
+    const filtered = selectedProj.filter((r) => {
+      return r !== proj
+    })
+    selectProj(filtered)
+  }
+
+  useEffect(() => {
+    if (created && !projects.includes(created)) {
+      projects.push(created)
+      setProjectValue(created.title)
+      setProjForm(false)
+    }
+  }, [created])
   
   return <>
     <div className="field">
-      <label className="label title is-5">Projects</label>
+      {!location || location !== "templates-parents" ? <label className="label title is-5">Projects</label> : null}
       <div className="columns">
         <div className="column is-three-fifth">
-          <input type="text" list="projects" className="input" value={projectValue} onChange={handleProjChange}/>
+          <input type="text" list="projects" className="input" value={projectValue} placeholder={location === "templates-parents" ? "Default projects" : ""} onChange={handleProjChange}/>
         </div>
         <div className="column is-one-fifth">
-          {(projectValue !== "" && selectedRoles[0]) || (projectValue !== "" && !isProjExisting(projectValue)) ? <button className="button is-primary " onClick={handleProjBtn}>
+          {(projectValue !== "" && selectedRoles[0]) || (projectValue !== "" && !isProjExisting(projectValue)) || (projectValue !== "" && hideRoles) ? <button className="button is-primary " onClick={handleProjBtn}>
             {isProjExisting(projectValue) ? "Add" : "Create"}
           </button> : <button className="button is-primary is-disabled" disabled>Add</button>}
         </div>
       </div>
-      {projectValue !== "" ? <RoleForm roles={roles} scope="projects" location="proj-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole}/> : null}
+      {projectValue !== "" && (template && template.parent_role || !template) && !hideRoles ? <RoleForm roles={roles} scope="parents" location="proj-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
       <datalist id="projects">
-        {projects.map((proj) => {
+        {projects && projects[0] ? projects.map((proj) => {
           return <Fragment key={proj.slug}>
-            <option>{proj.name}</option>
+            <option>{proj.title}</option>
           </Fragment>
-        })}
+        }) : null}
       </datalist>
       {selectedProj.map((proj) => {
-        return <Fragment key={proj.slug}>
-          <span className="tag is-primary is-large mr-3">{proj.name} ({proj.roles.map((role, i) => {
-            const roleStr = i > 0 ? ", " + role.title : role.title
-            return roleStr
-          })})</span>
+        if (proj.project && proj.project.title) {
+          return <Fragment key={proj.project.slug}>
+          <span className="tag is-primary is-large mr-3">
+            <>
+              {proj.project.title}
+            </>
+            &nbsp;
+            {!hideRoles && (!template || template && template.parent_role) && proj.roles[0] ? <>
+              ({proj.roles.map((role, i) => {
+                const roleStr = i > 0 ? ", " + getContent(role.title, lang) : getContent(role.title, lang)
+                return roleStr
+              })})
+            </> : null}
+            </span>
+            <span className="tag is-danger is-large mr-2 button" onClick={(e) => handleDeleteProj(e, proj)}><FontAwesomeIcon icon={faTrash}/></span>
         </Fragment>
+        }
       })}
     </div>
     {projForm ? <div className={"modal " + (isActive ? "is-active" : "")}>
@@ -102,7 +146,7 @@ const ProjectParentForm = ({selectedProj, selectProj, roles, template}) => {
                     <button onClick={() => setProjForm(false)} className="delete is-large ml-4" aria-label="close"></button>
                 </div>
                 <div className="modal-card-body has-background-white-ter">
-                  C ici qu'on va gerer les bails tqt
+                  <ProjectForm client={client} roles={roles} setAlert={setAlert} projects={projects} tags={tags} orgs={orgs} people={people} />
                 </div>
        
             </div>

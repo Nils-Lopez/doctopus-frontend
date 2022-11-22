@@ -12,7 +12,9 @@ function reducer (state, action) {
         case 'FindBySlug':
             return {...state, responseFindBySlug: action.payload}
         case 'Delete':
-            return {...state, responseDelete: action.payload}
+            return { ...state, responseDelete: action.payload }
+        case 'FindAll': 
+            return { ...state, responseFindAll: action.payload }
         default:
             throw new Error ('Action inconnue' + action.type)
     }
@@ -25,7 +27,8 @@ const useDocs = () => {
         responseUpdateDoc: null,
         responseFindDocBySlug: null,
         responseCreateDoc: null,
-        responseDeleteDoc: null
+        responseDeleteDoc: null,
+        responseFindAllDocs: null
     })
 
     return {
@@ -33,7 +36,12 @@ const useDocs = () => {
         responseUpdateDoc: state.responseUpdate,
         responseDeleteDoc: state.responseDelete,
         responseFindDocBySlug: state.responseFindBySlug,
-        reponseCreateDoc: state.responseCreate,
+        responseCreateDoc: state.responseCreate,
+        responseFindAllDocs: state.responseFindAll,
+        findAllDocs: async function () {
+            const docs = await apiFetch('/docs', { method: 'GET' })
+            dispatch({type: 'FindAll', payload: docs})
+        },
         findDocById : async function (id) {
             const doc = await apiFetch('/docs/id/' + id, {
                 method: 'GET'

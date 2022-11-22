@@ -36,7 +36,7 @@ const useDocTemplates = () => {
         responseUpdateDocTemplate: state.responseUpdate,
         responseDeleteDocTemplate: state.responseDelete,
         responseFindDocTemplateBySlug: state.responseFindBySlug,
-        reponseCreateDocTemplate: state.responseCreate,
+        responseCreateDocTemplate: state.responseCreate,
           responseFindAllDocTemplates: state.responseFindAllDocTemplates,
         findAllDocTemplates: async function () {
             const docTemplates = await apiFetch("/templates/docs", {

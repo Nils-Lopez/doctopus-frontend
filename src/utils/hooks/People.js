@@ -28,7 +28,7 @@ const usePeople = () => {
         responseFindPersonBySlug: null,
         responseCreatePerson: null,
         responseDeletePerson: null,
-        repsonseFindAllPeople: null
+        responseFindAllPeople: null
     })
 
     return {
@@ -36,7 +36,7 @@ const usePeople = () => {
         responseUpdatePerson: state.responseUpdate,
         responseDeletePerson: state.responseDelete,
         responseFindPersonBySlug: state.responseFindBySlug,
-        reponseCreatePerson: state.responseCreate,
+        responseCreatePerson: state.responseCreate,
         responseFindAllPeople: state.responseFindAllPeople,
         findAllPeople: async function () {
             const people = await apiFetch("/people", {

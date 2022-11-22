@@ -9,13 +9,14 @@ import {useTags} from "../../../utils/hooks/Tags"
 import {usePeople} from "../../../utils/hooks/People"
 import { useEntities } from "../../../utils/hooks/Entities"
 import {useDocTemplates} from "../../../utils/hooks/templates/DocTemplates"
+import {useBrotherhoods} from "../../../utils/hooks/docs/Brotherhoods"
+import {useProjects} from "../../../utils/hooks/entities/Projects"
 
 
 const Create = ({client, setAlert}) => {
     
     const [selectedType, selectType] = useState('Document')
-    const [selectedTemplate, selectTemplate] = useState('Default')
-    const [selectedBrotherHood, selectBrotherHood] = useState("")
+    const [selectedTemplate, selectTemplate] = useState('')
   
     const [templateModel, setTemplateModel] = useState({})
   
@@ -24,12 +25,16 @@ const Create = ({client, setAlert}) => {
     const [organisations, setOrganisations] = useState([])
     const [people, setPeople] = useState([])
     const [docTemplates, setDocTemplates] = useState([])
+    const [brotherhoods, setBrotherhoods] = useState([])
+    const [projects, setProjects] = useState([])
   
     const [rolesLoading, setRolesLoading] = useState(false)
     const [tagsLoading, setTagsLoading] = useState(false)
     const [organisationsLoading, setOrganisationsLoading] = useState(false)
     const [peopleLoading, setPeopleLoading] = useState(false)
     const [docTemplatesLoading, setDocTemplatesLoading] = useState(false)
+    const [brotherhoodsLoading, setBrotherhoodsLoading] = useState(false)
+    const [projectsLoading, setProjectsLoading] = useState(false)
 
     const handleSelectType = (e) => {
       e.preventDefault()
@@ -47,10 +52,7 @@ const Create = ({client, setAlert}) => {
 
     }
     
-    const handleSelectBrotherHood = (e) => {
-      e.preventDefault()
-      selectBrotherHood(e.target.value)
-    }
+    
   
     const {
       responseFindAllRoles,
@@ -134,11 +136,49 @@ const Create = ({client, setAlert}) => {
       }
     }, [responseFindAllDocTemplates])
   
-    
+    useEffect(() => {
+      docTemplates.map((template) => {
+        if (client.user.defaultTemplate && client.user.defaultTemplate === template._id && selectedTemplate === "") {
+          selectTemplate(template.schema_name)
+          setTemplateModel(template)
+        }
+      })
+    }, [docTemplates])
+  
+    const {
+      responseFindAllBrotherhoods,
+      findAllBrotherhoods
+    } = useBrotherhoods()
+  
+    if (!brotherhoods[0] && !brotherhoodsLoading) {
+      findAllBrotherhoods()
+      setBrotherhoodsLoading(true)
+    }
+  
+    useEffect(() => {
+      if (responseFindAllBrotherhoods && responseFindAllBrotherhoods.success) {
+        setBrotherhoods(responseFindAllBrotherhoods.data)
+      }
+    }, [responseFindAllBrotherhoods])
    
+    const {
+      responseFindAllProjects,
+      findAllProjects
+    } = useProjects()
+  
+    if (!projects[0] && !projectsLoading) {
+      findAllProjects()
+      setProjectsLoading(true)
+    }
+  
+    useEffect(() => {
+      if (responseFindAllProjects && responseFindAllProjects.success) {
+        setProjects(responseFindAllProjects.data)
+      }
+    }, [responseFindAllProjects])  
   
     return <div className="columns is-flex is-justify-content-center mt-3  ">
-      <div className="column is-three-quarters-mobile is-two-thirds-tablet is-half-desktop is-one-third-widescreen">
+      <div className="column is-three-quarters-mobile is-two-thirds-tablet is-half-desktop is-half-widescreen">
         <div className="box">
           <div className="columns">
             <div className="column is-one-third">
@@ -161,40 +201,29 @@ const Create = ({client, setAlert}) => {
             <div>
              <input type="text" className="input" value={selectedTemplate} onChange={handleSelectTemplate} list="templates"/>
               <datalist id="templates">
-                <option>Default</option>
+             
                 {docTemplates.map((template) => {
-                  return <Fragment key={template.schema_slug}>
+                  
+                    return <Fragment key={template.schema_slug}>
                     <option>{template.schema_name}</option>
                   </Fragment>
+                  
                 })}
               </datalist>
             </div>
           </div>
               </div>
-              <div className="column is-one-third">
-              <div className="field">
-            <label className="label">Brotherhood</label>
-            <div>
-              <input type="text" className="input" value={selectedBrotherHood} onChange={handleSelectBrotherHood} list="brotherhoods"/>
-              <datalist id="brotherhoods">
-                <option>Nouvelles De Danse</option>
-                <option>Le Soir Article</option>
-                <option>Le Soir Journal</option>
-                <option>Le Seigneur Des Anneaux Trilogie</option>
-              </datalist>
-            </div>
-          </div>
-            </div>  
+               
           </> : null}
           </div>
           <hr/>
           <div className="form">
             {selectedType === "Document" ? 
-              <DocForm client={client} setAlert={setAlert} template={templateModel} brotherhood={selectedBrotherHood} roles={roles} tags={tags} orgs={organisations} people={people} />
+              <DocForm client={client} setAlert={setAlert} template={templateModel} brotherhoods={brotherhoods} roles={roles} tags={tags} orgs={organisations} people={people} projects={projects} />
             : selectedType === "Organisation" ? 
-              <OrganisationForm client={client} setAlert={setAlert} template={selectedTemplate}  roles={roles} tags={tags} people={people} />
+              <OrganisationForm client={client} setAlert={setAlert} roles={roles} tags={tags} people={people} projects={projects}/>
             :
-              <PersonForm client={client} setAlert={setAlert} template={selectedTemplate}  roles={roles} tags={tags} orgs={organisations} people={people} />
+                <PersonForm client={client} setAlert={setAlert} roles={roles} tags={tags} orgs={organisations} people={people} projects={projects} />
             }
           </div>
         </div>

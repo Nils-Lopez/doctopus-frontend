@@ -29,28 +29,28 @@ const Router = () => {
 
     //Fetch Users API
     const {
-        responseFindById,
-        findById
+        responseFindUserById,
+        findUserById
     } = useUsers()
 
     //Check for cookies
     if (read_cookie(cookieKey).id && !client && !loadingClient) {
-        findById(read_cookie(cookieKey).id)
+        findUserById(read_cookie(cookieKey).id)
         setLoadingClient(true)
     }
 
     //Restore session and user data from cookie
     useEffect(() => {
-        if (responseFindById && loadingClient) {
-            if (responseFindById.success) {
-                setClient(responseFindById.data)
+        if (responseFindUserById && loadingClient) {
+            if (responseFindUserById.success) {
+                setClient({user: responseFindUserById.data })
                 setLoadingClient(false)
             } else {
                 delete_cookie(cookieKey)
                 setLoadingClient(false)
             }
         }
-    }, [responseFindById, loadingClient])
+    }, [responseFindUserById, loadingClient])
 
 
     return <>
@@ -63,18 +63,26 @@ const Router = () => {
                 </div>
             </div>        
         </> : null}
-          <Routes>
+            <div className="content">
+                <Routes>
             <Route path="/">
               <Route index element={<HomePage/>}/>
                 {client && client.user && client.user.type === "admin" ? <>
                     <Route path="/admin/create" element={<Create client={client} setAlert={setAlert} />} />
                     <Route path="/admin/dashboard" element={<Dashboard client={client} setAlert={setAlert} />}/>                 
-                    <Route path="/admin/settings" element={<Settings client={client} setAlert={setAlert} />} />
+                    <Route path="/admin/settings" element={<Settings client={client} setClient={setClient} setAlert={setAlert} />} />
                 </> : null}
                                           
-              <Route path="*" element={<>404 t duper</>}/>
+                <Route path="*" element={<>
+                    <div className="container">
+                        <div className="is-flex is-justify-content-center">
+                            <img src="/404.png" className="image404" alt="Error 404, page not found" />   
+                        </div>
+                    </div>
+                </>} />
             </Route>
             </Routes>
+        </div>
         <footer className="footer box footer-app">
             <div className="content">
                 <div className="columns">

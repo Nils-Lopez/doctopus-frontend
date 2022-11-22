@@ -36,7 +36,7 @@ const useEntities = () => {
         responseUpdateEntity: state.responseUpdate,
         responseDeleteEntity: state.responseDelete,
         responseFindEntityBySlug: state.responseFindBySlug,
-        reponseCreateEntity: state.responseCreate,
+        responseCreateEntity: state.responseCreate,
           responseFindAllEntities: state.responseFindAllEntities,
         findAllEntities: async function () {
             const entities = await apiFetch("/entities", {

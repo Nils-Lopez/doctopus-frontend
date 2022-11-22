@@ -15,7 +15,7 @@ const Navbar = ({bake_cookie, read_cookie, delete_cookie, client, setClient, set
         <nav className="navbar has-shadow mb-1" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">         
                 <div className="navbar-item">
-                  <Link to="/"><p className="has-text-dark">dOctopus</p></Link>
+                  <Link to="/"><p className="has-text-primary title">dOctopus</p></Link>
                 </div>   
        
 
@@ -37,23 +37,18 @@ const Navbar = ({bake_cookie, read_cookie, delete_cookie, client, setClient, set
                   <div className="navbar-item">
                     <Link to="/"><p className="has-text-primary">Home</p></Link>
                   </div>
-                    
-                  
-            {client && client.user && client.user.type === "admin" ? 
-                  <Admin />
-              : <>
-              <div className="navbar-item">
-                    <Link to="/tuto"><p className="has-text-primary">Tutorial</p></Link>
+            
+                  <div className="navbar-item">
+                    <Link to="/about"><p className="has-text-primary">About</p></Link>
                   </div>
                   
-                  <div className="navbar-item">
-                    <Link to="/about"><p className="has-text-primary">About dOctopus</p></Link>
-                  </div>
                   
-                  <div className="navbar-item">
+                         
+            {client && client.user && client.user.type === "admin" ?
+              <Admin />
+              : <div className="navbar-item">
                     <Link to="/contact"><p className="has-text-primary">Contact us</p></Link>
-            </div>
-              </>}
+            </div>}
                 </div>
                 
                 

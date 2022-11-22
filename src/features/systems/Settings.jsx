@@ -2,14 +2,14 @@ import React, { useState } from "react";
 
 import TemplatesForm from "../molecules/Settings/TemplatesForm"
 
-const Settings = ({ }) => {
+const Settings = ({client, setClient, setAlert}) => {
     
     return <>
         <div className="columns mx-2">
             <div className="column is-one-third">
                 <div className="box">
                     <h3 className="title is-3">Settings</h3>
-                    <div className="panel is-info">
+                    <div className="panel is-grey">
                         <p className="panel-heading">
                             Admin
                         </p>
@@ -38,7 +38,7 @@ const Settings = ({ }) => {
     Administrators
   </a>
                     </div>
-                     <div className="panel is-info">
+                     <div className="panel is-grey">
                         <p className="panel-heading">
                             User
                         </p>
@@ -46,33 +46,28 @@ const Settings = ({ }) => {
     <span className="panel-icon">
       <i className="fas fa-book" aria-hidden="true"></i>
     </span>
-    Templates
+    Account
   </a>
   <a className="panel-block">
     <span className="panel-icon">
       <i className="fas fa-book" aria-hidden="true"></i>
     </span>
-    App
+    Privacy
   </a>
   <a className="panel-block">
     <span className="panel-icon">
       <i className="fas fa-book" aria-hidden="true"></i>
     </span>
-    Database
+    Security
   </a>
-  <a className="panel-block">
-    <span className="panel-icon">
-      <i className="fas fa-book" aria-hidden="true"></i>
-    </span>
-    Administrators
-  </a>
+
                     </div>
                 </div>
             </div>
             <div className="column is-two-third">
                 <div className="box">
                     <h3 className="title is-3">Templates</h3>
-                    <TemplatesForm/>
+            <TemplatesForm setAlert={setAlert} setClient={setClient} client={client}/>
                 </div>
             </div>
         </div>

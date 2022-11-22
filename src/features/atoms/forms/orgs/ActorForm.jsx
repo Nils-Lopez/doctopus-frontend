@@ -2,26 +2,12 @@ import React, {useState, Fragment} from "react"
 
 import RoleForm from "../RoleForm"
 
-const ActorForm = ({selectedPeople, selectPerson}) => {
+const ActorForm = ({selectedPeople, selectPerson, people, roles, lang}) => {
   
   const [personValue, setPersonValue] = useState("")
   const [personForm, setPersonForm] = useState(false)
   const [isActive, setIsActive] = useState(false)
   const [selectedRoles, selectRole] = useState([])
-  
-  const people = [
-    {slug: "titlmodee", name:"Mode"},
-    {slug: "titldecoe", name:"Deco"},
-    {slug: "titlcorpse", name:"Le corps"},
-    {slug: "titlesprite", name:"L'esprit'"}
-  ]
-  
-  const roles = [
-    {slug: "titlmodee", title:"Mode"},
-    {slug: "titldecoe", title:"Deco"},
-    {slug: "titlcorpse", title:"Le corps"},
-    {slug: "titlesprite", title:"L'esprit'"}
-]
   
   const handlePersonChange = (e) => {
     e.preventDefault()
@@ -63,9 +49,12 @@ const ActorForm = ({selectedPeople, selectPerson}) => {
    }
   }
 
-  
+  const getContent = (value, lang) => {
+    return value.filter(obj => obj.lang === lang)[0] ? value.filter(obj => obj.lang === lang)[0].content : value.filter(obj => obj.lang === "en")[0] ? value.filter(obj => obj.lang === "en")[0].content : value.filter(obj => obj.lang === "fr")[0].content
+  }
   
   return <>
+    
     <div className="field">
       <label className="label title is-5">Actors</label>
       <div className="columns">
@@ -78,7 +67,7 @@ const ActorForm = ({selectedPeople, selectPerson}) => {
           </button> : <button className="button is-primary is-disabled" disabled>Add</button>}
         </div>
       </div>
-      {personValue !== "" ? <RoleForm roles={roles} scope="people" location="people-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole}/> : null}
+      {personValue !== "" ? <RoleForm roles={roles} scope="parents" location="people-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang} /> : null}
       <datalist id="people">
         {people.map((person) => {
           return <Fragment key={person.slug}>
@@ -89,7 +78,7 @@ const ActorForm = ({selectedPeople, selectPerson}) => {
       {selectedPeople.map((person) => {
         return <Fragment key={person.slug}>
           <span className="tag is-primary is-large mr-3">{person.name} ({person.parentRoles.map((role, i) => {
-            const roleStr = i > 0 ? ", " + role.title : role.title
+            const roleStr = i > 0 ? ", " + getContent(role.title, lang) : getContent(role.title, lang)
             return roleStr
           })})</span>
         </Fragment>
