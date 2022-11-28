@@ -28,13 +28,17 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
     const [langFrDefaultValue, setLangFrDefaultValue] = useState("")
     const [selectedLangs, selectLang] = useState([])
     const [typeValue, setTypeValue] = useState(true)
-    const [publiDateValue, setPubliDateValue] = useState(true)
+  const [publiDateValue, setPubliDateValue] = useState(true)
+  const [dateValue, setDateValue] = useState(true)
+    const [copyrightsValue, setCopyrightsValue] = useState(true)
     const [urlValue, setUrlValue] = useState(true)
     const [pdfValue, setPdfValue] = useState(true)
     const [eanValue, setEanValue] = useState(true)
     const [pagesValue, setPagesValue] = useState(true)
     const [durationValue, setDurationValue] = useState(true)
-    const [thumbValue, setThumbValue] = useState(true)
+  const [thumbValue, setThumbValue] = useState(true)
+  const [volumeValue, setVolumeValue] = useState(true)
+    const [numberValue, setNumberValue] = useState(true)
     const [parentRolesValue, setParentRolesValue] = useState(true)
     const [orgValue, setOrgValue] = useState(true)
     const [peopleValue, setPeopleValue] = useState(true)
@@ -44,7 +48,8 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
     const [copiesValue, setCopiesValue] = useState(true)
     const [copiesLocation, setCopiesLocation] = useState(true)
     const [copiesPosition, setCopiesPosition] = useState(true)
-    const [copiesRank, setCopiesRank] = useState(true)
+  const [copiesRank, setCopiesRank] = useState(true)
+    const [copiesQuality, setCopiesQuality] = useState(true)
     const [idLang, setIdLang] = useState("fr")
     const [formatValue, setFormatValue] = useState(true)
     const [accessValue, setAccessValue] = useState(true)
@@ -87,6 +92,11 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
       setAccessValue(template.support_accessibility)
       setIssnValue(template.support_issn)
       setIssnDefault(template.support_issn_default)
+      setVolumeValue(template.support_volume)
+      setNumberValue(template.support_number)
+      setCopiesQuality(template.copies_quality)
+      setCopyrightsValue(template.copyrights)
+      setDateValue(template.support_date)
     }
   
     const handleNewTemplate = () => {
@@ -124,6 +134,11 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
       setAccessValue(true)
       setIssnValue(true)
       setIssnDefault("")
+      setVolumeValue(true)
+      setNumberValue(true)
+      setCopiesQuality(true)
+      setCopyrightsValue(true)
+      setDateValue(true)
     }
   
     const addLang = (e) => {
@@ -325,7 +340,12 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
           copies: copiesValue,
           copies_position: copiesPosition,
           copies_location: copiesLocation,
-          copies_rank: copiesRank
+          copies_rank: copiesRank,
+          copies_quality: copiesQuality,
+          support_volume: volumeValue,
+          support_number: numberValue,
+          support_date: dateValue,
+          copyrights: copyrightsValue
         },
         support_role_defaults: selectedTypes,
         parent_role_defaults: selectedRoles,
@@ -404,6 +424,7 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
         setCopiesLocation(false)
         setCopiesPosition(false)
         setCopiesRank(false)
+        setCopiesQuality(false)
       }
       setCopiesValue(!copiesValue)
     }
@@ -414,8 +435,8 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
     }
   
     return <>
-      <div className="panel mb-6">
-        <div className="panel-heading is-flex is-justify-content-space-between">
+      <div className="panel mb-6 template-form-panel">
+        <div className="panel-heading is-flex is-justify-content-space-between heading-template">
           <p>All</p>
         </div>
         {docTemplates.map((template) => {
@@ -464,15 +485,22 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
             <label className="label ">Template Name</label>
             <input type="text" className="input" value={nameValue} onChange={handleNameChange} />
           </div>
-          <div className="columns">
-          <div className="column">
+          <div className="columns ml-6 mr-6">
+          <div className="column is-flex is-justify-content-start">
            <div className="field">
           <input id="switchDesc" type="checkbox" name="switchDesc" className="switch is-rtl" checked={descValue ? "checked" : ""} onChange={() => setDescValue(!descValue)} />
   <label htmlFor="switchDesc" className="label">Description</label>
 </div>
           </div>
-          
-          <div className="column">
+          <div className="column is-flex is-justify-content-start">
+           <div className="field">
+          <input id="switchCopyr" type="checkbox" name="switchCopyr" className="switch is-rtl" checked={copyrightsValue ? "checked" : ""} onChange={() => setCopyrightsValue(!copyrightsValue)} />
+  <label htmlFor="switchCopyr" className="label">Copyrights</label>
+</div>
+          </div>
+        </div>
+        <div className="columns ml-6 mr-6">
+          <div className="column is-flex is-justify-content-start">
             
           <div className="field">
           <input id="switchLang" type="checkbox" name="switchLang" className="switch is-rtl" checked={langValue ? "checked" : ""} onChange={() => setLangValue(!langValue)} />
@@ -537,6 +565,23 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
             </div>
         </div>
         <div className="columns ml-6 mr-6">
+          <div className="column is-flex is-justify-content-start">
+            <div className="field is-flex is-flex is-justify-content-start">
+              <input id="switchIssn" type="checkbox" name="switchIssn" className="switch is-rtl" checked={issnValue ? "checked" : ""} onChange={() => setIssnValue(!issnValue)} />
+              <label htmlFor="switchIssn" className="label">ISSN</label>
+            </div>
+          </div>
+          <div className="column is-flex is-justify-content-space-between">
+            <div className="field">
+              {issnValue ? <>
+              <input type="text" placeholder="Default ISSN" className="input" value={issnDefault} onChange={handleIssnDefaultChange} />
+              </> : <>
+              <input type="text" className="input" value={issnDefault} onChange={handleIssnDefaultChange} disabled/>
+              </>}
+          </div>
+          </div>
+        </div>
+        <div className="columns ml-6 mr-6">
           <div className="column is-half">
             <div className="field is-flex is-flex is-justify-content-space-between">
               <input id="switchDescSupp" type="checkbox" name="switchDescSupp" className="switch is-rtl" checked={supportDescValue ? "checked" : ""} onChange={() => setSupportDescValue(!supportDescValue)} />
@@ -547,6 +592,10 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
               <label htmlFor="switchDate" className="label">Publication date</label>
             </div>
             <div className="field is-flex is-flex is-justify-content-start">
+              <input id="switchDateTxt" type="checkbox" name="switchDateTxt" className="switch is-rtl" checked={dateValue ? "checked" : ""} onChange={() => setDateValue(!dateValue)} />
+              <label htmlFor="switchDateTxt" className="label">Date (text)</label>
+            </div>
+            <div className="field is-flex is-flex is-justify-content-start">
               <input id="switchPdf" type="checkbox" name="switchPdf" className="switch is-rtl" checked={pdfValue ? "checked" : ""} onChange={() => setPdfValue(!pdfValue)} />
               <label htmlFor="switchPdf" className="label">Pdf</label>
             </div>
@@ -555,14 +604,19 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
               <label htmlFor="switchEan" className="label">EAN/ISBN</label>
             </div>
             <div className="field is-flex is-flex is-justify-content-start">
+              <input id="switchVolume" type="checkbox" name="switchVolume" className="switch is-rtl" checked={volumeValue ? "checked" : ""} onChange={() => setVolumeValue(!volumeValue)} />
+              <label htmlFor="switchVolume" className="label">Volume</label>
+            </div>
+            <div className="field is-flex is-flex is-justify-content-start">
               <input id="switchFormat" type="checkbox" name="switchFormat" className="switch is-rtl" checked={formatValue ? "checked" : ""} onChange={() => setFormatValue(!formatValue)} />
               <label htmlFor="switchFormat" className="label">Format</label>
             </div>
+
           </div>
           <div className="column is-half">
             <div className="field is-flex is-flex is-justify-content-start">
               <input id="switchPages" type="checkbox" name="switchPages" className="switch is-rtl" checked={pagesValue ? "checked" : ""} onChange={() => setPagesValue(!pagesValue)} />
-              <label htmlFor="switchPages" className="label">Number of pages</label>
+              <label htmlFor="switchPages" className="label">Pages</label>
             </div>
             <div className="field is-flex is-flex is-justify-content-start">
               <input id="switchDuration" type="checkbox" name="switchDuration" className="switch is-rtl" checked={durationValue ? "checked" : ""} onChange={() => setDurationValue(!durationValue)} />
@@ -580,26 +634,14 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
               <input id="switchAccess" type="checkbox" name="switchAccess" className="switch is-rtl" checked={accessValue ? "checked" : ""} onChange={() => setAccessValue(!accessValue)} />
               <label htmlFor="switchAccess" className="label">Accessibility</label>
             </div>
+            <div className="field is-flex is-flex is-justify-content-start">
+              <input id="switchNumber" type="checkbox" name="switchAccess" className="switch is-rtl" checked={accessValue ? "checked" : ""} onChange={() => setAccessValue(!accessValue)} />
+              <label htmlFor="switchAccess" className="label">Number</label>
+            </div>
           </div>
           
         </div>
-        <div className="columns ml-6 mr-6">
-          <div className="column is-flex is-justify-content-start">
-            <div className="field is-flex is-flex is-justify-content-start">
-              <input id="switchIssn" type="checkbox" name="switchIssn" className="switch is-rtl" checked={issnValue ? "checked" : ""} onChange={() => setIssnValue(!issnValue)} />
-              <label htmlFor="switchIssn" className="label">ISSN</label>
-            </div>
-          </div>
-          <div className="column is-flex is-justify-content-space-between">
-            <div className="field">
-              {issnValue ? <>
-              <input type="text" placeholder="Default ISSN" className="input" value={issnDefault} onChange={handleIssnDefaultChange} />
-              </> : <>
-              <input type="text" className="input" value={issnDefault} onChange={handleIssnDefaultChange} disabled/>
-              </>}
-          </div>
-          </div>
-        </div>
+        <hr />
         <div className="columns mr-6 ml-6">
             <div className="column is-half">
               <div className="field is-flex is-flex is-justify-content-space-between">
@@ -609,6 +651,10 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
               <div className="field is-flex is-flex is-justify-content-space-between">
                 <input id="switchRank" type="checkbox" name="switchRank" className="switch is-rtl" checked={copiesRank ? "checked" : ""} onChange={() => setCopiesRank(!copiesRank)} />
                 <label htmlFor="switchRank" className="label">Rank</label>
+            </div>
+            <div className="field is-flex is-flex is-justify-content-space-between">
+                <input id="switchQUal" type="checkbox" name="switchQUal" className="switch is-rtl" checked={copiesQuality ? "checked" : ""} onChange={() => setCopiesQuality(!copiesQuality)} />
+                <label htmlFor="switchQUal" className="label">Quality</label>
               </div>
             </div>
             <div className="column is-half">

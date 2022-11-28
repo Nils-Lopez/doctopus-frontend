@@ -11,7 +11,7 @@ import DocTagsForm from "../../atoms/forms/docs/DocTagsForm"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
-const OrganisationForm = ({client, setAlert, template, roles, tags, people, projects, setCreated}) => {
+const OrganisationForm = ({client, setAlert, template, setCreated}) => {
   
   const [nameValue, setNameValue] = useState("")
   const [descEnValue, setDescEnValue] = useState("")
@@ -198,9 +198,9 @@ const OrganisationForm = ({client, setAlert, template, roles, tags, people, proj
         <input type="text" value={countryValue} onChange={handleCountryChange} className="input"/>
       </div>
       </div>
-    <RoleForm roles={roles} scope="parents" location="org-form" selectedRoles={selectedRoles} selectRole={selectRole} lang={idLang} />
-    <ActorForm selectedPeople={selectedActors} selectPerson={selectActor} people={people} roles={roles} lang={idLang} />
-    <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj} projects={projects} roles={roles} lang={idLang}/>
+    <RoleForm scope="parents" location="org-form" selectedRoles={selectedRoles} selectRole={selectRole} lang={idLang} />
+    <ActorForm selectedPeople={selectedActors} selectPerson={selectActor} lang={idLang} client={client} setAlert={setAlert}/>
+    <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj} lang={idLang}/>
      <footer className="card-footer mt-3 pt-4 is-flex is-justify-content-center">
       <button className="button is-primary is-medium" onClick={handleFormSubmit}>
         Create

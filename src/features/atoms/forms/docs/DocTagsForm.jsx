@@ -1,15 +1,19 @@
-import React, {useState, Fragment} from "react"
+import React, {useState, useEffect, Fragment} from "react"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
+import {useTags} from '../../../../utils/hooks/Tags'
 
-const DocTagsForm = ({selectedTags, selectTag, tags, scope, lang}) => {
+const DocTagsForm = ({selectedTags, selectTag, scope, lang}) => {
   const [tagFrValue, setTagFrValue] = useState("")
   const [tagEnValue, setTagEnValue] = useState("")
   const [tagForm, setTagForm] = useState(false)
   const [tagDescFr, setTagDescFr] = useState("")
   const [tagDescEn, setTagDescEn] = useState("")
+  const [tags, setTags] = useState([])
+  const [tagsLoading, setTagsLoading] = useState(false)
+  const [pending, setPending] = useState("")
 
   const getContent = (value, lang) => {
     return value.filter(obj => obj.lang === lang)[0] ? value.filter(obj => obj.lang === lang)[0].content : value.filter(obj => obj.lang === "en")[0] ? value.filter(obj => obj.lang === "en")[0].content : value.filter(obj => obj.lang === "fr")[0].content
@@ -26,11 +30,9 @@ const DocTagsForm = ({selectedTags, selectTag, tags, scope, lang}) => {
   const isTagExisting = () =>  {
     let retrievedTag = undefined
     tags.map((t) => {
-      t.title.map((title) => {
-        if (title.content.toLowerCase() === tagEnValue.toLowerCase() || title.content.toLowerCase() === tagFrValue.toLowerCase()) {
-          retrievedTag = t
-        }
-      })
+      if (t.slug === currentTag) {
+        retrievedTag = t
+      }
     })
     if (retrievedTag) {
       return retrievedTag
@@ -85,35 +87,100 @@ const DocTagsForm = ({selectedTags, selectTag, tags, scope, lang}) => {
       return t.slug !== tag.slug
     })
     selectTag(filtered)
+    setTags([])
   }
   
+  const {
+    searchTags, 
+    responseSearchTags
+  } = useTags()
+
+  const searchTagValue = (e) => {
+    e.preventDefault()
+    if (tagEnValue !== "" && tagEnValue !== "") {
+      setTagsLoading(true)
+      searchTags(tagEnValue + " " + tagFrValue)
+    } else if (tagEnValue !== "") {
+      setTagsLoading(true)
+      searchTags(tagEnValue)
+    } else if (tagFrValue !== "") {
+      setTagsLoading(true)
+      searchTags(tagFrValue)
+    }
+  }
+
+  useEffect(() => {
+    if (responseSearchTags && responseSearchTags.success && responseSearchTags.data[0] && tagsLoading) {
+        setTagsLoading(false)
+        setTags([...responseSearchTags.data])
+    } else if (responseSearchTags && tagsLoading) {
+      setTagsLoading(false)
+      setTagForm(true)
+    }
+  }, [responseSearchTags])
+
+  useEffect(() => {
+    if (tags && tags[0]) {
+       tags.map((tag) => {
+        if (getContent(tag.title, lang) === tagEnValue || getContent(tag.title, lang) === tagEnValue) {
+          setPending("existing")
+        }
+      })
+      if (pending !== "existing") {
+        setPending(lang === "en" ? tagEnValue : tagFrValue)
+      } else {
+        setPending("")
+      }
+    }
+  }, [tags])
+
+  const changeCurrentTag = (e) => {
+    e.preventDefault()
+    setCurrentTag(e.target.value)
+    setTagEnValue(e.target.value)
+    setTagFrValue(e.target.value)
+  }
+
+  const [currentTag, setCurrentTag] = useState({})
+
+
   return <>
     <div className="field">
       <label className="label title is-5">Tags</label>
       <div className="columns">
         <div className="column is-four-fifth">
-          <input type="text" list="tags" className="input" value={lang === "en" ? tagEnValue : tagFrValue} onChange={handleTagChange}/>
+          {(!tags || !tags[0]) ? <>
+            <input type="text" className="input" value={lang === "en" ? tagEnValue : tagFrValue} onChange={handleTagChange} />
+          </> : <>
+              <select className="select is-fullwidth" value={currentTag} onChange={changeCurrentTag} name={"tags"} id={"tags"}>
+                {pending !== "" ? <>
+                  <option value={pending}>{pending}</option>
+                </> : null}
+                {tags.map((t) => {
+                    return <Fragment key={t.slug}>
+                      <option value={t.slug}>{getContent(t.title, lang)}</option>
+                  </Fragment>
+                })}
+                
+            </select>
+          </>}
         </div>
         <div className="column is-one-fifth">
-          {!tagForm ? <>{tagFrValue !== "" || tagEnValue !== "" ? <button className="button is-primary " onClick={handleTagBtn}>
-            {isTagExisting() ? "Add" : "Create"}
-          </button> : <button className="button is-primary is-disabled" disabled>Add</button>}</> : <button className="button is-primary" onClick={handleCreateTag}>Confirm</button>}
+          {(!tags || !tags[0]) && !tagForm ? <>
+            {(tagEnValue !== "" || tagFrValue !== "") && !tagsLoading ? <button className="button is-primary" onClick={searchTagValue}>Search</button> : <button className="button is-primary is-disabled" onClick={searchTagValue} disabled>Search</button>}
+          </> : <>
+             {!tagForm ? <>{tagFrValue !== "" || tagEnValue !== "" ? <button className="button is-primary " onClick={handleTagBtn}>
+              {isTagExisting() ? "Add" : "Create"}
+            </button> : <button className="button is-primary is-disabled" disabled>Add</button>}</> : <button className="button is-primary" onClick={handleCreateTag}>Confirm</button>}
+          </>}
+         
         </div>
       </div>
       {tagForm ? <div className="field">
         <label className="label subtitle is-6 is-flex is-justify-content-start">Tag description</label>
         <textarea className="textarea" onChange={handleTagDescChange} value={lang === "en" ? tagDescEn : tagDescFr}/>
       </div> : null}
-      <datalist id="tags">
-        {tags.map((t) => {
-          if (t.scope === scope) {
-            return <Fragment key={t.slug}>
-                <option>{getContent(t.title)}</option>
-              </Fragment>
-          }
-          
-        })}
-      </datalist>
+      
       {selectedTags.map((tag) => {
         return <Fragment key={tag.slug}>
           <span className="tag is-primary is-medium mr-1">{getContent(tag.title, lang)}</span>

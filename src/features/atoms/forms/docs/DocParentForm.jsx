@@ -7,29 +7,19 @@ import {useDocs} from "../../../../utils/hooks/docs/Docs"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
-const DocParentForm = ({selectedDoc, selectDoc, location, roles, template, lang, hideRoles}) => {
+const DocParentForm = ({selectedDoc, selectDoc, location, template, lang, hideRoles, setAlert}) => {
   const [docValue, setDocValue] = useState("")
   const [selectedRoles, selectRole] = useState([])
   const [idLang, setIdLang] = useState("fr")
 
     const [docs, setDocs] = useState([])
     const [docsLoading, setDocsLoading] = useState(false)    
-    
+  const [pending, setPending] = useState("")
+  
     const {
-        findAllDocs, 
-        responseFindAllDocs
+        searchDocs, 
+        responseSearchDocs
     } = useDocs()
-
-    if (!docsLoading && !docs[0]) {
-        findAllDocs()
-        setDocsLoading(true)
-    }
-
-    useEffect(() => {
-        if (docsLoading && responseFindAllDocs && responseFindAllDocs.success) {
-            setDocs(responseFindAllDocs.data)
-        }
-    }, [responseFindAllDocs])
 
   const getContent = (value, lang) => {
     if (value) {
@@ -57,7 +47,7 @@ const DocParentForm = ({selectedDoc, selectDoc, location, roles, template, lang,
   const isDocExisting = (docName) =>  {
     let retrievedDoc = undefined
     docs.map((doc) => {
-      if ((doc.title && doc.title.toLowerCase() === docName.toLowerCase()) || (doc.slug === docName.toLowerCase())) {
+      if (doc.slug === currentDoc) {
         retrievedDoc = doc
       } 
     })
@@ -91,23 +81,82 @@ const DocParentForm = ({selectedDoc, selectDoc, location, roles, template, lang,
       return r !== doc
     })
     selectDoc(filtered)
+    setDocs([])
   }
 
-console.log(selectedDoc)    
+const searchDocValue = (e) => {
+    e.preventDefault()
+    if (docValue !== "") {
+      setDocsLoading(true)
+      searchDocs(docValue)
+    }
+  }
+
+  useEffect(() => {
+    if (responseSearchDocs && responseSearchDocs.success && responseSearchDocs.data[0] && docsLoading) {
+      setDocsLoading(false)
+      setDocs(responseSearchDocs.data)
+      
+    } else if (responseSearchDocs && docsLoading) {
+      setDocsLoading(false)
+      setAlert({type: "error", message: { en: "Cannot find any document matching your search query", fr: "Aucun document ne correspond à votre recherche"}})
+    }
+  }, [responseSearchDocs])
+
+
+  useEffect(() => {
+    docs.map((doc) => {
+        if (doc.name === docValue) {
+          setPending("existing")
+        }
+      })
+      if (pending !== "existing") {
+        setPending(docValue)
+      } else {
+        setPending("")
+      }
+  }, [docs])
+
+    const changeCurrentDoc = (e) => {
+    e.preventDefault()
+    setCurrentDoc(e.target.value)
+    setDocValue(e.target.value)
+  }
+
+  const [currentDoc, setCurrentDoc] = useState({})
+
   return <>
     <div className="field">
       {location !== "templates-parents" ? <label className="label title is-5">Doc</label> : null}
       <div className="columns">
         <div className="column is-three-fifth">
-          <input type="text" list="doc" className="input" placeholder={location === "templates-parents" ? "Default doc" : ""} value={docValue} onChange={handleDocChange}/>
+          {(!docs || !docs[0]) ? <>
+          <input type="text" className="input" placeholder={location === "templates-parents" ? "Default doc" : ""} value={docValue} onChange={handleDocChange}/>
+          </> : <>
+            <select className="select is-fullwidth" value={currentDoc} onChange={changeCurrentDoc} name={"peopless"} id={"peoplesss"}>
+                {docs.map((t) => {
+                  return <Fragment key={t.slug}>
+                    <option value={t.slug}>{t.title}</option>
+                  </Fragment>
+                })}
+                {pending !== "" ? <>
+                  <option value={pending}>{pending}</option>
+                </> : null}
+            </select>
+          </>}
         </div>
         <div className="column is-one-fifth">
-          {docValue !== "" && selectedRoles[0] || docValue !== "" && !isDocExisting(docValue) || (docValue !== "" && hideRoles) ? <button className="button is-primary " onClick={handleDocBtn}>
+          {!docs || !docs[0] ? <>
+            {docValue !== "" && !docsLoading ? <button className="button is-primary" onClick={searchDocValue}>Search</button> : <button className="button is-primary is-disabled" disabled>Search</button>}
+          </> : <>
+            {docValue !== "" && selectedRoles[0] || docValue !== "" && !isDocExisting(docValue) || (docValue !== "" && hideRoles) ? <button className="button is-primary " onClick={handleDocBtn}>
             {isDocExisting(docValue) ? "Add" : "Create"}
           </button> : <button className="button is-primary is-disabled" disabled>Add</button>}
+          </>}
+          
         </div>
       </div>
-      {docValue !== "" && (template && template.parent_role || !template) && !hideRoles ? <RoleForm roles={roles} scope="docs" location="doc-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
+      {docValue !== "" && (template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="docs" location="doc-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
       <datalist id="doc">
         {docs && docs[0] ? docs.map((doc) => {
           return <Fragment key={doc._id + "display"}>

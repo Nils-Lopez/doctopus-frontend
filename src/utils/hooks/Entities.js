@@ -15,6 +15,8 @@ function reducer (state, action) {
             return { ...state, responseDelete: action.payload }
         case 'FindAllEntities':
             return { ...state, responseFindAllEntities: action.payload }
+        case 'Search':
+            return { ...state, responseSearch: action.payload }  
         default:
             throw new Error ('Action inconnue' + action.type)
     }
@@ -28,7 +30,8 @@ const useEntities = () => {
         responseFindEntityBySlug: null,
         responseCreateEntity: null,
         responseDeleteEntity: null,
-        responseFindAllEntities: null
+        responseFindAllEntities: null,
+        responseSearchEntities: null
     })
 
     return {
@@ -37,7 +40,17 @@ const useEntities = () => {
         responseDeleteEntity: state.responseDelete,
         responseFindEntityBySlug: state.responseFindBySlug,
         responseCreateEntity: state.responseCreate,
-          responseFindAllEntities: state.responseFindAllEntities,
+        responseFindAllEntities: state.responseFindAllEntities,
+        responseSearchEntities: state.responseSearch,
+        searchEntities: async function (query) {
+            const orgs = await apiFetch('/entities/search', {
+                method: 'POST',
+                body: {
+                    query: query
+                }
+            })
+            dispatch ({type: 'Search', payload: orgs})
+        },
         findAllEntities: async function () {
             const entities = await apiFetch("/entities", {
                 method: "GET"

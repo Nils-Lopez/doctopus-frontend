@@ -14,7 +14,9 @@ function reducer (state, action) {
         case 'FindBySlug':
             return {...state, responseFindBySlug: action.payload}
         case 'Delete':
-            return {...state, responseDelete: action.payload}
+            return { ...state, responseDelete: action.payload }
+        case 'Search':
+            return { ...state, responseSearch: action.payload }  
         default:
             throw new Error ('Action inconnue' + action.type)
     }
@@ -28,7 +30,8 @@ const useRoles = () => {
         responseFindRoleBySlug: null,
         responseCreateRole: null,
         responseDeleteRole: null,
-        responseFindAllRoles: null
+        responseFindAllRoles: null,
+        responseSearchRoles: null
     })
 
     return {
@@ -38,6 +41,16 @@ const useRoles = () => {
         responseFindRoleBySlug: state.responseFindBySlug,
         reponseCreateRole: state.responseCreate,
         responseFindAllRoles: state.responseFindAllRoles,
+        responseSearchRoles: state.responseSearch,
+        searchRoles: async function (query) {
+            const roles = await apiFetch('/roles/search', {
+                method: 'POST',
+                body: {
+                    query: query
+                }
+            })
+            dispatch ({type: 'Search', payload: roles})
+        },
         findAllRoles: async function () {
             const roles = await apiFetch("/roles", {
                 method: "GET"

@@ -20,21 +20,9 @@ const Create = ({client, setAlert}) => {
   
     const [templateModel, setTemplateModel] = useState({})
   
-    const [roles, setRoles] = useState([])
-    const [tags, setTags] = useState([])
-    const [organisations, setOrganisations] = useState([])
-    const [people, setPeople] = useState([])
     const [docTemplates, setDocTemplates] = useState([])
-    const [brotherhoods, setBrotherhoods] = useState([])
-    const [projects, setProjects] = useState([])
-  
-    const [rolesLoading, setRolesLoading] = useState(false)
-    const [tagsLoading, setTagsLoading] = useState(false)
-    const [organisationsLoading, setOrganisationsLoading] = useState(false)
-    const [peopleLoading, setPeopleLoading] = useState(false)
+
     const [docTemplatesLoading, setDocTemplatesLoading] = useState(false)
-    const [brotherhoodsLoading, setBrotherhoodsLoading] = useState(false)
-    const [projectsLoading, setProjectsLoading] = useState(false)
 
     const handleSelectType = (e) => {
       e.preventDefault()
@@ -51,74 +39,6 @@ const Create = ({client, setAlert}) => {
       })
 
     }
-    
-    
-  
-    const {
-      responseFindAllRoles,
-      findAllRoles
-    } = useRoles()
-
-    if (!roles[0] && !rolesLoading) {
-      findAllRoles()
-      setRolesLoading(true)
-    }
-  
-    useEffect(() => {
-      if (responseFindAllRoles && responseFindAllRoles.success) {
-        setRoles(responseFindAllRoles.data)
-      }
-    }, [responseFindAllRoles])
-  
-    const {
-      responseFindAllTags,
-      findAllTags
-    } = useTags()
-  
-    if (!tags[0] && !tagsLoading) {
-      findAllTags()
-      setTagsLoading(true)
-    }
-  
-    useEffect(() => {
-      if (responseFindAllTags && responseFindAllTags.success) {
-        setTags(responseFindAllTags.data)
-      }
-    }, [responseFindAllTags])
-  
-    const {
-      responseFindAllPeople,
-      findAllPeople
-    } = usePeople()
-  
-    if (!people[0] && !peopleLoading) {
-      findAllPeople()
-      setPeopleLoading(true)
-    }
-  
-    useEffect(() => {
-      if (responseFindAllPeople && responseFindAllPeople.success) {
-        setPeople(responseFindAllPeople.data)
-      }
-    }, [responseFindAllPeople])
-  
-    const {
-      responseFindAllEntities,
-      findAllEntities
-    } = useEntities()
-  
-    if (!organisations[0] && !organisationsLoading) {
-      findAllEntities()
-      setOrganisationsLoading(true)
-    }
-  
-    useEffect(() => {
-      if (responseFindAllEntities && responseFindAllEntities.success) {
-        setOrganisations(responseFindAllEntities.data)
-      }
-    }, [responseFindAllEntities])
-    
-    
   
     const {
       responseFindAllDocTemplates,
@@ -144,38 +64,6 @@ const Create = ({client, setAlert}) => {
         }
       })
     }, [docTemplates])
-  
-    const {
-      responseFindAllBrotherhoods,
-      findAllBrotherhoods
-    } = useBrotherhoods()
-  
-    if (!brotherhoods[0] && !brotherhoodsLoading) {
-      findAllBrotherhoods()
-      setBrotherhoodsLoading(true)
-    }
-  
-    useEffect(() => {
-      if (responseFindAllBrotherhoods && responseFindAllBrotherhoods.success) {
-        setBrotherhoods(responseFindAllBrotherhoods.data)
-      }
-    }, [responseFindAllBrotherhoods])
-   
-    const {
-      responseFindAllProjects,
-      findAllProjects
-    } = useProjects()
-  
-    if (!projects[0] && !projectsLoading) {
-      findAllProjects()
-      setProjectsLoading(true)
-    }
-  
-    useEffect(() => {
-      if (responseFindAllProjects && responseFindAllProjects.success) {
-        setProjects(responseFindAllProjects.data)
-      }
-    }, [responseFindAllProjects])  
   
     return <div className="columns is-flex is-justify-content-center mt-3  ">
       <div className="column is-three-quarters-mobile is-two-thirds-tablet is-half-desktop is-half-widescreen">
@@ -219,11 +107,11 @@ const Create = ({client, setAlert}) => {
           <hr/>
           <div className="form">
             {selectedType === "Document" ? 
-              <DocForm client={client} setAlert={setAlert} template={templateModel} brotherhoods={brotherhoods} roles={roles} tags={tags} orgs={organisations} people={people} projects={projects} />
+              <DocForm client={client} setAlert={setAlert} template={templateModel} />
             : selectedType === "Organisation" ? 
-              <OrganisationForm client={client} setAlert={setAlert} roles={roles} tags={tags} people={people} projects={projects}/>
+              <OrganisationForm client={client} setAlert={setAlert} />
             :
-                <PersonForm client={client} setAlert={setAlert} roles={roles} tags={tags} orgs={organisations} people={people} projects={projects} />
+                <PersonForm client={client} setAlert={setAlert} />
             }
           </div>
         </div>

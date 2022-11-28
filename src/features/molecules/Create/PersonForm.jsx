@@ -9,7 +9,7 @@ import OrganisationParentForm from "../../atoms/forms/docs/OrganisationParentFor
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
-const PersonForm = ({client, setAlert, template, projects, roles, people, tags, orgs, setCreated}) => {
+const PersonForm = ({client, setAlert, template, setCreated}) => {
   
   const [nameValue, setNameValue] = useState("")
   const [descEnValue, setDescEnValue] = useState("")
@@ -72,12 +72,18 @@ const PersonForm = ({client, setAlert, template, projects, roles, people, tags, 
   
    const handleFirstNameChange = (e) => {
     e.preventDefault()
-    setFirstNameValue(e.target.value)
+     setFirstNameValue(e.target.value)
+     if (nameValue !== firstNameValue + " " + lastNameValue) {
+       setNameValue(firstNameValue + " " + lastNameValue)
+     }
   }
   
   const handleLastNameChange = (e) => {
     e.preventDefault()
     setLastNameValue(e.target.value)
+    if (nameValue !== firstNameValue + " " + lastNameValue) {
+       setNameValue(firstNameValue + " " + lastNameValue)
+     }
   }
 
   const handleBirthDateChange = (e) => {
@@ -250,9 +256,9 @@ const PersonForm = ({client, setAlert, template, projects, roles, people, tags, 
         <input type="text" value={urlValue} onChange={handleUrlChange} className="input"/>
       </div>
       
-    <RoleForm roles={roles} scope="parents" location="org-form" selectedRoles={selectedRoles} selectRole={selectRole} lang={idLang} />
-    <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj} projects={projects} lang={idLang} roles={roles} client={client} setAlert={setAlert} tags={tags} orgs={orgs} people={people}/>
-    <OrganisationParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} roles={roles} orgs={orgs} lang={idLang} client={client} setAlert={setAlert} tags={tags} people={people} projects={projects}/>
+    <RoleForm scope="parents" location="org-form" selectedRoles={selectedRoles} selectRole={selectRole} lang={idLang} />
+    <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj} lang={idLang} client={client} setAlert={setAlert}/>
+    <OrganisationParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} lang={idLang} client={client} setAlert={setAlert}/>
     <button className="button is-large is-primary" onClick={handlePersonSubmit}>
       Create
     </button>

@@ -15,6 +15,8 @@ function reducer (state, action) {
             return { ...state, responseDelete: action.payload }
         case 'FindAll': 
             return { ...state, responseFindAll: action.payload }
+        case 'Search':
+            return { ...state, responseSearch: action.payload }
         default:
             throw new Error ('Action inconnue' + action.type)
     }
@@ -28,7 +30,8 @@ const useDocs = () => {
         responseFindDocBySlug: null,
         responseCreateDoc: null,
         responseDeleteDoc: null,
-        responseFindAllDocs: null
+        responseFindAllDocs: null,
+        responseSearchDocs: null
     })
 
     return {
@@ -38,6 +41,16 @@ const useDocs = () => {
         responseFindDocBySlug: state.responseFindBySlug,
         responseCreateDoc: state.responseCreate,
         responseFindAllDocs: state.responseFindAll,
+        responseSearchDocs: state.responseSearch,
+        searchDocs: async function (query) {
+            const docs = await apiFetch('/docs/search', {
+                method: 'POST',
+                body: {
+                    query: query
+                }
+            })
+            dispatch ({type: 'Search', payload: docs})
+        },
         findAllDocs: async function () {
             const docs = await apiFetch('/docs', { method: 'GET' })
             dispatch({type: 'FindAll', payload: docs})

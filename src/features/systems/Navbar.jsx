@@ -12,7 +12,7 @@ const Navbar = ({bake_cookie, read_cookie, delete_cookie, client, setClient, set
     const [hamburger, setHamburger] = useState(false)
 
     return <>
-        <nav className="navbar has-shadow mb-1" role="navigation" aria-label="main navigation">
+        <nav className="navbar has-shadow mb-1 is-fixed-top" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">         
                 <div className="navbar-item">
                   <Link to="/"><p className="has-text-primary title">dOctopus</p></Link>

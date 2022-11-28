@@ -6,11 +6,12 @@ import ParentForm from "./ParentForm"
 import RoleForm from "../../atoms/forms/RoleForm"
 
 import {useDocs} from "../../../utils/hooks/docs/Docs"
+import {useBrotherhoods} from "../../../utils/hooks/docs/Brotherhoods"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
-const DocForm = ({client, setAlert, template, brotherhoods, roles, tags, orgs, people, projects}) => {
+const DocForm = ({client, setAlert, template}) => {
   
   const [titleValue, setTitleValue] = useState("")
   const [defaultSlug, setDefaultSlug] = useState("")
@@ -39,17 +40,16 @@ const DocForm = ({client, setAlert, template, brotherhoods, roles, tags, orgs, p
   const [selectedRoles, selectRole] = useState([])
   const [pendingExemplaries, setPendingExemplaries] = useState([])
 
+  const [brotherhoods, setBrotherhoods] = useState([])
+  const [brotherhoodsLoading, setBrotherhoodsLoading] = useState(false)
+
   const {
-    findDocById, 
-    responseFindDocById, 
     createDoc, 
     responseCreateDoc,
     updateDoc, 
     responseUpdateDoc,
     deleteDoc, 
     responseDeleteDoc,
-    findDocBySlug, 
-    responseFindDocBySlug
   } = useDocs()
 
   const handleTitleChange = (e) => {
@@ -196,6 +196,24 @@ const DocForm = ({client, setAlert, template, brotherhoods, roles, tags, orgs, p
     }
   }
 
+  const {
+    findAllBrotherhoods,
+    responseFindAllBrotherhoods
+  } = useBrotherhoods()
+
+  if (!brotherhoods[0] && !brotherhoodsLoading) {
+    findAllBrotherhoods()
+    setBrotherhoodsLoading(true)
+  }
+
+
+  useEffect(() => {
+    if (brotherhoodsLoading && responseFindAllBrotherhoods && responseFindAllBrotherhoods.success && responseFindAllBrotherhoods.data[0]) {
+      setBrotherhoods(responseFindAllBrotherhoods.data)
+      setBrotherhoodsLoading(false)
+    }
+  }, [responseFindAllBrotherhoods])
+
   return <form onSubmit={handleDocSubmit}>
     <div className="is-flex is-justify-content-start">
       <button className="button is-light mb-3" onClick={handleIdentityShowing}>
@@ -251,8 +269,8 @@ const DocForm = ({client, setAlert, template, brotherhoods, roles, tags, orgs, p
         </Fragment>
       })}
       </div> : null}
-      <RoleForm roles={roles} location="support-form-doc" scope="docs" lang={idLang} selectedRoles={selectedTypes} selectRole={selectType}/>
-      {template && template.tag ? <DocTagsForm selectedTags={selectedTags} selectTag={selectTag} tags={tags} scope="docs" lang={idLang} /> : null}
+      <RoleForm location="support-form-doc" scope="docs" lang={idLang} selectedRoles={selectedTypes} selectRole={selectType}/>
+      {template && template.tag ? <DocTagsForm selectedTags={selectedTags} selectTag={selectTag} scope="docs" lang={idLang} /> : null}
     </> : null}
     
     <div>
@@ -282,14 +300,14 @@ const DocForm = ({client, setAlert, template, brotherhoods, roles, tags, orgs, p
         <h3 className="title is-4">Supports</h3>
       </button>
     </div>
-    {showSupportForm ? <SupportForm pendingSupports={pendingSupports} setPendingSupports={setPendingSupports} selectedRoles={selectedRoles} selectRole={selectRole} pendingExemplaries={pendingExemplaries} setPendingExemplaries={setPendingExemplaries} roles={roles} template={template}/> : null}
+    {showSupportForm ? <SupportForm pendingSupports={pendingSupports} setPendingSupports={setPendingSupports} selectedRoles={selectedRoles} selectRole={selectRole} pendingExemplaries={pendingExemplaries} setPendingExemplaries={setPendingExemplaries} template={template}/> : null}
     <hr/>
     <div className="is-flex is-justify-content-start">
       <button className="button is-light mb-3" onClick={handleParentsShowing}>
         <h3 className="title is-4">Parents</h3>
       </button>
     </div>
-    {showParentForm ? <ParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} selectedPeople={selectedPeople} selectedDoc={selectedDoc} selectDoc={selectDoc} selectPerson={selectPerson} selectedProj={selectedProjects} selectProj={selectProject} roles={roles} people={people} orgs={orgs} template={template} projects={projects} client={client} setAlert={setAlert} tags={tags}/> : null}
+    {showParentForm ? <ParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} selectedPeople={selectedPeople} selectedDoc={selectedDoc} selectDoc={selectDoc} selectPerson={selectPerson} selectedProj={selectedProjects} selectProj={selectProject} template={template} client={client} setAlert={setAlert}/> : null}
     <footer className="card-footer mt-3 pt-4 is-flex is-justify-content-center">
       <button className="button is-primary is-medium" type="submit">
         Create

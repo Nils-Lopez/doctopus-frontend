@@ -6,14 +6,19 @@ import OrganisationForm from "../../../molecules/Create/OrganisationForm"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
+import { useEntities } from "../../../../utils/hooks/Entities"
 
-const OrganisationParentForm = ({selectedOrg, selectOrg, location, roles, orgs, template, lang, hideRoles, client, setAlert, tags, people, projects}) => {
+const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lang, hideRoles, client, setAlert}) => {
   const [organisationValue, setOrganisationValue] = useState("")
   const [orgForm, setOrgForm] = useState(false)
   const [isActive, setIsActive] = useState(false)
   const [selectedRoles, selectRole] = useState([])
   const [idLang, setIdLang] = useState("fr")
   const [created, setCreated] = useState({})
+
+  const [orgs, setOrgs] = useState([])
+  const [orgsLoading, setOrgsLoading] = useState(false)
+  const [pending, setPending] = useState("")
 
   const getContent = (value, lang) => {
     if (value) {
@@ -49,7 +54,7 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, roles, orgs, 
   const isOrgExisting = (organisation) =>  {
     let retrievedOrg = undefined
     orgs.map((org) => {
-      if (org.name.toLowerCase() === organisation.toLowerCase()) {
+      if (org.slug === currentOrg) {
         retrievedOrg = org
       } 
     })
@@ -85,37 +90,94 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, roles, orgs, 
       return r !== org
     })
     selectOrg(filtered)
+    setOrgs([])
   }
 
   useEffect(() => {
     if (created && created.name && !orgs.includes(created)) {
-      orgs.push(created)
+      setOrgs([...orgs, created])
       setOrganisationValue(created.name)
       setOrgForm(false)
     }
   }, [created])
+
+  const {
+    searchEntities, 
+    responseSearchEntities
+  } = useEntities()
+
+  const searchOrgValue = (e) => {
+    e.preventDefault()
+    if (organisationValue !== "") {
+      setOrgsLoading(true)
+      searchEntities(organisationValue)
+    }
+  }
+
+  useEffect(() => {
+    if (responseSearchEntities && responseSearchEntities.success && responseSearchEntities.data[0] && orgsLoading) {
+      setOrgsLoading(false)
+      setOrgs(responseSearchEntities.data)
+    } else if (responseSearchEntities && orgsLoading) {
+      setOrgsLoading(false)
+      setOrgForm(true)
+    }
+  }, [responseSearchEntities])
   
+  useEffect(() => {
+    orgs.map((org) => {
+        if (org.name === organisationValue) {
+          setPending("existing")
+        }
+      })
+      if (pending !== "existing") {
+        setPending(organisationValue)
+      } else {
+        setPending("")
+      }
+  }, [orgs])
+
+  const changeCurrentOrg = (e) => {
+    e.preventDefault()
+    setCurrentOrg(e.target.value)
+    setOrganisationValue(e.target.value)
+  }
+
+  const [currentOrg, setCurrentOrg] = useState({})
+
   return <>
     <div className="field">
       {location !== "templates-parents" ? <label className="label title is-5">Organisations</label> : null}
       <div className="columns">
         <div className="column is-three-fifth">
-          <input type="text" list="orgs" placeholder={location === "templates-parents" ? "Default orgs" : ""} className="input" value={organisationValue} onChange={handleOrgChange}/>
+          {(!orgs || !orgs[0]) ? <>
+          <input type="text" placeholder={location === "templates-parents" ? "Default orgs" : ""} className="input" value={organisationValue} onChange={handleOrgChange}/>
+          </> : <>
+            <select className="select is-fullwidth" value={currentOrg} onChange={changeCurrentOrg} name={"entiieis"} id={"entiiies"}>
+                {pending !== "" ? <>
+                  <option value={pending}>{pending}</option>
+                </> : null}
+                {orgs.map((t) => {
+                  return <Fragment key={t.slug}>
+                    <option value={t.slug}>{t.name}</option>
+                  </Fragment>
+                })}
+            </select>
+          </>}
         </div>
         <div className="column is-one-fifth">
-          {(organisationValue !== "" && selectedRoles[0]) || (organisationValue !== "" && !isOrgExisting(organisationValue)) || (organisationValue !== "" && hideRoles) ? <button className="button is-primary " onClick={handleOrgBtn}>
+          {(!orgs || !orgs[0]) && !orgForm ? <>
+                        {organisationValue !== "" && !orgsLoading ? <button className="button is-primary" onClick={searchOrgValue}>Search</button> : <button className="button is-primary is-disabled" disabled>Search</button>}
+
+          </> : <>
+            {(organisationValue !== "" && selectedRoles[0]) || (organisationValue !== "" && !isOrgExisting(organisationValue)) || (organisationValue !== "" && hideRoles) ? <button className="button is-primary " onClick={handleOrgBtn}>
             {isOrgExisting(organisationValue) ? "Add" : "Create"}
           </button> : <button className="button is-primary is-disabled" disabled>Add</button>}
+       
+          </>}
         </div>
       </div>
-      {organisationValue !== "" && location !== "activity-form" && (template && template.parent_role || !template) && !hideRoles ? <RoleForm roles={roles} scope="parents" location="org-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
-      <datalist id="orgs">
-        {orgs && orgs[0] ? orgs.map((org) => {
-          return <Fragment key={org.slug}>
-            <option>{org.name}</option>
-          </Fragment>
-        }) : null}
-      </datalist>
+      {organisationValue !== "" && location !== "activity-form" && (template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="parents" location="org-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
       {selectedOrg.map((org) => {
         if (org.entity) {
           return <Fragment key={org.entity.slug}>
@@ -137,8 +199,8 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, roles, orgs, 
             <p className="modal-card-title is-size-3 ml-6">Create Organisation</p>
               <button onClick={() => setOrgForm(false)} className="delete is-large ml-4" aria-label="close"></button>
               </div>
-              <div className="modal-card-body has-background-white-ter">
-                <OrganisationForm client={client} setAlert={setAlert} roles={roles} tags={tags} people={people} projects={projects} setCreated={setCreated}/>
+              <div className="modal-card-body has-background-white-ter"> 
+                <OrganisationForm client={client} setAlert={setAlert} setCreated={setCreated}/>
               </div>
        
             </div>

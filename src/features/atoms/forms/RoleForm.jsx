@@ -3,14 +3,18 @@ import React, {useState, useEffect, Fragment} from "react"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
+import {useRoles} from '../../../utils/hooks/Roles'
 
-const RoleForm = ({roles, scope, location, selectedRoles, selectRole, defaults, lang, setLang}) => {
+const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, setLang}) => {
   const [roleEnValue, setRoleEnValue] = useState("")
   const [roleFrValue, setRoleFrValue] = useState("")
   const [roleForm, setRoleForm] = useState(false)
   const [roleDescEn, setRoleDescEn] = useState("")
   const [roleDescFr, setRoleDescFr] = useState("")
   const [roleSlug, setRoleSlug] = useState("")
+  const [roles, setRoles] = useState([])
+  const [rolesLoading, setRolesLoading] = useState(false)
+  const [pending, setPending] = useState("")
 
   useEffect(() => {
     if (defaults && defaults[0]) {
@@ -44,11 +48,10 @@ const RoleForm = ({roles, scope, location, selectedRoles, selectRole, defaults, 
   const isRoleExisting = () =>  {
     let retrievedRole = undefined
     roles.map((role) => {
-      role.title.map((title) => {
-        if (title.content.toLowerCase() === roleEnValue.toLowerCase() || title.content.toLowerCase() === roleFrValue.toLowerCase()) {
-          retrievedRole = role
-        }
-      })
+      if (role.slug === currentRole) {
+                  retrievedRole = role
+
+      }
     })
     if (retrievedRole) {
       return retrievedRole
@@ -105,8 +108,62 @@ const RoleForm = ({roles, scope, location, selectedRoles, selectRole, defaults, 
       return r.slug !== role.slug
     })
     selectRole(filtered)
+    setRoles([])
   }
   
+
+  const {
+    searchRoles, 
+    responseSearchRoles
+  } = useRoles()
+
+  const searchRoleValue = (e) => {
+    e.preventDefault()
+    if (roleEnValue !== "" && roleEnValue !== "") {
+      setRolesLoading(true)
+      searchRoles(roleEnValue + " " + roleFrValue)
+    } else if (roleEnValue !== "") {
+      setRolesLoading(true)
+      searchRoles(roleEnValue)
+    } else if (roleFrValue !== "") {
+      setRolesLoading(true)
+      searchRoles(roleFrValue)
+    }
+  }
+
+  useEffect(() => {
+    if (responseSearchRoles && responseSearchRoles.success && responseSearchRoles.data[0] && rolesLoading) {
+      setRolesLoading(false)
+      setRoles(responseSearchRoles.data)
+      
+    } else if (responseSearchRoles && rolesLoading) {
+      setRolesLoading(false)
+      setRoleForm(true)
+    }
+  }, [responseSearchRoles])
+
+  useEffect(() => {
+    roles.map((role) => {
+        if (getContent(role.title, lang) === roleEnValue || getContent(role.title, lang) === roleEnValue) {
+          setPending("existing")
+        }
+      })
+      if (pending !== "existing") {
+        setPending(lang === "en" ? roleEnValue : roleFrValue)
+      } else {
+        setPending("")
+      }
+  }, [roles])
+
+  const changeCurrentRole = (e) => {
+    e.preventDefault()
+    setCurrentRole(e.target.value)
+    setRoleEnValue(e.target.value)
+    setRoleFrValue(e.target.value)
+  }
+
+  const [currentRole, setCurrentRole] = useState({})
+
   return <>
     {setLang ? <div className="tabs">
         <ul>
@@ -120,27 +177,38 @@ const RoleForm = ({roles, scope, location, selectedRoles, selectRole, defaults, 
       {location !== "templates" && location !== "templates-parents" && location !== "templates-tags" ? <label className="label title is-5">{location === "support-form-doc" ? "Types" : "Roles"}</label> : null}
       <div className="columns">
         <div className="column is-four-fifth">
-          <input type="text" list={"roles" + location} placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default roles" : ""} className="input" value={lang === "en" ? roleEnValue : roleFrValue} onChange={handleRoleChange}/>
+          {(!roles || !roles[0]) ? <>
+            <input type="text" placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default roles" : ""} className="input" value={lang === "en" ? roleEnValue : roleFrValue} onChange={handleRoleChange}/>
+          </> : <>
+            <select className="select is-fullwidth" value={currentRole} onChange={changeCurrentRole} name={"roles" + location + scope} id={"roles" + location + scope}>
+                {pending !== "" ? <>
+                  <option value={pending}>{pending}</option>
+                </> : null}
+                {roles.map((t) => {
+                  if (t.scope === scope) {
+                    return <Fragment key={t.slug}>
+                    <option value={t.slug}>{getContent(t.title, lang)}</option>
+                  </Fragment>
+                  }
+                })}
+                
+            </select>
+          </>}
         </div>
         <div className="column is-one-fifth">
-          {!roleForm ? <>{roleEnValue !== "" || roleFrValue !== "" ? <button className="button is-primary " onClick={handleRoleBtn}>
+          {(!roles || !roles[0]) && !roleForm ? <>
+            {(roleEnValue !== "" || roleFrValue !== "") && !rolesLoading ? <button className="button is-primary" onClick={searchRoleValue}>Search</button> : <button className="button is-primary is-disabled" onClick={searchRoleValue} disabled>Search</button>}
+          </> : <>
+            {!roleForm ? <>{roleEnValue !== "" || roleFrValue !== "" ? <button className="button is-primary " onClick={handleRoleBtn}>
             {isRoleExisting() ? "Add" : "Create"}
           </button> : <button className="button is-primary is-disabled" disabled>Add</button>}</> : <button className="button is-primary" onClick={handleCreateRole}>Confirm</button>}
+          </>}
         </div>
       </div>
       {roleForm ? <div className="field">
         <label className="label subtitle is-6 is-flex is-justify-content-start">{location === "support-form-doc" ? "Type description" : location !== "templates-tags" ? "Role description" : "Tag description"}</label>
         <textarea className="textarea" onChange={handleRoleDescChange} value={lang === "en" ? roleDescEn : roleDescFr}/>
       </div> : null}
-      <datalist id={"roles" + location}>
-        {roles.map((t) => {
-          if (t.scope === scope) {
-            return <Fragment key={t.slug}>
-            <option>{getContent(t.title, lang)}</option>
-          </Fragment>
-          }
-        })}
-      </datalist>
       {selectedRoles.map((role) => {
         return <Fragment key={role.slug}>
           <span className="tag is-success is-medium mr-1">{getContent(role.title, lang)}</span>

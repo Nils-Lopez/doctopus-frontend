@@ -6,7 +6,7 @@ import RoleForm from "../RoleForm"
 import OrganisationParentForm from "../docs/OrganisationParentForm"
 import ActorForm from "./ActorForm"
 
-const ProjectForm = ({client, setAlert, roles, people, tags, orgs, projects, setCreated}) => {
+const ProjectForm = ({client, setAlert, setCreated}) => {
     
     const [idLang, setIdLang] = useState("fr")
     const [titleValue, setTitleValue] = useState("")
@@ -104,9 +104,9 @@ const ProjectForm = ({client, setAlert, roles, people, tags, orgs, projects, set
             </label>
             <input type="date" className="input" value={dateValue} onChange={handleDateChange} />
         </div>
-        <RoleForm scope="parents" location="project-form" roles={roles} selectedRoles={selectedRoles} selectRole={selectRole} lang={idLang} />
-        <ActorForm selectedPeople={selectedActors} selectPerson={selectActor} roles={roles} people={people} lang={idLang} />
-        <OrganisationParentForm selectedOrg={selectedOrgs} selectOrg={selectOrg} location="project-form" roles={roles} people={people} lang={idLang} orgs={orgs} client={client} setAlert={setAlert} tags={tags} projects={projects} />
+        <RoleForm scope="parents" location="project-form" selectedRoles={selectedRoles} selectRole={selectRole} lang={idLang} />
+        <ActorForm selectedPeople={selectedActors} selectPerson={selectActor} lang={idLang} />
+        <OrganisationParentForm selectedOrg={selectedOrgs} selectOrg={selectOrg} location="project-form" lang={idLang} client={client} setAlert={setAlert} />
         <button className="button is-primary is-large" onClick={handleSubmit}>Create</button>
     </>
 }

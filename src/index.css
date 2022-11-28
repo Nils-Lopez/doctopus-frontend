@@ -6,7 +6,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
-  
 }
 
 html {
@@ -16,6 +15,26 @@ html {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.template-form-panel {
+  height: 330px;
+  overflow-y: auto;
+  
+}
+
+.page-content {
+  margin-top: 70px;
+}
+
+@media (min-width: 770px) {
+  .template-fixed {
+  position: fixed;
+}
+
+.settings-scrollable {
+  margin-left: 33%;
+}
 }
 
 .background-landing-ctn {

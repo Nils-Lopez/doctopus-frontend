@@ -5,7 +5,7 @@ import PersonParentForm from "../../atoms/forms/docs/PersonParentForm"
 import ProjectParentForm from "../../atoms/forms/docs/ProjectParentForm"
 import DocParentForm from "../../atoms/forms/docs/DocParentForm"
 
-const ParentForm = ({selectedOrg, selectOrg, selectedPeople, selectPerson, selectedProj, selectProj, selectedDoc, selectDoc, roles, people, orgs, template, projects, client, tags, setAlert}) => {
+const ParentForm = ({selectedOrg, selectOrg, selectedPeople, selectPerson, selectedProj, selectProj, selectedDoc, selectDoc, template, client, setAlert}) => {
   
   const [create, setCreate] = useState("organisation")
   
@@ -50,13 +50,13 @@ const ParentForm = ({selectedOrg, selectOrg, selectedPeople, selectPerson, selec
       </div>
     </div>
     {create === "organisation" ? <>
-      <OrganisationParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} roles={roles} orgs={orgs} template={template} client={client} setAlert={setAlert} tags={tags} people={people} projects={projects}/>
+      <OrganisationParentForm selectedOrg={selectedOrg} selectOrg={selectOrg}  template={template} client={client} setAlert={setAlert} />
     </> : create === "person" ? <>  
-      <PersonParentForm selectedPeople={selectedPeople} selectPerson={selectPerson} roles={roles} people={people} template={template} client={client} setAlert={setAlert} projects={projects}/>
+      <PersonParentForm selectedPeople={selectedPeople} selectPerson={selectPerson}  template={template} client={client} setAlert={setAlert} />
     </> : create === "project" ? <>
-      <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj} roles={roles} template={template} projects={projects} client={client} setAlert={setAlert} tags={tags} orgs={orgs} people={people}/>
+      <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj}  template={template}  client={client} setAlert={setAlert} />
     </> : <>
-      <DocParentForm selectedDoc={selectedDoc} selectDoc={selectDoc} roles={roles} template={template} client={client} setAlert={setAlert} />
+      <DocParentForm selectedDoc={selectedDoc} selectDoc={selectDoc} template={template} client={client} setAlert={setAlert} />
     </>}
   </>
 }

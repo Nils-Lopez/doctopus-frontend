@@ -15,6 +15,8 @@ function reducer (state, action) {
             return { ...state, responseDelete: action.payload }
         case 'FindAll':
             return { ...state, responseFindAll: action.payload }
+        case 'Search':
+            return { ...state, responseSearch: action.payload }
         default:
             throw new Error ('Action inconnue' + action.type)
     }
@@ -28,7 +30,8 @@ const useBrotherhoods = () => {
         responseFindBrotherhoodBySlug: null,
         responseCreateBrotherhood: null,
         responseDeleteBrotherhood: null,
-        responseFindAllBrotherhoods: null
+        responseFindAllBrotherhoods: null,
+        responseSearchBrotherhoods: null
     })
 
     return {
@@ -36,8 +39,18 @@ const useBrotherhoods = () => {
         responseUpdateBrotherhood: state.responseUpdate,
         responseDeleteBrotherhood: state.responseDelete,
         responseFindBrotherhoodBySlug: state.responseFindBySlug,
-        reponseCreateBrotherhood: state.responseCreate,
+        responseCreateBrotherhood: state.responseCreate,
         responseFindAllBrotherhoods: state.responseFindAll,
+        responseSearchBrotherhoods: state.responseSearch,
+        searchBrotherhoods: async function (query) {
+            const brotherhoods = await apiFetch('/families/brothers/search', {
+                method: 'POST',
+                body: {
+                    query: query
+                }
+            })
+            dispatch ({type: 'Search', payload: brotherhoods})
+        },
         findAllBrotherhoods: async function () {
             const brotherhoods = await apiFetch('/families/brothers', { method: "GET" })
             dispatch({type: "FindAll", payload: brotherhoods})

@@ -14,7 +14,9 @@ function reducer (state, action) {
         case 'Delete':
             return { ...state, responseDelete: action.payload }
         case 'FindAllPeople':
-            return { ...state, responseFindAllPeople: action.payload}
+            return { ...state, responseFindAllPeople: action.payload }
+        case 'Search':
+            return { ...state, responseSearch: action.payload }  
         default:
             throw new Error ('Action inconnue' + action.type)
     }
@@ -28,7 +30,8 @@ const usePeople = () => {
         responseFindPersonBySlug: null,
         responseCreatePerson: null,
         responseDeletePerson: null,
-        responseFindAllPeople: null
+        responseFindAllPeople: null,
+        responseSearchPeople: null
     })
 
     return {
@@ -38,6 +41,16 @@ const usePeople = () => {
         responseFindPersonBySlug: state.responseFindBySlug,
         responseCreatePerson: state.responseCreate,
         responseFindAllPeople: state.responseFindAllPeople,
+        responseSearchPeople: state.responseSearch,
+        searchPeople: async function (query) {
+            const people = await apiFetch('/people/search', {
+                method: 'POST',
+                body: {
+                    query: query
+                }
+            })
+            dispatch ({type: 'Search', payload: people})
+        },
         findAllPeople: async function () {
             const people = await apiFetch("/people", {
                 method: "GET"

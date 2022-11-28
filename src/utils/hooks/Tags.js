@@ -14,7 +14,9 @@ function reducer (state, action) {
         case 'FindAllTags':
             return { ...state, responseFindAllTags: action.payload }
         case 'Delete':
-            return {...state, responseDelete: action.payload}
+            return { ...state, responseDelete: action.payload }
+        case 'Search':
+            return { ...state, responseSearch: action.payload }  
         default:
             throw new Error ('Action inconnue' + action.type)
     }
@@ -28,7 +30,8 @@ const useTags = () => {
         responseFindTagBySlug: null,
         responseCreateTag: null,
         responseDeleteTag: null,
-        responseFindAllTags: null
+        responseFindAllTags: null,
+        responseSearchTags: null
     })
 
     return {
@@ -38,6 +41,16 @@ const useTags = () => {
         responseFindTagBySlug: state.responseFindBySlug,
         reponseCreateTag: state.responseCreate,
         responseFindAllTags: state.responseFindAllTags,
+        responseSearchTags: state.responseSearch,
+        searchTags: async function (query) {
+            const tags = await apiFetch('/tags/search', {
+                method: 'POST',
+                body: {
+                    query: query
+                }
+            })
+            dispatch ({type: 'Search', payload: tags})
+        },
         findAllTags: async function () {
             const tags = await apiFetch("/tags", {
                 method: "GET"

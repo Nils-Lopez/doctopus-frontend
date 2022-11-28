@@ -6,7 +6,7 @@ const Settings = ({client, setClient, setAlert}) => {
     
     return <>
         <div className="columns mx-2">
-            <div className="column is-one-third">
+            <div className="column is-one-third template-fixed">
                 <div className="box">
                     <h3 className="title is-3">Settings</h3>
                     <div className="panel is-grey">
@@ -64,7 +64,7 @@ const Settings = ({client, setClient, setAlert}) => {
                     </div>
                 </div>
             </div>
-            <div className="column is-two-third">
+            <div className="column is-two-third settings-scrollable">
                 <div className="box">
                     <h3 className="title is-3">Templates</h3>
             <TemplatesForm setAlert={setAlert} setClient={setClient} client={client}/>
