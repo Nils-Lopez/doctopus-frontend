@@ -169,7 +169,6 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
                 
             </select>
           </>}
-          <input type="text" list="projects" className="input" value={projectValue} placeholder={location === "templates-parents" ? "Default projects" : ""} onChange={handleProjChange}/>
         </div>
         <div className="column is-one-fifth">
           {(!projects || !projects[0]) && !projForm ? <>
