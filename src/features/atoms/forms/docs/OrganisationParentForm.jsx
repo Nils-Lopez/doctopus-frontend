@@ -50,11 +50,10 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
     e.preventDefault()
     setOrganisationValue(e.target.value)
   }
-  
   const isOrgExisting = (organisation) =>  {
     let retrievedOrg = undefined
     orgs.map((org) => {
-      if (org.slug === currentOrg) {
+      if (org.name === organisationValue) {
         retrievedOrg = org
       } 
     })
@@ -170,8 +169,8 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
                         {organisationValue !== "" && !orgsLoading ? <button className="button is-primary" onClick={searchOrgValue}>Search</button> : <button className="button is-primary is-disabled" disabled>Search</button>}
 
           </> : <>
-            {(organisationValue !== "" && selectedRoles[0]) || (organisationValue !== "" && !isOrgExisting(organisationValue)) || (organisationValue !== "" && hideRoles) ? <button className="button is-primary " onClick={handleOrgBtn}>
-            {isOrgExisting(organisationValue) ? "Add" : "Create"}
+            {(organisationValue !== "" && selectedRoles[0]) || (organisationValue !== "" && isOrgExisting(organisationValue)) || (organisationValue !== "" && !isOrgExisting(organisationValue)) || (organisationValue !== "" && hideRoles) ? <button className="button is-primary " onClick={handleOrgBtn}>
+            {isOrgExisting() ? "Add" : "Create"}
           </button> : <button className="button is-primary is-disabled" disabled>Add</button>}
        
           </>}

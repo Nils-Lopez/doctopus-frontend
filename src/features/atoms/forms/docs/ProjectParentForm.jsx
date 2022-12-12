@@ -57,7 +57,7 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
   const isProjExisting = (project) =>  {
     let retrievedProj = undefined
     projects.map((proj) => {
-      if (proj.slug === currentProj) {
+      if (proj.title === currentProj) {
         retrievedProj = proj
       } 
     })
@@ -174,7 +174,7 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
           {(!projects || !projects[0]) && !projForm ? <>
             {projectValue !== "" && !projectsLoading ? <button className="button is-primary" onClick={searchProjectValue}>Search</button> : <button className="button is-primary is-disabled" disabled>Search</button>}
           </> : <>
-            {(projectValue !== "" && selectedRoles[0]) || (projectValue !== "" && !isProjExisting(projectValue)) || (projectValue !== "" && hideRoles) ? <button className="button is-primary " onClick={handleProjBtn}>
+            {(projectValue !== "" && selectedRoles[0]) || (projectValue !== "" && !isProjExisting(projectValue)) || (projectValue !== "" && isProjExisting(projectValue)) || (projectValue !== "" && hideRoles) ? <button className="button is-primary " onClick={handleProjBtn}>
               {isProjExisting(projectValue) ? "Add" : "Create"}
             </button> : <button className="button is-primary is-disabled" disabled>Add</button>}
           </>}

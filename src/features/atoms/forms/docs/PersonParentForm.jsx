@@ -56,7 +56,7 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
   const isPersonExisting = (personName) =>  {
     let retrievedPerson = undefined
     people.map((person) => {
-      if (person.slug === currentPerson) {
+      if (person.name === currentPerson) {
         retrievedPerson = person
       } 
     })
@@ -158,14 +158,15 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
             <input type="text" placeholder={location === "templates-parents" ? "Default people" : ""} className="input" value={personValue} onChange={handlePersonChange}/>
           </> : <>
             <select className="select is-fullwidth" value={currentPerson} onChange={changeCurrentPerson} name={"peopless"} id={"peoplesss"}>
+                {pending !== "" ? <>
+                  <option value={pending}>{pending}</option>
+                </> : null}
                 {people.map((t) => {
                   return <Fragment key={t.slug}>
                     <option value={t.slug}>{t.name}</option>
                   </Fragment>
                 })}
-                {pending !== "" ? <>
-                  <option value={pending}>{pending}</option>
-                </> : null}
+                
             </select>
           </>}
         </div>
@@ -173,7 +174,7 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
           {(!people || !people[0]) && !personForm ? <>
             {personValue !== "" && !peopleLoading ? <button className="button is-primary" onClick={searchPersonValue}>Search</button> : <button className="button is-primary is-disabled" disabled>Search</button>}
           </> : <>
-            {(personValue !== "" && selectedRoles[0]) || (personValue !== "" && !isPersonExisting(personValue)) ? <button className="button is-primary " onClick={handlePersonBtn}>
+            {(personValue !== "" && selectedRoles[0]) || (personValue !== "" && !isPersonExisting(personValue)) || (personValue !== "" && isPersonExisting(personValue))? <button className="button is-primary " onClick={handlePersonBtn}>
             {isPersonExisting(personValue) ? "Add" : "Create"}
           </button> : <button className="button is-primary is-disabled" disabled>Add</button>}
           </>}
