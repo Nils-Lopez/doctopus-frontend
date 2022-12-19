@@ -161,10 +161,12 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
                 {pending !== "" ? <>
                   <option value={pending}>{pending}</option>
                 </> : null}
-                {projects.map((t) => {
-                  return <Fragment key={t.slug}>
+                {projects.map((t, i) => {
+                  if (i < 7) {
+                    return <Fragment key={t.slug}>
                     <option value={t.slug}>{t.title}</option>
                   </Fragment>
+                  }
                 })}
                 
             </select>
@@ -177,6 +179,9 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
             {(projectValue !== "" && selectedRoles[0]) || (projectValue !== "" && !isProjExisting(projectValue)) || (projectValue !== "" && isProjExisting(projectValue)) || (projectValue !== "" && hideRoles) ? <button className="button is-primary " onClick={handleProjBtn}>
               {isProjExisting(projectValue) ? "Add" : "Create"}
             </button> : <button className="button is-primary is-disabled" disabled>Add</button>}
+            <span className="tag is-danger is-medium ml-2 mt-1 button" onClick={() => {
+                setProjects([]);
+              }}><FontAwesomeIcon icon={faTrash}/></span>
           </>}
         </div>
       </div>

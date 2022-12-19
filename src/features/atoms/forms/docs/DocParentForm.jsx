@@ -152,16 +152,21 @@ const searchDocValue = (e) => {
             {docValue !== "" && selectedRoles[0] || docValue !== "" && !isDocExisting(docValue) || (docValue !== "" && hideRoles) ? <button className="button is-primary " onClick={handleDocBtn}>
             {isDocExisting(docValue) ? "Add" : "Create"}
           </button> : <button className="button is-primary is-disabled" disabled>Add</button>}
+            <span className="tag is-danger is-medium ml-2 mt-1 button" onClick={() => {
+                setDocs([]);
+              }}><FontAwesomeIcon icon={faTrash}/></span>
           </>}
           
         </div>
       </div>
       {docValue !== "" && (template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="docs" location="doc-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
       <datalist id="doc">
-        {docs && docs[0] ? docs.map((doc) => {
-          return <Fragment key={doc._id + "display"}>
-            <option>{doc.title ? doc.title : doc.slug}</option>
-          </Fragment>
+        {docs && docs[0] ? docs.map((doc, i) => {
+          if (i < 7) {
+            return <Fragment key={doc._id + "display"}>
+              <option>{doc.title ? doc.title : doc.slug}</option>
+            </Fragment>
+          }
         }) : null}
       </datalist>
       {selectedDoc && selectedDoc[0] ? selectedDoc.map((doc) => {

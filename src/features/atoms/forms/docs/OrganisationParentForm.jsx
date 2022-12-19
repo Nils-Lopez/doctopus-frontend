@@ -156,10 +156,12 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
                 {pending !== "" ? <>
                   <option value={pending}>{pending}</option>
                 </> : null}
-                {orgs.map((t) => {
-                  return <Fragment key={t.slug}>
-                    <option value={t.slug}>{t.name}</option>
-                  </Fragment>
+                {orgs.map((t, i) => {
+                  if (i < 7) {
+                    return <Fragment key={t.slug}>
+                      <option value={t.slug}>{t.name}</option>
+                    </Fragment>
+                  }
                 })}
             </select>
           </>}
@@ -172,7 +174,9 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
             {(organisationValue !== "" && selectedRoles[0]) || (organisationValue !== "" && isOrgExisting(organisationValue)) || (organisationValue !== "" && !isOrgExisting(organisationValue)) || (organisationValue !== "" && hideRoles) ? <button className="button is-primary " onClick={handleOrgBtn}>
             {isOrgExisting() ? "Add" : "Create"}
           </button> : <button className="button is-primary is-disabled" disabled>Add</button>}
-       
+            <span className="tag is-danger is-medium ml-2 mt-1 button" onClick={() => {
+                setOrgs([]);
+              }}><FontAwesomeIcon icon={faTrash}/></span>
           </>}
         </div>
       </div>

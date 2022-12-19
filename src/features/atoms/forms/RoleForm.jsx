@@ -184,8 +184,8 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
                 {pending !== "" ? <>
                   <option value={pending}>{pending}</option>
                 </> : null}
-                {roles.map((t) => {
-                  if (t.scope === scope) {
+                {roles.map((t, i) => {
+                  if (t.scope === scope && i < 7) {
                     return <Fragment key={t.slug}>
                     <option value={t.slug}>{getContent(t.title, lang)}</option>
                   </Fragment>
@@ -201,7 +201,11 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
           </> : <>
             {!roleForm ? <>{roleEnValue !== "" || roleFrValue !== "" ? <button className="button is-primary " onClick={handleRoleBtn}>
             {isRoleExisting() ? "Add" : "Create"}
-          </button> : <button className="button is-primary is-disabled" disabled>Add</button>}</> : <button className="button is-primary" onClick={handleCreateRole}>Confirm</button>}
+              </button> : <button className="button is-primary is-disabled" disabled>Add</button>}</> : <button className="button is-primary" onClick={handleCreateRole}>Confirm</button>}
+              <span className="tag is-danger is-medium ml-2 mt-1 button" onClick={() => {
+                setRoles([]);
+                setRoleForm(false)
+              }}><FontAwesomeIcon icon={faTrash}/></span>
           </>}
         </div>
       </div>

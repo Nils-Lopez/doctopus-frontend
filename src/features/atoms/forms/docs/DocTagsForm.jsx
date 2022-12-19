@@ -144,6 +144,7 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang}) => {
   const [currentTag, setCurrentTag] = useState({})
 
 
+  
   return <>
     <div className="field">
       <label className="label title is-5">Tags</label>
@@ -156,10 +157,12 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang}) => {
                 {pending !== "" ? <>
                   <option value={pending}>{pending}</option>
                 </> : null}
-                {tags.map((t) => {
-                    return <Fragment key={t.slug}>
+                {tags.map((t, i) => {
+                  if (i < 7) {
+                      return <Fragment key={t.slug}>
                       <option value={t.slug}>{getContent(t.title, lang)}</option>
                   </Fragment>
+                    }
                 })}
                 
             </select>
@@ -172,6 +175,10 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang}) => {
              {!tagForm ? <>{tagFrValue !== "" || tagEnValue !== "" ? <button className="button is-primary " onClick={handleTagBtn}>
               {isTagExisting() ? "Add" : "Create"}
             </button> : <button className="button is-primary is-disabled" disabled>Add</button>}</> : <button className="button is-primary" onClick={handleCreateTag}>Confirm</button>}
+            <span className="tag is-danger is-medium ml-2 mt-1 button" onClick={() => {
+                setTags([]);
+                setTagForm(false)
+              }}><FontAwesomeIcon icon={faTrash}/></span>
           </>}
          
         </div>

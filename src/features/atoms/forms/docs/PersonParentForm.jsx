@@ -161,10 +161,12 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
                 {pending !== "" ? <>
                   <option value={pending}>{pending}</option>
                 </> : null}
-                {people.map((t) => {
-                  return <Fragment key={t.slug}>
-                    <option value={t.slug}>{t.name}</option>
-                  </Fragment>
+                {people.map((t, i) => {
+                  if (i < 7) {
+                    return <Fragment key={t.slug}>
+                      <option value={t.slug}>{t.name}</option>
+                    </Fragment>
+                  }
                 })}
                 
             </select>
@@ -177,6 +179,9 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
             {(personValue !== "" && selectedRoles[0]) || (personValue !== "" && !isPersonExisting(personValue)) || (personValue !== "" && isPersonExisting(personValue))? <button className="button is-primary " onClick={handlePersonBtn}>
             {isPersonExisting(personValue) ? "Add" : "Create"}
           </button> : <button className="button is-primary is-disabled" disabled>Add</button>}
+             <span className="tag is-danger is-medium ml-2 mt-1 button" onClick={() => {
+                setPeople([]);
+              }}><FontAwesomeIcon icon={faTrash}/></span>
           </>}
         </div>
       </div>
