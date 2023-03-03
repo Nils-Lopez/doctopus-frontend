@@ -29,20 +29,20 @@ const LogInForm = ({handleSubmit, formAlert, setFormAlert}) => {
     };
 
     const handleChangePassword = event => {
-        if (validator.isStrongPassword(event.target.value, {
-            minLength: 7,
-            minLowercase: 1,
-            minUppercase: 1,
-            minNumbers: 1,
-            minSymbols: 1
-        })) {
-            setFormAlert(false)
-            setDisabled({ email: disabled.email, pwd: false, confirmPwd: disabled.confirmPwd})
-        } else {
+        // if (validator.isStrongPassword(event.target.value, {
+        //     minLength: 7,
+        //     minLowercase: 1,
+        //     minUppercase: 1,
+        //     minNumbers: 1,
+        //     minSymbols: 1
+        // })) {
+        //     setFormAlert(false)
+        //     setDisabled({ email: disabled.email, pwd: false, confirmPwd: disabled.confirmPwd})
+        // } else {
             
-            setFormAlert({ type: "error", message: { en: 'Password is invalid. It must contains at least 7 symbol, numbers, lowercases and uppercases letters', fr: "Mot de passe invalide, il doit contenir minimum 7 lettres en minuscules, majuscules, des nombres et des caractères spéciaux." } });
-            setDisabled({email: disabled.email, pwd: true, confirmPwd: disabled.confirmPwd})
-        }
+        //     setFormAlert({ type: "error", message: { en: 'Password is invalid. It must contains at least 7 symbol, numbers, lowercases and uppercases letters', fr: "Mot de passe invalide, il doit contenir minimum 7 lettres en minuscules, majuscules, des nombres et des caractères spéciaux." } });
+        //     setDisabled({email: disabled.email, pwd: true, confirmPwd: disabled.confirmPwd})
+        // }
         setPassword(event.target.value);
     };
 
@@ -69,7 +69,7 @@ const LogInForm = ({handleSubmit, formAlert, setFormAlert}) => {
                 </div>
                 <div className="is-flex is-justify-content-center mt-5">
                     <div className="field">
-                        <button className="button is-primary" role="submit" disabled={formValid ? false : true}>Confirm</button>
+                        <button className="button is-primary" role="submit">Confirm</button>
                     </div>
                 </div>
                 <div className="mt-3">

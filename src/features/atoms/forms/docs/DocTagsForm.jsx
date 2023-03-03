@@ -15,6 +15,8 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang}) => {
   const [tagsLoading, setTagsLoading] = useState(false)
   const [pending, setPending] = useState("")
 
+  console.log('ici drr', tags)
+
   const getContent = (value, lang) => {
     return value.filter(obj => obj.lang === lang)[0] ? value.filter(obj => obj.lang === lang)[0].content : value.filter(obj => obj.lang === "en")[0] ? value.filter(obj => obj.lang === "en")[0].content : value.filter(obj => obj.lang === "fr")[0].content
   }
@@ -143,7 +145,17 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang}) => {
 
   const [currentTag, setCurrentTag] = useState({})
 
-
+  const isNotIncluded = (query, array) => {
+    let included = false
+    array.map((a) => {
+      if (a.title[0] && a.title[0].content === query) {
+        included = true
+      } else if (a.title[1] && a.title[1].content === query) {
+        included = true 
+      }
+    })
+    return !included
+  }
   
   return <>
     <div className="field">
@@ -153,8 +165,9 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang}) => {
           {(!tags || !tags[0]) ? <>
             <input type="text" className="input" value={lang === "en" ? tagEnValue : tagFrValue} onChange={handleTagChange} />
           </> : <>
-              <select className="select is-fullwidth" value={currentTag} onChange={changeCurrentTag} name={"tags"} id={"tags"}>
-                {pending !== "" ? <>
+             <div className="select is-fullwidth is-multiple">
+             <select value={currentTag} onChange={changeCurrentTag} name={"tags"} id={"tags"}>
+                {pending !== "" && isNotIncluded(pending, tags) ? <>
                   <option value={pending}>{pending}</option>
                 </> : null}
                 {tags.map((t, i) => {
@@ -166,6 +179,7 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang}) => {
                 })}
                 
             </select>
+             </div>
           </>}
         </div>
         <div className="column is-one-fifth">

@@ -29,6 +29,18 @@ const DocParentForm = ({selectedDoc, selectDoc, location, template, lang, hideRo
     }
   }
 
+  const isNotIncluded = (query, array) => {
+    let included = false
+    array.map((a) => {
+      if (a.title[0] && a.title[0].content === query) {
+        included = true
+      } else if (a.title[1] && a.title[1].content === query) {
+        included = true 
+      }
+    })
+    return !included
+  }
+
   useEffect(() => {
     if (docValue === "" && template && template.parent_role_defaults[0]) {
       template.parent_role_defaults.map((role) => {
