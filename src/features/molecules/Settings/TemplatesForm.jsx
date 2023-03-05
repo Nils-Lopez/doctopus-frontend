@@ -194,85 +194,85 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
     const [loadingCreateDocTemplate, setLoadingCreateDocTemplate] = useState(false)
     const [loadingUpdateDocTemplate, setLoadingUpdateDocTemplate] = useState(false)
 
-    const {
-      responseFindAllRoles,
-      findAllRoles
-    } = useRoles()
+    // const {
+    //   responseFindAllRoles,
+    //   findAllRoles
+    // } = useRoles()
 
-    if (!roles[0] && !rolesLoading) {
-      findAllRoles()
-      setRolesLoading(true)
-    }
+    // if (!roles[0] && !rolesLoading) {
+    //   findAllRoles()
+    //   setRolesLoading(true)
+    // }
   
-    useEffect(() => {
-      if (responseFindAllRoles && responseFindAllRoles.success) {
-        setRoles(responseFindAllRoles.data)
-      }
-    }, [responseFindAllRoles])
+    // useEffect(() => {
+    //   if (responseFindAllRoles && responseFindAllRoles.success) {
+    //     setRoles(responseFindAllRoles.data)
+    //   }
+    // }, [responseFindAllRoles])
   
-    const {
-      responseFindAllTags,
-      findAllTags
-    } = useTags()
+    // const {
+    //   responseFindAllTags,
+    //   findAllTags
+    // } = useTags()
   
-    if (!tags[0] && !tagsLoading) {
-      findAllTags()
-      setTagsLoading(true)
-    }
+    // if (!tags[0] && !tagsLoading) {
+    //   findAllTags()
+    //   setTagsLoading(true)
+    // }
   
-    useEffect(() => {
-      if (responseFindAllTags && responseFindAllTags.success) {
-        setTags(responseFindAllTags.data)
-      }
-    }, [responseFindAllTags])
+    // useEffect(() => {
+    //   if (responseFindAllTags && responseFindAllTags.success) {
+    //     setTags(responseFindAllTags.data)
+    //   }
+    // }, [responseFindAllTags])
   
-    const {
-      responseFindAllPeople,
-      findAllPeople
-    } = usePeople()
+    // const {
+    //   responseFindAllPeople,
+    //   findAllPeople
+    // } = usePeople()
   
-    if (!people[0] && !peopleLoading) {
-      findAllPeople()
-      setPeopleLoading(true)
-    }
+    // if (!people[0] && !peopleLoading) {
+    //   findAllPeople()
+    //   setPeopleLoading(true)
+    // }
   
-    useEffect(() => {
-      if (responseFindAllPeople && responseFindAllPeople.success) {
-        setPeople(responseFindAllPeople.data)
-      }
-    }, [responseFindAllPeople])
+    // useEffect(() => {
+    //   if (responseFindAllPeople && responseFindAllPeople.success) {
+    //     setPeople(responseFindAllPeople.data)
+    //   }
+    // }, [responseFindAllPeople])
   
-    const {
-      responseFindAllEntities,
-      findAllEntities
-    } = useEntities()
+    // const {
+    //   responseFindAllEntities,
+    //   findAllEntities
+    // } = useEntities()
   
-    if (!organisations[0] && !organisationsLoading) {
-      findAllEntities()
-      setOrganisationsLoading(true)
-    }
+    // if (!organisations[0] && !organisationsLoading) {
+    //   findAllEntities()
+    //   setOrganisationsLoading(true)
+    // }
   
-    useEffect(() => {
-      if (responseFindAllEntities && responseFindAllEntities.success) {
-        setOrganisations(responseFindAllEntities.data)
-      }
-    }, [responseFindAllEntities])
+    // useEffect(() => {
+    //   if (responseFindAllEntities && responseFindAllEntities.success) {
+    //     setOrganisations(responseFindAllEntities.data)
+    //   }
+    // }, [responseFindAllEntities])
     
-    const {
-      responseFindAllProjects, 
-      findAllProjects
-    } = useProjects()
+    // const {
+    //   responseFindAllProjects, 
+    //   findAllProjects
+    // } = useProjects()
     
-    if (!projects[0] && !projectsLoading) {
-      findAllProjects()
-      setProjectsLoading(true)
-    }
+    // if (!projects[0] && !projectsLoading) {
+    //   findAllProjects()
+    //   setProjectsLoading(true)
+    // }
   
-    useEffect(() => {
-      if (responseFindAllProjects && responseFindAllProjects.success) {
-        setProjects(responseFindAllProjects.data)
-      }
-    }, [responseFindAllProjects])
+    // useEffect(() => {
+    //   if (responseFindAllProjects && responseFindAllProjects.success) {
+    //     setProjects(responseFindAllProjects.data)
+    //   }
+    // }, [responseFindAllProjects])
   
     const {
       responseFindAllDocTemplates,
@@ -635,8 +635,8 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
               <label htmlFor="switchAccess" className="label">Accessibility</label>
             </div>
             <div className="field is-flex is-flex is-justify-content-start">
-              <input id="switchNumber" type="checkbox" name="switchAccess" className="switch is-rtl" checked={accessValue ? "checked" : ""} onChange={() => setAccessValue(!accessValue)} />
-              <label htmlFor="switchAccess" className="label">Number</label>
+              <input id="switchNumber" type="checkbox" name="switchNumber" className="switch is-rtl" checked={numberValue ? "checked" : ""} onChange={() => setNumberValue(!numberValue)} />
+              <label htmlFor="switchNumber" className="label">Number</label>
             </div>
           </div>
           
@@ -680,7 +680,7 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
           <div className="column">
 <div className="field">
               {parentRolesValue ? <>
-                <RoleForm roles={roles} location={"templates-parents"} selectedRoles={selectedRoles} selectRole={selectRole} lang={idLang} />
+                <RoleForm roles={roles} scope="parents" location={"templates-parents"} selectedRoles={selectedRoles} selectRole={selectRole} lang={idLang} />
               </> : <>
               <input type="text" className="input" disabled/>
               </>}

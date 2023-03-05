@@ -196,23 +196,6 @@ const DocForm = ({client, setAlert, template}) => {
     }
   }
 
-  const {
-    findAllBrotherhoods,
-    responseFindAllBrotherhoods
-  } = useBrotherhoods()
-
-  if (!brotherhoods[0] && !brotherhoodsLoading) {
-    findAllBrotherhoods()
-    setBrotherhoodsLoading(true)
-  }
-
-
-  useEffect(() => {
-    if (brotherhoodsLoading && responseFindAllBrotherhoods && responseFindAllBrotherhoods.success && responseFindAllBrotherhoods.data[0]) {
-      setBrotherhoods(responseFindAllBrotherhoods.data)
-      setBrotherhoodsLoading(false)
-    }
-  }, [responseFindAllBrotherhoods])
 
   return <form onSubmit={handleDocSubmit}>
     <div className="is-flex is-justify-content-start">
@@ -271,30 +254,17 @@ const DocForm = ({client, setAlert, template}) => {
       </div> : null}
       <RoleForm location="support-form-doc" scope="docs" lang={idLang} selectedRoles={selectedTypes} selectRole={selectType}/>
       {template && template.tag ? <DocTagsForm selectedTags={selectedTags} selectTag={selectTag} scope="docs" lang={idLang} /> : null}
-    </> : null}
-    
-    <div>
-      <div className="field">
-            <label className="label">Brotherhood</label>
-            <div>
-              <input type="text" className="input" value={selectedBrotherHood.title ? selectedBrotherHood.title : selectedBrotherHood} onChange={handleSelectBrotherHood} list="brotherhoods"/>
-              <datalist id="brotherhoods">
-                {brotherhoods.map((brother) => {
-                  return <Fragment key={brother.title}>
-                    <option>{brother.title}</option>
-                  </Fragment>
-                })}
-              </datalist>
-            </div>
-      </div>
-    </div> 
-    <div className="field mt-2">
+      <div className="field mt-2">
           <label className="label">
             Copyrights
           </label>
           <input type="text" className="input" value={copyrightsValue} onChange={handleCopyrightsChange}/>
         </div>
+    </> : null}
+    
     <hr/>
+
+   
     <div className="is-flex is-justify-content-start">
       <button className="button is-light mb-3" onClick={handleSupportShowing}>
         <h3 className="title is-4">Supports</h3>

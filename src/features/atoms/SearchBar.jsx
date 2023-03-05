@@ -3,16 +3,13 @@ import React, { useState, useEffect, Fragment } from "react";
   import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlassPlus } from '@fortawesome/free-solid-svg-icons'
 
-import {useTags} from "../../utils/hooks/Tags"
 
-const SearchBar = () => {
+const SearchBar = ({searchValue, setSearchValue}) => {
     const [tagDropdown, setTagDropdown] = useState(false)
     const [extraDropdown, setExtraDropdown] = useState(false)
-    const [searchValue, setSearchValue] = useState("")
     
     // const [tags, setTags] = useState([])
-    // const [tagsLoading, setTagsLoading] = useState(false)
-  
+
     const handleSearchChange = (e) => {
       e.preventDefault()
       setSearchValue(e.target.value)
@@ -44,7 +41,9 @@ const SearchBar = () => {
     // }, [responseFindAllTags])
     
     // console.log('tags : ', tags)
-  
+
+ 
+
     return <>
     
       <div className='container landing-container is-flex is-justify-content-center'>
@@ -53,10 +52,9 @@ const SearchBar = () => {
     <div className='column is-three-quarters is-paddingless'>
       <div className='search-block'>
         <label className='search-label label'>
-                <span>What</span>
-                
+          <span>What</span>
         </label>
-              <input className='search-input home-input' placeholder='Title, author, tags ...' type='/search' value={searchValue} onChange={handleSearchChange} />
+        <input className='search-input home-input' placeholder='Title, author, tags ...' type='/search' value={searchValue} onChange={handleSearchChange} />
       </div>
     </div>
     {/* <div className='column  is-paddingless'>
@@ -89,7 +87,8 @@ const SearchBar = () => {
       </div>
     </div> */}
     <div className='column is-paddingless'>
-                    <a className='button is-primary is-large search-button'><FontAwesomeIcon icon={faMagnifyingGlassPlus} size="xl"/> &nbsp; Search</a>
+        {searchValue.length > 0 ? <button className='button is-primary is-large search-button' type="submit"><FontAwesomeIcon icon={faMagnifyingGlassPlus} size="xl"/> &nbsp; Search</button> :
+        <button className='button is-primary is-large search-button' disabled><FontAwesomeIcon icon={faMagnifyingGlassPlus} size="xl"/> &nbsp; Search</button>}
     </div>
         </div>
         

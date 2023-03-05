@@ -149,6 +149,16 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
 
   const [currentProj, setCurrentProj] = useState({})
 
+  const isNotIncluded = (query, array) => {
+    let included = false
+    array.map((a) => {
+      if (a.title.toLowerCase() === query.toLowerCase()) {
+        included = true
+      } 
+    })
+    return !included
+  }
+
   return <>
     <div className="field">
       {!location || location !== "templates-parents" ? <label className="label title is-5">Projects</label> : null}
@@ -156,10 +166,10 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
         <div className="column is-three-fifth">
           {(!projects || !projects[0]) ? <>
             <input type="text" list="projects" className="input" value={projectValue} placeholder={location === "templates-parents" ? "Default projects" : ""} onChange={handleProjChange}/>
-          </> : <>
-            <select className="select is-fullwidth" value={currentProj} onChange={changeCurrentProj} name={"projects" + location} id={"roles" + location}>
-                {pending !== "" ? <>
-                  <option value={pending}>{pending}</option>
+          </> : <div className="select is-fullwidth is-multiple">
+            <select value={currentProj} onChange={changeCurrentProj} name={"projects" + location} id={"roles" + location}>
+                {pending !== "" && isNotIncluded(pending, projects) ? <>
+                  <option value={pending}>{pending} (draft)</option>
                 </> : null}
                 {projects.map((t, i) => {
                   if (i < 7) {
@@ -170,7 +180,7 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
                 })}
                 
             </select>
-          </>}
+          </div>}
         </div>
         <div className="column is-one-fifth">
           {(!projects || !projects[0]) && !projForm ? <>

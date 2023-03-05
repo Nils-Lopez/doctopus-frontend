@@ -67,7 +67,7 @@ const Router = () => {
             <div className="content">
                 <Routes>
             <Route path="/">
-              <Route index element={<HomePage/>}/>
+              <Route index element={<HomePage client={client} setAlert={setAlert}/>}/>
                 {client && client.user && client.user.type === "admin" ? <>
                     <Route path="/admin/create" element={<Create client={client} setAlert={setAlert} />} />
                     <Route path="/admin/dashboard" element={<Dashboard client={client} setAlert={setAlert} />}/>                 

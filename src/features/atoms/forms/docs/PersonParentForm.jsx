@@ -94,6 +94,7 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
     })
     selectPerson(filtered)
     setPeople([])
+    
   }
 
   useEffect(() => {
@@ -149,6 +150,17 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
 
   const [currentPerson, setCurrentPerson] = useState({})
 
+  const isNotIncluded = (query, array) => {
+    let included = false
+    array.map((a) => {
+      if (a.name.toLowerCase() === query.toLowerCase()) {
+        included = true
+      } 
+    })
+    return !included
+  }
+
+
   return <>
     <div className="field">
       {location !== "templates-parents" ? <label className="label title is-5">People</label> : null}
@@ -156,10 +168,10 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
         <div className="column is-three-fifth">
           {(!people || !people[0]) ? <>
             <input type="text" placeholder={location === "templates-parents" ? "Default people" : ""} className="input" value={personValue} onChange={handlePersonChange}/>
-          </> : <>
-            <select className="select is-fullwidth" value={currentPerson} onChange={changeCurrentPerson} name={"peopless"} id={"peoplesss"}>
-                {pending !== "" ? <>
-                  <option value={pending}>{pending}</option>
+          </> : <div className="select is-fullwidth is-multiple">
+            <select value={currentPerson} onChange={changeCurrentPerson} name={"peopless"} id={"peoplesss"}>
+                {pending !== "" && isNotIncluded(pending, people) ? <>
+                  <option value={pending}>{pending} (draft)</option>
                 </> : null}
                 {people.map((t, i) => {
                   if (i < 7) {
@@ -170,7 +182,7 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
                 })}
                 
             </select>
-          </>}
+          </div>}
         </div>
         <div className="column is-one-fifth">
           {(!people || !people[0]) && !personForm ? <>
@@ -181,6 +193,7 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
           </button> : <button className="button is-primary is-disabled" disabled>Add</button>}
              <span className="tag is-danger is-medium ml-2 mt-1 button" onClick={() => {
                 setPeople([]);
+                setPersonForm(false)
               }}><FontAwesomeIcon icon={faTrash}/></span>
           </>}
         </div>

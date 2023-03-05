@@ -46,6 +46,11 @@ code {
 
 }
 
+.notification {
+  position: relative;
+  z-index: 10;
+}
+
 .image404 {
   width: 50%;
 }

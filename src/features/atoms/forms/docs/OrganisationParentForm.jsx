@@ -144,6 +144,16 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
 
   const [currentOrg, setCurrentOrg] = useState({})
 
+  const isNotIncluded = (query, array) => {
+    let included = false
+    array.map((a) => {
+      if (a.name.toLowerCase() === query.toLowerCase()) {
+        included = true
+      } 
+    })
+    return !included
+  }
+
   return <>
     <div className="field">
       {location !== "templates-parents" ? <label className="label title is-5">Organisations</label> : null}
@@ -151,10 +161,10 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
         <div className="column is-three-fifth">
           {(!orgs || !orgs[0]) ? <>
           <input type="text" placeholder={location === "templates-parents" ? "Default orgs" : ""} className="input" value={organisationValue} onChange={handleOrgChange}/>
-          </> : <>
-            <select className="select is-fullwidth" value={currentOrg} onChange={changeCurrentOrg} name={"entiieis"} id={"entiiies"}>
-                {pending !== "" ? <>
-                  <option value={pending}>{pending}</option>
+          </> : <div className="select is-fullwidth is-multiple">
+            <select value={currentOrg} onChange={changeCurrentOrg} name={"entiieis"} id={"entiiies"}>
+                {pending !== "" && isNotIncluded(pending, orgs) ? <>
+                  <option value={pending}>{pending} (draft)</option>
                 </> : null}
                 {orgs.map((t, i) => {
                   if (i < 7) {
@@ -164,7 +174,7 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
                   }
                 })}
             </select>
-          </>}
+          </div>}
         </div>
         <div className="column is-one-fifth">
           {(!orgs || !orgs[0]) && !orgForm ? <>

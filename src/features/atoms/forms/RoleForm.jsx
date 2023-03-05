@@ -179,13 +179,13 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
         <div className="column is-four-fifth">
           {(!roles || !roles[0]) ? <>
             <input type="text" placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default roles" : ""} className="input" value={lang === "en" ? roleEnValue : roleFrValue} onChange={handleRoleChange}/>
-          </> : <>
-            <select className="select is-fullwidth" value={currentRole} onChange={changeCurrentRole} name={"roles" + location + scope} id={"roles" + location + scope}>
+          </> : <div className="select is-fullwidth is-multiple">
+            <select value={currentRole} onChange={changeCurrentRole} name={"roles" + location + scope} id={"roles" + location + scope}>
                 {pending !== "" ? <>
-                  <option value={pending}>{pending}</option>
+                  <option value={pending}>{pending} (draft)</option>
                 </> : null}
-                {roles.map((t, i) => {
-                  if (t.scope === scope && i < 7) {
+                {roles.map((t) => {
+                  if (t.scope === scope) {
                     return <Fragment key={t.slug}>
                     <option value={t.slug}>{getContent(t.title, lang)}</option>
                   </Fragment>
@@ -193,7 +193,7 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
                 })}
                 
             </select>
-          </>}
+          </div>}
         </div>
         <div className="column is-one-fifth">
           {(!roles || !roles[0]) && !roleForm ? <>

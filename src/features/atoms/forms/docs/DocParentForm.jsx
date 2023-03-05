@@ -32,11 +32,9 @@ const DocParentForm = ({selectedDoc, selectDoc, location, template, lang, hideRo
   const isNotIncluded = (query, array) => {
     let included = false
     array.map((a) => {
-      if (a.title[0] && a.title[0].content === query) {
+      if (a.title.toLowerCase() === query.toLowerCase()) {
         included = true
-      } else if (a.title[1] && a.title[1].content === query) {
-        included = true 
-      }
+      } 
     })
     return !included
   }
@@ -59,7 +57,7 @@ const DocParentForm = ({selectedDoc, selectDoc, location, template, lang, hideRo
   const isDocExisting = (docName) =>  {
     let retrievedDoc = undefined
     docs.map((doc) => {
-      if (doc.slug === currentDoc) {
+      if (doc.title=== currentDoc) {
         retrievedDoc = doc
       } 
     })
@@ -108,7 +106,7 @@ const searchDocValue = (e) => {
     if (responseSearchDocs && responseSearchDocs.success && responseSearchDocs.data[0] && docsLoading) {
       setDocsLoading(false)
       setDocs(responseSearchDocs.data)
-      
+      setCurrentDoc(responseSearchDocs.data[0].title)
     } else if (responseSearchDocs && docsLoading) {
       setDocsLoading(false)
       setAlert({type: "error", message: { en: "Cannot find any document matching your search query", fr: "Aucun document ne correspond à votre recherche"}})
@@ -118,11 +116,12 @@ const searchDocValue = (e) => {
 
   useEffect(() => {
     docs.map((doc) => {
-        if (doc.name === docValue) {
+        if (doc.title === docValue) {
           setPending("existing")
         }
       })
       if (pending !== "existing") {
+        console.log('ici')
         setPending(docValue)
       } else {
         setPending("")
@@ -135,8 +134,8 @@ const searchDocValue = (e) => {
     setDocValue(e.target.value)
   }
 
-  const [currentDoc, setCurrentDoc] = useState({})
 
+  const [currentDoc, setCurrentDoc] = useState({})
   return <>
     <div className="field">
       {location !== "templates-parents" ? <label className="label title is-5">Doc</label> : null}
@@ -144,24 +143,25 @@ const searchDocValue = (e) => {
         <div className="column is-three-fifth">
           {(!docs || !docs[0]) ? <>
           <input type="text" className="input" placeholder={location === "templates-parents" ? "Default doc" : ""} value={docValue} onChange={handleDocChange}/>
-          </> : <>
-            <select className="select is-fullwidth" value={currentDoc} onChange={changeCurrentDoc} name={"peopless"} id={"peoplesss"}>
+          </> : <div className="select is-fullwidth is-multiple">
+            <select value={currentDoc} onChange={changeCurrentDoc} name={"peopless"} id={"peoplesss"}>
+            {pending !== "" && isNotIncluded(pending, docs) ? <>
+                  <option value={pending}>{pending} (draft)</option>
+                </> : null}
                 {docs.map((t) => {
-                  return <Fragment key={t.slug}>
+                  return <Fragment key={t.title}>
                     <option value={t.slug}>{t.title}</option>
                   </Fragment>
                 })}
-                {pending !== "" ? <>
-                  <option value={pending}>{pending}</option>
-                </> : null}
+                
             </select>
-          </>}
+          </div>}
         </div>
         <div className="column is-one-fifth">
           {!docs || !docs[0] ? <>
             {docValue !== "" && !docsLoading ? <button className="button is-primary" onClick={searchDocValue}>Search</button> : <button className="button is-primary is-disabled" disabled>Search</button>}
           </> : <>
-            {docValue !== "" && selectedRoles[0] || docValue !== "" && !isDocExisting(docValue) || (docValue !== "" && hideRoles) ? <button className="button is-primary " onClick={handleDocBtn}>
+            {(docValue !== "" && selectedRoles[0]) || (docValue !== "" && !isDocExisting(docValue)) || (docValue !== "" && hideRoles) ? <button className="button is-primary " onClick={handleDocBtn}>
             {isDocExisting(docValue) ? "Add" : "Create"}
           </button> : <button className="button is-primary is-disabled" disabled>Add</button>}
             <span className="tag is-danger is-medium ml-2 mt-1 button" onClick={() => {
@@ -171,7 +171,7 @@ const searchDocValue = (e) => {
           
         </div>
       </div>
-      {docValue !== "" && (template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="docs" location="doc-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
+      {docValue !== "" && (template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="parents" location="doc-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
       <datalist id="doc">
         {docs && docs[0] ? docs.map((doc, i) => {
           if (i < 7) {

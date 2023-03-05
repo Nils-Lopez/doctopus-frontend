@@ -15,8 +15,6 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang}) => {
   const [tagsLoading, setTagsLoading] = useState(false)
   const [pending, setPending] = useState("")
 
-  console.log('ici drr', tags)
-
   const getContent = (value, lang) => {
     return value.filter(obj => obj.lang === lang)[0] ? value.filter(obj => obj.lang === lang)[0].content : value.filter(obj => obj.lang === "en")[0] ? value.filter(obj => obj.lang === "en")[0].content : value.filter(obj => obj.lang === "fr")[0].content
   }
@@ -148,9 +146,9 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang}) => {
   const isNotIncluded = (query, array) => {
     let included = false
     array.map((a) => {
-      if (a.title[0] && a.title[0].content === query) {
+      if (a.title[0] && a.title[0].content.toLowerCase() === query.toLowerCase()) {
         included = true
-      } else if (a.title[1] && a.title[1].content === query) {
+      } else if (a.title[1] && a.title[1].content.toLowerCase() === query.toLowerCase()) {
         included = true 
       }
     })
@@ -167,9 +165,7 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang}) => {
           </> : <>
              <div className="select is-fullwidth is-multiple">
              <select value={currentTag} onChange={changeCurrentTag} name={"tags"} id={"tags"}>
-                {pending !== "" && isNotIncluded(pending, tags) ? <>
-                  <option value={pending}>{pending}</option>
-                </> : null}
+
                 {tags.map((t, i) => {
                   if (i < 7) {
                       return <Fragment key={t.slug}>
@@ -177,7 +173,9 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang}) => {
                   </Fragment>
                     }
                 })}
-                
+                 {pending !== "" && isNotIncluded(pending, tags) ? <>
+                  <option value={pending} className="has-text-info">{pending}</option>
+                </> : null}
             </select>
              </div>
           </>}
