@@ -5,7 +5,7 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
 import {useTags} from '../../../../utils/hooks/Tags'
 
-const DocTagsForm = ({selectedTags, selectTag, scope, lang}) => {
+const DocTagsForm = ({selectedTags, selectTag, scope, lang, location}) => {
   const [tagFrValue, setTagFrValue] = useState("")
   const [tagEnValue, setTagEnValue] = useState("")
   const [tagForm, setTagForm] = useState(false)
@@ -157,7 +157,7 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang}) => {
   
   return <>
     <div className="field">
-      <label className="label title is-5">Tags</label>
+      {location !== "templates-tags" ? <label className="label title is-5">Tags</label> : null}
       <div className="columns">
         <div className="column is-four-fifth">
           {(!tags || !tags[0]) ? <>
@@ -174,7 +174,7 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang}) => {
                     }
                 })}
                  {pending !== "" && isNotIncluded(pending, tags) ? <>
-                  <option value={pending} className="has-text-info">{pending}</option>
+                  <option value={pending} className="has-text-info">{pending} (draft)</option>
                 </> : null}
             </select>
              </div>

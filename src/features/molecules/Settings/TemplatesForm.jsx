@@ -8,7 +8,7 @@ import {useDocTemplates} from "../../../utils/hooks/templates/DocTemplates"
 import {useUsers} from '../../../utils/hooks/Users'
 import {useProjects} from '../../../utils/hooks/entities/Projects'
 
-
+import DocTagsForm from "../../atoms/forms/docs/DocTagsForm"
 import RoleForm from "../../atoms/forms/RoleForm"
 import OrganisationParentForm from "../../atoms/forms/docs/OrganisationParentForm"
 import PersonParentForm from "../../atoms/forms/docs/PersonParentForm"
@@ -537,7 +537,7 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
           <div className="column">
 <div className="field">
               {tagValue ? <>
-                <RoleForm roles={tags} location={"templates-tags"} selectedRoles={selectedTags} selectRole={selectTag} lang={idLang} />
+                <DocTagsForm tags={tags} location={"templates-tags"} selectedTags={selectedTags} selectTag={selectTag} lang={idLang} />
               </> : <>
               <input type="text" className="input" disabled/>
               </>}

@@ -92,7 +92,7 @@ const SignUpForm = ({handleSubmit, formAlert, setFormAlert}) => {
                 </div>
                 <div className="mt-3">
                     {formAlert ? <>
-                        <Alert alertType={formAlert.type} message={formAlert.message} />
+                        <Alert alertType={formAlert.type} message={formAlert.message} setAlert={setFormAlert}/>
                     </> : null}
                 </div>
            </form>
