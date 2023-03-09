@@ -53,7 +53,7 @@ const Router = () => {
     }, [responseFindUserById, loadingClient])
 
 
-    return <>
+    return <div className="is-fullheight app-ctn">
         <BrowserRouter>
         <Navbar bake_cookie={bake_cookie} read_cookie={read_cookie} delete_cookie={delete_cookie} client={client} setClient={setClient} setAlert={setAlert} />
             <div className="page-content">
@@ -78,30 +78,41 @@ const Router = () => {
                     <div className="container">
                         <div className="is-flex is-justify-content-center">
                             <img src="/404.png" className="image404" alt="Error 404, page not found" />   
+                            
                         </div>
+                        <h1 className="title is-4 mt-0 mb-1">This page doesn't exist...</h1>
+                        <a href="/"><strong>Back to homepage</strong></a>
                     </div>
                 </>} />
             </Route>
             </Routes>
         </div>
+        <a href="https://oqto.tech" className='mr-3 border-top'><p className="has-text-grey has-text-left title is-7">powered by <span className="is-6 has-text-primary">dOctopus</span></p></a>
+
         <footer className="footer box footer-app">
             <div className="content">
                 <div className="columns">
                         <div className="column has-text-right">
                             Contredanse
+                            <p className="is-size-7 mb-0 mt-1">© 2023 - All rights reserved</p>
+                            <a className="is-size-7 mt-0" href="https://contredanse.org">https://contredanse.org</a>
                         </div>  
                         <div className="column has-text-centered">
-                            dOctopus by <a href="https://oqto.tech">OQTO Tech   </a>
+                            dOctopus by <a href="https://oqto.tech">OQTO Tech</a>
+                            <p className="is-size-7 mb-0 mt-1">© 2023 - dOctopus, Document Manager</p>
+                            <a className="is-size-7 mt-0" href="https://oqto.tech">https://oqto.tech</a>
                         </div>  
                         <div className="column has-text-left">
                             Contact
+                            <p className="is-size-7 mb-0 mt-1"><a className="is-size-7 mt-0" href="mailto:centrededoc@contredanse.org">centrededoc@contredanse.org</a></p>
+                            <p className="is-size-7 mb-0 mt-1"><a className="is-size-7 mt-0" href="mailto:contact@oqto.tech">contact@oqto.tech</a></p>
                         </div>  
                 </div>
             </div>
         </footer>
        </div>
         </BrowserRouter>
-    </>
+    </div>
 }
 
 export default Router;

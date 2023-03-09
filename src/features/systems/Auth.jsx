@@ -75,10 +75,10 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
                 bake_cookie(cookieKey, {session: responseLogin.data.session, id: responseLogin.data.user._id}, {path: "/"})
                 setClient(responseLogin.data)
                 setLogInModal(false)
-                setLoadingSignUp(false)
+                setLoadingLogin(false)
             } else {
                 setFormAlert({type: "error", message: {en: "Wrong credentials.", fr: "Mot de passe ou adresse email incorrect."}})
-                setLoadingSignUp(false)
+                setLoadingLogin(false)
             }
         }
     }, [responseLogin])
@@ -108,7 +108,10 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
 
     return <>
         <div className="navbar-end">
+            
             <div className="navbar-item">
+               
+                
                 <div className="buttons">
                     {!client ? <>
                         <button onClick={() => setSignUpModal(true)} className="button is-primary">
@@ -159,8 +162,8 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
                 </div>
             </div>
         </div> 
-        {signUpModal ? <SignUpModal isActive={signUpModal} setSignUpModal={setSignUpModal} handleSubmit={handleSignUp} formAlert={formAlert} setFormAlert={setFormAlert}/> : null}
-        {logInModal ? <LogInModal isActive={logInModal} setLogInModal={setLogInModal} handleSubmit={handleLogIn} formAlert={formAlert} setFormAlert={setFormAlert}/> : null}  
+        {signUpModal ? <SignUpModal isActive={signUpModal} setSignUpModal={setSignUpModal} handleSubmit={handleSignUp} formAlert={formAlert} setFormAlert={setFormAlert} loading={loadingSignUp}/> : null}
+        {logInModal ? <LogInModal isActive={logInModal} setLogInModal={setLogInModal} handleSubmit={handleLogIn} formAlert={formAlert} setFormAlert={setFormAlert} loading={loadingLogin}/> : null}  
     </>
 }
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 
   import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMagnifyingGlassPlus } from '@fortawesome/free-solid-svg-icons'
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 
 
 const SearchBar = ({searchValue, setSearchValue}) => {
@@ -87,8 +87,8 @@ const SearchBar = ({searchValue, setSearchValue}) => {
       </div>
     </div> */}
     <div className='column is-paddingless'>
-        {searchValue.length > 0 ? <button className='button is-primary is-large search-button' type="submit"><FontAwesomeIcon icon={faMagnifyingGlassPlus} size="xl"/> &nbsp; Search</button> :
-        <button className='button is-primary is-large search-button' disabled><FontAwesomeIcon icon={faMagnifyingGlassPlus} size="xl"/> &nbsp; Search</button>}
+        {searchValue.length > 0 ? <button className='button is-primary is-large search-button' type="submit"><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/> &nbsp; Search</button> :
+        <button className='button is-primary is-large search-button'><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/> &nbsp; Search</button>}
     </div>
         </div>
         

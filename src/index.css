@@ -6,12 +6,56 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
+  
 }
 
 html {
   height: 100%;
 }
+.page-content {
+  padding-top: 40px;
+  padding-bottom: 150px;
+}
 
+.footer-app {
+  position:fixed;
+  bottom: 0;
+
+}
+
+.results-col {
+  height: 100%;
+  cursor: pointer;
+  
+}
+
+.results-col:hover {
+  scale: 0.95;
+}
+
+.tag-bottom {
+  margin-top: auto;
+
+}
+
+
+.border-top {
+  padding-top: 5px;
+  padding-left: 7px;
+  padding-right: 7px;
+
+  padding-bottom: 5px;
+
+  position: fixed;
+  right: 5px;
+  bottom: 120px;
+}
+
+.lg-navbar {
+  width: 90px;
+  min-height: 65px; 
+  position: relative;
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -42,7 +86,7 @@ code {
   margin-left: -10%;
   position: relative;
   z-index: 0;
-  margin-top: -15%;
+  margin-top: -13%;
 
 }
 
@@ -65,7 +109,7 @@ code {
 
 .landing-container {
   padding: 50px;
-
+  padding-top: 90px;
 }
 .landing-container .search-box {
   height: 80px;
@@ -349,4 +393,80 @@ label input[type=checkbox] {
   color: #009688;
   font: normal normal normal 14px/1 FontAwesome;
   content: "";
+}
+
+
+.loader {
+  position: absolute;
+  top: calc(50% - 85px);
+  left: calc(50% - 85px);
+  min-width: 170px;
+  min-height: 170px;
+  border-radius: 50%;
+  perspective: 800px;
+}
+
+.border-t {
+  border-top: 1px solid #747d8c;
+  width: 60%;
+  margin: auto;
+}
+.inner {
+  position: absolute;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;  
+}
+
+.inner.one {
+  left: 0%;
+  top: 0%;
+  animation: rotate-one 1s linear infinite;
+  border-bottom: 10px solid #EE6636;
+}
+
+.border-0 {
+  border: 0px;
+}
+
+.inner.two {
+  right: 0%;
+  top: 0%;
+  animation: rotate-two 1s linear infinite;
+  border-right: 3px solid #EFEFFA;
+}
+
+.inner.three {
+  right: 0%;
+  bottom: 0%;
+  animation: rotate-three 1s linear infinite;
+  border-bottom: 10px solid #EE6636;
+}
+
+@keyframes rotate-one {
+  0% {
+    transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
+  }
+}
+
+@keyframes rotate-two {
+  0% {
+    transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
+  }
+}
+
+@keyframes rotate-three {
+  0% {
+    transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
+  }
 }
