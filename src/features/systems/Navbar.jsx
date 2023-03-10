@@ -13,7 +13,7 @@ const Navbar = ({bake_cookie, read_cookie, delete_cookie, client, setClient, set
     const [hamburger, setHamburger] = useState(false)
 
     return <>
-        <nav className="navbar has-shadow mb-1 pt-0 pb-0 is-fixed-top" role="navigation" aria-label="main navigation">
+        <nav className="navbar has-shadow pt-0 pb-0 is-fixed-top" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">         
                 <div className="navbar-item">
                     <a href="https://contredanse.org" className="mt-1"><img src={logoOrange} className="lg-navbar"/></a>

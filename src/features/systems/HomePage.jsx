@@ -8,7 +8,7 @@ import {useSearch} from "../../utils/hooks/Search.js"
 
 import SearchResult from "./SearchResult"
 
-import loader from "../../octopus2gif.gif"
+
 
 const HomePage = ({client, setAlert}) => {
   
