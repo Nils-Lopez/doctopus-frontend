@@ -1,15 +1,29 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, Fragment} from 'react';
   
 import DocForm from "../../molecules/Create/DocForm"
 import OrganisationForm from "../../molecules/Create/OrganisationForm"
 import PersonForm from "../../molecules/Create/PersonForm"
 
+import {useRoles} from "../../../utils/hooks/Roles"
+import {useTags} from "../../../utils/hooks/Tags"
+import {usePeople} from "../../../utils/hooks/People"
+import { useEntities } from "../../../utils/hooks/Entities"
+import {useDocTemplates} from "../../../utils/hooks/templates/DocTemplates"
+import {useBrotherhoods} from "../../../utils/hooks/docs/Brotherhoods"
+import {useProjects} from "../../../utils/hooks/entities/Projects"
+
+
 const Create = ({client, setAlert}) => {
     
     const [selectedType, selectType] = useState('Document')
-    const [selectedTemplate, selectTemplate] = useState('Default')
-    const [selectedBrotherHood, selectBrotherHood] = useState("")
-    
+    const [selectedTemplate, selectTemplate] = useState('')
+  
+    const [templateModel, setTemplateModel] = useState({})
+  
+    const [docTemplates, setDocTemplates] = useState([])
+
+    const [docTemplatesLoading, setDocTemplatesLoading] = useState(false)
+
     const handleSelectType = (e) => {
       e.preventDefault()
       selectType(e.target.value)
@@ -18,16 +32,42 @@ const Create = ({client, setAlert}) => {
     const handleSelectTemplate = (e) => {
       e.preventDefault()
       selectTemplate(e.target.value)
-    }
-    
-    const handleSelectBrotherHood = (e) => {
-      e.preventDefault()
-      selectBrotherHood(e.target.value)
-    }
+      docTemplates.map((template) => {
+        if (template.schema_name === e.target.value) {
+          setTemplateModel(template)
+        }
+      })
 
+    }
+  
+    const {
+      responseFindAllDocTemplates,
+      findAllDocTemplates
+    } = useDocTemplates()
+  
+    if (!docTemplates[0] && !docTemplatesLoading) {
+      findAllDocTemplates()
+      setDocTemplatesLoading(true)
+    }
+  
+    useEffect(() => {
+      if (responseFindAllDocTemplates && responseFindAllDocTemplates.success) {
+        setDocTemplates(responseFindAllDocTemplates.data)
+      }
+    }, [responseFindAllDocTemplates])
+  
+    useEffect(() => {
+      docTemplates.map((template) => {
+        if (client.user.defaultTemplate && client.user.defaultTemplate === template._id && selectedTemplate === "") {
+          selectTemplate(template.schema_name)
+          setTemplateModel(template)
+        }
+      })
+    }, [docTemplates])
+  
     return <div className="columns is-flex is-justify-content-center mt-3  ">
-      <div className="column is-three-quarters-mobile is-two-thirds-tablet is-half-desktop is-one-third-widescreen">
-        <form className="box">
+      <div className="column is-three-quarters-mobile is-two-thirds-tablet is-half-desktop is-half-widescreen">
+        <div className="box">
           <div className="columns">
             <div className="column is-one-third">
               <div className="field">
@@ -41,47 +81,40 @@ const Create = ({client, setAlert}) => {
             </div>
           </div>
             </div>
-            <div className="column is-one-third">
+            
+            {selectedType === "Document" ? <>
+          <div className="column is-one-third">
               <div className="field">
             <label className="label">Template</label>
             <div>
              <input type="text" className="input" value={selectedTemplate} onChange={handleSelectTemplate} list="templates"/>
               <datalist id="templates">
-                <option>Default</option>
-                <option>Periodic</option>
-                <option>News</option>
-                <option>Book</option>
-                <option>Movie</option>
+             
+                {docTemplates.map((template) => {
+                  
+                    return <Fragment key={template.schema_slug}>
+                    <option>{template.schema_name}</option>
+                  </Fragment>
+                  
+                })}
               </datalist>
             </div>
           </div>
-            </div>
-          {selectedType === "Document" ? <div className="column is-one-third">
-              <div className="field">
-            <label className="label">Brotherhood</label>
-            <div>
-              <input type="text" className="input" value={selectedBrotherHood} onChange={handleSelectBrotherHood} list="brotherhoods"/>
-              <datalist id="brotherhoods">
-                <option>Nouvelles De Danse</option>
-                <option>Le Soir Article</option>
-                <option>Le Soir Journal</option>
-                <option>Le Seigneur Des Anneaux Trilogie</option>
-              </datalist>
-            </div>
-          </div>
-            </div> : null}
+              </div>
+               
+          </> : null}
           </div>
           <hr/>
           <div className="form">
             {selectedType === "Document" ? 
-              <DocForm client={client} setAlert={setAlert} template={selectedTemplate} brotherhood={selectBrotherHood}/>
+              <DocForm client={client} setAlert={setAlert} template={templateModel} />
             : selectedType === "Organisation" ? 
-              <OrganisationForm client={client} setAlert={setAlert}/>
+              <OrganisationForm client={client} setAlert={setAlert} />
             :
-              <PersonForm client={client} setAlert={setAlert}/>
+                <PersonForm client={client} setAlert={setAlert} />
             }
           </div>
-        </form>
+        </div>
       </div>
     </div>
 }    

@@ -7,23 +7,28 @@ const ExemplaryPreviewCard = ({exemplary, editExemplary, deleteExemplary}) => {
       <div className="card-content">
         <div className="columns">
           <div className="column">
-            <h4 className="title is-5">{exemplary.location}</h4>
+            <h4 className="title is-6">{exemplary.location}</h4>
           </div>
           <div className="column">
-            <h4 className="title is-5">{exemplary.position}</h4>
+            <h4 className="title is-6">{exemplary.position}</h4>
+          </div>
+          <div className="column">
+            <h4 className="title is-6">
+              {exemplary.rank}
+            </h4>
           </div>
         </div>
-        {exemplary.rank}
+        
       </div>
-      <footer className="card-footer">
+      <footer className="card-footer pt-2 pb-2">
     <button onClick={(e) => {
       e.preventDefault()
       editExemplary(exemplary)
-    }} className="card-footer-item button is-primary">Edit</button>
+    }} className=" button is-primary ml-2 mr-3">Edit</button>
     <button onClick={(e) => {
       e.preventDefault()
       deleteExemplary(exemplary)
-    }} className="card-footer-item button is-danger">Delete</button>
+    }} className=" button is-danger">Delete</button>
   </footer>
     </div>
   </>

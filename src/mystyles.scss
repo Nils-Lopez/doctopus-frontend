@@ -1,0 +1,27 @@
+// 1. Import the initial variables
+@import "../node_modules/bulma/sass/utilities/initial-variables";
+@import "../node_modules/bulma/sass/utilities/functions";
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap');
+
+// 2. Set your own initial variables
+// Update blue
+$blue: #0984e3;
+// Add pink and its invert
+$pink: #EE6636;
+$purple: #a29bfe;
+$pink-invert: #fff;
+$red: #d63031;
+$footer-padding: 1.7rem 1.5rem 5.7rem;
+$grey: #747d8c;
+// 3. Set the derived variables
+// Use the new pink as the primary color
+$primary: $pink;
+$primary-invert: $pink-invert;
+$info: #36beee;
+$danger: $red;
+$success: #00b894;
+$link: $primary;
+$family-sans-serif: 'Libre Baskerville', serif;
+// 6. Import the rest of Bulma
+@import "../node_modules/bulma";
+@import "../node_modules/bulma-switch"

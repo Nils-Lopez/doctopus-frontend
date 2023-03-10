@@ -3,15 +3,21 @@ import Auth from './Auth';
 import Admin from './Admin';
 import {Link} from "react-router-dom"
 
+
+  import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faGear } from '@fortawesome/free-solid-svg-icons'
+import logoOrange from "../../logo-orange.png"
+
 const Navbar = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAlert}) => {
 
     const [hamburger, setHamburger] = useState(false)
 
     return <>
-        <nav className="navbar" role="navigation" aria-label="main navigation">
+        <nav className="navbar has-shadow pt-0 pb-0 is-fixed-top" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">         
                 <div className="navbar-item">
-                  <Link to="/">dOctopus</Link>
+                    <a href="https://contredanse.org" className="mt-1"><img src={logoOrange} className="lg-navbar"/></a>
+                    <h2 className="title is-4 mt-0 mb-1 ml-2 mr-2"><strong>CENTRE <br/> DE DOC</strong></h2>
                 </div>   
        
 
@@ -31,25 +37,24 @@ const Navbar = ({bake_cookie, read_cookie, delete_cookie, client, setClient, set
             <div id="navbar" className={"navbar-menu " + (hamburger ? "is-active" : "")}>
                 <div className="navbar-start">
                   <div className="navbar-item">
-                    <Link to="/">Home</Link>
+                    <Link to="/"><p className="has-text-primary"><strong>Home</strong></p></Link>
                   </div>
-                    
+            
                   <div className="navbar-item">
-                    <Link to="/tuto">Tutorial</Link>
+                    <Link to="/about"><p className="has-text-primary"><strong>About</strong></p></Link>
                   </div>
                   
-                  <div className="navbar-item">
-                    <Link to="/about">About dOctopus</Link>
-                  </div>
                   
-                  <div className="navbar-item">
-                    <Link to="/contact">Contact us</Link>
-                  </div>
+                         
+            {client && client.user && client.user.type === "admin" ?
+              <Admin />
+              : <div className="navbar-item">
+                    <Link to="/contact"><p className="has-text-primary"><strong>Contact us</strong></p></Link>
+            </div>}
                 </div>
                 
-                {"client.admin" === "client.admin" ? 
-                  <Admin />
-                 : null}
+                
+
                 
                 <Auth bake_cookie={bake_cookie} read_cookie={read_cookie} delete_cookie={delete_cookie} client={client} setClient={setClient} setAlert={setAlert} />
                 

@@ -1,17 +1,23 @@
-import React, {useState} from "react"
+import React, {useState, Fragment} from "react"
 
 import ExemplaryPreviewCard from "../../supports/ExemplaryPreviewCard"
 
-const ExemplariesForm= ({setPendingExemplaries, pendingExemplaries}) => {
+const ExemplariesForm= ({setPendingExemplaries, pendingExemplaries, template}) => {
   const [locationValue, setLocationValue] = useState("")
   const [positionValue, setPositionValue] = useState("")
   const [rankValue, setRankValue] = useState("")
-  
+  const [qualityValue, setQualityValue] = useState("")
+
   const handleLocationChange = (e) => {
     e.preventDefault()
     setLocationValue(e.target.value)
   }
   
+  const handleQualityChange = (e) => {
+    e.preventDefault()
+    setQualityValue(e.target.value)
+  }
+
   const handlePositionChange = (e) => {
     e.preventDefault()
     setPositionValue(e.target.value)
@@ -27,14 +33,20 @@ const ExemplariesForm= ({setPendingExemplaries, pendingExemplaries}) => {
     const newEx = {
       location: locationValue,
       position: positionValue,
-      rank: rankValue
+      rank: rankValue,
+      quality: qualityValue
     }
     setPendingExemplaries([...pendingExemplaries, newEx])
+    setLocationValue("")
+    setPositionValue("")
+    setQualityValue('')
+    setRankValue("")
   }
   
   const editExemplary = (ex) => {
     deleteExemplary(ex)
     setLocationValue(ex.location)
+    setQualityValue(ex.quality)
     setPositionValue(ex.position)
     setRankValue(ex.rank)
   }
@@ -49,29 +61,41 @@ const ExemplariesForm= ({setPendingExemplaries, pendingExemplaries}) => {
   return <>  
     <div className="box">
       <label className="label title is-5">
-        Exemplaries
+        Samples
       </label>
-      {pendingExemplaries.map((ex) => {
-        return <ExemplaryPreviewCard exemplary={ex} editExemplary={editExemplary} deleteExemplary={deleteExemplary}/>
+      <div className="columns">
+        {pendingExemplaries.map((ex) => {
+        return <Fragment key={ex.location}>
+          <div className="column">
+            <ExemplaryPreviewCard exemplary={ex} editExemplary={editExemplary} deleteExemplary={deleteExemplary}/>
+          </div>
+        </Fragment>
       })}
-      <div className="field">
+      </div>
+      {template && template.copies_location ? <div className="field mt-5">
         <label className="label">
           Location
         </label>
         <input type="text" className="input" value={locationValue} onChange={handleLocationChange} />
-      </div>
-      <div className="field">
+      </div> : null}
+      {template && template.copies_position ? <div className="field">
         <label className="label">
           Position
         </label>
         <input type="text" className="input" value={positionValue} onChange={handlePositionChange} />
-      </div>
-      <div className="field">
+      </div> : null}
+      {template && template.copies_rank ? <div className="field">
         <label className="label">
           Rank
         </label>
         <input type="text" className="input" value={rankValue} onChange={handleRankChange} />
-      </div>
+      </div> : null}
+      {template && template.copies_quality ? <div className="field">
+        <label className="label">
+          Quality
+        </label>
+        <input type="text" className="input" value={qualityValue} onChange={handleQualityChange} />
+      </div> : null}
       <button className="button is-primary" onClick={handleExBtn}>Add</button>
     </div>
     

@@ -8,6 +8,8 @@ import LogInModal from '../molecules/Auth/LogInModal'
 //API Hooks
 import {useAuth} from '../../utils/hooks/Auth'
 
+  import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUser, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
 
 const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAlert}) => {
 
@@ -17,6 +19,8 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
     const [loadingSignUp, setLoadingSignUp] = useState(false)
     const [loadingLogin, setLoadingLogin] = useState(false)
     const [loadingLogout, setLoadingLogout] = useState(false)
+
+    const [userDropdown, setUserDropdown] = useState(false)
 
     const [formAlert, setFormAlert] = useState(false)
 
@@ -71,10 +75,10 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
                 bake_cookie(cookieKey, {session: responseLogin.data.session, id: responseLogin.data.user._id}, {path: "/"})
                 setClient(responseLogin.data)
                 setLogInModal(false)
-                setLoadingSignUp(false)
+                setLoadingLogin(false)
             } else {
                 setFormAlert({type: "error", message: {en: "Wrong credentials.", fr: "Mot de passe ou adresse email incorrect."}})
-                setLoadingSignUp(false)
+                setLoadingLogin(false)
             }
         }
     }, [responseLogin])
@@ -104,25 +108,62 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
 
     return <>
         <div className="navbar-end">
+            
             <div className="navbar-item">
+               
+                
                 <div className="buttons">
                     {!client ? <>
-                        <button onClick={() => setSignUpModal(true)} className="button is-dark">
+                        <button onClick={() => setSignUpModal(true)} className="button is-primary">
                             <strong>Sign Up</strong>
                         </button>
                         <button onClick={() => setLogInModal(true)} className="button is-light">
                             Log In
                         </button>
                     </> : <>
-                        <button onClick={() => handleLogOut()} className="button is-danger">
-                            Logout
-                        </button>
+                        
+                            
+                        <div className="dropdown is-active">
+                            <div className="dropdown-trigger">
+                                <button onClick={() => setUserDropdown(!userDropdown)} className={"button is-primary has-text-white is-rounded "} aria-haspopup="true" aria-controls="dropdown-menu">
+                                    <FontAwesomeIcon icon={faUser} size="xl"/>
+                                    <FontAwesomeIcon icon={userDropdown ? faChevronUp : faChevronDown} />
+                                </button>
+                            </div>
+                                {userDropdown ? <>
+                                    <div className="dropdown-menu dropdown-user-logged is-mobile is-tablet" id="dropdown-menu" role="menu">
+                                    <div className="dropdown-content">
+                                        <a href="#" className="dropdown-item pl-6">
+        Watchlist
+                                            </a>
+                                            <a href="#" className="dropdown-item  pl-6">
+        History
+      </a>
+      <a href="#" className="dropdown-item pl-6">
+        Profile
+      </a>
+      <a className="dropdown-item  pl-6">
+        Settings
+      </a>
+      
+      <a href="#" className="dropdown-item pl-6">
+        Help
+      </a>
+      <hr className="dropdown-divider"/>
+      <button className="button is-small mt-2 is-dark" onClick={() => handleLogOut()}>
+        Logout
+      </button>
+    </div>
+  </div>
+                                </> : null}
+                        </div>
+                            
                     </>}
                 </div>
             </div>
         </div> 
-        {signUpModal ? <SignUpModal isActive={signUpModal} setSignUpModal={setSignUpModal} handleSubmit={handleSignUp} formAlert={formAlert} setFormAlert={setFormAlert}/> : null}
-        {logInModal ? <LogInModal isActive={logInModal} setLogInModal={setLogInModal} handleSubmit={handleLogIn} formAlert={formAlert} setFormAlert={setFormAlert}/> : null}  
+        {signUpModal ? <SignUpModal isActive={signUpModal} setSignUpModal={setSignUpModal} handleSubmit={handleSignUp} formAlert={formAlert} setFormAlert={setFormAlert} loading={loadingSignUp}/> : null}
+        {logInModal ? <LogInModal isActive={logInModal} setLogInModal={setLogInModal} handleSubmit={handleLogIn} formAlert={formAlert} setFormAlert={setFormAlert} loading={loadingLogin}/> : null}  
     </>
 }
 

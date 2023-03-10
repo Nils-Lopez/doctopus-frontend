@@ -1,26 +1,52 @@
-import React, {useState, Fragment} from "react"
+import React, {useState, useEffect, Fragment} from "react"
 
 import RoleForm from "../RoleForm"
+import PersonForm from "../../../molecules/Create/PersonForm"
 
-const PersonParentForm = ({selectedPeople, selectPerson}) => {
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
+
+import {usePeople} from "../../../../utils/hooks/People"
+
+
+const PersonParentForm = ({selectedPeople, selectPerson, location, template, lang, hideRoles, client, setAlert }) => {
   const [personValue, setPersonValue] = useState("")
   const [personForm, setPersonForm] = useState(false)
-  const [isActive, setIsActive] = useState(false)
+  const [isActive, setIsActive] = useState(false)
   const [selectedRoles, selectRole] = useState([])
-  
-  const people = [
-    {slug: "titlmodee", name:"Mode"},
-    {slug: "titldecoe", name:"Deco"},
-    {slug: "titlcorpse", name:"Le corps"},
-    {slug: "titlesprite", name:"L'esprit'"}
-  ]
-  
-  const roles = [
-    {slug: "titlmodee", title:"Mode"},
-    {slug: "titldecoe", title:"Deco"},
-    {slug: "titlcorpse", title:"Le corps"},
-    {slug: "titlesprite", title:"L'esprit'"}
-]
+  const [idLang, setIdLang] = useState("fr")
+
+  const [people, setPeople] = useState([])
+  const [peopleLoading, setPeopleLoading] = useState(false)
+  const [pending, setPending] = useState(false)
+
+  const [created, setCreated] = useState(false)
+
+  const getContent = (value, lang) => {
+    if (value) {
+      return value.filter(obj => obj.lang === lang)[0] ? value.filter(obj => obj.lang === lang)[0].content : value.filter(obj => obj.lang === "en")[0] ? value.filter(obj => obj.lang === "en")[0].content : value.filter(obj => obj.lang === "fr")[0].content
+    } else {
+      return "Error"
+    }
+  }
+
+  useEffect(() => {
+    if (template && template.parent_person_defaults[0]) {
+      template.parent_person_defaults.map((person) => {
+        if (!selectedPeople.includes(person)) {
+          selectPerson([... selectedPeople, person])
+        }
+      })
+    }
+
+    if (personValue === "" && template && template.parent_role_defaults[0]) {
+      template.parent_role_defaults.map((role) => {
+        if (!selectedRoles.includes(role)) {
+          selectRole([... selectedRoles, role])
+        }
+      })
+    }
+  }, [template, personValue])
   
   const handlePersonChange = (e) => {
     e.preventDefault()
@@ -30,7 +56,7 @@ const PersonParentForm = ({selectedPeople, selectPerson}) => {
   const isPersonExisting = (personName) =>  {
     let retrievedPerson = undefined
     people.map((person) => {
-      if (person.name.toLowerCase() === personName.toLowerCase()) {
+      if (person.name === currentPerson) {
         retrievedPerson = person
       } 
     })
@@ -51,8 +77,7 @@ const PersonParentForm = ({selectedPeople, selectPerson}) => {
     
     if (unique) {
       if (personDoc) {
-      personDoc.parentRoles = selectedRoles
-      selectPerson([...selectedPeople, personDoc])
+      selectPerson([...selectedPeople, {person: personDoc, roles: selectedRoles}])
       selectRole([])
       setPersonValue("")
     } else {
@@ -61,38 +86,132 @@ const PersonParentForm = ({selectedPeople, selectPerson}) => {
     }
    }
   }
+    
+  const handleDeletePerson = (e, person) => {
+    e.preventDefault()
+    const filtered = selectedPeople.filter((r) => {
+      return r !== person
+    })
+    selectPerson(filtered)
+    setPeople([])
+    
+  }
 
+  useEffect(() => {
+    if (created && !people.includes(created)) {
+      setPeople([...people, created])
+      setPersonValue(created.name)
+      setPersonForm(false)
+    }
+  }, [created])
+
+  const {
+    searchPeople, 
+    responseSearchPeople
+  } = usePeople()
+
+  const searchPersonValue = (e) => {
+    e.preventDefault()
+    if (personValue !== "") {
+      setPeopleLoading(true)
+      searchPeople(personValue)
+    }
+  }
+
+  useEffect(() => {
+    if (responseSearchPeople && responseSearchPeople.success && responseSearchPeople.data[0] && peopleLoading) {
+      setPeopleLoading(false)
+      setPeople(responseSearchPeople.data)
+      
+    } else if (responseSearchPeople && peopleLoading) {
+      setPeopleLoading(false)
+      setPersonForm(true)
+    }
+  }, [responseSearchPeople])
+
+  useEffect(() => {
+  people.map((person) => {
+        if (person.name === personValue) {
+          setPending("existing")
+        }
+      })
+      if (pending !== "existing") {
+        setPending(personValue)
+      } else {
+        setPending("")
+      }
+  }, [people])
   
-  
+  const changeCurrentPerson = (e) => {
+    e.preventDefault()
+    setCurrentPerson(e.target.value)
+    setPersonValue(e.target.value)
+  }
+
+  const [currentPerson, setCurrentPerson] = useState({})
+
+  const isNotIncluded = (query, array) => {
+    let included = false
+    array.map((a) => {
+      if (a.name.toLowerCase() === query.toLowerCase()) {
+        included = true
+      } 
+    })
+    return !included
+  }
+
+
   return <>
     <div className="field">
-      <label className="label title is-5">People</label>
+      {location !== "templates-parents" ? <label className="label title is-5">People</label> : null}
       <div className="columns">
         <div className="column is-three-fifth">
-          <input type="text" list="people" className="input" value={personValue} onChange={handlePersonChange}/>
+          {(!people || !people[0]) ? <>
+            <input type="text" placeholder={location === "templates-parents" ? "Default people" : ""} className="input" value={personValue} onChange={handlePersonChange}/>
+          </> : <div className="select is-fullwidth is-multiple">
+            <select value={currentPerson} onChange={changeCurrentPerson} name={"peopless"} id={"peoplesss"}>
+                {pending !== "" && isNotIncluded(pending, people) ? <>
+                  <option value={pending}>{pending} (draft)</option>
+                </> : null}
+                {people.map((t, i) => {
+                  if (i < 7) {
+                    return <Fragment key={t.slug}>
+                      <option value={t.slug}>{t.name}</option>
+                    </Fragment>
+                  }
+                })}
+                
+            </select>
+          </div>}
         </div>
         <div className="column is-one-fifth">
-          {personValue !== "" && selectedRoles[0] || personValue !== "" && !isPersonExisting(personValue) ? <button className="button is-primary " onClick={handlePersonBtn}>
+          {(!people || !people[0]) && !personForm ? <>
+            {personValue !== "" && !peopleLoading ? <button className="button is-primary" onClick={searchPersonValue}>Search</button> : <button className="button is-primary is-disabled" disabled>Search</button>}
+          </> : <>
+            {(personValue !== "" && selectedRoles[0]) || (personValue !== "" && !isPersonExisting(personValue)) || (personValue !== "" && isPersonExisting(personValue))? <button className="button is-primary " onClick={handlePersonBtn}>
             {isPersonExisting(personValue) ? "Add" : "Create"}
           </button> : <button className="button is-primary is-disabled" disabled>Add</button>}
+             <span className="tag is-danger is-medium ml-2 mt-1 button" onClick={() => {
+                setPeople([]);
+                setPersonForm(false)
+              }}><FontAwesomeIcon icon={faTrash}/></span>
+          </>}
         </div>
       </div>
-      {personValue !== "" ? <RoleForm roles={roles} scope="people" location="people-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole}/> : null}
-      <datalist id="people">
-        {people.map((person) => {
-          return <Fragment key={person.slug}>
-            <option>{person.name}</option>
+      {personValue !== "" && (template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="parents" location="people-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
+      {selectedPeople && selectedPeople[0] ? selectedPeople.map((person) => {
+        if (person.person && person.person.name) {
+          return <Fragment key={person.person.name + "selected"}>
+            <span className="tag is-primary is-large mr-3">{person.person.name} {!hideRoles && (!template || template && template.parent_role) && person.roles[0] ? <>({
+              person.roles.map((role, i) => {
+                const roleStr = i > 0 ? ", " + getContent(role.title, lang) : getContent(role.title, lang)
+                return roleStr
+              })
+            })</> : null}</span>
+            <span className="tag is-danger is-large mr-2 button" onClick={(e) => handleDeletePerson(e, person)}><FontAwesomeIcon icon={faTrash}/></span>
           </Fragment>
-        })}
-      </datalist>
-      {selectedPeople.map((person) => {
-        return <Fragment key={person.slug}>
-          <span className="tag is-primary is-large mr-3">{person.name} ({person.parentRoles.map((role, i) => {
-            const roleStr = i > 0 ? ", " + role.title : role.title
-            return roleStr
-          })})</span>
-        </Fragment>
-      })}
+        }
+      }) : null}
     </div>
     {personForm ? <div className={"modal " + (isActive ? "is-active" : "")}>
             <div className="modal-background"></div>
@@ -102,9 +221,8 @@ const PersonParentForm = ({selectedPeople, selectPerson}) => {
                     <button onClick={() => setPersonForm(false)} className="delete is-large ml-4" aria-label="close"></button>
                 </div>
                 <div className="modal-card-body has-background-white-ter">
-                  C ici qu'on va gerer les bails tqt
-                </div>
-       
+                  <PersonForm client={client} setAlert={setAlert} setCreated={setCreated}/>
+                </div> 
             </div>
             
         </div> : null}

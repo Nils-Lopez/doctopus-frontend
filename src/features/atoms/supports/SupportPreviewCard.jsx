@@ -19,15 +19,15 @@ const SupportPreviewCard = ({support, editSupportPreview, deleteSupportPreview})
       {support.pages !== "" ? support.pages : support.duration}
     </div>
   </div>
-  <footer className="card-footer">
+  <footer className="card-footer pt-1 pb-1">
     <button onClick={(e) => {
       e.preventDefault()
       editSupportPreview(support)
-    }} className="card-footer-item button is-primary">Edit</button>
+    }} className="button is-primary ml-2">Edit</button>
     <button onClick={(e) => {
       e.preventDefault()
       deleteSupportPreview(support)
-    }} className="card-footer-item button is-danger">Delete</button>
+    }} className="button is-danger ml-2 ">Delete</button>
   </footer>
 </div>
   </>

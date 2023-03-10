@@ -73,26 +73,26 @@ const SignUpForm = ({handleSubmit, formAlert, setFormAlert}) => {
             <form onSubmit={handleSubmit}>
                 <div className="field">
                     <div className="control">
-                        <label htmlFor="input" name="email" value={email} onChange={handleChangeEmail} className="label is-size-5">Email</label>
+                        <label htmlFor="input" name="email" value={email} onChange={handleChangeEmail} className="label is-size-6 has-text-primary has-text-left">Email</label>
                         <input type="email" className="input is-size-5" />
                     </div>
                 </div>
                 <div className="field">
-                    <label htmlFor="password" name="password" value={password} onChange={handleChangePassword} className="label is-size-5">Password</label>
+                    <label htmlFor="password" name="password" value={password} onChange={handleChangePassword} className="label is-size-6 has-text-primary has-text-left">Password</label>
                     <input type="password" className="input is-size-5" />
                 </div>
                 <div className="field">
-                    <label htmlFor="password" name="password" value={confirmPwd} onChange={handleChangeConfirmPwd} className="label is-size-5">Confirm password</label>
+                    <label htmlFor="password" name="password" value={confirmPwd} onChange={handleChangeConfirmPwd} className="label is-size-6 has-text-primary has-text-left">Confirm password</label>
                     <input type="password" className="input is-size-5" />
                 </div>
                 <div className="is-flex is-justify-content-center mt-5">
                     <div className="field">
-                        <button className="button is-dark" role="submit" disabled={formValid ? false : true}>Confirm</button>
+                        <button className="button is-primary" role="submit" disabled={formValid ? false : true}>Confirm</button>
                     </div>
                 </div>
                 <div className="mt-3">
                     {formAlert ? <>
-                        <Alert alertType={formAlert.type} message={formAlert.message} />
+                        <Alert alertType={formAlert.type} message={formAlert.message} setAlert={setFormAlert}/>
                     </> : null}
                 </div>
            </form>
