@@ -1,12 +1,14 @@
-import React, {useState, useEffect} from "react"
+import React, {useState, useEffect, Fragment} from "react"
 
 import {Link} from "react-router-dom"
 
 import SearchBar from "../atoms/SearchBar"
+import SearchResult from "./SearchResult"
+import SearchItem from "../atoms/docs/SearchItem"
 
 import {useSearch} from "../../utils/hooks/Search.js"
+import {useDocs} from "../../utils/hooks/docs/Docs.js"
 
-import SearchResult from "./SearchResult"
 
 
 
@@ -17,16 +19,22 @@ const HomePage = ({client, setAlert}) => {
   const [loadingSearch, setLoadingSearch] = useState(false)
   const [empty, setEmpty] = useState(false)
   const [page, setPage] = useState(1)
-
+  const [popularDocs, setPopularDocs] = useState(false)
 
   const {
     search, 
     responseSearch
   } = useSearch()
 
+  const { 
+    findPopularDocs, 
+    responseFindPopularDocs
+  } = useDocs()
+
   useEffect(() => {
     if (responseSearch && responseSearch.success && responseSearch.data && responseSearch.data.items[0]) {
       setResult(responseSearch.data)
+      setPage(1)
       setLoadingSearch(false)
     } else if (responseSearch && !responseSearch.success) {
       setLoadingSearch(false)
@@ -45,6 +53,18 @@ const HomePage = ({client, setAlert}) => {
       setEmpty(false)
     }
   }
+
+  if (!popularDocs) {
+    findPopularDocs()
+    setPopularDocs(true)
+  }
+
+  useEffect(() => {
+    if (responseFindPopularDocs && responseFindPopularDocs.success && responseFindPopularDocs.data) {
+      setPopularDocs(responseFindPopularDocs.data)
+      console.log(popularDocs)
+    }
+  }, [responseFindPopularDocs])
   
   return <>
     <div>
@@ -60,7 +80,7 @@ const HomePage = ({client, setAlert}) => {
   <div className="inner one"></div>
   <div className="inner two"></div>
   <div className="inner three"></div>
-</div> : (!result.items || !result.items[0]) ? <Landing/> : <SearchResult result={result} client={client} setAlert={setAlert} page={page} setPage={setPage} loadingSearch={loadingSearch}/>}
+</div> : (!result.items || !result.items[0]) ? <Landing popularDocs={popularDocs}/> : <SearchResult result={result} client={client} setAlert={setAlert} page={page} setPage={setPage} loadingSearch={loadingSearch} setResult={setResult}/>}
           </>}
           
       </div>
@@ -69,55 +89,31 @@ const HomePage = ({client, setAlert}) => {
   </>
 }
 
-const Landing = ({}) => {
+const Landing = ({popularDocs}) => {
   return <>
   
   <div className="container box mt-2 mb-6">
         <h1 className="title is-5">Contredanse Documentation Center</h1>
         <p className="mb-3">
           Donec gravida maximus nulla id vulputate. Fusce a dictum tortor, tincidunt molestie massa. Vivamus ac tristique mi, id interdum odio. Nullam vestibulum a libero nec blandit. Ut et aliquet diam, et tempus odio. Fusce ultrices, tortor elementum tincidunt pellentesque, urna tortor porta nisi, ac hendrerit lorem velit quis justo. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.      </p>
-        <Link to="/contredanse">Read more ...</Link>
+        <Link to="/about">Read more ...</Link>
       </div>
-  <div className="container recents-container">
-        <h1 className="title is-5">Recents</h1>
-        <div className="columns">
-          <div className="column">
-            <div className="card">
-              Latest POST tsbbb
-            </div>
-          </div>
-          <div className="column">
-            <div className="card">
-              numéro 2 
-            </div>
-          </div>
-          <div className="column">
-            <div className="card">
-              number 3
-            </div>
-          </div>
+      <div className="container recents-container">
+        <h1 className="title is-5">Popular Documents</h1>
+        <div className="columns is-multiline">
+            {popularDocs && popularDocs[0] ? popularDocs.map((doc, index) => {
+              return <Fragment key={JSON.stringify(doc)}>
+                <SearchItem item={{doc: doc}} location="landing"/>
+              </Fragment>
+            }) : <div className="container mt-3 pt-4">
+              <div className="loader">
+  <div className="inner one"></div>
+  <div className="inner two"></div>
+  <div className="inner three"></div>
+</div>
+            </div>}
         </div>
-        </div>
-        <div className="container mt-6">
-          <h1 className="title is-5">Favorites</h1>
-        <div className="columns">
-          <div className="column">
-            <div className="card">
-              Latest POST tsbbb
-            </div>
-          </div>
-          <div className="column">
-            <div className="card">
-              numéro 2 
-            </div>
-          </div>
-          <div className="column">
-            <div className="card">
-              number 3
-            </div>
-          </div>
-        </div>
-        </div>
+      </div>
         
       {/* <div className="box">
         <h1 className="title is-5">About dOctopus</h1>

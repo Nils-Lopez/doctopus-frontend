@@ -45,12 +45,12 @@ const Navbar = ({bake_cookie, read_cookie, delete_cookie, client, setClient, set
                   </div>
                   
                   
-                         
+                    {/* <div className="navbar-item">
+                        <Link to="/contact"><p className="has-text-primary"><strong>Contact us</strong></p></Link>
+                    </div>   */}
             {client && client.user && client.user.type === "admin" ?
               <Admin />
-              : <div className="navbar-item">
-                    <Link to="/contact"><p className="has-text-primary"><strong>Contact us</strong></p></Link>
-            </div>}
+              : null}
                 </div>
                 
                 

@@ -50,7 +50,7 @@ const SearchBar = ({searchValue, setSearchValue}) => {
         
   <div className='columns is-mobile box search-box '>
     <div className='column is-three-quarters is-paddingless'>
-      <div className='search-block'>
+      <div className='search-block' id="searchBlock">
         <label className='search-label label'>
           <span>What</span>
         </label>

@@ -1,6 +1,12 @@
 import React, {Fragment, useState, useEffect} from 'react';
 
-const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch}) => {
+import SearchItem from "../atoms/docs/SearchItem"
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faRotateLeft } from '@fortawesome/free-solid-svg-icons'
+
+
+const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, setResult}) => {
 
     const [dataList, setDataList] = useState([])
     const [tags, setTags] = useState([])
@@ -19,10 +25,24 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch}) 
         setTags(result.tags)
     }
 
+    const handleBack = () => {
+        if (page === 1) {
+            setResult([])
+        } else {
+            setPage(page - 1)
+        }
+    }
+
     return <>
         <div className="container pb-6">
+        <div className="is-flex is-justify-content-start mt-0 mb-0 pb-0 pt-0" id="backBtn">
+            <button className="button is-light" onClick={handleBack}>
+            <FontAwesomeIcon icon={faRotateLeft} size="l"/>
+        <strong>&nbsp;Back</strong>
+            </button>
+        </div>
         {tags && tags[0] ? <>
-            <h3 className="subtitle has-text-right is-5 has-text-grey mt-1 mb-4">Tags</h3>
+            <h3 className="subtitle has-text-right is-5 has-text-grey mt-0 pt-0 mb-4">Tags</h3>
                 {tags[4] ? <div className="is-flex is-justify-content-space-around">
                         {tags.map((item, index) => {
                             return <Fragment key={JSON.stringify(item)}>
@@ -37,7 +57,7 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch}) 
                         })}
                     </div> }     
                 </> : null}
-                <hr className='mb-3 mt-5'/>
+                <hr className='mb-3 mt-4'/>
                 <h3 className="subtitle has-text-right is-5 has-text-grey mt-1 mb-3">Result</h3>
 
             <div className="columns is-multiline">
@@ -56,13 +76,13 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch}) 
               
               <ul className="pagination-list">
                 <li>
-                  <a href="#" className={"pagination-link " + (page === 1 ? "is-current" : "")} aria-label="Page 1" aria-current="page" onClick={() => setPage(1)}>1</a>
+                  <a href="#searchBlock" className={"pagination-link " + (page === 1 ? "is-current" : "")} aria-label="Page 1" aria-current="page" onClick={() => setPage(1)}>1</a>
                 </li>
                 <li>
-                  <a href="#" className={"pagination-link " + (page === 2 ? "is-current" : "")} aria-label="Goto page 2" onClick={() => setPage(2)}>2</a>
+                  <a href="#searchBlock" className={"pagination-link " + (page === 2 ? "is-current" : "")} aria-label="Goto page 2" onClick={() => setPage(2)}>2</a>
                 </li>
                 {result.items.length > 40 ? <li>
-                  <a href="#" className={"pagination-link " + (page === 3 ? "is-current" : "")} aria-label="Goto page 3" onClick={() => setPage(3)}>3</a>
+                  <a href="#searchBlock" className={"pagination-link " + (page === 3 ? "is-current" : "")} aria-label="Goto page 3" onClick={() => setPage(3)}>3</a>
                 </li> : null}
               </ul>
             </nav>
@@ -136,56 +156,7 @@ const BoxItem = ({item}) => {
             </div>
         </div>
     } else if (item.doc) {
-        return <div className="column is-one-quarter">
-            <div className="box results-col " onClick={() => console.log(item.doc)}>
-            <div className="is-flex is-justify-content-end mt-0 mb-0">
-                    <span className="tag is-primary">
-                        Doc
-                    </span>
-                </div>
-            <h3 className="subtitle is-5 mb-1 mt-1">{item.doc.title}</h3>
-                <p>{item.doc.description && item.doc.description[0] ? getContent(item.doc.description).substring(0,20) + "..." : null}</p>
-                {item.doc.supports[0] && ((item.doc.supports[0].pages && item.doc.supports[0].pages !== "") || (item.doc.supports[0].volume && item.doc.supports[0].volume !== "") || (item.doc.supports[0].number && item.doc.supports[0].number !== "")) ? <>
-                    <hr />
-              
-                    <div className="is-flex is-justify-content-start">
-                    <div>
-                        {item.doc.supports.map((support) => {
-                            console.log(support)
-                            return <Fragment key={JSON.stringify(support)}>
-                                {support.pages && support.pages !== "" ? <>
-                                    <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{support.pages} {support.pages.charAt(0) * 2 && support.pages.charAt(support.pages.length -1) * 2 ? "pages" : null}</span>
-                                </> : support.volume && support.volume !== "" ? <> 
-                                    <span className="tag is-light is-small is-flex is-justify-content-start mb-2">Vol. {support.volume}</span>
-                                </> : support.number && support.number !== "" ? <> 
-                                    <span className="tag is-light is-small is-flex is-justify-content-start mb-2">Number {support.number}</span>
-                                </> : null}
-                                {support.date && support.date !== "" ? <>
-                                    <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{support.date}</span>
-                                </> : null}
-                            </Fragment>
-                        })}
-                        </div>
-                    </div>
-                </> : null}
-
-                {item.doc.tags[0] ? <>
-                    <hr />
-         
-                    <div className="is-flex is-justify-content-space-around">
-                        {item.doc.tags.map((tag, i) => {
-                            if (i < 2) {
-                                return <Fragment key={JSON.stringify(tag)}>
-                                <span className="tag is-info is-small mb-2">{getContent(tag.title)}</span>
-                               
-                            </Fragment>
-                            }
-                        })}
-                    </div>
-                </> : null}
-        
-            </div>
-        </div>
+        return <SearchItem item={item}/>
     }
 }
 

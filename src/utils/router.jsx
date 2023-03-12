@@ -8,6 +8,8 @@ import Dashboard from '../features/systems/admin/Dashboard';
 import HomePage from "../features/systems/HomePage"
 import Settings from "../features/systems/Settings"
 
+import AboutUs from "../features/molecules/AboutUs"
+
 //Dependencies
 import { bake_cookie, read_cookie, delete_cookie } from 'sfcookies';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -73,7 +75,7 @@ const Router = () => {
                     <Route path="/admin/dashboard" element={<Dashboard client={client} setAlert={setAlert} />}/>                 
                     <Route path="/admin/settings" element={<Settings client={client} setClient={setClient} setAlert={setAlert} />} />
                 </> : null}
-                                          
+                <Route path="/about" element={<AboutUs/>}/>
                 <Route path="*" element={<>
                     <div className="container">
                         <div className="is-flex is-justify-content-center">
@@ -93,14 +95,15 @@ const Router = () => {
             <div className="content">
                 <div className="columns">
                         <div className="column has-text-right">
-                            Contredanse
-                            <p className="is-size-7 mb-0 mt-1">© 2023 - All rights reserved</p>
-                            <a className="is-size-7 mt-0" href="https://contredanse.org">https://contredanse.org</a>
-                        </div>  
-                        <div className="column has-text-centered">
-                            dOctopus by <a href="https://oqto.tech">OQTO Tech</a>
+                        <a href="https://oqto.tech">OQTO Tech</a>
                             <p className="is-size-7 mb-0 mt-1">© 2023 - dOctopus, Document Manager</p>
                             <a className="is-size-7 mt-0" href="https://oqto.tech">https://oqto.tech</a>
+                        </div>  
+                        <div className="column has-text-centered">
+                            
+                            Contredanse
+                            <p className="is-size-7 mb-0 mt-1">© 2023 - All data rights reserved</p>
+                            <a className="is-size-7 mt-0" href="https://contredanse.org">https://contredanse.org</a>
                         </div>  
                         <div className="column has-text-left">
                             Contact
