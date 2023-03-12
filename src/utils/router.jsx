@@ -60,8 +60,8 @@ const Router = () => {
         <Navbar bake_cookie={bake_cookie} read_cookie={read_cookie} delete_cookie={delete_cookie} client={client} setClient={setClient} setAlert={setAlert} />
             <div className="page-content">
                  {alert ? <>
-            <div className="columns is-flex is-justify-content-center mr-1 mt-3">
-                <div className="column is-three-quarters-mobile is-two-thirds-tablet is-half-desktop">
+            <div className="columns is-flex is-justify-content-end mt-6 appAlert">
+                <div className="column is-three-quarters-mobile is-two-thirds-tablet is-one-third-desktop">
                     <Alert alertType={alert.type} message={alert.message} setAlert={setAlert} />
                 </div>
             </div>        

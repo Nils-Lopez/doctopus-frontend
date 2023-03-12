@@ -23,10 +23,25 @@ html {
 
 }
 
+.appAlert {
+  position: absolute;
+  z-index: 100;
+  top: 50px;
+  width: 100%;
+}
+
 .results-col {
   height: 100%;
   cursor: pointer;
   
+}
+
+.indextag {
+  cursor: pointer;
+}
+
+.indextag:hover {
+  scale: 0.95;
 }
 
 .results-col:hover {

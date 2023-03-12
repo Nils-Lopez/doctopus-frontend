@@ -1,9 +1,9 @@
 import React, {Fragment} from "react";
 
-const SearchItem = ({item, location = "index"}) => {
+const SearchItem = ({item, setDisplay, location = "index"}) => {
     const colClasses = location !== "index" ? "is-one-third" : "is-one-quarter"
     return <div className={"column " + colClasses}>
-            <div className="box results-col " onClick={() => console.log(item.doc)}>
+            <div className="box results-col " onClick={() => setDisplay(item.doc)}>
             <div className="is-flex is-justify-content-end mt-0 mb-0">
                     <span className="tag is-primary">
                         Doc
@@ -17,7 +17,6 @@ const SearchItem = ({item, location = "index"}) => {
                     <div className="is-flex is-justify-content-start">
                     <div>
                         {item.doc.supports.map((support) => {
-                            console.log(support)
                             return <Fragment key={JSON.stringify(support)}>
                                 {support.pages && support.pages !== "" ? <>
                                     <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{support.pages} {support.pages.charAt(0) * 2 && support.pages.charAt(support.pages.length -1) * 2 ? "pages" : null}</span>
@@ -55,7 +54,6 @@ const SearchItem = ({item, location = "index"}) => {
 }
 
 const getContent = (value, lang = "en") => {
-    console.log(value)
     if (value) {
       return value.filter(obj => obj.lang === lang)[0] ? value.filter(obj => obj.lang === lang)[0].content : value.filter(obj => obj.lang === "en")[0] ? value.filter(obj => obj.lang === "en")[0].content : value.filter(obj => obj.lang === "fr")[0].content
     } else {

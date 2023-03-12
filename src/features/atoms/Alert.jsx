@@ -8,12 +8,11 @@ const Alert = ({alertType, message, setAlert = false}) => {
         setAlert(null)
     }, 5000)
 
-    return <>
-        <div className={"notification has-text-centered " + type}>
+    return <div className={"notification has-text-centered " + type}>
             {setAlert ? <button className="delete" onClick={() => setAlert(null)}></button> : null}
             {message['en']}
-        </div>
-    </>
+    </div>
+
 }
 
 export default Alert

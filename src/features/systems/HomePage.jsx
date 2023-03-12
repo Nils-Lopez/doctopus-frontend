@@ -99,7 +99,7 @@ const Landing = ({popularDocs}) => {
         <Link to="/about">Read more ...</Link>
       </div>
       <div className="container recents-container">
-        <h1 className="title is-5">Popular Documents</h1>
+        <h1 className="title is-5">Most viewed</h1>
         <div className="columns is-multiline">
             {popularDocs && popularDocs[0] ? popularDocs.map((doc, index) => {
               return <Fragment key={JSON.stringify(doc)}>
