@@ -2,6 +2,7 @@ import React, {Fragment} from "react";
 
 const SearchItem = ({item, setDisplay, location = "index"}) => {
     const colClasses = location !== "index" ? "is-one-third" : "is-one-quarter"
+    console.log("item : ", item)
     return <div className={"column " + colClasses}>
             <div className="box results-col " onClick={() => setDisplay(item.doc)}>
             <div className="is-flex is-justify-content-end mt-0 mb-0">

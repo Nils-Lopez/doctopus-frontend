@@ -7,15 +7,18 @@ body {
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
   overflow-x: hidden;
+  overflow-y: auto;
 }
 
 html {
   height: 100%;
+  overflow-y: hidden;
 }
 .page-content {
   padding-top: 0px;
   padding-bottom: 150px;
 }
+
 
 .footer-app {
   position:fixed;
@@ -23,13 +26,20 @@ html {
 
 }
 
+
+.panel-hover:hover {
+  cursor: pointer;
+  filter: opacity(0.75);
+}
+
+
 .appAlert {
   position: absolute;
   z-index: 100;
   top: 50px;
   width: 100%;
 }
-
+ 
 .results-col {
   height: 100%;
   cursor: pointer;
@@ -76,25 +86,12 @@ code {
     monospace;
 }
 
-.template-form-panel {
-  height: 330px;
-  overflow-y: auto;
-  
-}
 
 .page-content {
   margin-top: 65px;
 }
 
-@media (min-width: 770px) {
-  .template-fixed {
-  position: fixed;
-}
 
-.settings-scrollable {
-  margin-left: 33%;
-}
-}
 
 .background-landing-ctn {
   width: 120%;

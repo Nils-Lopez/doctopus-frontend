@@ -70,7 +70,7 @@ const Router = () => {
                 <Routes>
             <Route path="/">
               <Route index element={<HomePage client={client} setAlert={setAlert}/>}/>
-                {client && client.user && client.user.type === "admin" ? <>
+                {client && client.user && (client.user.type === "admin" || client.user.type === "moderator" || client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? <>
                     <Route path="/admin/create" element={<Create client={client} setAlert={setAlert} />} />
                     <Route path="/admin/dashboard" element={<Dashboard client={client} setAlert={setAlert} />}/>                 
                     <Route path="/admin/settings" element={<Settings client={client} setClient={setClient} setAlert={setAlert} />} />

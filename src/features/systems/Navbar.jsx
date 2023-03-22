@@ -48,7 +48,7 @@ const Navbar = ({bake_cookie, read_cookie, delete_cookie, client, setClient, set
                     {/* <div className="navbar-item">
                         <Link to="/contact"><p className="has-text-primary"><strong>Contact us</strong></p></Link>
                     </div>   */}
-            {client && client.user && client.user.type === "admin" ?
+            {client && client.user && (client.user.type === "admin" || client.user.type === "moderator" || client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ?
               <Admin />
               : null}
                 </div>

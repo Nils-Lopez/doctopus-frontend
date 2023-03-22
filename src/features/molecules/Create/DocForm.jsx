@@ -178,10 +178,14 @@ const DocForm = ({client, setAlert, template}) => {
   
   useEffect(() => {
     if (template && template.schema_name) {
+      console.log(template.tag_defaults)
       selectTag(template.tag_defaults)
       selectLang(template.languages.defaults)
+      selectType(template.type_defaults)
     }
   }, [template])
+
+  console.log(selectedTags)
 
 
   const handleSelectBrotherHood = (e) => {
@@ -254,12 +258,12 @@ const DocForm = ({client, setAlert, template}) => {
       </div> : null}
       <RoleForm location="support-form-doc" scope="docs" lang={idLang} selectedRoles={selectedTypes} selectRole={selectType}/>
       {template && template.tag ? <DocTagsForm selectedTags={selectedTags} selectTag={selectTag} scope="docs" lang={idLang} /> : null}
-      <div className="field mt-2">
-          <label className="label">
-            Copyrights
-          </label>
-          <input type="text" className="input" value={copyrightsValue} onChange={handleCopyrightsChange}/>
-        </div>
+      {template && template.copyright ? <div className="field mt-2">
+        <label className="label">
+          Copyrights
+        </label>
+        <input type="text" className="input" value={copyrightsValue} onChange={handleCopyrightsChange}/>
+      </div> : null}
     </> : null}
     
     <hr/>
