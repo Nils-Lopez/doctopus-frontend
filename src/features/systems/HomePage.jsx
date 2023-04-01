@@ -20,6 +20,7 @@ const HomePage = ({client, setAlert}) => {
   const [empty, setEmpty] = useState(false)
   const [page, setPage] = useState(1)
   const [popularDocs, setPopularDocs] = useState(false)
+  const [displayDoc, setDisplayDoc] = useState(false)
 
   const {
     search, 
@@ -80,7 +81,7 @@ const HomePage = ({client, setAlert}) => {
   <div className="inner one"></div>
   <div className="inner two"></div>
   <div className="inner three"></div>
-</div> : (!result.items || !result.items[0]) ? <Landing popularDocs={popularDocs}/> : <SearchResult result={result} client={client} setAlert={setAlert} page={page} setPage={setPage} loadingSearch={loadingSearch} setResult={setResult}/>}
+</div> : (!result.docs || !result.docs[0]) ? <Landing popularDocs={popularDocs} setDisplayDoc={setDisplayDoc} setResult={setResult}/> : <SearchResult result={result} client={client} setAlert={setAlert} page={page} setPage={setPage} loadingSearch={loadingSearch} setResult={setResult} displayDoc={displayDoc} setDisplayDoc={setDisplayDoc}/>}
           </>}
           
       </div>
@@ -89,7 +90,13 @@ const HomePage = ({client, setAlert}) => {
   </>
 }
 
-const Landing = ({popularDocs}) => {
+const Landing = ({popularDocs, setDisplayDoc, setResult}) => {
+  
+  const setDisplay = (item) => {
+    setResult({docs: [item]})
+    setDisplayDoc(item)
+  }
+
   return <>
   
   <div className="container box mt-2 mb-6">
@@ -103,7 +110,7 @@ const Landing = ({popularDocs}) => {
         <div className="columns is-multiline">
             {popularDocs && popularDocs[0] ? popularDocs.map((doc, index) => {
               return <Fragment key={JSON.stringify(doc)}>
-                <SearchItem item={{doc: doc}} location="landing"/>
+                <SearchItem item={{doc: doc}} location="landing" setDisplay={setDisplay}/>
               </Fragment>
             }) : <div className="container mt-3 pt-4">
               <div className="loader">

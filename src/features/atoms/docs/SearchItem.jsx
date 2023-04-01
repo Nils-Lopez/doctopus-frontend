@@ -40,9 +40,10 @@ const SearchItem = ({item, setDisplay, location = "index"}) => {
          
                     <div className="is-flex is-justify-content-space-around">
                         {item.doc.tags.map((tag, i) => {
-                            if (i < 2) {
+                            let title = getContent(tag.title)
+                            if (i < 2 && title !== "" && title !== " ") {
                                 return <Fragment key={JSON.stringify(tag)}>
-                                <span className="tag is-info is-small mb-2">{getContent(tag.title)}</span>
+                                <span className="tag is-info is-small mb-2">{title && title.length >= 14 ? title.slice(0, 14) + ".." : title}</span>
                                
                             </Fragment>
                             }
@@ -54,7 +55,7 @@ const SearchItem = ({item, setDisplay, location = "index"}) => {
         </div>
 }
 
-const getContent = (value, lang = "en") => {
+const getContent = (value, lang = "fr") => {
     if (value) {
       return value.filter(obj => obj.lang === lang)[0] ? value.filter(obj => obj.lang === lang)[0].content : value.filter(obj => obj.lang === "en")[0] ? value.filter(obj => obj.lang === "en")[0].content : value.filter(obj => obj.lang === "fr")[0].content
     } else {

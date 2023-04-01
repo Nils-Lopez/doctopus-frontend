@@ -26,18 +26,21 @@ const Show = ({doc}) => {
         </> : null}
         {tags && tags[0] ? <>
             {tags.map((type) => {
-                return <Fragment key={JSON.stringify(type)}>
-                    <span className="tag is-medium is-info mr-1 ml-1">
-                        {getContent(type.title)}
-                    </span>
-                </Fragment>
+                let title = getContent(type.title)
+                if (title !== "" && title !== " ") {
+                    return <Fragment key={JSON.stringify(type)}>
+                        <span className="tag is-medium is-info mr-1 ml-1 mt-1">
+                            {title && title.length >= 14 ? title.slice(0, 14) + ".." : title}
+                        </span>
+                    </Fragment>
+                }
             })}
         </> : null}
 
     </>
 }
 
-const getContent = (value, lang = "en") => {
+const getContent = (value, lang = "fr") => {
     if (value) {
       return value.filter(obj => obj.lang === lang)[0] ? value.filter(obj => obj.lang === lang)[0].content : value.filter(obj => obj.lang === "en")[0] ? value.filter(obj => obj.lang === "en")[0].content : value.filter(obj => obj.lang === "fr")[0].content
     } else {

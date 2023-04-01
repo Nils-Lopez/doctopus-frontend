@@ -10,7 +10,7 @@ import { faRotateLeft } from '@fortawesome/free-solid-svg-icons'
 
 import {useTags} from "../../utils/hooks/Tags"
 
-const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, setResult}) => {
+const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, setResult, displayDoc, setDisplayDoc}) => {
 
     const [dataList, setDataList] = useState([])
     const [tags, setTags] = useState([])
@@ -18,7 +18,7 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
     const [searchTags, setSearchTags] = useState(false)
     const [searchTagsLoading, setSearchTagsLoading] = useState(false)
 
-    const [displayDoc, setDisplayDoc] = useState(false)
+    
 
     useEffect(() => {
         if (page === 1) {
@@ -38,10 +38,15 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
         if (searchTags) {
             setSearchTags(false)
         } else if (displayDoc) {
-            setDisplayDoc(false)
+            if (dataList.length === 1) {
+                setDisplayDoc(false)
+                setResult({})
+            } else {
+                setDisplayDoc(false)
+            }
         } else if (page === 1) {
-            setResult([])
-        } else {
+            setResult({})
+        } else  {
             setPage(page - 1)
         }
     }
