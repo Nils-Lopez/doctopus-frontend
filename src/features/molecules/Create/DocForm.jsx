@@ -6,12 +6,12 @@ import ParentForm from "./ParentForm"
 import RoleForm from "../../atoms/forms/RoleForm"
 
 import {useDocs} from "../../../utils/hooks/docs/Docs"
-import {useBrotherhoods} from "../../../utils/hooks/docs/Brotherhoods"
+import {useDocTemplates} from "../../../utils/hooks/templates/DocTemplates"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
-const DocForm = ({client, setAlert, template}) => {
+const DocForm = ({client, setAlert, selectedType, handleSelectType}) => {
   
   const [titleValue, setTitleValue] = useState("")
   const [defaultSlug, setDefaultSlug] = useState("")
@@ -42,6 +42,17 @@ const DocForm = ({client, setAlert, template}) => {
 
   const [brotherhoods, setBrotherhoods] = useState([])
   const [brotherhoodsLoading, setBrotherhoodsLoading] = useState(false)
+
+  const [selectedTemplate, selectTemplate] = useState('')
+  const [subTemplate, setSubTemplate] = useState(null)
+  const [selectedSubTemplate, selectSubTemplate] = useState("")
+  const [templateModel, setTemplateModel] = useState({})
+
+  const [docTemplates, setDocTemplates] = useState([])
+
+  const [template, setFullTemplate] = useState(false)
+
+  const [docTemplatesLoading, setDocTemplatesLoading] = useState(false)
 
   const {
     createDoc, 
@@ -185,20 +196,154 @@ const DocForm = ({client, setAlert, template}) => {
   console.log(selectedTags)
 
 
-  const handleSelectBrotherHood = (e) => {
+
+  const handleSelectTemplate = (e) => {
     e.preventDefault()
-    brotherhoods.map((brotherhood) => {
-      if (brotherhood.title === e.target.value) {
-        selectBrotherHood(brotherhood)
+    selectTemplate(e.target.value)
+    docTemplates.map((template) => {
+      if (template.schema_name === e.target.value) {
+        setTemplateModel(template)
       }
     })
-    if (!selectedBrotherHood.title) {
-      selectBrotherHood(e.target.value)
+
+  }
+  
+  const handleSelectSubTemplate = (e) => {
+    e.preventDefault()
+    selectSubTemplate(e.target.value)
+    templateModel.schema_childs.map((template) => {
+      if (template.schema_name === e.target.value) {
+        setSubTemplate(template)
+      }
+    })
+    if (e.target.value === "None") {
+      setSubTemplate(false)
     }
   }
 
+  const {
+    responseFindAllDocTemplates,
+    findAllDocTemplates
+  } = useDocTemplates()
+
+  if (!docTemplates[0] && !docTemplatesLoading) {
+    findAllDocTemplates()
+    setDocTemplatesLoading(true)
+  }
+
+  useEffect(() => {
+    if (responseFindAllDocTemplates && responseFindAllDocTemplates.success) {
+      setDocTemplates(responseFindAllDocTemplates.data)
+    }
+  }, [responseFindAllDocTemplates])
+
+  useEffect(() => {
+    docTemplates.map((template) => {
+      if (client.user.defaultTemplate && client.user.defaultTemplate === template._id && selectedTemplate === "") {
+        selectTemplate(template.schema_name)
+        setTemplateModel(template)
+      }
+    })
+  }, [docTemplates])
+
+  useEffect(() => {
+    if (!subTemplate || !templateModel.schema_childs.includes(subTemplate)) {
+      console.log("ici")
+      setFullTemplate(templateModel)
+    } else {
+      console.log('la')
+      let model = templateModel
+      if (model.languages.exist) {
+        model.languages.defaults = [...new Set([...model.languages.defaults, ...subTemplate.languages.defaults])]
+      }
+      if (model.tag) {
+        model.tag_defaults = [...new Set([...model.tag_defaults, ...subTemplate.tag_defaults])]
+      }
+      if (model.type) {
+        model.type_defaults = [...new Set([...model.type_defaults, ...subTemplate.type_defaults])]
+      }
+      if (model.support_role) {
+        model.support_role_defaults = [...new Set([...model.support_role_defaults, ...subTemplate.support_role_defaults])]
+      }
+      if (model.support_issn) {
+        model.support_issn_default = subTemplate.support_issn_default
+      }
+      if (model.parent_role) {
+        model.parent_role_defaults = [...new Set([...model.parent_role_defaults, ...subTemplate.parent_role_defaults])]
+      }
+      if (model.parent_entity) {
+        model.parent_entity_defaults =  [...new Set([...model.parent_entity_defaults, ...subTemplate.parent_entity_defaults])]
+      }
+      if (model.parent_person) {
+        model.parent_person_defaults = [...new Set([...model.parent_person_defaults, ...subTemplate.parent_person_defaults])]
+      }
+      if (model.parent_project) {
+        model.parent_project_defaults = [...new Set([...model.parent_project_defaults, ...subTemplate.parent_project_defaults])]
+      }
+      setFullTemplate(model)
+      console.log("tags: ", model.tag_defaults)
+    }
+  }, [subTemplate, templateModel])
+
 
   return <form onSubmit={handleDocSubmit}>
+    <div className="columns">
+            <div className="column is-one-third">
+              <div className="field">
+            <label className="label">Type</label>
+            <div className="select">
+              <select value={selectedType} onChange={handleSelectType}>
+                <option>Document</option>
+                <option>Organisation</option>
+                <option>Person</option>
+              </select>
+            </div>
+          </div>
+            </div>
+            <div className="column is-one-third">
+              <div className="field">
+            <label className="label">Model</label>
+            <div className="select">
+             <select value={selectedTemplate} onChange={handleSelectTemplate}>
+             
+                {docTemplates.map((template) => {
+                  
+                    if (!template.schema_parent) {
+                      return <Fragment key={template.schema_slug}>
+                    <option>{template.schema_name}</option>
+                  </Fragment>
+                  
+                    }
+                })}
+              </select>
+            </div>
+          </div>
+              </div>
+               
+
+          {template && template.schema_childs && template.schema_childs[0] ? <>
+          <div className="column is-one-third">
+              <div className="field">
+            <label className="label">Template</label>
+            <div className="select">
+             <select value={selectedSubTemplate} onChange={handleSelectSubTemplate}>
+             <option value="None">None</option>
+
+                {templateModel.schema_childs.map((template) => {
+                  
+                    return <Fragment key={template.schema_slug}>
+                    <option>{template.schema_name}</option>
+                  </Fragment>
+                  
+                })}
+              </select>
+            </div>
+          </div>
+              </div>
+             </> : null}
+            
+          </div>
+    
     <div className="is-flex is-justify-content-start">
       <button className="button is-light mb-3" onClick={handleIdentityShowing}>
         <h3 className="title is-4">Identity </h3>
