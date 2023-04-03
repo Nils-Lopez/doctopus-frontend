@@ -86,7 +86,7 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
             {searchTags.docs ? <>
                 <ShowTag docs={searchTags.docs} tag={searchTags.tag}/>
             </> : displayDoc ? <>
-                <ShowDoc doc={displayDoc}/>
+                <ShowDoc doc={displayDoc} handleSearchTag={handleSearchTag}/>
             </> : <>
             {tags && tags[0] ? <>
             <h3 className="subtitle has-text-right is-5 has-text-grey mt-0 pt-0 mb-4">Tags</h3>
@@ -104,7 +104,7 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
                         })}
                     </div> }     
                 </> : null}
-                {page === 1 ? <>
+                {page === 1 && result.items && result.items[0] ? <>
                     <hr className='mb-3 mt-4'/>
                 <h3 className="subtitle has-text-right is-5 has-text-grey mt-1 mb-3">Result</h3>
 
@@ -128,7 +128,7 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
                 {dataList.map((item, index) => {
                     if (index < 20) {
                         return <Fragment key={JSON.stringify(item)}>
-                            <SearchItem item={item} setDisplay={setDisplayDoc}/>
+                            <SearchItem item={item} setDisplay={setDisplayDoc} handleSearchTag={handleSearchTag}/>
                         </Fragment>
                     }
                 })}
@@ -157,7 +157,7 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
 }
 
 
-const getContent = (value, lang = "en") => {
+const getContent = (value, lang = "fr") => {
     if (value) {
       return value.filter(obj => obj.lang === lang)[0] ? value.filter(obj => obj.lang === lang)[0].content : value.filter(obj => obj.lang === "en")[0] ? value.filter(obj => obj.lang === "en")[0].content : value.filter(obj => obj.lang === "fr")[0].content
     } else {

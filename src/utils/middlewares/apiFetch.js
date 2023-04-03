@@ -6,11 +6,12 @@ export async function apiFetch (endpoint, options = {} ) {
         Accept: 'application/json'
         },
         credentials: "include",
+        mode: "cors",
         ...options
     }
 
-    // const apiUrl = "https://doctopus-cd-backend.herokuapp.com/api"
-    const apiUrl = "http://localhost:5000/api"
+    const apiUrl = "https://doctopus-cd-backend.herokuapp.com/api"
+    // const apiUrl = "http://localhost:5000/api"
 
     if (options.body !== null && typeof options.body === 'object') {
         options.body = JSON.stringify(options.body)

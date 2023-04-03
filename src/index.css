@@ -89,6 +89,7 @@ code {
 
 .page-content {
   margin-top: 65px;
+  overflow: hidden;
 }
 
 

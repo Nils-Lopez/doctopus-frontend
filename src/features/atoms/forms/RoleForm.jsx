@@ -213,12 +213,12 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
         <label className="label subtitle is-6 is-flex is-justify-content-start">{location === "support-form-doc" ? "Type description" : location !== "templates-tags" ? "Role description" : "Tag description"}</label>
         <textarea className="textarea" onChange={handleRoleDescChange} value={lang === "en" ? roleDescEn : roleDescFr}/>
       </div> : null}
-      {selectedRoles.map((role) => {
+      {selectedRoles ? selectedRoles.map((role) => {
         return <Fragment key={role.slug}>
           <span className="tag is-success is-medium mr-1">{getContent(role.title, lang)}</span>
           <span className="tag is-danger is-medium mr-2 button" onClick={(e) => handleDeleteRole(e, role)}><FontAwesomeIcon icon={faTrash}/></span>
         </Fragment>
-      })}
+      }) : null}
     </div>
   </>
 }

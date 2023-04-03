@@ -200,12 +200,12 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang, location}) => {
         <textarea className="textarea" onChange={handleTagDescChange} value={lang === "en" ? tagDescEn : tagDescFr}/>
       </div> : null}
       
-      {selectedTags.map((tag) => {
+      {selectedTags ? selectedTags.map((tag) => {
         return <Fragment key={tag.slug}>
           <span className="tag is-primary is-medium mr-1">{getContent(tag.title, lang)}</span>
           <span className="tag is-danger is-medium mr-2 button" onClick={(e) => handleDeleteTag(e, tag)}><FontAwesomeIcon icon={faTrash}/></span>
             </Fragment>
-      })}
+      }) : null}
 
     </div>
   </>

@@ -146,8 +146,7 @@ const PersonForm = ({client, setAlert, template, setCreated}) => {
         birthDate: birthDateValue,
         deathDate: deathDateValue,
         city: cityValue,
-        country: countryValue,
-        fristName: firstNameValue,
+        firstName: firstNameValue,
         lastName: lastNameValue,
         website: urlValue,
         languages: selectedLangs

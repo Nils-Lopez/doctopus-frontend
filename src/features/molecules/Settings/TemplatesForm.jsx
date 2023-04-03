@@ -97,6 +97,7 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
       setCopiesQuality(template.copies_quality)
       setCopyrightsValue(template.copyrights)
       setDateValue(template.support_date)
+      selectDocType(template.type_defaults)
     }
   
     const handleNewTemplate = () => {
@@ -195,86 +196,6 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
     const [docTemplatesLoading, setDocTemplatesLoading] = useState(false)
     const [loadingCreateDocTemplate, setLoadingCreateDocTemplate] = useState(false)
     const [loadingUpdateDocTemplate, setLoadingUpdateDocTemplate] = useState(false)
-
-    // const {
-    //   responseFindAllRoles,
-    //   findAllRoles
-    // } = useRoles()
-
-    // if (!roles[0] && !rolesLoading) {
-    //   findAllRoles()
-    //   setRolesLoading(true)
-    // }
-  
-    // useEffect(() => {
-    //   if (responseFindAllRoles && responseFindAllRoles.success) {
-    //     setRoles(responseFindAllRoles.data)
-    //   }
-    // }, [responseFindAllRoles])
-  
-    // const {
-    //   responseFindAllTags,
-    //   findAllTags
-    // } = useTags()
-  
-    // if (!tags[0] && !tagsLoading) {
-    //   findAllTags()
-    //   setTagsLoading(true)
-    // }
-  
-    // useEffect(() => {
-    //   if (responseFindAllTags && responseFindAllTags.success) {
-    //     setTags(responseFindAllTags.data)
-    //   }
-    // }, [responseFindAllTags])
-  
-    // const {
-    //   responseFindAllPeople,
-    //   findAllPeople
-    // } = usePeople()
-  
-    // if (!people[0] && !peopleLoading) {
-    //   findAllPeople()
-    //   setPeopleLoading(true)
-    // }
-  
-    // useEffect(() => {
-    //   if (responseFindAllPeople && responseFindAllPeople.success) {
-    //     setPeople(responseFindAllPeople.data)
-    //   }
-    // }, [responseFindAllPeople])
-  
-    // const {
-    //   responseFindAllEntities,
-    //   findAllEntities
-    // } = useEntities()
-  
-    // if (!organisations[0] && !organisationsLoading) {
-    //   findAllEntities()
-    //   setOrganisationsLoading(true)
-    // }
-  
-    // useEffect(() => {
-    //   if (responseFindAllEntities && responseFindAllEntities.success) {
-    //     setOrganisations(responseFindAllEntities.data)
-    //   }
-    // }, [responseFindAllEntities])
-    
-    // const {
-    //   responseFindAllProjects, 
-    //   findAllProjects
-    // } = useProjects()
-    
-    // if (!projects[0] && !projectsLoading) {
-    //   findAllProjects()
-    //   setProjectsLoading(true)
-    // }
-  
-    // useEffect(() => {
-    //   if (responseFindAllProjects && responseFindAllProjects.success) {
-    //     setProjects(responseFindAllProjects.data)
-    //   }
-    // }, [responseFindAllProjects])
   
     const {
       responseFindAllDocTemplates,
@@ -332,7 +253,7 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
           support_thumb: thumbValue, //Url of thumbnail
           support_format: formatValue, //
           support_accessibility: accessValue,
-          suport_issn: issnValue, 
+          support_issn: issnValue, 
           support_issn_default: issnDefault,
           parent_role: parentRolesValue,
           parent_entity: orgValue, 

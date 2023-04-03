@@ -1,6 +1,6 @@
 import React, {Fragment} from "react";
 
-const Show = ({doc}) => {
+const Show = ({doc, handleSearchTag}) => {
     const {
         title,
         description,
@@ -29,7 +29,7 @@ const Show = ({doc}) => {
                 let title = getContent(type.title)
                 if (title !== "" && title !== " ") {
                     return <Fragment key={JSON.stringify(type)}>
-                        <span className="tag is-medium is-info mr-1 ml-1 mt-1">
+                        <span className="tag is-medium is-info mr-1 ml-1 mt-1 indextag" onClick={() => handleSearchTag(type)}>
                             {title && title.length >= 14 ? title.slice(0, 14) + ".." : title}
                         </span>
                     </Fragment>

@@ -258,7 +258,7 @@ const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selec
         Duration
       </label>
       
-      <input type="time" className="input" step="1" value={durationValue} onChange={handleDurationChange}/>
+      <input type="text" className="input" step="1" value={durationValue} onChange={handleDurationChange}/>
     </div> : null}
     {template && template.support_thumb ? <div className="field">
        <label className="label">

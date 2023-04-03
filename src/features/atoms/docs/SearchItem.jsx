@@ -1,6 +1,6 @@
 import React, {Fragment} from "react";
 
-const SearchItem = ({item, setDisplay, location = "index"}) => {
+const SearchItem = ({item, setDisplay, handleSearchTag, location = "index"}) => {
     const colClasses = location !== "index" ? "is-one-third" : "is-one-quarter"
     console.log("item : ", item)
     return <div className={"column " + colClasses}>
@@ -43,7 +43,7 @@ const SearchItem = ({item, setDisplay, location = "index"}) => {
                             let title = getContent(tag.title)
                             if (i < 2 && title !== "" && title !== " ") {
                                 return <Fragment key={JSON.stringify(tag)}>
-                                <span className="tag is-info is-small mb-2">{title && title.length >= 14 ? title.slice(0, 14) + ".." : title}</span>
+                                <span className="tag is-info is-small mb-2 indextag" onClick={() => handleSearchTag(tag)}>{title && title.length >= 14 ? title.slice(0, 14) + ".." : title}</span>
                                
                             </Fragment>
                             }

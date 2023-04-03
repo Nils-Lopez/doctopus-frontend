@@ -176,14 +176,11 @@ const DocForm = ({client, setAlert, template}) => {
     }
   }, [responseCreateDoc])
   
-  useEffect(() => {
-    if (template && template.schema_name) {
-      console.log(template.tag_defaults)
+    if (template && (template.tag_defaults !== selectedTags || template.type_defaults !== selectedTypes || (template.languages && template.languages.defaults !== selectedLangs))) {
       selectTag(template.tag_defaults)
-      selectLang(template.languages.defaults)
+      selectLang(template.languages ? template.languages.defaults : [])
       selectType(template.type_defaults)
     }
-  }, [template])
 
   console.log(selectedTags)
 
@@ -239,7 +236,7 @@ const DocForm = ({client, setAlert, template}) => {
       </label>
       <textarea className="textarea" value={idLang === "fr" ? descFrValue : descEnValue} onChange={handleDescChange}></textarea>
       </div> : null}
-      {template && template.language && template.language.exist ? <div className="field" id="docLang">
+      {template && template.languages && template.languages.exist ? <div className="field" id="docLang">
       <label className="label title is-5">
         Language
       </label>

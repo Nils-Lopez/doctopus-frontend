@@ -59,7 +59,7 @@ const ExemplariesForm= ({setPendingExemplaries, pendingExemplaries, template}) =
   }
   
   return <>  
-    <div className="box">
+    <div className="box mt-5">
       <label className="label title is-5">
         Samples
       </label>

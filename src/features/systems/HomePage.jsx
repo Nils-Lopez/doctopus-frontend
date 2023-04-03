@@ -33,7 +33,7 @@ const HomePage = ({client, setAlert}) => {
   } = useDocs()
 
   useEffect(() => {
-    if (responseSearch && responseSearch.success && responseSearch.data && responseSearch.data.items[0]) {
+    if (responseSearch && responseSearch.success && responseSearch.data && (responseSearch.data.items[0] || responseSearch.data.docs[0] || responseSearch.data.tags[0])) {
       setResult(responseSearch.data)
       setPage(1)
       setLoadingSearch(false)
