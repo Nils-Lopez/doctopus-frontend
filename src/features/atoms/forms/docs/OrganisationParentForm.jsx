@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
 import { useEntities } from "../../../../utils/hooks/Entities"
-
+import {useTranslation} from "react-i18next"
 const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lang, hideRoles, client, setAlert}) => {
   const [organisationValue, setOrganisationValue] = useState("")
   const [orgForm, setOrgForm] = useState(false)
@@ -19,6 +19,7 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
   const [orgs, setOrgs] = useState([])
   const [orgsLoading, setOrgsLoading] = useState(false)
   const [pending, setPending] = useState("")
+  const { t, i18n } = useTranslation()
 
   const getContent = (value, lang) => {
     if (value) {
@@ -156,15 +157,15 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
 
   return <>
     <div className="field">
-      {location !== "templates-parents" ? <label className="label title is-5">Organisations</label> : null}
+      {location !== "templates-parents" ? <label className="label title is-5">{t('organization')}</label> : null}
       <div className="columns">
         <div className="column is-three-fifth">
           {(!orgs || !orgs[0]) ? <>
-          <input type="text" placeholder={location === "templates-parents" ? "Default orgs" : ""} className="input" value={organisationValue} onChange={handleOrgChange}/>
+          <input type="text" placeholder={location === "templates-parents" ? t('default-organizations') : ""} className="input" value={organisationValue} onChange={handleOrgChange}/>
           </> : <div className="select is-fullwidth is-multiple">
             <select value={currentOrg} onChange={changeCurrentOrg} name={"entiieis"} id={"entiiies"}>
                 {pending !== "" && isNotIncluded(pending, orgs) ? <>
-                  <option value={pending}>{pending} (draft)</option>
+                  <option value={pending}>{pending} {t('draft')}</option>
                 </> : null}
                 {orgs.map((t, i) => {
                   if (i < 7) {
@@ -178,12 +179,12 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
         </div>
         <div className="column is-one-fifth">
           {(!orgs || !orgs[0]) && !orgForm ? <>
-                        {organisationValue !== "" && !orgsLoading ? <button className="button is-primary" onClick={searchOrgValue}>Search</button> : <button className="button is-primary is-disabled" disabled>Search</button>}
+                        {organisationValue !== "" && !orgsLoading ? <button className="button is-primary" onClick={searchOrgValue}>{t('search')}</button> : <button className="button is-primary is-disabled" disabled>{t('search')}</button>}
 
           </> : <>
             {(organisationValue !== "" && selectedRoles[0]) || (organisationValue !== "" && isOrgExisting(organisationValue)) || (organisationValue !== "" && !isOrgExisting(organisationValue)) || (organisationValue !== "" && hideRoles) ? <button className="button is-primary " onClick={handleOrgBtn}>
-            {isOrgExisting() ? "Add" : "Create"}
-          </button> : <button className="button is-primary is-disabled" disabled>Add</button>}
+            {isOrgExisting() ? t('add') : t('create')}
+          </button> : <button className="button is-primary is-disabled" disabled>{t('add')}</button>}
             <span className="tag is-danger is-medium ml-2 mt-1 button" onClick={() => {
                 setOrgs([]);
               }}><FontAwesomeIcon icon={faTrash}/></span>
@@ -209,7 +210,7 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
       <div className="modal-background"></div>
         <div className="modal-card">
           <div className="modal-card-head has-background-white-ter">
-            <p className="modal-card-title is-size-3 ml-6">Create Organisation</p>
+            <p className="modal-card-title is-size-3 ml-6">{t('create-organization')}</p>
               <button onClick={() => setOrgForm(false)} className="delete is-large ml-4" aria-label="close"></button>
               </div>
               <div className="modal-card-body has-background-white-ter"> 

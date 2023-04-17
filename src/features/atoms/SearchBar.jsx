@@ -2,12 +2,13 @@ import React, { useState, useEffect, Fragment } from "react";
 
   import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
-
+import { useTranslation } from 'react-i18next';
 
 const SearchBar = ({searchValue, setSearchValue}) => {
     const [tagDropdown, setTagDropdown] = useState(false)
     const [extraDropdown, setExtraDropdown] = useState(false)
-    
+    const { t, i18n } = useTranslation()
+
     // const [tags, setTags] = useState([])
 
     const handleSearchChange = (e) => {
@@ -52,7 +53,7 @@ const SearchBar = ({searchValue, setSearchValue}) => {
     <div className='column is-three-quarters is-paddingless'>
       <div className='search-block' id="searchBlock">
         <label className='search-label label'>
-          <span>What</span>
+          <span>{t('what')}</span>
         </label>
         <input className='search-input home-input' placeholder='Title, author, tags ...' type='/search' value={searchValue} onChange={handleSearchChange} />
       </div>
@@ -87,8 +88,8 @@ const SearchBar = ({searchValue, setSearchValue}) => {
       </div>
     </div> */}
     <div className='column is-paddingless'>
-        {searchValue.length > 0 ? <button className='button is-primary is-large search-button' type="submit"><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/> &nbsp; Search</button> :
-        <button className='button is-primary is-large search-button'><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/> &nbsp; Search</button>}
+        {searchValue.length > 0 ? <button className='button is-primary is-large search-button' type="submit"><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/> &nbsp; {t('what')}</button> :
+        <button className='button is-primary is-large search-button'><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/> &nbsp; {t('search')}</button>}
     </div>
         </div>
         

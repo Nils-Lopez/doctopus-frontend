@@ -1,15 +1,23 @@
 import React, {Fragment} from "react"
 
 import SearchItem from "../docs/SearchItem"
+import {useTranslation} from "react-i18next"
 
-const Show = ({docs, tag}) => {
+const Show = ({docs, tag, setDisplayDoc, handleSearchTag}) => {
+
+    const handleDisplay = (doc) => {
+        handleSearchTag(false)
+        setDisplayDoc(doc)
+    }
+    const { t, i18n } = useTranslation()
+
     return <>
-        <h3 className="subtitle  is-5 has-text-grey mt-0 pt-0 mb-1"><small>Tag:</small></h3>
-        <h3 className="subtitle is-4 has-text-grey mt-0 pt-0 mb-4"><strong className="has-text-primary">{getContent(tag.title)}</strong></h3>
+        <h3 className="subtitle  is-5 has-text-grey mt-0 pt-0 mb-1"><small>{t('tag')}:</small></h3>
+        <h3 className="subtitle is-4 has-text-grey mt-0 pt-0 mb-4"><strong className="has-text-primary">{getContent(tag.title, i18n.language)}</strong></h3>
         <div className="columns is-multiline">
             {docs.map((doc, i) => {
                 return <Fragment key={JSON.stringify(doc)}>
-                    <SearchItem item={{doc: doc}} />
+                    <SearchItem item={{doc: doc}} setDisplay={handleDisplay}/>
                 </Fragment>
             })}
         </div>

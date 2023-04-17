@@ -11,10 +11,11 @@ import { useEntities } from "../../../utils/hooks/Entities"
 import {useDocTemplates} from "../../../utils/hooks/templates/DocTemplates"
 import {useBrotherhoods} from "../../../utils/hooks/docs/Brotherhoods"
 import {useProjects} from "../../../utils/hooks/entities/Projects"
+import { useTranslation } from "react-i18next";
 
 
 const Create = ({client, setAlert}) => {
-    
+    const {t, i18n} = useTranslation()
     const [selectedType, selectType] = useState('Document')
 
     const handleSelectType = (e) => {
@@ -28,20 +29,20 @@ const Create = ({client, setAlert}) => {
           {selectedType === "Document" ? null : <div className="columns">
             <div className="column is-one-third">
               <div className="field">
-            <label className="label">Type</label>
+            <label className="label">{t('type')}</label>
             <div className="select">
               <select value={selectedType} onChange={handleSelectType}>
-                <option>Document</option>
-                <option>Organisation</option>
-                <option>Person</option>
+                <option>{t('document')}</option>
+                <option>{t('organization')}</option>
+                <option>{t('person')}</option>
               </select>
             </div>
           </div>
             </div>
             
-            
+            <hr/>
           </div>}
-          <hr/>
+          
           <div className="form">
             {selectedType === "Document" ? 
               <DocForm client={client} setAlert={setAlert} handleSelectType={handleSelectType} selectedType={selectedType}/>

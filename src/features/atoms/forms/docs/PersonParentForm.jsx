@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
 import {usePeople} from "../../../../utils/hooks/People"
-
+import {useTranslation} from "react-i18next"
 
 const PersonParentForm = ({selectedPeople, selectPerson, location, template, lang, hideRoles, client, setAlert }) => {
   const [personValue, setPersonValue] = useState("")
@@ -21,6 +21,7 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
   const [pending, setPending] = useState(false)
 
   const [created, setCreated] = useState(false)
+  const { t, i18n } = useTranslation()
 
   const getContent = (value, lang) => {
     if (value) {
@@ -163,7 +164,7 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
 
   return <>
     <div className="field">
-      {location !== "templates-parents" ? <label className="label title is-5">People</label> : null}
+      {location !== "templates-parents" ? <label className="label title is-5">{t('people')}</label> : null}
       <div className="columns">
         <div className="column is-three-fifth">
           {(!people || !people[0]) ? <>
@@ -171,7 +172,7 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
           </> : <div className="select is-fullwidth is-multiple">
             <select value={currentPerson} onChange={changeCurrentPerson} name={"peopless"} id={"peoplesss"}>
                 {pending !== "" && isNotIncluded(pending, people) ? <>
-                  <option value={pending}>{pending} (draft)</option>
+                  <option value={pending}>{pending} ({t('draft')})</option>
                 </> : null}
                 {people.map((t, i) => {
                   if (i < 7) {
@@ -186,11 +187,11 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
         </div>
         <div className="column is-one-fifth">
           {(!people || !people[0]) && !personForm ? <>
-            {personValue !== "" && !peopleLoading ? <button className="button is-primary" onClick={searchPersonValue}>Search</button> : <button className="button is-primary is-disabled" disabled>Search</button>}
+            {personValue !== "" && !peopleLoading ? <button className="button is-primary" onClick={searchPersonValue}>{t('search')}</button> : <button className="button is-primary is-disabled" disabled>{t('search')}</button>}
           </> : <>
             {(personValue !== "" && selectedRoles[0]) || (personValue !== "" && !isPersonExisting(personValue)) || (personValue !== "" && isPersonExisting(personValue))? <button className="button is-primary " onClick={handlePersonBtn}>
-            {isPersonExisting(personValue) ? "Add" : "Create"}
-          </button> : <button className="button is-primary is-disabled" disabled>Add</button>}
+            {isPersonExisting(personValue) ? t('add') : t('create')}
+          </button> : <button className="button is-primary is-disabled" disabled>{t('add')}</button>}
              <span className="tag is-danger is-medium ml-2 mt-1 button" onClick={() => {
                 setPeople([]);
                 setPersonForm(false)
@@ -217,7 +218,7 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
             <div className="modal-background"></div>
             <div className="modal-card">
                 <div className="modal-card-head has-background-white-ter">
-                    <p className="modal-card-title is-size-3 ml-6">Create Person</p>
+                    <p className="modal-card-title is-size-3 ml-6">{t('create-person')}</p>
                     <button onClick={() => setPersonForm(false)} className="delete is-large ml-4" aria-label="close"></button>
                 </div>
                 <div className="modal-card-body has-background-white-ter">

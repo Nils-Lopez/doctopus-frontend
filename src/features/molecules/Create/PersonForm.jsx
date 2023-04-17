@@ -8,6 +8,7 @@ import OrganisationParentForm from "../../atoms/forms/docs/OrganisationParentFor
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { useTranslation } from "react-i18next";
 
 const PersonForm = ({client, setAlert, template, setCreated}) => {
   
@@ -29,7 +30,8 @@ const PersonForm = ({client, setAlert, template, setCreated}) => {
   const [selectedRoles, selectRole] = useState([])
   const [selectedOrg, selectOrg] = useState([])
   const [selectedProj, selectProj] = useState([])
-  
+    const { t, i18n } = useTranslation();
+
   const {
     findPersonById, 
     responseFindPersonById, 
@@ -178,33 +180,33 @@ const PersonForm = ({client, setAlert, template, setCreated}) => {
         </ul>
      </div>
     <div className="field">
-      <label className="label">
-        Name
+      <label className="label has-text-left">
+        {t('name')}
       </label>
       <input type="text" value={nameValue} onChange={handleNameChange} className="input"/>
     </div>
       <div className="columns">
       <div className="column field">
-      <label className="label">
-        First Name
+      <label className="label has-text-left">
+      {t('first-name')}
       </label>
       <input type="text" value={firstNameValue} onChange={handleFirstNameChange} className="input"/>
     </div>
     <div className="column field">
-      <label className="label">
-        Last Name
+      <label className="label has-text-left">
+      {t('last-name')}
       </label>
       <input type="text" value={lastNameValue} onChange={handleLastNameChange} className="input"/>
     </div>
     </div>
     <div className="field" id="docLang">
-      <label className="label title is-5">
-        Language
+      <label className="label has-text-left">
+      {t('language')}
       </label>
       
       <div className="is-flex">
                 <input type="text" placeholder="Default language" className="input" value={idLang === "en" ? langEnValue : langFrValue} onChange={handleLangChange} />
-                <button onClick={addLang} className="button is-small is-primary mt-1 ml-2">Add</button>
+                <button onClick={addLang} className="button is-small is-primary mt-1 ml-2">{t('add')}</button>
                 
         </div>
         {selectedLangs.map((lang) => {
@@ -216,41 +218,41 @@ const PersonForm = ({client, setAlert, template, setCreated}) => {
       </div>
     <div className="columns">
       <div className="column field">
-      <label className="label">
-        Birthdate
+      <label className="label has-text-left">
+      {t('birthdate')}
       </label>
       <input type="date" value={birthDateValue} onChange={handleBirthDateChange} className="input"/>
     </div>
     <div className="column field">
-      <label className="label">
-        Deathdate
+      <label className="label has-text-left">
+        {t('deathdate')}
       </label>
       <input type="date" value={deathDateValue} onChange={handleDeathDateChange} className="input"/>
     </div>
     </div>
     <div className="columns">
       <div className="column field">
-      <label className="label">
-        City
+      <label className="label has-text-left">
+        {t('city')}
       </label>
       <input type="text" value={cityValue} onChange={handleCityChange} className="input"/>
     </div>
     <div className="column field">
-      <label className="label">
-        Country
+      <label className="label has-text-left">
+        {t('country')}
       </label>
       <input type="text" value={countryValue} onChange={handleCountryChange} className="input"/>
     </div>
     </div>
     <div className="field">
-      <label className="label">
-        Description
+      <label className="label has-text-left">
+        {t('description')}
       </label>
       <textarea value={idLang === "en" ? descEnValue : descFrValue} onChange={handleDescChange} className="textarea"></textarea>
     </div>
       <div className="field">
-        <label className="label">
-          Website
+        <label className="label has-text-left">
+          {t('link-url')}
         </label>
         <input type="text" value={urlValue} onChange={handleUrlChange} className="input"/>
       </div>
@@ -259,7 +261,7 @@ const PersonForm = ({client, setAlert, template, setCreated}) => {
     <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj} lang={idLang} client={client} setAlert={setAlert}/>
     <OrganisationParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} lang={idLang} client={client} setAlert={setAlert}/>
     <button className="button is-large is-primary" onClick={handlePersonSubmit}>
-      Create
+      {t('create')}
     </button>
   </> 
 }

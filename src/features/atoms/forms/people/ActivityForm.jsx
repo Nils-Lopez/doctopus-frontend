@@ -2,12 +2,15 @@ import React, {useState, Fragment} from "react"
 
 import RoleForm from "../RoleForm"
 import OrganisationParentForm from "../docs/OrganisationParentForm"
+import {useTranslation} from "react-i18next"
 
 const ActivityForm = ({activites, selectedActivities, selectActivity, lang, roles}) => {
  const [activityValue, setActivityValue] = useState("")
   const [activityForm, setActivityForm] = useState(false)
   const [selectedRoles, selectRole] = useState([])
   const [selectedOrg, selectOrg] = useState([])
+
+  const { t, i18n } = useTranslation() 
 
   const handleActivityChange = (e) => {
     e.preventDefault()
@@ -65,15 +68,15 @@ const ActivityForm = ({activites, selectedActivities, selectActivity, lang, role
   
   return <>
     <div className="field">
-      <label className="label title is-5">Activities</label>
+      <label className="label title is-5">{t('activities')}</label>
       <div className="columns">
         <div className="column is-four-fifth">
           <input type="text" list="tags" className="input" value={activityValue} onChange={handleActivityChange}/>
         </div>
         <div className="column is-one-fifth">
           {!activityForm ? <>{activityValue !== "" ? <button className="button is-primary " onClick={handleActivityBtn}>
-            {isActivityExisting(activityValue) ? "Add" : "Create"}
-          </button> : <button className="button is-primary is-disabled" disabled>Add</button>}</> : <button className="button is-primary" onClick={handleCreateActivity}>Confirm</button>}
+            {isActivityExisting(activityValue) ? t('add') : t('create')}
+          </button> : <button className="button is-primary is-disabled" disabled>{t('add')}</button>}</> : <button className="button is-primary" onClick={handleCreateActivity}>{t('confirm')}</button>}
         </div>
       </div>
       {activityForm ? <>

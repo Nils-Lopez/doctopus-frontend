@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
 import {useTags} from '../../../../utils/hooks/Tags'
+import {useTranslation} from "react-i18next"
 
 const DocTagsForm = ({selectedTags, selectTag, scope, lang, location}) => {
   const [tagFrValue, setTagFrValue] = useState("")
@@ -14,6 +15,7 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang, location}) => {
   const [tags, setTags] = useState([])
   const [tagsLoading, setTagsLoading] = useState(false)
   const [pending, setPending] = useState("")
+  const { t, i18n } = useTranslation()
 
   const getContent = (value, lang) => {
     return value.filter(obj => obj.lang === lang)[0] ? value.filter(obj => obj.lang === lang)[0].content : value.filter(obj => obj.lang === "en")[0] ? value.filter(obj => obj.lang === "en")[0].content : value.filter(obj => obj.lang === "fr")[0].content
@@ -157,7 +159,7 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang, location}) => {
   
   return <>
     <div className="field">
-      {location !== "templates-tags" ? <label className="label title is-5">Tags</label> : null}
+      {location !== "templates-tags" ? <label className="label has-text-left">{t('tags')}</label> : null}
       <div className="columns">
         <div className="column is-four-fifth">
           {(!tags || !tags[0]) ? <>
@@ -174,7 +176,7 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang, location}) => {
                     }
                 })}
                  {pending !== "" && isNotIncluded(pending, tags) ? <>
-                  <option value={pending} className="has-text-info">{pending} (draft)</option>
+                  <option value={pending} className="has-text-info">{pending} ({t('draft')})</option>
                 </> : null}
             </select>
              </div>
@@ -182,11 +184,11 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang, location}) => {
         </div>
         <div className="column is-one-fifth">
           {(!tags || !tags[0]) && !tagForm ? <>
-            {(tagEnValue !== "" || tagFrValue !== "") && !tagsLoading ? <button className="button is-primary" onClick={searchTagValue}>Search</button> : <button className="button is-primary is-disabled" onClick={searchTagValue} disabled>Search</button>}
+            {(tagEnValue !== "" || tagFrValue !== "") && !tagsLoading ? <button className="button is-primary" onClick={searchTagValue}>{t('search')}</button> : <button className="button is-primary is-disabled" onClick={searchTagValue} disabled>{t('search')}</button>}
           </> : <>
              {!tagForm ? <>{tagFrValue !== "" || tagEnValue !== "" ? <button className="button is-primary " onClick={handleTagBtn}>
-              {isTagExisting() ? "Add" : "Create"}
-            </button> : <button className="button is-primary is-disabled" disabled>Add</button>}</> : <button className="button is-primary" onClick={handleCreateTag}>Confirm</button>}
+              {isTagExisting() ? t('add') : t('create')}
+            </button> : <button className="button is-primary is-disabled" disabled>{t('add')}</button>}</> : <button className="button is-primary" onClick={handleCreateTag}>{t('confirm')}</button>}
             <span className="tag is-danger is-medium ml-2 mt-1 button" onClick={() => {
                 setTags([]);
                 setTagForm(false)
@@ -196,7 +198,7 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang, location}) => {
         </div>
       </div>
       {tagForm ? <div className="field">
-        <label className="label subtitle is-6 is-flex is-justify-content-start">Tag description</label>
+        <label className="label has-text-left is-flex is-justify-content-start">{t('tags-desc')}</label>
         <textarea className="textarea" onChange={handleTagDescChange} value={lang === "en" ? tagDescEn : tagDescFr}/>
       </div> : null}
       

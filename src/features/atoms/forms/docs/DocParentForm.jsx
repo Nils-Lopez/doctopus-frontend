@@ -6,14 +6,15 @@ import {useDocs} from "../../../../utils/hooks/docs/Docs"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import {useTranslation} from "react-i18next"
 
 const DocParentForm = ({selectedDoc, selectDoc, location, template, lang, hideRoles, setAlert}) => {
   const [docValue, setDocValue] = useState("")
   const [selectedRoles, selectRole] = useState([])
   const [idLang, setIdLang] = useState("fr")
-
-    const [docs, setDocs] = useState([])
-    const [docsLoading, setDocsLoading] = useState(false)    
+  const { t, i18n } = useTranslation() 
+  const [docs, setDocs] = useState([])
+  const [docsLoading, setDocsLoading] = useState(false)    
   const [pending, setPending] = useState("")
   
     const {
@@ -109,7 +110,7 @@ const searchDocValue = (e) => {
       setCurrentDoc(responseSearchDocs.data[0].title)
     } else if (responseSearchDocs && docsLoading) {
       setDocsLoading(false)
-      setAlert({type: "error", message: { en: "Cannot find any document matching your search query", fr: "Aucun document ne correspond à votre recherche"}})
+      setAlert({type: "error", message: { en: t('cannot-find-doc'), fr:  t('cannot-find-doc')}})
     }
   }, [responseSearchDocs])
 
@@ -121,7 +122,6 @@ const searchDocValue = (e) => {
         }
       })
       if (pending !== "existing") {
-        console.log('ici')
         setPending(docValue)
       } else {
         setPending("")
@@ -138,15 +138,15 @@ const searchDocValue = (e) => {
   const [currentDoc, setCurrentDoc] = useState({})
   return <>
     <div className="field">
-      {location !== "templates-parents" ? <label className="label title is-5">Doc</label> : null}
+      {location !== "templates-parents" ? <label className="label title is-5">{t('document')}</label> : null}
       <div className="columns">
         <div className="column is-three-fifth">
           {(!docs || !docs[0]) ? <>
-          <input type="text" className="input" placeholder={location === "templates-parents" ? "Default doc" : ""} value={docValue} onChange={handleDocChange}/>
+          <input type="text" className="input" placeholder={location === "templates-parents" ?  t('default-doc') : ""} value={docValue} onChange={handleDocChange}/>
           </> : <div className="select is-fullwidth is-multiple">
             <select value={currentDoc} onChange={changeCurrentDoc} name={"peopless"} id={"peoplesss"}>
             {pending !== "" && isNotIncluded(pending, docs) ? <>
-                  <option value={pending}>{pending} (draft)</option>
+                  <option value={pending}>{pending} ({t('draft')})</option>
                 </> : null}
                 {docs.map((t) => {
                   return <Fragment key={t.title}>
@@ -159,11 +159,11 @@ const searchDocValue = (e) => {
         </div>
         <div className="column is-one-fifth">
           {!docs || !docs[0] ? <>
-            {docValue !== "" && !docsLoading ? <button className="button is-primary" onClick={searchDocValue}>Search</button> : <button className="button is-primary is-disabled" disabled>Search</button>}
+            {docValue !== "" && !docsLoading ? <button className="button is-primary" onClick={searchDocValue}>{t('search')}</button> : <button className="button is-primary is-disabled" disabled>{t('search')}</button>}
           </> : <>
             {(docValue !== "" && selectedRoles[0]) || (docValue !== "" && !isDocExisting(docValue)) || (docValue !== "" && hideRoles) ? <button className="button is-primary " onClick={handleDocBtn}>
-            {isDocExisting(docValue) ? "Add" : "Create"}
-          </button> : <button className="button is-primary is-disabled" disabled>Add</button>}
+            {isDocExisting(docValue) ? t('add') : t('create')}
+          </button> : <button className="button is-primary is-disabled" disabled>{t('add')}</button>}
             <span className="tag is-danger is-medium ml-2 mt-1 button" onClick={() => {
                 setDocs([]);
               }}><FontAwesomeIcon icon={faTrash}/></span>

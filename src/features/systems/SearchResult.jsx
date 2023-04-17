@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRotateLeft } from '@fortawesome/free-solid-svg-icons'
 
 import {useTags} from "../../utils/hooks/Tags"
+import { useTranslation } from "react-i18next";
 
 const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, setResult, displayDoc, setDisplayDoc}) => {
 
@@ -18,7 +19,8 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
     const [searchTags, setSearchTags] = useState(false)
     const [searchTagsLoading, setSearchTagsLoading] = useState(false)
 
-    
+    const { t, i18n } = useTranslation();
+
 
     useEffect(() => {
         if (page === 1) {
@@ -71,7 +73,7 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
             setSearchTags({docs: responseFindDocByTag.data, tag: searchTags.tag})
         } else if(searchTagsLoading) {
             setSearchTagsLoading(false)
-            setAlert({type: "error", message: {en: "This tag doesn't appear on any document.", fr: "Aucun document ne porte ce tag."}})
+            setAlert({type: "error", message: {en: t('empty-tag'), fr: t('empty-tag')}})
         }
     }, [responseFindDocByTag])
 
@@ -80,33 +82,33 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
             <div className="is-flex is-justify-content-start mt-0 mb-0 pb-0 pt-0" id="backBtn">
                 <button className="button is-light" onClick={handleBack}>
                     <FontAwesomeIcon icon={faRotateLeft} size="lg"/>
-                    <strong>&nbsp;Back</strong>
+                    <strong>&nbsp;{t('back')}</strong>
                 </button>
             </div>
             {searchTags.docs ? <>
-                <ShowTag docs={searchTags.docs} tag={searchTags.tag}/>
+                <ShowTag docs={searchTags.docs} tag={searchTags.tag} setDisplayDoc={setDisplayDoc} handleSearchTag={setSearchTags}/>
             </> : displayDoc ? <>
                 <ShowDoc doc={displayDoc} handleSearchTag={handleSearchTag}/>
             </> : <>
             {tags && tags[0] ? <>
-            <h3 className="subtitle has-text-right is-5 has-text-grey mt-0 pt-0 mb-4">Tags</h3>
+            <h3 className="subtitle has-text-right is-5 has-text-grey mt-0 pt-0 mb-4">{t('tags')}</h3>
                 {tags[4] ? <div className="is-flex is-justify-content-space-around">
                         {tags.map((item, index) => {
                             return <Fragment key={JSON.stringify(item)}>
-                                <span className="tag is-big is-info is-medium indextag" onClick={() => handleSearchTag(item.tag)}>{item.tag.title && item.tag.title[0] ? getContent(item.tag.title) : null}</span>
+                                <span className="tag is-big is-info is-medium indextag" onClick={() => handleSearchTag(item.tag)}>{item.tag.title && item.tag.title[0] ? getContent(item.tag.title, i18n.language) : null}</span>
                             </Fragment>
                         })}
                     </div> : <div className="is-flex is-justify-content-end">
                         {tags.map((item, index) => {
                             return <Fragment key={JSON.stringify(item)}>
-                                <span className="tag is-big is-info is-medium ml-3 indextag" onClick={() => handleSearchTag(item.tag)}>{item.tag.title && item.tag.title[0] ? getContent(item.tag.title) : null}</span>
+                                <span className="tag is-big is-info is-medium ml-3 indextag" onClick={() => handleSearchTag(item.tag)}>{item.tag.title && item.tag.title[0] ? getContent(item.tag.title, i18n.language) : null}</span>
                             </Fragment>
                         })}
                     </div> }     
                 </> : null}
                 {page === 1 && result.items && result.items[0] ? <>
                     <hr className='mb-3 mt-4'/>
-                <h3 className="subtitle has-text-right is-5 has-text-grey mt-1 mb-3">Result</h3>
+                <h3 className="subtitle has-text-right is-5 has-text-grey mt-1 mb-3">{t('result')}</h3>
 
             <div className="columns is-multiline">
             

@@ -9,11 +9,13 @@ import SearchItem from "../atoms/docs/SearchItem"
 import {useSearch} from "../../utils/hooks/Search.js"
 import {useDocs} from "../../utils/hooks/docs/Docs.js"
 
+import { useTranslation } from "react-i18next";
 
 
 
 const HomePage = ({client, setAlert}) => {
-  
+  const { t, i18n } = useTranslation();
+
   const [searchValue, setSearchValue] = useState("")
   const [result, setResult] = useState([])
   const [loadingSearch, setLoadingSearch] = useState(false)
@@ -39,7 +41,7 @@ const HomePage = ({client, setAlert}) => {
       setLoadingSearch(false)
     } else if (responseSearch && !responseSearch.success) {
       setLoadingSearch(false)
-      setAlert({type: "error", message: {en: "An error occured.", fr: "Une erreure est survenue."}})
+      setAlert({type: "error", message: {en: t('error'), fr: t('error')}})
     } else if (responseSearch && responseSearch.data && !responseSearch.data[0]) {
       setLoadingSearch(false)
       setEmpty(true)
@@ -76,12 +78,12 @@ const HomePage = ({client, setAlert}) => {
       </div>    
       <svg className="background-landing-ctn" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#f1825a" fillOpacity="0.95" d="M0,256L48,240C96,224,192,192,288,197.3C384,203,480,245,576,240C672,235,768,181,864,176C960,171,1056,213,1152,218.7C1248,224,1344,192,1392,176L1440,160L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path></svg>
       <div className="landing-content">
-          {empty ? <>No match were found with your query, try something else ...</> : <>
+          {empty ? <>{t('no-match')}</> : <>
             {loadingSearch ? <div className="loader">
   <div className="inner one"></div>
   <div className="inner two"></div>
   <div className="inner three"></div>
-</div> : (!result.docs || !result.docs[0]) ? <Landing popularDocs={popularDocs} setDisplayDoc={setDisplayDoc} setResult={setResult}/> : <SearchResult result={result} client={client} setAlert={setAlert} page={page} setPage={setPage} loadingSearch={loadingSearch} setResult={setResult} displayDoc={displayDoc} setDisplayDoc={setDisplayDoc}/>}
+</div> : (!result.docs || !result.docs[0]) ? <Landing popularDocs={popularDocs} setDisplayDoc={setDisplayDoc} setResult={setResult} t={t}/> : <SearchResult result={result} client={client} setAlert={setAlert} page={page} setPage={setPage} loadingSearch={loadingSearch} setResult={setResult} displayDoc={displayDoc} setDisplayDoc={setDisplayDoc}/>}
           </>}
           
       </div>
@@ -90,8 +92,8 @@ const HomePage = ({client, setAlert}) => {
   </>
 }
 
-const Landing = ({popularDocs, setDisplayDoc, setResult}) => {
-  
+const Landing = ({popularDocs, setDisplayDoc, setResult, t}) => {
+
   const setDisplay = (item) => {
     setResult({docs: [item]})
     setDisplayDoc(item)
@@ -100,13 +102,13 @@ const Landing = ({popularDocs, setDisplayDoc, setResult}) => {
   return <>
   
   <div className="container box mt-2 mb-6">
-        <h1 className="title is-5">Contredanse Documentation Center</h1>
+        <h1 className="title is-5">Contredanse {t('documentation-center')}</h1>
         <p className="mb-3">
           Donec gravida maximus nulla id vulputate. Fusce a dictum tortor, tincidunt molestie massa. Vivamus ac tristique mi, id interdum odio. Nullam vestibulum a libero nec blandit. Ut et aliquet diam, et tempus odio. Fusce ultrices, tortor elementum tincidunt pellentesque, urna tortor porta nisi, ac hendrerit lorem velit quis justo. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.      </p>
-        <Link to="/about">Read more ...</Link>
+        <Link to="/about">{t('read-more')}</Link>
       </div>
       <div className="container recents-container">
-        <h1 className="title is-5">Most viewed</h1>
+        <h1 className="title is-5">{t('most-viewed')}</h1>
         <div className="columns is-multiline">
             {popularDocs && popularDocs[0] ? popularDocs.map((doc, index) => {
               return <Fragment key={JSON.stringify(doc)}>

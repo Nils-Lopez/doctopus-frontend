@@ -10,9 +10,11 @@ import {useDocTemplates} from "../../../utils/hooks/templates/DocTemplates"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { useTranslation } from "react-i18next";
 
 const DocForm = ({client, setAlert, selectedType, handleSelectType}) => {
-  
+  const { t, i18n } = useTranslation();
+
   const [titleValue, setTitleValue] = useState("")
   const [defaultSlug, setDefaultSlug] = useState("")
   const [slugValue, setSlugValue] = useState("")
@@ -26,6 +28,15 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType}) => {
   const [showSupportForm, setShowSupportForm] = useState(false)
   const [showParentForm, setShowParentForm] = useState(false)
   const [copyrightsValue, setCopyrightsValue] = useState("")
+  const [isbnValue, setIsbnValue] = useState("")
+  const [pagesValue, setPagesValue] = useState("")
+  const [publiDateValue, setPubliDateValue] = useState("")
+  const [durationValue, setDurationValue] = useState("")
+  const [thumbValue, setThumbValue] = useState("")
+  const [issnValue, setIssnValue] = useState("")
+  const [dateValue, setDateValue] = useState("")
+  const [volumeValue, setVolumeValue] = useState("")
+  const [numberValue, setNumberValue] = useState("")
 
   const [selectedTags, selectTag] = useState([])
   
@@ -39,9 +50,6 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType}) => {
   const [pendingSupports, setPendingSupports] = useState([])
   const [selectedRoles, selectRole] = useState([])
   const [pendingExemplaries, setPendingExemplaries] = useState([])
-
-  const [brotherhoods, setBrotherhoods] = useState([])
-  const [brotherhoodsLoading, setBrotherhoodsLoading] = useState(false)
 
   const [selectedTemplate, selectTemplate] = useState('')
   const [subTemplate, setSubTemplate] = useState(null)
@@ -72,7 +80,46 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType}) => {
       setDefaultSlug(newSlug)
     }
   }  
+
+   const handlePubliDateChange = (e) => {
+    e.preventDefault()
+    setPubliDateValue(e.target.value)
+  }
+ 
+  const handleIsbnChange = (e) => {
+    e.preventDefault()
+    setIsbnValue(e.target.value)
+  }
   
+  const handleIssnChange = (e) => {
+    e.preventDefault()
+    setIssnValue(e.target.value)
+  }
+
+  const handlePagesChange = (e) => {
+    e.preventDefault()
+    setPagesValue(e.target.value)
+  }
+  
+  const handleDurationChange = (e) => {
+    e.preventDefault()
+    setDurationValue(e.target.value)
+  }
+
+  const handleDateChange = (e) => {
+    e.preventDefault()
+    setDateValue(e.target.value)
+  }
+  
+  const handleVolumeChange = (e) => {
+    e.preventDefault()
+    setVolumeValue(e.target.value)
+  }
+  const handleNumberChange = (e) => {
+    e.preventDefault()
+    setNumberValue(e.target.value)
+  }
+
   const handleLangChange = (e) => {
     e.preventDefault()
       if (idLang === "en") {
@@ -167,7 +214,16 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType}) => {
         title: titleValue,
         description: template && template.description ? [{ lang: "en", content: descEnValue }, { lang: "fr", content: descFrValue }] : null,
         languages: selectedLangs,
-        additionalCopyrights: copyrightsValue
+        additionalCopyrights: copyrightsValue,
+        publishedAt:  publiDateValue,
+        date: dateValue,
+        eanIsbn: isbnValue,
+        issn: issnValue,
+        pages: pagesValue,
+        duration: durationValue,
+        thumb: thumbValue,
+        volume: volumeValue,
+        number: numberValue,
       },
       types: selectedTypes,
       tags: selectedTags,
@@ -192,7 +248,9 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType}) => {
       selectLang(template.languages ? template.languages.defaults : [])
       selectType(template.type_defaults)
     }
-
+    if (template && template.support_issn_default && template.support_issn_default !== "" && issnValue === "") {
+      setIssnValue(template.support_issn_default)
+    }
   console.log(selectedTags)
 
 
@@ -290,19 +348,19 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType}) => {
     <div className="columns">
             <div className="column is-one-third">
               <div className="field">
-            <label className="label">Type</label>
+            <label className="label">{t('type')}</label>
             <div className="select">
               <select value={selectedType} onChange={handleSelectType}>
-                <option>Document</option>
-                <option>Organisation</option>
-                <option>Person</option>
+                <option>{t('document')}</option>
+                <option>{t('organization')}</option>
+                <option>{t('person')}</option>
               </select>
             </div>
           </div>
             </div>
             <div className="column is-one-third">
               <div className="field">
-            <label className="label">Model</label>
+            <label className="label">{t('model')}</label>
             <div className="select">
              <select value={selectedTemplate} onChange={handleSelectTemplate}>
              
@@ -324,7 +382,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType}) => {
           {template && template.schema_childs && template.schema_childs[0] ? <>
           <div className="column is-one-third">
               <div className="field">
-            <label className="label">Template</label>
+            <label className="label">{t('template')}</label>
             <div className="select">
              <select value={selectedSubTemplate} onChange={handleSelectSubTemplate}>
              <option value="None">None</option>
@@ -346,7 +404,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType}) => {
     
     <div className="is-flex is-justify-content-start">
       <button className="button is-light mb-3" onClick={handleIdentityShowing}>
-        <h3 className="title is-4">Identity </h3>
+        <h3 className="title is-4">{t('identity')}</h3>
       </button>
     </div>
     
@@ -360,30 +418,30 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType}) => {
       <div className="columns">
       <div className="column">
         <div className="field">
-          <label className="label">
-            Title
+          <label className="label has-text-left">
+          {t('title')}
           </label>
           <input type="text" className="input" value={titleValue} onChange={handleTitleChange}/>
         </div>
       </div>
       <div className="column">
         <div className="field">
-          <label className="label">
-            Slug
+          <label className="label has-text-left">
+          {t('slug')}
           </label>
           <input type="text" className="input" value={slugValue} onChange={handleSlugChange}/>
         </div>
       </div>
     </div>
     {template && template.description ? <div className="field" id="docDesc">
-      <label className="label title is-5">
-        Description
+      <label className="label has-text-left">
+      {t('description')}
       </label>
       <textarea className="textarea" value={idLang === "fr" ? descFrValue : descEnValue} onChange={handleDescChange}></textarea>
       </div> : null}
       {template && template.languages && template.languages.exist ? <div className="field" id="docLang">
-      <label className="label title is-5">
-        Language
+      <label className="label has-text-left">
+      {t('language')}
       </label>
       
       <div className="is-flex">
@@ -401,11 +459,85 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType}) => {
       <RoleForm location="support-form-doc" scope="docs" lang={idLang} selectedRoles={selectedTypes} selectRole={selectType}/>
       {template && template.tag ? <DocTagsForm selectedTags={selectedTags} selectTag={selectTag} scope="docs" lang={idLang} /> : null}
       {template && template.copyright ? <div className="field mt-2">
-        <label className="label">
-          Copyrights
+        <label className="label has-text-left">
+        {t('copyrights')}
         </label>
         <input type="text" className="input" value={copyrightsValue} onChange={handleCopyrightsChange}/>
       </div> : null}
+      {template && template.support_publishedAt ? <div className="field">
+      <label className="label has-text-left">
+        {t('sort-date')}
+      </label>
+      
+      <input type="date" className="input" value={publiDateValue} onChange={handlePubliDateChange}/>
+    </div> : null}
+    {template && template.support_publishedAt ? <div className="field">
+      <label className="label has-text-left">
+        {t('text-date')}
+      </label>
+      
+      <input type="text" className="input" value={dateValue} onChange={handleDateChange}/>
+    </div> : null}
+    {template && template.support_eanIsbn ?  <div className="field">
+      <label className="label has-text-left">
+        {t('ean-isbn')}
+      </label>
+      
+      <input type="text" className="input" value={isbnValue} onChange={handleIsbnChange}/>
+    </div> : null}
+     {template && template.support_pages ? <div className="field">
+      <label className="label has-text-left">
+        {t('pages')}
+      </label>
+      
+      <input type="text" className="input" value={pagesValue} onChange={handlePagesChange}/>
+    </div> : null}
+    {template && template.support_duration ?  <div className="field">
+      <label className="label has-text-left">
+        {t('duration')}
+      </label>
+      
+      <input type="text" className="input" step="1" value={durationValue} onChange={handleDurationChange}/>
+    </div> : null}
+    {template && template.support_thumb ? <div className="field">
+       <label className="label has-text-left">
+        {t('thumbnail')}
+      </label>
+      <div className="file has-name is-fullwidth">
+  <label className="file-label">
+    <input className="file-input" type="file" onChange={(e) => setThumbValue(e.target.value)} name="resume"/>
+    <span className="file-cta">
+      <span className="file-icon">
+        <i className="fas fa-upload"></i>
+      </span>
+      <span className="file-label">
+        {t('choose-file')}
+      </span>
+    </span>
+    {thumbValue !== "" ? <span className="file-name">
+      {thumbValue}
+    </span> : null}
+  </label>
+      </div>
+    </div> : null}
+    {template && template.support_number ? <>
+      <div className="field">
+        <label className="label has-text-left">{t('number')}</label>
+        <input type="text" className="input" value={numberValue} onChange={handleNumberChange} />
+      </div>
+    </> : null}
+    {template && template.support_volume ? <>
+      <div className="field">
+        <label className="label has-text-left">{t('volume')}</label>
+        <input type="text" className="input" value={volumeValue} onChange={handleVolumeChange} />
+      </div>
+    </> : null}
+    {template && template.support_issn ? <>
+      <div className="field">
+        <label className="label has-text-left">{t('issn')}</label>
+        <input type="text" className="input" value={issnValue} onChange={handleIssnChange}/>
+      </div>
+    </> : null}
     </> : null}
     
     <hr/>
@@ -413,20 +545,20 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType}) => {
    
     <div className="is-flex is-justify-content-start">
       <button className="button is-light mb-3" onClick={handleSupportShowing}>
-        <h3 className="title is-4">Supports</h3>
+        <h3 className="title is-4">{t('supports')}</h3>
       </button>
     </div>
     {showSupportForm ? <SupportForm pendingSupports={pendingSupports} setPendingSupports={setPendingSupports} selectedRoles={selectedRoles} selectRole={selectRole} pendingExemplaries={pendingExemplaries} setPendingExemplaries={setPendingExemplaries} template={template}/> : null}
     <hr/>
     <div className="is-flex is-justify-content-start">
       <button className="button is-light mb-3" onClick={handleParentsShowing}>
-        <h3 className="title is-4">Parents</h3>
+        <h3 className="title is-4">{t('parents')}</h3>
       </button>
     </div>
     {showParentForm ? <ParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} selectedPeople={selectedPeople} selectedDoc={selectedDoc} selectDoc={selectDoc} selectPerson={selectPerson} selectedProj={selectedProjects} selectProj={selectProject} template={template} client={client} setAlert={setAlert}/> : null}
     <footer className="card-footer mt-3 pt-4 is-flex is-justify-content-center">
       <button className="button is-primary is-medium" type="submit">
-        Create
+      {t('create')}
       </button>
     </footer>
   </form>

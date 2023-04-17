@@ -7,6 +7,7 @@ import {useEntities} from "../../../utils/hooks/Entities"
 import ActorForm from "../../atoms/forms/orgs/ActorForm"
 import ProjectParentForm from "../../atoms/forms/docs/ProjectParentForm"
 import DocTagsForm from "../../atoms/forms/docs/DocTagsForm"
+import { useTranslation } from "react-i18next";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
@@ -141,7 +142,9 @@ const OrganisationForm = ({client, setAlert, template, setCreated}) => {
       setAlert({ type: "error", message: { en: "An error occured while creating organisation.", fr: "Une erreure est survenue lors de la création de l'organisation"}})
     }
   }, [responseCreateEntity])
-  
+  const { t, i18n } = useTranslation();
+
+
   return <div>
     <div className="tabs">
         <ul>
@@ -150,25 +153,25 @@ const OrganisationForm = ({client, setAlert, template, setCreated}) => {
         </ul>
       </div>
     <div className="field">
-      <label className="label">
-        Name
+      <label className="label has-text-left">
+        {t('name')}
       </label>
       <input type="text" value={nameValue} onChange={handleNameChange} className="input"/>
     </div>
     <div className="field">
-      <label className="label">
-        Description
+      <label className="label has-text-left">
+        {t('description')}
       </label>
       <textarea value={idLang === "en" ? descEnValue : descFrValue} onChange={handleDescChange} className="textarea"></textarea>
     </div>
     <div className="field" id="docLang">
-      <label className="label title is-5">
-        Language
+      <label className="label has-text-left">
+        {t('language')}
       </label>
       
       <div className="is-flex">
                 <input type="text" placeholder="Default language" className="input" value={idLang === "en" ? langEnValue : langFrValue} onChange={handleLangChange} />
-                <button onClick={addLang} className="button is-small is-primary mt-1 ml-2">Add</button>
+                <button onClick={addLang} className="button is-small is-primary mt-1 ml-2">{t('add')}</button>
                 
         </div>
         {selectedLangs.map((lang) => {
@@ -179,21 +182,21 @@ const OrganisationForm = ({client, setAlert, template, setCreated}) => {
         })}
       </div>
       <div className="field">
-        <label className="label">
-          Website
+        <label className="label has-text-left">
+          {t('link-url')}
         </label>
         <input type="text" value={urlValue} onChange={handleUrlChange} className="input"/>
       </div>
     <div className="columns">
       <div className="column field">
-        <label className="label">
-          City
+        <label className="label has-text-left">
+          {t('city')}
         </label>
         <input type="text" value={cityValue} onChange={handleCityChange} className="input"/>
       </div>
       <div className="column field">
-        <label className="label">
-          Country
+        <label className="label has-text-left">
+          {t('country')}
         </label>
         <input type="text" value={countryValue} onChange={handleCountryChange} className="input"/>
       </div>
@@ -203,7 +206,7 @@ const OrganisationForm = ({client, setAlert, template, setCreated}) => {
     <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj} lang={idLang}/>
      <footer className="card-footer mt-3 pt-4 is-flex is-justify-content-center">
       <button className="button is-primary is-medium" onClick={handleFormSubmit}>
-        Create
+        {t('create')}
       </button>
     </footer>
   </div>

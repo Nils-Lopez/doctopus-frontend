@@ -26,6 +26,12 @@ html {
 
 }
 
+.langchoose {
+  padding-right: 15px;
+  margin-right:15px;
+  border-right: 1.5px solid grey;
+}
+
 
 .panel-hover:hover {
   cursor: pointer;

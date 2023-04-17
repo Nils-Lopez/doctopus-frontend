@@ -1,7 +1,8 @@
 import React from "react"
+import {useTranslation} from "react-i18next"
 
 const ExemplaryPreviewCard = ({exemplary, editExemplary, deleteExemplary}) => {
-  
+  const { t, i18n } = useTranslation() 
   return <>
     <div className="card">
       <div className="card-content">
@@ -24,11 +25,11 @@ const ExemplaryPreviewCard = ({exemplary, editExemplary, deleteExemplary}) => {
     <button onClick={(e) => {
       e.preventDefault()
       editExemplary(exemplary)
-    }} className=" button is-primary ml-2 mr-3">Edit</button>
+    }} className=" button is-primary ml-2 mr-3">{t('edit')}</button>
     <button onClick={(e) => {
       e.preventDefault()
       deleteExemplary(exemplary)
-    }} className=" button is-danger">Delete</button>
+    }} className=" button is-danger">{t('delete')}</button>
   </footer>
     </div>
   </>

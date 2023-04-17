@@ -5,6 +5,7 @@ import Alert from '../../atoms/Alert'
 
 //Dependencies
 import validator from "validator"
+import { useTranslation } from "react-i18next";
 
 const SignUpForm = ({handleSubmit, formAlert, setFormAlert}) => {
 
@@ -12,6 +13,7 @@ const SignUpForm = ({handleSubmit, formAlert, setFormAlert}) => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [confirmPwd, setConfirmPwd] = useState("")
+    const { t, i18n } = useTranslation();
 
     const [formValid, setFormValid] = useState(false)
 
@@ -21,7 +23,7 @@ const SignUpForm = ({handleSubmit, formAlert, setFormAlert}) => {
 
     const handleChangeEmail = event => {
         if (!isValidEmail(event.target.value)) {
-            setFormAlert({ type: "error", message: { en: 'Email is invalid.', fr: "Adresse email invalide." } });
+            setFormAlert({ type: "error", message: { en: t('invalid-email'), fr: t('invalid-email') } });
             setDisabled({email: true, pwd: disabled.pwd})
         } else {
             setFormAlert(false)
@@ -42,7 +44,7 @@ const SignUpForm = ({handleSubmit, formAlert, setFormAlert}) => {
             setDisabled({ email: disabled.email, pwd: false })
         } else {
             
-            setFormAlert({ type: "error", message: { en: 'Password is invalid. It must contains at least 7 symbol, numbers, lowercases and uppercases letters', fr: "Mot de passe invalide, il doit contenir minimum 7 lettres en minuscules, majuscules, des nombres et des caractères spéciaux." } });
+            setFormAlert({ type: "error", message: { en: t('weak-pwd'), fr:  t('weak-pwd') } });
             setDisabled({email: disabled.email, pwd: true})
         }
         setPassword(event.target.value);
@@ -50,7 +52,7 @@ const SignUpForm = ({handleSubmit, formAlert, setFormAlert}) => {
 
     const handleChangeConfirmPwd = event => {
         if (event.target.value === password) {
-            setFormAlert({ type: "error", message: { en: 'Password must match', fr: "Les mots de passe ne correspondent pas." } });
+            setFormAlert({ type: "error", message: { en: t('pwd-not-match'), fr: t('pwd-not-match') } });
             setDisabled({email: disabled.email, pwd: disabled.pwd, confirmPwd: true})
         } else {
             setFormAlert(false)
@@ -73,21 +75,21 @@ const SignUpForm = ({handleSubmit, formAlert, setFormAlert}) => {
             <form onSubmit={handleSubmit}>
                 <div className="field">
                     <div className="control">
-                        <label htmlFor="input" name="email" value={email} onChange={handleChangeEmail} className="label is-size-6 has-text-primary has-text-left">Email</label>
+                        <label htmlFor="input" name="email" value={email} onChange={handleChangeEmail} className="label is-size-6 has-text-primary has-text-left">{t('email')}</label> 
                         <input type="email" className="input is-size-5" />
                     </div>
                 </div>
                 <div className="field">
-                    <label htmlFor="password" name="password" value={password} onChange={handleChangePassword} className="label is-size-6 has-text-primary has-text-left">Password</label>
+                    <label htmlFor="password" name="password" value={password} onChange={handleChangePassword} className="label is-size-6 has-text-primary has-text-left">{t('pwd')}</label>
                     <input type="password" className="input is-size-5" />
                 </div>
                 <div className="field">
-                    <label htmlFor="password" name="password" value={confirmPwd} onChange={handleChangeConfirmPwd} className="label is-size-6 has-text-primary has-text-left">Confirm password</label>
+                    <label htmlFor="password" name="password" value={confirmPwd} onChange={handleChangeConfirmPwd} className="label is-size-6 has-text-primary has-text-left">{t('confirm-pwd')}</label>
                     <input type="password" className="input is-size-5" />
                 </div>
                 <div className="is-flex is-justify-content-center mt-5">
                     <div className="field">
-                        <button className="button is-primary" role="submit" disabled={formValid ? false : true}>Confirm</button>
+                        <button className="button is-primary" role="submit" disabled={formValid ? false : true}>{t('confirm')}</button>
                     </div>
                 </div>
                 <div className="mt-3">

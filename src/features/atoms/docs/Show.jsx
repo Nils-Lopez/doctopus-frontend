@@ -1,4 +1,5 @@
 import React, {Fragment} from "react";
+import {useTranslation} from "react-i18next"
 
 const Show = ({doc, handleSearchTag}) => {
     const {
@@ -11,22 +12,23 @@ const Show = ({doc, handleSearchTag}) => {
         tags,
       } = doc
 
+    const { t, i18n } = useTranslation() 
     return <>
         <h1>{title}</h1>
-        {description && description[0] ? <p>{getContent(description)}</p> : null}
-        {languages && languages[0] ? <p>{getContent(languages[0].labels)}</p> : null}
+        {description && description[0] ? <p>{getContent(description, i18n.language)}</p> : null}
+        {languages && languages[0] ? <p>{getContent(languages[0].labels, i18n.language)}</p> : null}
         {types && types[0] ? <>
             {types.map((type) => {
                 return <Fragment key={JSON.stringify(type)}>
                     <span className="tag is-medium is-primary mr-1 ml-1">
-                        {getContent(type.title)}
+                        {getContent(type.title,i18n.language)}
                     </span>
                 </Fragment>
             })}
         </> : null}
         {tags && tags[0] ? <>
             {tags.map((type) => {
-                let title = getContent(type.title)
+                let title = getContent(type.title, i18n.language)
                 if (title !== "" && title !== " ") {
                     return <Fragment key={JSON.stringify(type)}>
                         <span className="tag is-medium is-info mr-1 ml-1 mt-1 indextag" onClick={() => handleSearchTag(type)}>
@@ -36,7 +38,7 @@ const Show = ({doc, handleSearchTag}) => {
                 }
             })}
         </> : null}
-
+        {doc.views ? <></> : 1 }
     </>
 }
 
