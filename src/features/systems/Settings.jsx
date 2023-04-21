@@ -7,7 +7,7 @@ const Settings = ({client, setClient, setAlert}) => {
     const { t, i18n } = useTranslation();
 
     return <>
-        <div className="columns mx-2 mt-5 overflow-hidden">
+        <div className="columns mx-2 mt-5 ">
             <div className="column is-one-third template-fixed mt-5">
                 <div className="box">
                     <h3 className="title is-3">{t('settings')}</h3>

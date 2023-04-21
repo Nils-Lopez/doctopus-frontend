@@ -14,16 +14,30 @@ html {
   height: 100%;
   overflow-y: hidden;
 }
-.page-content {
-  padding-top: 0px;
-  padding-bottom: 150px;
+
+.app-ctn {
+  min-height: 100vh;
+  height: 100%;
+  overflow-y: hidden;
+  position: relative;
 }
 
 
-.footer-app {
-  position:fixed;
-  bottom: 0;
+.page-content {
+  padding-top: 0px;
+  padding-bottom: 150px;
+  height: 100%;
+  overflow-y: hidden;
 
+}
+
+@media only screen and (min-width: 450px) {
+  .footer-app {
+    position:absolute;
+    bottom: 0;
+  
+  }
+  
 }
 
 .langchoose {
@@ -70,16 +84,17 @@ html {
 }
 
 
-.border-top {
+.poweredBy {
   padding-top: 5px;
   padding-left: 7px;
-  padding-right: 7px;
+  padding-right: 0px;
 
   padding-bottom: 5px;
-
+  opacity: 0.85;
   position: fixed;
   right: 5px;
-  bottom: 120px;
+  bottom: 10px;
+
 }
 
 .lg-navbar {

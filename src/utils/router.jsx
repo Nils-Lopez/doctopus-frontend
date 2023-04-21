@@ -55,7 +55,7 @@ const Router = () => {
     }, [responseFindUserById, loadingClient])
 
 
-    return <div className="is-fullheight app-ctn">
+    return <div className="app-ctn">
         <BrowserRouter>
         <Navbar bake_cookie={bake_cookie} read_cookie={read_cookie} delete_cookie={delete_cookie} client={client} setClient={setClient} setAlert={setAlert} />
             <div className="page-content">
@@ -89,7 +89,6 @@ const Router = () => {
             </Route>
             </Routes>
         </div>
-        <a href="https://oqto.tech" className='mr-3 border-top'><p className="has-text-grey has-text-left title is-7">powered by <span className="is-6 has-text-primary">dOctopus</span></p></a>
 
         <footer className="footer box footer-app">
             <div className="content">

@@ -61,6 +61,7 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
     const handleSearchTag = (tag) => {
         if (!searchTagsLoading) {
             setSearchTags({tag: tag})
+          
             setSearchTagsLoading(true)
             findDocByTag(tag._id)
         }
@@ -69,7 +70,6 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
     useEffect(() => {
         if (searchTagsLoading && responseFindDocByTag && responseFindDocByTag.data && responseFindDocByTag.data[0] && responseFindDocByTag.success) {
             setSearchTagsLoading(false)
-            
             setSearchTags({docs: responseFindDocByTag.data, tag: searchTags.tag})
         } else if(searchTagsLoading) {
             setSearchTagsLoading(false)

@@ -63,6 +63,8 @@ const Navbar = ({bake_cookie, read_cookie, delete_cookie, client, setClient, set
                 
                 
             </div>
+            <a href="https://oqto.tech" className='mr-3 poweredBy '><p className="has-text-grey has-text-left title is-7 tag is-white">powered by&nbsp;<span className="is-6 has-text-primary">dOctopus</span></p></a>
+
         </nav>
     </>
 }

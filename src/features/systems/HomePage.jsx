@@ -53,6 +53,7 @@ const HomePage = ({client, setAlert}) => {
       e.preventDefault()
       search(searchValue)
       setLoadingSearch(true)
+      setDisplayDoc(false)
       setEmpty(false)
     }
   }

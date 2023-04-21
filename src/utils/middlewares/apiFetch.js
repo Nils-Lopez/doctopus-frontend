@@ -9,7 +9,7 @@ export async function apiFetch (endpoint, options = {} ) {
         mode: "cors",
         ...options
     }
-
+    
     const apiUrl = "https://doctopus-cd-backend.herokuapp.com/api"
     // const apiUrl = "http://localhost:5000/api"
 

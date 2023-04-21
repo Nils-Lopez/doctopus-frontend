@@ -1,9 +1,12 @@
-import React, {Fragment} from "react"
+import React, {Fragment, useEffect, useState} from "react"
 
 import SearchItem from "../docs/SearchItem"
 import {useTranslation} from "react-i18next"
 
 const Show = ({docs, tag, setDisplayDoc, handleSearchTag}) => {
+
+    const [dataList, setDataList] = useState([])
+    const [page, setPage] = useState(1)
 
     const handleDisplay = (doc) => {
         handleSearchTag(false)
@@ -11,16 +14,47 @@ const Show = ({docs, tag, setDisplayDoc, handleSearchTag}) => {
     }
     const { t, i18n } = useTranslation()
 
+    useEffect(() => {
+        if (page === 1) {
+            setDataList(docs.slice(0, 20))
+        } else {
+            setDataList(docs.slice((page*10), ((page*10)+20)))
+        }
+    }, [page])
+
     return <>
         <h3 className="subtitle  is-5 has-text-grey mt-0 pt-0 mb-1"><small>{t('tag')}:</small></h3>
         <h3 className="subtitle is-4 has-text-grey mt-0 pt-0 mb-4"><strong className="has-text-primary">{getContent(tag.title, i18n.language)}</strong></h3>
         <div className="columns is-multiline">
-            {docs.map((doc, i) => {
+            {dataList.map((doc, i) => {
+                console.log('doc : ', doc.previousId, doc.template)
                 return <Fragment key={JSON.stringify(doc)}>
                     <SearchItem item={{doc: doc}} setDisplay={handleDisplay}/>
                 </Fragment>
             })}
         </div>
+        {docs && docs.length > 20 ? <div className="is-flex is-justify-content-end ">
+                <nav className="pagination" role="navigation" aria-label="pagination">
+              
+              <ul className="pagination-list">
+                <li>
+                  <a href="#searchBlock" className={"pagination-link " + (page === 1 ? "is-current" : "")} aria-label="Page 1" aria-current="page" onClick={() => setPage(1)}>1</a>
+                </li>
+                <li>
+                  <a href="#searchBlock" className={"pagination-link " + (page === 2 ? "is-current" : "")} aria-label="Goto page 2" onClick={() => setPage(2)}>2</a>
+                </li>
+                {docs.length > 40 ? <li>
+                  <a href="#searchBlock" className={"pagination-link " + (page === 3 ? "is-current" : "")} aria-label="Goto page 3" onClick={() => setPage(3)}>3</a>
+                </li> : null}
+                {docs.length > 60 ? <li>
+                  <a href="#searchBlock" className={"pagination-link " + (page === 4 ? "is-current" : "")} aria-label="Goto page 3" onClick={() => setPage(4)}>4</a>
+                </li> : null}
+                {docs.length > 80 ? <li>
+                  <a href="#searchBlock" className={"pagination-link " + (page === 5 ? "is-current" : "")} aria-label="Goto page 3" onClick={() => setPage(5)}>5</a>
+                </li> : null}
+              </ul>
+            </nav>
+          </div> : null}
     </>
 }
 
