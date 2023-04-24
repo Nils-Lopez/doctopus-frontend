@@ -1,6 +1,8 @@
 import React, {Fragment} from "react";
 import {useTranslation} from "react-i18next"
 
+import BoxItemParent from "../parents/SearchItem.jsx"
+
 const SearchItem = ({item, setDisplay, handleSearchTag, location = "index"}) => {
     const colClasses = location !== "index" ? "is-one-third" : "is-one-quarter"
 
@@ -10,33 +12,57 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index"}) => 
             <div className="box results-col " onClick={() => setDisplay(item.doc)}>
             <div className="is-flex is-justify-content-end mt-0 mb-0">
                     <span className="tag is-primary">
-                        {t('document')}
+                        {item.doc.types && item.doc.types[0] ? getContent(item.doc.types[0].title, i18n.language) : t('document')}
                     </span>
                 </div>
             <h3 className="subtitle is-5 mb-1 mt-1">{item.doc.title}</h3>
                 <p>{item.doc.description && item.doc.description[0] ? getContent(item.doc.description, i18n.language).substring(0,20) + "..." : null}</p>
-                {item.doc.supports[0] && ((item.doc.supports[0].pages && item.doc.supports[0].pages !== "") || (item.doc.supports[0].volume && item.doc.supports[0].volume !== "") || (item.doc.supports[0].number && item.doc.supports[0].number !== "")) ? <>
+               
                     <hr />
-              
-                    <div className="is-flex is-justify-content-start">
-                    <div>
-                        {item.doc.supports.map((support) => {
-                            return <Fragment key={JSON.stringify(support)}>
-                                {support.pages && support.pages !== "" ? <>
-                                    <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{support.pages} {support.pages.charAt(0) * 2 && support.pages.charAt(support.pages.length -1) * 2 ? "pages" : null}</span>
-                                </> : support.volume && support.volume !== "" ? <> 
-                                    <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{t('volume')} {support.volume}</span>
-                                </> : support.number && support.number !== "" ? <> 
-                                    <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{t('number')} {support.number}</span>
-                                </> : null}
-                                {support.date && support.date !== "" ? <>
-                                    <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{support.date}</span>
-                                </> : null}
+                    {item.doc.parents && item.doc.parents[0] ? <>
+                        
+                        {item.doc.parents.map((parent) => {
+                            return <Fragment key={JSON.stringify(parent)}>                                   
+                                <BoxItemParent item={parent} />
                             </Fragment>
                         })}
+                    </> : null}
+                     <hr/>
+                    <div className="is-flex is-justify-content-start">
+                    <div>
+    
+                                {item.doc.pages && item.doc.pages !== "" ? <>
+                                    <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.doc.pages} {item.doc.pages.charAt(0) * 2 && item.doc.pages.charAt(item.doc.pages.length -1) * 2 ? "pages" : null}</span>
+                                </> : item.doc.volume && item.doc.volume !== "" ? <> 
+                                    <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{t('volume')} {item.doc.volume}</span>
+                                </> : item.doc.number && item.doc.number !== "" ? <> 
+                                    <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{t('number')} {item.doc.number}</span>
+                                </> : null}
+                                {item.doc.date && item.doc.date !== "" ? <>
+                                    <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.doc.date} </span>
+                                </> : null}
+                                {item.doc.publishedAt && item.doc.publishedAt !== "" ? <>
+                                    <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.doc.publishedAt} </span>
+                                </> : null}
+                               {item.doc.issn && item.doc.issn !== "" ? <>
+                                    <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.doc.issn} </span>
+                                </> : null}
+                                {item.doc.eanIsbn && item.doc.eanIsbn !== "" ? <>
+                                    <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.doc.eanIsbn} </span>
+                                </> : null}
+                                {item.doc.duration && item.doc.duration !== "" ? <>
+                                    <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.doc.duration} </span>
+                                </> : null}
+                                {item.doc.additionalCopyrights && item.doc.additionalCopyrights !== "" ? <>
+                                    <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{t('credits')}: {item.doc.additionalCopyrights} </span>
+                                </> : null}
+                                {item.doc.views && item.doc.views !== "" && item.doc.views !== null ? <>
+                                    <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.doc.views} {t("views")}</span>
+                                </> : null}
+                                
                         </div>
                     </div>
-                </> : null}
+
 
                 {item.doc.tags[0] ? <>
                     <hr />
