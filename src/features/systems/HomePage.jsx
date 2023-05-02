@@ -23,6 +23,7 @@ const HomePage = ({client, setAlert}) => {
   const [page, setPage] = useState(1)
   const [popularDocs, setPopularDocs] = useState(false)
   const [displayDoc, setDisplayDoc] = useState(false)
+  const [displayParent, setDisplayParent] = useState(false)
 
   const {
     search, 
@@ -84,7 +85,7 @@ const HomePage = ({client, setAlert}) => {
   <div className="inner one"></div>
   <div className="inner two"></div>
   <div className="inner three"></div>
-</div> : (!result.docs || !result.docs[0]) ? <Landing popularDocs={popularDocs} setDisplayDoc={setDisplayDoc} setResult={setResult} t={t}/> : <SearchResult result={result} client={client} setAlert={setAlert} page={page} setPage={setPage} loadingSearch={loadingSearch} setResult={setResult} displayDoc={displayDoc} setDisplayDoc={setDisplayDoc}/>}
+</div> : (!result.docs || !result.docs[0]) ? <Landing popularDocs={popularDocs} setDisplayDoc={setDisplayDoc} setResult={setResult} t={t}/> : <SearchResult result={result} client={client} setAlert={setAlert} page={page} setPage={setPage} loadingSearch={loadingSearch} setResult={setResult} displayDoc={displayDoc} setDisplayDoc={setDisplayDoc} displayParent={displayParent} setDisplayParent={setDisplayParent} setLoading={setLoadingSearch} />}
           </>}
           
       </div>

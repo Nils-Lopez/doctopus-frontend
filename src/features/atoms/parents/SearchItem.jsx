@@ -1,19 +1,24 @@
 import React, {Fragment} from "react"
 import {useTranslation} from "react-i18next"
 
+import DocSearchItem from "../docs/SearchItem.jsx"
+
 const BoxItem = ({item}) => {
-
+    console.log("item : ", item)
     const { t, i18n } = useTranslation() 
-
     if (item.project) {
         return <div className="column is-one-quarter">
             <div className="box results-col ">
             <div className="is-flex is-justify-content-end mb-0 mt-0">
-                    <span className="tag is-primary">
-                        {t('project')}
+                    {item.roles && item.roles[0] ? <>
+                        <span className="tag is-primary">
+                        {getContent(item.roles[0].title, i18n.language)}
                     </span>
-                </div>
-                <h3 className="subtitle is-5 mb-1 mt-1">{item.project.title}</h3>
+                    </> : <span className="tag is-primary">
+                            {t('project')}
+                        </span>}
+                    </div>
+                    <h3 className="subtitle is-5 mb-1 mt-1">{item.project.title}</h3>
                 <p>{item.project.description && item.project.description[0] && getContent(item.project.description, i18n.language) ? getContent(item.project.description, i18n.language).substring(0,25) + "..." : null}</p>
                 
             </div>
@@ -23,9 +28,13 @@ const BoxItem = ({item}) => {
         return <div className="column is-one-quarter">
             <div className="box results-col ">
             <div className="is-flex is-justify-content-end mt-0 mb-0 tag-bottom">
-                    <span className="tag is-primary">
-                        {t('person')}
+            {item.roles && item.roles[0] ? <>
+                        <span className="tag is-primary">
+                        {getContent(item.roles[0].title, i18n.language)}
                     </span>
+                    </> :<span className="tag is-primary">
+                        {t('person')}
+                    </span>}
                 </div>
                 <h3 className="subtitle is-5 mb-1 mt-1">{item.person.name !== "" ? item.person.name : item.person.firstName + " " + item.person.lastName}</h3>
                 <span className='has-text-grey'><small>{item.person.country && item.person.country[0] ? getContent(item.person.country[0].labels, i18n.language) + (item.person.city ? ", " : "") : null}{item.person.city}</small></span>
@@ -57,9 +66,13 @@ const BoxItem = ({item}) => {
         return <div className="column is-one-quarter">
             <div className="box results-col ">
             <div className="is-flex is-justify-content-end mt-0 mb-0">
-                    <span className="tag is-primary">
-                        {t('organization')}
+            {item.roles && item.roles[0] ? <>
+                        <span className="tag is-primary">
+                        {getContent(item.roles[0].title, i18n.language)}
                     </span>
+                    </> :<span className="tag is-primary">
+                        {t('organization')}
+                    </span>}
                 </div>
                 <h3 className="subtitle is-5 mb-1 mt-1">{item.entity.name}</h3>
                 <span className='has-text-grey'><small>{item.entity.country ? item.entity.country + ", " : null}{item.entity.city}</small></span>
@@ -67,6 +80,8 @@ const BoxItem = ({item}) => {
                 
             </div>
         </div>
+    } else if (item.doc) {
+        return <DocSearchItem item={item}/>
     }
 }
 

@@ -1,7 +1,6 @@
 import React, {Fragment} from "react";
 import {useTranslation} from "react-i18next"
 
-import BoxItemParent from "../parents/SearchItem.jsx"
 
 const SearchItem = ({item, setDisplay, handleSearchTag, location = "index"}) => {
     const colClasses = location !== "index" ? "is-one-third" : "is-one-quarter"
@@ -18,21 +17,13 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index"}) => 
             <h3 className="subtitle is-5 mb-1 mt-1">{item.doc.title}</h3>
                 <p>{item.doc.description && item.doc.description[0] ? getContent(item.doc.description, i18n.language).substring(0,20) + "..." : null}</p>
                
-                    <hr />
-                    {item.doc.parents && item.doc.parents[0] ? <>
-                        
-                        {item.doc.parents.map((parent) => {
-                            return <Fragment key={JSON.stringify(parent)}>                                   
-                                <BoxItemParent item={parent} />
-                            </Fragment>
-                        })}
-                    </> : null}
+                    
                      <hr/>
                     <div className="is-flex is-justify-content-start">
                     <div>
     
                                 {item.doc.pages && item.doc.pages !== "" ? <>
-                                    <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.doc.pages} {item.doc.pages.charAt(0) * 2 && item.doc.pages.charAt(item.doc.pages.length -1) * 2 ? "pages" : null}</span>
+                                    <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{!(item.doc.pages.charAt(0) * 2 && item.doc.pages.charAt(item.doc.pages.length -1) * 2) ? "Pages : " : null}  {item.doc.pages} {item.doc.pages.charAt(0) * 2 && item.doc.pages.charAt(item.doc.pages.length -1) * 2 ? "pages" : null}</span>
                                 </> : item.doc.volume && item.doc.volume !== "" ? <> 
                                     <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{t('volume')} {item.doc.volume}</span>
                                 </> : item.doc.number && item.doc.number !== "" ? <> 
@@ -44,12 +35,7 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index"}) => 
                                 {item.doc.publishedAt && item.doc.publishedAt !== "" ? <>
                                     <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.doc.publishedAt} </span>
                                 </> : null}
-                               {item.doc.issn && item.doc.issn !== "" ? <>
-                                    <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.doc.issn} </span>
-                                </> : null}
-                                {item.doc.eanIsbn && item.doc.eanIsbn !== "" ? <>
-                                    <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.doc.eanIsbn} </span>
-                                </> : null}
+                               
                                 {item.doc.duration && item.doc.duration !== "" ? <>
                                     <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.doc.duration} </span>
                                 </> : null}
@@ -64,7 +50,7 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index"}) => 
                     </div>
 
 
-                {item.doc.tags[0] ? <>
+                {item.doc.tags && item.doc.tags[0] ? <>
                     <hr />
          
                     <div className="is-flex is-justify-content-space-around">

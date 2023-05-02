@@ -1,7 +1,8 @@
 import React, {Fragment} from "react";
 import {useTranslation} from "react-i18next"
+import BoxItemParent from "../parents/SearchItem.jsx"
 
-const Show = ({doc, handleSearchTag}) => {
+const Show = ({doc, handleSearchTag, client}) => {
     const {
         title,
         description,
@@ -11,21 +12,101 @@ const Show = ({doc, handleSearchTag}) => {
         parents,
         tags,
       } = doc
-
+      console.log('doc: doc', doc)
     const { t, i18n } = useTranslation() 
     return <>
-        <h1>{title}</h1>
-        {description && description[0] ? <p>{getContent(description, i18n.language)}</p> : null}
-        {languages && languages[0] ? <p>{getContent(languages[0].labels, i18n.language)}</p> : null}
+        <div className="is-flex is-justify-content-end">
         {types && types[0] ? <>
             {types.map((type) => {
                 return <Fragment key={JSON.stringify(type)}>
-                    <span className="tag is-medium is-primary mr-1 ml-1">
+                    <span className="tag is-medium is-primary mr-1 ml-1 mb-0">
                         {getContent(type.title,i18n.language)}
                     </span>
                 </Fragment>
             })}
         </> : null}
+        </div>
+        <h1 className="mt-2">{title}</h1>
+        {description && description[0] ? <p>{getContent(description, i18n.language)}</p> : null}
+        {languages && languages[0] ? <p>{getContent(languages[0].labels, i18n.language)}</p> : null}
+        
+        <div className="container mt-3">
+        {doc.pages && doc.pages !== "" ? <>
+                                    <span className="tag is-light is-medium  mb-2 ml-1 mr-1">{!(doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2) ? "Pages : " : null} {doc.pages} {doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2 ? "pages" : null}</span>
+                                </> : doc.volume && doc.volume !== "" ? <> 
+                                    <span className="tag is-light is-medium  mb-2 ml-1 mr-1">{t('volume')} {doc.volume}</span>
+                                </> : doc.number && doc.number !== "" ? <> 
+                                    <span className="tag is-light is-medium  mb-2 ml-1 mr-1">{t('number')} {doc.number}</span>
+                                </> : null}
+                                {doc.date && doc.date !== "" ? <>
+                                    <span className="tag is-light is-medium  mb-2 ml-1 mr-1">{doc.date} </span>
+                                </> : null}
+                                {doc.publishedAt && doc.publishedAt !== "" ? <>
+                                    <span className="tag is-light is-medium  mb-2 ml-1 mr-1">{doc.publishedAt} </span>
+                                </> : null}
+
+                               {doc.issn && doc.issn !== "" ? <>
+                                    <span className="tag is-light is-medium  mb-2 ml-1 mr-1">ISSN: {doc.issn} </span>
+                                </> : null}
+                                {doc.eanIsbn && doc.eanIsbn !== "" ? <>
+                                    <span className="tag is-light is-medium  mb-2 ml-1 mr-1">EAN/ISBN: {doc.eanIsbn} </span>
+                                </> : null}
+                                {doc.duration && doc.duration !== "" ? <>
+                                    <span className="tag is-light is-medium  mb-2  ml-1 mr-1">{doc.duration} </span>
+                                </> : null}
+                                {doc.additionalCopyrights && doc.additionalCopyrights !== "" ? <>
+                                    <span className="tag is-light is-medium  mb-2  ml-1 mr-1">{t('credits')}: {doc.additionalCopyrights} </span>
+                                </> : null}
+                                {client && client.type !== "visitor" ? <> {doc.views && doc.views !== "" && doc.views !== null ? <>
+                                    <span className="tag is-light is-medium  mb-2  ml-1 mr-1">{doc.views} {t("views")}</span>
+                                </> : null}</> : null}
+        </div>                    
+        {supports && supports[0] ? <div className="container mt-3">
+            {supports.map((supp) => {
+                return <Fragment key={JSON.stringify(supp)}>
+                    {supp.url && supp.url !== "" ? <>
+                        <span className="tag is-light is-medium  mb-2  ml-1 mr-1">URL: <a href={supp.url}>{supp.url}</a></span>
+                    </> : null}
+                    {supp.pdf && supp.pdf !== "" ? <>
+                        <span className="tag is-light is-medium  mb-2  ml-1 mr-1">{supp.pdf} {t("PDF")}</span>
+                    </> : null}
+                    {supp.format && supp.format !== "" ? <>
+                        <span className="tag is-light is-medium  mb-2  ml-1 mr-1">{supp.format}</span>
+                    </> : null}
+                    {supp.accessibility && supp.accessibility !== "" ? <>
+                        <span className="tag is-light is-medium  mb-2  ml-1 mr-1">{supp.accessibility}</span>
+                    </> : null}
+                    {supp.exemplaries && supp.exemplaries[0] ? supp.exemplaries.map((ex) => {
+                        return <Fragment key={JSON.stringify(ex)}>
+                          
+                            {ex.position && ex.position !== "" ? <>
+                                    <span className="tag is-light is-medium  mb-2 ml-1 mr-1">{ex.position} </span>
+                                </> : null}
+                                {ex.location && ex.location !== "" ? <>
+                                    <span className="tag is-light is-medium  mb-2  ml-1 mr-1">{ex.location} </span>
+                                </> : null}
+                                {ex.quality && ex.quality !== "" ? <>
+                                    <span className="tag is-light is-medium  mb-2  ml-1 mr-1"> {ex.quality} </span>
+                                </> : null}
+                                {ex.cote && ex.cote !== "" && ex.cote !== null ? <>
+                                    <span className="tag is-light is-medium  mb-2  ml-1 mr-1">{ex.cote}</span>
+                                </> : null}
+                        </Fragment>
+                    }) : null}
+                </Fragment>
+            })}
+        </div> : null }
+        <div className="columns is-multiline is-flex is-justify-content-center">
+        {parents && parents ? <>
+                        
+                        {parents.map((parent) => {
+                            return <Fragment key={JSON.stringify(parent)}>                                   
+                                <BoxItemParent item={parent} />
+                            </Fragment>
+                        })}
+                    </> : null}
+        </div>
+        <div className="container mt-3">
         {tags && tags[0] ? <>
             {tags.map((type) => {
                 let title = getContent(type.title, i18n.language)
@@ -38,6 +119,8 @@ const Show = ({doc, handleSearchTag}) => {
                 }
             })}
         </> : null}
+        </div>
+        
         {doc.views ? <></> : 1 }
     </>
 }

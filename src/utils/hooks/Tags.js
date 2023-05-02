@@ -50,6 +50,7 @@ const useTags = () => {
             const docs = await apiFetch('/tags/docs/id/' + id , {
                 method: 'GET'
             })
+            console.log('dcs : ', docs)
             dispatch({type: 'FindDoc', payload: docs})
         },
         searchTags: async function (query) {
