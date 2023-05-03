@@ -3,12 +3,12 @@ import {useTranslation} from "react-i18next"
 
 import DocSearchItem from "../docs/SearchItem.jsx"
 
-const BoxItem = ({item}) => {
-    console.log("item : ", item)
+const BoxItem = ({item, handleSearchParent, handleSearchDoc}) => {
+    //console.log("item : ", item)
     const { t, i18n } = useTranslation() 
     if (item.project) {
-        return <div className="column is-one-quarter">
-            <div className="box results-col ">
+        return <div className="column is-one-quarter" >
+            <div className="box results-col " onClick={() => handleSearchParent(item.project)}>
             <div className="is-flex is-justify-content-end mb-0 mt-0">
                     {item.roles && item.roles[0] ? <>
                         <span className="tag is-primary">
@@ -26,7 +26,7 @@ const BoxItem = ({item}) => {
     } else if (item.person) {
         if (item.person.productions)
         return <div className="column is-one-quarter">
-            <div className="box results-col ">
+            <div className="box results-col " onClick={() => handleSearchParent(item.project)}>
             <div className="is-flex is-justify-content-end mt-0 mb-0 tag-bottom">
             {item.roles && item.roles[0] ? <>
                         <span className="tag is-primary">
@@ -64,7 +64,7 @@ const BoxItem = ({item}) => {
         </div>
     } else if (item.entity) {
         return <div className="column is-one-quarter">
-            <div className="box results-col ">
+            <div className="box results-col " onClick={() => handleSearchParent(item.project)}>
             <div className="is-flex is-justify-content-end mt-0 mb-0">
             {item.roles && item.roles[0] ? <>
                         <span className="tag is-primary">
@@ -81,7 +81,7 @@ const BoxItem = ({item}) => {
             </div>
         </div>
     } else if (item.doc) {
-        return <DocSearchItem item={item}/>
+        return <DocSearchItem item={item} handleSearchDoc={handleSearchDoc}/>
     }
 }
 

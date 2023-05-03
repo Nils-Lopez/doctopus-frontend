@@ -85,7 +85,7 @@ const HomePage = ({client, setAlert}) => {
   <div className="inner one"></div>
   <div className="inner two"></div>
   <div className="inner three"></div>
-</div> : (!result.docs || !result.docs[0]) ? <Landing popularDocs={popularDocs} setDisplayDoc={setDisplayDoc} setResult={setResult} t={t}/> : <SearchResult result={result} client={client} setAlert={setAlert} page={page} setPage={setPage} loadingSearch={loadingSearch} setResult={setResult} displayDoc={displayDoc} setDisplayDoc={setDisplayDoc} displayParent={displayParent} setDisplayParent={setDisplayParent} setLoading={setLoadingSearch} />}
+</div> : (!result.docs || !result.docs[0]) ? <Landing popularDocs={popularDocs} setDisplayDoc={setDisplayDoc} setResult={setResult} t={t}/> : <SearchResult result={result} client={client} setAlert={setAlert} page={page} setPage={setPage} loadingSearch={loadingSearch} setResult={setResult} displayDoc={displayDoc} setDisplayDoc={setDisplayDoc} displayParent={displayParent} setDisplayParent={setDisplayParent} setLoading={setLoadingSearch}/>}
           </>}
           
       </div>

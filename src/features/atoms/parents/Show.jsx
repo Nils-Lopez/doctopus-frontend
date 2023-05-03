@@ -1,6 +1,8 @@
 import React, {Fragment} from "react";
 import {useTranslation} from "react-i18next"
 
+
+
 const Show = ({parent}) => {
 
     const { t, i18n } = useTranslation() 
@@ -31,8 +33,6 @@ const Show = ({parent}) => {
         prodIds, 
         createdDocs
     } = parent
- 
-    console.log("parent: ", parent)
 
     return <>
         <div className="is-flex is-justify-content-end">
@@ -53,9 +53,11 @@ const Show = ({parent}) => {
         <div className="container mt-3">
         {country && country !== "" ? <>
                                     <span className="tag is-light is-small mb-2 ml-1 mr-1">{country}</span>
-                                </> : null} { city && city !== "" ? <> 
+                                </> : null} 
+                                { city && city !== "" ? <> 
                                     <span className="tag is-light is-small mb-2 ml-1 mr-1">{city}</span>
-                                </> :null} { website && website !== "" ? <> 
+                                </> :null} 
+                                { website && website !== "" ? <> 
                                     <span className="tag is-light is-small mb-2 ml-1 mr-1"><a href={website}>{website}</a></span>
                                 </> : null}
                                 { url && url !== "" ? <> 
@@ -77,20 +79,21 @@ const Show = ({parent}) => {
                                
                                 <hr />
         </div>                    
+         <div className="columns is-multiline is-flex is-justify-content-center">
+            {productions && productions[0] ? productions.map((prod) => {
+                return <Fragment key={JSON.stringify(prod)}>
+                    
+                </Fragment>   
+            }) : null}
+         </div>
 {/*    
-        <div className="columns is-multiline is-flex is-justify-content-center">
-        {parents && parents ? <>
-                        
-                        {parents.map((parent) => {
-                            return <Fragment key={JSON.stringify(parent)}>                                   
-                                <BoxItemParent item={parent} />
-                            </Fragment>
-                        })}
-                    </> : null}
-        </div>
-        <div className="container mt-3">
-
-        </div> */}
+        docs: [{ type: mongoose.Schema.ObjectId, ref: "Doc" }], //Link to child document
+        roles: [{ type: mongoose.Schema.ObjectId, ref: "Role" }], //E.G. author, publisher, illustrator, developer..
+        entity: [{ type: mongoose.Schema.ObjectId, ref: "Entity" }], //Replace with link to entity
+        organism: [{type: mongoose.Schema.ObjectId, ref: "Organism"}],
+        person: {type: mongoose.Schema.ObjectId, ref: "Person"}, //Replace with link to person
+                tags: [{ type: mongoose.Schema.ObjectId, ref: "Tags" }] //Functions of the person
+         */}
         
 
     </>
