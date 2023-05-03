@@ -4,6 +4,7 @@ import SearchItem from "../atoms/docs/SearchItem"
 import SearchItemParent from "../atoms/parents/SearchItem"
 import ShowTag from "../atoms/tags/Show"
 import ShowDoc from "../atoms/docs/Show"
+import ShowParent from "../atoms/parents/Show"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRotateLeft } from '@fortawesome/free-solid-svg-icons'
@@ -12,10 +13,11 @@ import {useTags} from "../../utils/hooks/Tags"
 import {useProjects} from "../../utils/hooks/Projects"
 import {useEntities} from "../../utils/hooks/Entities"
 import {usePeople} from "../../utils/hooks/People"
+import {useDocs} from "../../utils/hooks/docs/Docs"
 
 import { useTranslation } from "react-i18next";
 
-const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, setResult, displayDoc, setDisplayDoc, setDisplayParent}) => {
+const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, setResult, displayDoc, setDisplayDoc, setDisplayParent, displayParent}) => {
 
     const [dataList, setDataList] = useState([])
     const [tags, setTags] = useState([])
@@ -23,7 +25,8 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
     const [searchTags, setSearchTags] = useState(false)
     const [searchTagsLoading, setSearchTagsLoading] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [findParent, setFindParent] = useState(false)
+   
+
 
     const { t, i18n } = useTranslation();
 
@@ -45,6 +48,8 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
     const handleBack = () => {
         if (searchTags) {
             setSearchTags(false)
+        } else if (displayParent) {
+          setDisplayParent(false)
         } else if (displayDoc) {
             if (dataList.length === 1) {
                 setDisplayDoc(false)
@@ -105,8 +110,56 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
     }
 
     useEffect(() => {
-
+      if (loading) {
+        if (responseFindProjectById && responseFindProjectById.success) {
+          setDisplayParent(responseFindProjectById.data)
+          setLoading(false)
+        } else {
+          setLoading(false)
+        }  
+      }
     }, [responseFindProjectById])
+    
+        useEffect(() => {
+      if (loading) {
+        if (responseFindEntityById && responseFindEntityById.success) {
+          setDisplayParent(responseFindEntityById.data)
+          setLoading(false)
+        } else {
+          setLoading(false)
+        }  
+      }
+    }, [responseFindEntityById])
+    
+     useEffect(() => {
+      if (loading) {
+        if (responseFindPersonById && responseFindPersonById.success) {
+          setDisplayParent(responseFindPersonById.data)
+          setLoading(false)
+        } else {
+          setLoading(false)
+        }  
+      }
+    }, [responseFindPersonById])
+    
+      
+    const {findDocById, responseFindDocById} = useDocs()
+    
+    const handleSearchDoc = (doc) => {
+      findDocById(doc.id)
+      setLoading(true)
+    }
+    
+    useEffect(() => {
+      if (loading) {
+        if (responseFindDocById && responseFindDocById.success) {
+          setDisplayDoc(responseFindDocById.data)
+          setLoading(false)
+        } else {
+          setLoading(false)
+        }  
+      }
+    }, [responseFindDocById])
 
     return loading || searchTagsLoading ? <div className="loader">
     <div className="inner one"></div>
@@ -122,8 +175,10 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
         </div>
         {searchTags.docs ? <>
             <ShowTag docs={searchTags.docs} tag={searchTags.tag} setDisplayDoc={setDisplayDoc} handleSearchTag={setSearchTags}/>
+        </> : displayParent ? <> 
+            <ShowParent parent={displayParent}/>
         </> : displayDoc ? <>
-            <ShowDoc doc={displayDoc} handleSearchTag={handleSearchTag}/>
+            <ShowDoc doc={displayDoc} handleSearchTag={handleSearchTag} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>
         </> : <>
         {tags && tags[0] ? <>
         <h3 className="subtitle has-text-right is-5 has-text-grey mt-0 pt-0 mb-4">{t('tags')}</h3>
@@ -163,7 +218,7 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
             {dataList.map((item, index) => {
                 if (index < 20) {
                     return <Fragment key={JSON.stringify(item)}>
-                        <SearchItem item={item} setDisplay={setDisplayDoc} handleSearchTag={handleSearchTag}/>
+                        <SearchItem item={item} setDisplay={setDisplayDoc} handleSearchTag={handleSearchTag} />
                     </Fragment>
                 }
             })}

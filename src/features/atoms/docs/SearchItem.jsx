@@ -2,13 +2,20 @@ import React, {Fragment} from "react";
 import {useTranslation} from "react-i18next"
 
 
-const SearchItem = ({item, setDisplay, handleSearchTag, location = "index"}) => {
+const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", handleSearchDoc = "false"}) => {
     const colClasses = location !== "index" ? "is-one-third" : "is-one-quarter"
 
     const { t, i18n } = useTranslation() 
 
     return <div className={"column " + colClasses}>
-            <div className="box results-col " onClick={() => setDisplay(item.doc)}>
+            <div className="box results-col " onClick={() => {
+                   
+                if (handleSearchDoc !== "false") {
+                    handleSearchDoc(item.doc.id)
+                } else {
+                    setDisplay(item.doc)
+                }
+            }}>
             <div className="is-flex is-justify-content-end mt-0 mb-0">
                     <span className="tag is-primary">
                         {item.doc.types && item.doc.types[0] ? getContent(item.doc.types[0].title, i18n.language) : t('document')}

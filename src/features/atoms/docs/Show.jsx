@@ -2,7 +2,7 @@ import React, {Fragment} from "react";
 import {useTranslation} from "react-i18next"
 import BoxItemParent from "../parents/SearchItem.jsx"
 
-const Show = ({doc, handleSearchTag, client}) => {
+const Show = ({doc, handleSearchTag, client, handleSearchParent, handleSearchDoc}) => {
     const {
         title,
         description,
@@ -10,7 +10,7 @@ const Show = ({doc, handleSearchTag, client}) => {
         types,
         supports,
         parents,
-        tags,
+    tags,
       } = doc
       console.log('doc: doc', doc)
     const { t, i18n } = useTranslation() 
@@ -101,7 +101,7 @@ const Show = ({doc, handleSearchTag, client}) => {
                         
                         {parents.map((parent) => {
                             return <Fragment key={JSON.stringify(parent)}>                                   
-                                <BoxItemParent item={parent} />
+                                <BoxItemParent item={parent} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>
                             </Fragment>
                         })}
                     </> : null}
