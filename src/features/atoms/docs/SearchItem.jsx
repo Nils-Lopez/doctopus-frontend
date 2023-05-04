@@ -2,7 +2,7 @@ import React, {Fragment} from "react";
 import {useTranslation} from "react-i18next"
 
 
-const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", handleSearchDoc = "false"}) => {
+const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", handleSearchDoc = "false", relTypes}) => {
     const colClasses = location !== "index" ? "is-one-third" : "is-one-quarter"
 
     const { t, i18n } = useTranslation() 
@@ -16,11 +16,18 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
                     setDisplay(item.doc)
                 }
             }}>
-            <div className="is-flex is-justify-content-end mt-0 mb-0">
+            {!relTypes ? <div className="is-flex is-justify-content-end mt-0 mb-0">
                     <span className="tag is-primary">
                         {item.doc.types && item.doc.types[0] ? getContent(item.doc.types[0].title, i18n.language) : t('document')}
                     </span>
-                </div>
+                </div> : <div className="is-flex is-justify-content-space-between mt-0 mb-0">
+                    <span className="tag is-info">
+                        {getContent(relTypes.title, i18n.language)}
+                    </span>
+                    <span className="tag is-primary">
+                        {item.doc.types && item.doc.types[0] ? getContent(item.doc.types[0].title, i18n.language) : t('document')}
+                    </span>
+                </div>}
             <h3 className="subtitle is-5 mb-1 mt-1">{item.doc.title}</h3>
                 <p>{item.doc.description && item.doc.description[0] ? getContent(item.doc.description, i18n.language).substring(0,20) + "..." : null}</p>
                

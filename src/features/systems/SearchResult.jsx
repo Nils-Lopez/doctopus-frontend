@@ -97,14 +97,15 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
     const {findPersonById, responseFindPersonById} = usePeople()
 
     const handleSearchParent = (parent) => {
+      console.log('ici broski : ', parent)
         if (parent.entities) {
-            findProjectById(parent.id)
+            findProjectById(parent._id)
             setLoading(true)
         } else if (parent.createdDocs) {
-            findEntityById(parent.id)    
+            findEntityById(parent._id)    
             setLoading(true)
         } else {
-            findPersonById(parent.id)
+            findPersonById(parent._id)
             setLoading(true)
         }
     }
@@ -176,7 +177,7 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
         {searchTags.docs ? <>
             <ShowTag docs={searchTags.docs} tag={searchTags.tag} setDisplayDoc={setDisplayDoc} handleSearchTag={setSearchTags}/>
         </> : displayParent ? <> 
-            <ShowParent parent={displayParent}/>
+            <ShowParent parent={displayParent} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>
         </> : displayDoc ? <>
             <ShowDoc doc={displayDoc} handleSearchTag={handleSearchTag} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>
         </> : <>
@@ -204,7 +205,7 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
         
             {result.items && result.items[0] && result.items.map((item) => {
                 return <Fragment key={JSON.stringify(item)}>
-                    <SearchItemParent item={item}/>
+                    <SearchItemParent item={item} handleSearchParent={handleSearchParent}/>
                 </Fragment>
             })}
             

@@ -3,20 +3,24 @@ import {useTranslation} from "react-i18next"
 
 import DocSearchItem from "../docs/SearchItem.jsx"
 
-const BoxItem = ({item, handleSearchParent, handleSearchDoc}) => {
+const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes}) => {
     //console.log("item : ", item)
     const { t, i18n } = useTranslation() 
     if (item.project) {
         return <div className="column is-one-quarter" >
             <div className="box results-col " onClick={() => handleSearchParent(item.project)}>
             <div className="is-flex is-justify-content-end mb-0 mt-0">
-                    {item.roles && item.roles[0] ? <>
+                    {!relTypes ? <>
+                        {item.roles && item.roles[0] ? <>
                         <span className="tag is-primary">
                         {getContent(item.roles[0].title, i18n.language)}
                     </span>
                     </> : <span className="tag is-primary">
                             {t('project')}
                         </span>}
+                    </> : <span className="tag is-primary">
+                        {getContent(relTypes.title, i18n.language)}
+                    </span>}
                     </div>
                     <h3 className="subtitle is-5 mb-1 mt-1">{item.project.title}</h3>
                 <p>{item.project.description && item.project.description[0] && getContent(item.project.description, i18n.language) ? getContent(item.project.description, i18n.language).substring(0,25) + "..." : null}</p>
@@ -26,7 +30,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc}) => {
     } else if (item.person) {
         if (item.person.productions)
         return <div className="column is-one-quarter">
-            <div className="box results-col " onClick={() => handleSearchParent(item.project)}>
+            <div className="box results-col " onClick={() => handleSearchParent(item.person)}>
             <div className="is-flex is-justify-content-end mt-0 mb-0 tag-bottom">
             {item.roles && item.roles[0] ? <>
                         <span className="tag is-primary">
@@ -64,7 +68,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc}) => {
         </div>
     } else if (item.entity) {
         return <div className="column is-one-quarter">
-            <div className="box results-col " onClick={() => handleSearchParent(item.project)}>
+            <div className="box results-col " onClick={() => handleSearchParent(item.entity)}>
             <div className="is-flex is-justify-content-end mt-0 mb-0">
             {item.roles && item.roles[0] ? <>
                         <span className="tag is-primary">

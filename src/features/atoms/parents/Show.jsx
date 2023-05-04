@@ -1,9 +1,10 @@
-import React, {Fragment} from "react";
+import React, {Fragment, useState, useEffect} from "react";
 import {useTranslation} from "react-i18next"
 
+import SearchItemParent from "./SearchItem"
+import SearchItemDoc from "../docs/SearchItem"
 
-
-const Show = ({parent}) => {
+const Show = ({parent, handleSearchParent, handleSearchDoc}) => {
 
     const { t, i18n } = useTranslation() 
     const {
@@ -34,13 +35,53 @@ const Show = ({parent}) => {
         createdDocs
     } = parent
 
+    const [dataList, setDataList] = useState([])
+    const [page, setPage] = useState(1)
+    const [docs, setDocs] = useState([])
+
+if (!docs[0]) {
+    const newDocs = []
+    if (productions) {
+        productions.map((prod) => {
+            if (prod.docs) {
+                prod.docs.map((doc) => {
+                    if (!newDocs.includes({...doc, relTypes: prod.roles[0]})) newDocs.push({...doc, relTypes: prod.roles[0]})                  
+                })
+            } else if (prod.title) {
+                if (!newDocs.includes(prod)) newDocs.push(prod)
+            }
+        })
+    }
+    
+    if (createdDocs){
+        createdDocs.map((doc) => {
+            if (!newDocs.includes(doc)) newDocs.push(doc)
+        })
+    }
+    console.log('new: ', newDocs)
+    if (newDocs[0] && newDocs !== docs) {
+        setDocs([...new Set(newDocs)])
+    }
+}
+
+    useEffect(() => {
+        if (page === 1) {
+            setDataList(docs.slice(0, 20))
+        } else {
+            setDataList(docs.slice((page*10), ((page*10)+20)))
+        }
+ 
+    }, [page, docs])
+
+    console.log('datalist: ', docs)
+
     return <>
         <div className="is-flex is-justify-content-end">
         {roles && roles[0] ? <>
             {roles.map((type) => {
                 return <Fragment key={JSON.stringify(type)}>
                     <span className="tag is-medium is-primary mr-1 ml-1 mb-0">
-                        {getContent(type.title,i18n.language)}
+                        {getContent(type.title, i18n.language)}
                     </span>
                 </Fragment>
             })}
@@ -52,7 +93,11 @@ const Show = ({parent}) => {
         
         <div className="container mt-3">
         {country && country !== "" ? <>
-                                    <span className="tag is-light is-small mb-2 ml-1 mr-1">{country}</span>
+                                {typeof country === "string" ?<span className="tag is-light is-small mb-2 ml-1 mr-1">{country}</span> : country.map((c) => {
+                                   if (c.labels[0]) {
+                                    return <Fragment key={JSON.stringify(c)}><span className="tag is-light is-small mb-2 ml-1 mr-1">{getContent(c.labels, i18n.language)}</span></Fragment>
+                                   }
+                            })}
                                 </> : null} 
                                 { city && city !== "" ? <> 
                                     <span className="tag is-light is-small mb-2 ml-1 mr-1">{city}</span>
@@ -78,14 +123,53 @@ const Show = ({parent}) => {
                                 </> : null}
                                
                                 <hr />
-        </div>                    
-         <div className="columns is-multiline is-flex is-justify-content-center">
-            {productions && productions[0] ? productions.map((prod) => {
-                return <Fragment key={JSON.stringify(prod)}>
-                    
+        </div>   
+        <div className="columns is-multiline is-flex is-justify-content-center">
+            {actors && actors[0] ? actors.map((actor) => {
+                return <Fragment key={JSON.stringify(actor)}>
+                    <SearchItemParent parent={actor} handleSearchParent={handleSearchParent} relTypes={actor.role}/>
                 </Fragment>   
             }) : null}
+         </div>     
+         <div className="columns is-multiline is-flex is-justify-content-center">
+            {projects && projects[0] ? projects.map((project) => {
+                return <Fragment key={JSON.stringify(project)}>
+                    <SearchItemParent parent={{project: project}} handleSearchParent={handleSearchParent}/>
+                </Fragment>   
+            }) : null}
+         </div>                
+
+         <div className="columns is-multiline is-flex is-justify-content-center">
+            {dataList && dataList[0] ? dataList.map((doc) => {
+             
+                    return <Fragment key={JSON.stringify(doc)}>
+                        <SearchItemDoc item={{doc: doc}} handleSearchDoc={handleSearchDoc} relTypes={doc.relTypes}/>
+                    </Fragment>   
+                
+            }) : null}
          </div>
+         {docs && docs.length > 20 ? <div className="is-flex is-justify-content-end ">
+                <nav className="pagination" role="navigation" aria-label="pagination">
+              
+              <ul className="pagination-list">
+                <li>
+                  <a href="#searchBlock" className={"pagination-link " + (page === 1 ? "is-current" : "")} aria-label="Page 1" aria-current="page" onClick={() => setPage(1)}>1</a>
+                </li>
+                <li>
+                  <a href="#searchBlock" className={"pagination-link " + (page === 2 ? "is-current" : "")} aria-label="Goto page 2" onClick={() => setPage(2)}>2</a>
+                </li>
+                {docs.length > 40 ? <li>
+                  <a href="#searchBlock" className={"pagination-link " + (page === 3 ? "is-current" : "")} aria-label="Goto page 3" onClick={() => setPage(3)}>3</a>
+                </li> : null}
+                {docs.length > 60 ? <li>
+                  <a href="#searchBlock" className={"pagination-link " + (page === 4 ? "is-current" : "")} aria-label="Goto page 3" onClick={() => setPage(4)}>4</a>
+                </li> : null}
+                {docs.length > 80 ? <li>
+                  <a href="#searchBlock" className={"pagination-link " + (page === 5 ? "is-current" : "")} aria-label="Goto page 3" onClick={() => setPage(5)}>5</a>
+                </li> : null}
+              </ul>
+            </nav>
+          </div> : null}
 {/*    
         docs: [{ type: mongoose.Schema.ObjectId, ref: "Doc" }], //Link to child document
         roles: [{ type: mongoose.Schema.ObjectId, ref: "Role" }], //E.G. author, publisher, illustrator, developer..
