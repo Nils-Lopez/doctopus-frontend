@@ -1,8 +1,10 @@
-import React, {Fragment} from "react";
+import React, {Fragment, useState, useEffect} from "react";
 import {useTranslation} from "react-i18next"
 import BoxItemParent from "../parents/SearchItem.jsx"
 
-const Show = ({doc, handleSearchTag, client, handleSearchParent, handleSearchDoc}) => {
+import DocForm from "../../molecules/Create/DocForm"
+
+const Show = ({doc, handleSearchTag, client, setAlert, handleSearchParent, handleSearchDoc}) => {
     const {
         title,
         description,
@@ -12,10 +14,27 @@ const Show = ({doc, handleSearchTag, client, handleSearchParent, handleSearchDoc
         parents,
     tags,
       } = doc
-      console.log('doc: doc', doc)
+    
+    const [dataUpdate, setDataUpdate] = useState(false)
+    
+    useEffect(() => {
+      if (dataUpdate && dataUpdate.success) {
+        handleSearchDoc(dataUpdate._id)
+        setDataUpdate(false)
+      }
+    }, [dataUpdate])
+    
+
     const { t, i18n } = useTranslation() 
-    return <>
-        <div className="is-flex is-justify-content-end">
+    return dataUpdate && !dataUpdate.success ? <>
+     <DocForm client={client} setAlert={setAlert} dataUpdate={dataUpdate} setDataUpdate={setDataUpdate}/>
+    </> : <>
+          {client && client.user && (client.user.type === "admin" || client.user.type === "moderator" || client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? <div className="is-flex is-justify-content-end">
+              <button className="button is-primary" onClick={() => setDataUpdate(doc)}>
+                  {t('update')}
+              </button>
+          </div>
+ : null }        <div className="is-flex is-justify-content-end">
         {types && types[0] ? <>
             {types.map((type) => {
                 return <Fragment key={JSON.stringify(type)}>
@@ -57,7 +76,7 @@ const Show = ({doc, handleSearchTag, client, handleSearchParent, handleSearchDoc
                                 {doc.additionalCopyrights && doc.additionalCopyrights !== "" ? <>
                                     <span className="tag is-light is-medium  mb-2  ml-1 mr-1">{t('credits')}: {doc.additionalCopyrights} </span>
                                 </> : null}
-                                {client && client.type !== "visitor" ? <> {doc.views && doc.views !== "" && doc.views !== null ? <>
+                                 {client && client.user && (client.user.type === "admin" || client.user.type === "moderator" || client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? <> {doc.views && doc.views !== "" && doc.views !== null ? <>
                                     <span className="tag is-light is-medium  mb-2  ml-1 mr-1">{doc.views} {t("views")}</span>
                                 </> : null}</> : null}
         </div>                    
@@ -121,7 +140,7 @@ const Show = ({doc, handleSearchTag, client, handleSearchParent, handleSearchDoc
         </> : null}
         </div>
         
-        {doc.views ? <></> : 1 }
+
     </>
 }
 

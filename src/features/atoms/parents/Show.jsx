@@ -4,8 +4,14 @@ import {useTranslation} from "react-i18next"
 import SearchItemParent from "./SearchItem"
 import SearchItemDoc from "../docs/SearchItem"
 
-const Show = ({parent, handleSearchParent, handleSearchDoc}) => {
+import PersonForm from "../../molecules/Create/PersonForm"
+import OrganisationForm from "../../molecules/Create/OrganisationForm"
+import ProjectForm from "../forms/orgs/ProjectForm"
 
+const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc}) => {
+    
+    const [dataUpdate, setDataUpdate] = useState(false)
+    
     const { t, i18n } = useTranslation() 
     const {
         roles, 
@@ -38,6 +44,13 @@ const Show = ({parent, handleSearchParent, handleSearchDoc}) => {
     const [dataList, setDataList] = useState([])
     const [page, setPage] = useState(1)
     const [docs, setDocs] = useState([])
+    
+    useEffect(() => {
+     if (dataUpdate && dataUpdate.success) {
+      handleSearchParent(dataUpdate)
+      setDataUpdate(false)
+     }
+    }, [dataUpdate])
 
 if (!docs[0]) {
     const newDocs = []
@@ -75,7 +88,21 @@ if (!docs[0]) {
 
     console.log('datalist: ', docs)
 
-    return <>
+    return dataUpdate && !dataUpdate.success ? <>
+     {dataUpdate.projects ? 
+      <OrganisationForm client={client} setAlert={setAlert} dataUpdate={dataUpdate} setDataUpdate={setDataUpdate}/>
+     : dataUpdate.entities ? <>
+       <ProjectForm client={client} setAlert={setAlert} dataUpdate={dataUpdate} setDataUpdate={setDataUpdate}/>
+     </> : <>
+      <PersonForm client={client} setAlert={setAlert} dataUpdate={dataUpdate} setDataUpdate={setDataUpdate}/>
+     </>}
+    </> : <>
+     {client && client.user && (client.user.type === "admin" || client.user.type === "moderator" || client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? <div className="is-flex is-justify-content-end">
+              <button className="button is-primary" onClick={() => setDataUpdate(parent)}>
+                  {t('update')}
+              </button>
+          </div>
+ : null }
         <div className="is-flex is-justify-content-end">
         {roles && roles[0] ? <>
             {roles.map((type) => {

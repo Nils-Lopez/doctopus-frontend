@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
-const OrganisationForm = ({client, setAlert, template, setCreated}) => {
+const OrganisationForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) => {
   
   const [nameValue, setNameValue] = useState("")
   const [descEnValue, setDescEnValue] = useState("")
@@ -29,6 +29,8 @@ const OrganisationForm = ({client, setAlert, template, setCreated}) => {
   const [selectedActors, selectActor] = useState([])
   const [selectedProj, selectProj] = useState([])
 
+  const [loading, setLoading] = useState(false)
+
   const {
     findEntityById, 
     responseFindEntityById, 
@@ -41,6 +43,7 @@ const OrganisationForm = ({client, setAlert, template, setCreated}) => {
     findEntityBySlug, 
     responseFindEntityBySlug
   } = useEntities()
+
 
 
   const handleNameChange = (e) => {
@@ -110,9 +113,28 @@ const OrganisationForm = ({client, setAlert, template, setCreated}) => {
         return "Error"
       }
     }
+    
+  useEffect(() => {
+    if (dataUpdate) {
+      setNameValue(dataUpdate.name)
+            if (dataUpdate.description && dataUpdate.description[0]) {
+       setDescFrValue(getContent(dataUpdate.description, "fr"))
+       setDescEnValue(getContent(dataUpdate.description, "en"))
+      }
+      setUrlValue(dataUpdate.url)
+      setCityValue(dataUpdate.city)
+      setCountryValue(dataUpdate.country)
+      selectLang(dataUpdate.languages)
+      selectRole(dataUpdate.roles)
+      selectActor(dataUpdate.actors)
+      selectProj(dataUpdate.proj)
+      
+    }
+  }, [dataUpdate])
 
   const handleFormSubmit = async (e) => {
     e.preventDefault()
+    setLoading(true)
     const reqData = {
       entity: {
         name: nameValue,
@@ -134,18 +156,36 @@ const OrganisationForm = ({client, setAlert, template, setCreated}) => {
   useEffect(() => {
     if (responseCreateEntity && responseCreateEntity.success) {
       setAlert({ type: "success", message: { en: "Organisation has been successfully created.", fr: "L'organisation a été créé avec succès" } })
+      setLoading(false)
       if (setCreated) {
         
         setCreated(responseCreateEntity.data)
       }
     } else if (responseCreateEntity && !responseCreateEntity.success) {
       setAlert({ type: "error", message: { en: "An error occured while creating organisation.", fr: "Une erreure est survenue lors de la création de l'organisation"}})
+      setLoading(false)
     }
   }, [responseCreateEntity])
+  
+    useEffect(() => {
+    if (responseUpdateEntity && responseUpdateEntity.success) {
+      setAlert({ type: "success", message: { en: "Organisation has been successfully created.", fr: "L'organisation a été créé avec succès" } })
+      setLoading(false)
+       setDataUpdate({success:true})
+    } else if (responseUpdateEntity && !responseUpdateEntity.success) {
+      setAlert({ type: "error", message: { en: "An error occured while creating organisation.", fr: "Une erreure est survenue lors de la création de l'organisation"}})
+      setLoading(false)
+    }
+  }, [responseUpdateEntity])
+  
   const { t, i18n } = useTranslation();
 
 
-  return <div>
+  return loading ? <div className="loader">
+  <div className="inner one"></div>
+  <div className="inner two"></div>
+  <div className="inner three"></div>
+</div>  : <div>
     <div className="tabs">
         <ul>
           <li onClick={() => setIdLang("fr")} className={idLang === "fr" ? "is-active" : ""}><a href="#" onClick={(e) => e.preventDefault()}>Français</a></li>

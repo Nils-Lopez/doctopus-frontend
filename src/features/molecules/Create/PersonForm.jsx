@@ -10,27 +10,29 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from "react-i18next";
 
-const PersonForm = ({client, setAlert, template, setCreated}) => {
+const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) => {
   
   const [nameValue, setNameValue] = useState("")
   const [descEnValue, setDescEnValue] = useState("")
   const [descFrValue, setDescFrValue] = useState("")
   const [urlValue, setUrlValue] = useState("")
   const [idLang, setIdLang] = useState("fr")
-    const [firstNameValue, setFirstNameValue] = useState("")
+  const [firstNameValue, setFirstNameValue] = useState("")
   const [lastNameValue, setLastNameValue] = useState("")
   const [birthDateValue, setBirthDateValue] = useState("")
   const [deathDateValue, setDeathDateValue] = useState("")
   const [cityValue, setCityValue] = useState("")
   const [countryValue, setCountryValue] = useState("")
-    const [langEnValue, setLangEnValue] = useState("")
+  const [langEnValue, setLangEnValue] = useState("")
   const [langFrValue, setLangFrValue] = useState("")
   const [selectedLangs, selectLang] = useState([])
 
   const [selectedRoles, selectRole] = useState([])
   const [selectedOrg, selectOrg] = useState([])
   const [selectedProj, selectProj] = useState([])
-    const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  const [loading, setLoading] = useState(false)
 
   const {
     findPersonById, 
@@ -139,8 +141,33 @@ const PersonForm = ({client, setAlert, template, setCreated}) => {
       selectLang(filtered)
     }
 
+  useEffect(() => {
+   if (dataUpdate) {
+      setNameValue(dataUpdate.name)
+      setFirstNameValue(dataUpdate.firstName)
+      setLastNameValue(dataUpdate.lastName)
+      setUrlValue(dataUpdate.website)
+      selectLang(dataUpdate)
+           if (dataUpdate.description && dataUpdate.description[0]) {
+       setDescFrValue(getContent(dataUpdate.description, "fr"))
+       setDescEnValue(getContent(dataUpdate.description, "en"))
+      }
+      setCityValue(dataUpdate.city)
+      dataUpdate.activites.map((a) => {
+        if (a.projects && a.projects[0]) {
+          selectProj([...selectedProj, a])
+        } else if (a.entities && a.entities[0]) {
+          selectOrg([...selectedOrg, a])
+        }
+      })
+      selectProj([...selectedProj, dataUpdate.projects])
+      selectRole(dataUpdate.roles)   
+   }
+  }, [dataUpdate])
+
   const handlePersonSubmit = (e) => {
     e.preventDefault()    
+     setLoading(true)
     const reqData = {
       person: {
         name: nameValue,
@@ -157,22 +184,46 @@ const PersonForm = ({client, setAlert, template, setCreated}) => {
       projects: selectedProj,
       roles: selectedRoles
     }
-    createPerson(reqData)
+    if (!dataUpdate) {
+      createPerson(reqData)
+     
+    } else {
+      updatePerson(reqData, dataUpdate._id)
+    }
   }
 
   useEffect(() => {
     if (responseCreatePerson && responseCreatePerson.success) {
       setAlert({ type: "success", message: { en: "Person has been successfully created.", fr: "La personne a été créé avec succès" } })
+      setLoading(false)      
       if (setCreated) {
         setCreated(responseCreatePerson.data)
       }
     } else if (responseCreatePerson && !responseCreatePerson.success) {
       setAlert({ type: "error", message: { en: "An error occured while creating a new person.", fr: "Un problème est survenu lors de la création d'une nouvelle personne"}})
-
+      setLoading(false)
     }
   }, [responseCreatePerson])
   
-  return <>
+  useEffect(() => {
+    if (responseUpdatePerson && responseUpdatePerson.success){
+      setAlert({ type: "success", message: { en: "Person has been successfully updated.", fr: "La personne a été mise à jour avec succès" } })
+      setLoading(false)
+      setDataUpdate({...responseUpdatePerson.data, success: true})
+    } else if (responseUpdatePerson && !responseCreatePerson.success) {
+      setAlert({ type: "error", message: { en: "An error occured while updating person.", fr: "Un problème est survenu lors de la mise à jour d'une personne"}})
+      setLoading(false)
+    }
+  }, [responseUpdatePerson])
+  
+  return loading ? <>
+  <div className="loader">
+  <div className="inner one"></div>
+  <div className="inner two"></div>
+  <div className="inner three"></div>
+</div> 
+    
+  </> : <>
     <div className="tabs">
         <ul>
           <li onClick={() => setIdLang("fr")} className={idLang === "fr" ? "is-active" : ""}><a href="#" onClick={(e) => e.preventDefault()}>Français</a></li>

@@ -101,7 +101,7 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
         if (parent.entities) {
             findProjectById(parent._id)
             setLoading(true)
-        } else if (parent.createdDocs) {
+        } else if (parent.projects) {
             findEntityById(parent._id)    
             setLoading(true)
         } else {
@@ -175,11 +175,11 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
             </button>
         </div>
         {searchTags.docs ? <>
-            <ShowTag docs={searchTags.docs} tag={searchTags.tag} setDisplayDoc={setDisplayDoc} handleSearchTag={setSearchTags}/>
+            <ShowTag docs={searchTags.docs} tag={searchTags.tag} client={client} setAlert={setAlert} setDisplayDoc={setDisplayDoc} handleSearchTag={setSearchTags}/>
         </> : displayParent ? <> 
-            <ShowParent parent={displayParent} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>
+            <ShowParent parent={displayParent} setAlert={setAlert} client={client} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>
         </> : displayDoc ? <>
-            <ShowDoc doc={displayDoc} handleSearchTag={handleSearchTag} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>
+            <ShowDoc doc={displayDoc} setAlert={setAlert} client={client} handleSearchTag={handleSearchTag} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>
         </> : <>
         {tags && tags[0] ? <>
         <h3 className="subtitle has-text-right is-5 has-text-grey mt-0 pt-0 mb-4">{t('tags')}</h3>

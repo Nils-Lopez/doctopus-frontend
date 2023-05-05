@@ -8,7 +8,7 @@ import ActorForm from "./ActorForm"
 
 import {useTranslation} from "react-i18next"
 
-const ProjectForm = ({client, setAlert, setCreated}) => {
+const ProjectForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) => {
     
     const [idLang, setIdLang] = useState("fr")
     const [titleValue, setTitleValue] = useState("")
@@ -21,15 +21,20 @@ const ProjectForm = ({client, setAlert, setCreated}) => {
     const [selectedOrgs, selectOrg] = useState([])
     const [selectedRoles, selectRole] = useState([])
 
+    const [loading, setLoading] = useState(false)
+
     const { t, i18n } = useTranslation() 
 
     const {
         createProject, 
-        responseCreateProject
+        responseCreateProject,
+        updateProject,
+        responseUpdateProject 
     } = useProjects()
  
     const handleSubmit = (e) => {
         e.preventDefault()
+        setLoading(true)
         const reqData = {
             project: {
                 entities: selectedOrgs,
@@ -41,9 +46,49 @@ const ProjectForm = ({client, setAlert, setCreated}) => {
             },
             roles: selectedRoles
         }
-        console.log('data: ', reqData)
-        createProject(reqData)
+
+        if (dataUpdate) {
+         updateProject(reqData)
+        } else {
+         createProject(reqData)
+        }         
+        
     }
+    
+        const getContent = (value, lang) => {
+      if (value) {
+        return value.filter(obj => obj.lang === lang)[0] ? value.filter(obj => obj.lang === lang)[0].content : value.filter(obj => obj.lang === "en")[0] ? value.filter(obj => obj.lang === "en")[0].content : value.filter(obj => obj.lang === "fr")[0].content
+      } else {
+        return "Error"
+      }
+    }
+
+    useEffect(() => {
+     if (dataUpdate) {
+      setTitleValue(dataUpdate.title)
+      setSlugValue(dataUpdate.slug)
+      setDateValue(dataUpdate.date)
+      selectRole(dataUpdate.roles)
+      selectOrg(dataUpdate.entities)
+      selectActor(dataUpdate.actors)
+      if (dataUpdate.description && dataUpdate.description[0]) {
+       setDescFrValue(getContent(dataUpdate.description, "fr"))
+       setDescEnValue(getContent(dataUpdate.description, "en"))
+      }
+     }
+    }, [dataUpdate])
+    
+        useEffect(() => {
+        if (responseUpdateProject && responseUpdateProject.success) {
+        setAlert({ type: "success", message: { en: t('project-created'), fr: t('project-created') } })
+        setDataUpdate({...responseUpdateProject.data, success: true})
+        setLoading(false)
+        } else if (responseUpdateProject && !responseUpdateProject.success) {
+        setAlert({ type: "error", message: { en: t('error-project-creation'), fr: t('error-project-creation')}})
+        setLoading(false)
+        }
+    }, [responseUpdateProject])
+
     
     useEffect(() => {
         if (responseCreateProject && responseCreateProject.success) {
@@ -51,9 +96,10 @@ const ProjectForm = ({client, setAlert, setCreated}) => {
         if (setCreated) {
             setCreated(responseCreateProject.data)
         }
+        setLoading(false)
         } else if (responseCreateProject && !responseCreateProject.success) {
         setAlert({ type: "error", message: { en: t('error-project-creation'), fr: t('error-project-creation')}})
-
+        setLoading(false)
         }
     }, [responseCreateProject])
 
@@ -79,7 +125,11 @@ const ProjectForm = ({client, setAlert, setCreated}) => {
         setDateValue(e.target.value)
     }
 
-    return <>
+    return loading ? <div className="loader">
+  <div className="inner one"></div>
+  <div className="inner two"></div>
+  <div className="inner three"></div>
+</div> : <>
         <div className="tabs">
             <ul>
                 <li onClick={() => setIdLang("fr")} className={idLang === "fr" ? "is-active" : ""}><a href="#" onClick={(e) => e.preventDefault()}>Français</a></li>

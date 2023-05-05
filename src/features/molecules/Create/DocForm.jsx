@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from "react-i18next";
 
-const DocForm = ({client, setAlert, selectedType, handleSelectType}) => {
+const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, setDataUpdate}) => {
   const { t, i18n } = useTranslation();
 
   const [titleValue, setTitleValue] = useState("")
@@ -61,6 +61,8 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType}) => {
   const [template, setFullTemplate] = useState(false)
 
   const [docTemplatesLoading, setDocTemplatesLoading] = useState(false)
+
+  const [loading, setLoading] = useState(false)
 
   const {
     createDoc, 
@@ -207,6 +209,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType}) => {
 
 
   const handleDocSubmit = async (e) => {
+    setLoading(true)
     e.preventDefault()
     const reqData = {
       doc: {
@@ -224,6 +227,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType}) => {
         thumb: thumbValue,
         volume: volumeValue,
         number: numberValue,
+        template: template,
       },
       types: selectedTypes,
       tags: selectedTags,
@@ -231,17 +235,34 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType}) => {
       parents: [...selectedOrg, ...selectedPeople, ...selectedProjects, selectedDoc],
       brotherhood: selectedBrotherHood
     }
-    await createDoc(reqData)
+    if (!dataUpdate) {
+     await createDoc(reqData)
+    } else {
+     await updateDoc(reqData, dataUpdate._id)
+    }
 
   }
   
   useEffect(() => {
     if (responseCreateDoc && responseCreateDoc.success) {
       setAlert({ type: "success", message: { en: "Document has been successfully created.", fr: "Le document a été créé avec succès"}})
+      setLoading(false)
     } else if (responseCreateDoc && !responseCreateDoc.success) {
       setAlert({ type: "error", message: { en: "An error occured while creating document.", fr: "Une erreure est survenue lors de la création du document"}})
+            setLoading(false)
     }
   }, [responseCreateDoc])
+  
+    useEffect(() => {
+    if (responseUpdateDoc && responseUpdateDoc.success) {
+      setAlert({ type: "success", message: { en: "Document has been successfully updated.", fr: "Le document a été mis à jour avec succès"}})
+            setLoading(false)
+      setDataUpdate({...responseUpdateDoc.data, success: true})
+    } else if (responseUpdateDoc && !responseUpdateDoc.success) {
+      setAlert({ type: "error", message: { en: "An error occured while updating document.", fr: "Une erreure est survenue lors de la mise à jour du document"}})
+            setLoading(false)
+    }
+  }, [responseUpdateDoc])
   
     if (template && (template.tag_defaults !== selectedTags || template.type_defaults !== selectedTypes || (template.languages && template.languages.defaults !== selectedLangs))) {
       selectTag(template.tag_defaults)
@@ -306,7 +327,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType}) => {
 
   useEffect(() => {
     if (!subTemplate || !templateModel.schema_childs.includes(subTemplate)) {
-      console.log("ici")
+
       setFullTemplate(templateModel)
     } else {
       console.log('la')
@@ -343,10 +364,57 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType}) => {
     }
   }, [subTemplate, templateModel])
 
+  useEffect(() => {
+   if (dataUpdate) {
+      setSlugValue(dataUpdate.slug)
+      setTitleValue(dataUpdate.title)
+      if (dataUpdate.description && dataUpdate.description[0]) {
+       setDescFrValue(getContent(dataUpdate.description, "fr"))
+       setDescEnValue(getContent(dataUpdate.description, "en"))
+      }
+      selectLang(dataUpdate.languages)
+      setCopyrightsValue(dataUpdate.additionalCopyrights)
+      setDateValue(dataUpdate.date)
+      setPubliDateValue(dataUpdate.publishedAt)
+      setIsbnValue(dataUpdate.eanIsbn)
+      setIssnValue(dataUpdate.issn)
+      setPagesValue(dataUpdate.pages)
+      setDurationValue(dataUpdate.duration)
+      setThumbValue(dataUpdate.thumb)
+      setVolumeValue(dataUpdate.volume)
+      setNumberValue(dataUpdate.number)
+      selectType(dataUpdate.types)
+      selectTag(dataUpdate.tags)
+      setPendingSupports(dataUpdate.supports)
+      dataUpdate.parents.map((p) => {
+       if (p.project) {
+        selectProject([...selectedProjects, p])
+        
+       } else if (p.person) {
+        selectPerson([...selectedPeople, p])
+        
+       } else if (p.entity) {
+        selectOrg([...selectedOrg, p])
+       } else {
+        selectDoc([...selectedDoc, p])
+       }
+      })
+      if (dataUpdate.template) {
+       setFullTemplate(dataUpdate.template)
+      }
+      
+   }
+  }, [dataUpdate])
 
-  return <form onSubmit={handleDocSubmit}>
+  return loading ? <>
+   <div className="loader">
+  <div className="inner one"></div>
+  <div className="inner two"></div>
+  <div className="inner three"></div>
+</div> 
+  </> : <form onSubmit={handleDocSubmit}>
     <div className="columns">
-            <div className="column is-one-third">
+            {!dataUpdate ? <div className="column is-one-third">
               <div className="field">
             <label className="label">{t('type')}</label>
             <div className="select">
@@ -357,7 +425,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType}) => {
               </select>
             </div>
           </div>
-            </div>
+            </div> : null}
             <div className="column is-one-third">
               <div className="field">
             <label className="label">{t('model')}</label>

@@ -46,7 +46,7 @@ const Create = ({client, setAlert}) => {
           <div className="form">
             {selectedType === "Document" ? 
               <DocForm client={client} setAlert={setAlert} handleSelectType={handleSelectType} selectedType={selectedType}/>
-            : selectedType === "Organisation" ? 
+            : selectedType === "Organisation" || selectedType === "Organization" ? 
               <OrganisationForm client={client} setAlert={setAlert} />
             :
                 <PersonForm client={client} setAlert={setAlert} />
