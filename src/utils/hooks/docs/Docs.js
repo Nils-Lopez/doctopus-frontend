@@ -17,6 +17,8 @@ function reducer (state, action) {
             return { ...state, responseFindAll: action.payload }
         case 'Search':
             return { ...state, responseSearch: action.payload }
+        case 'FindPopular':
+            return { ...state, responseFindPopular: action.payload }
         default:
             throw new Error ('Action inconnue' + action.type)
     }
@@ -31,17 +33,23 @@ const useDocs = () => {
         responseCreateDoc: null,
         responseDeleteDoc: null,
         responseFindAllDocs: null,
-        responseSearchDocs: null
+        responseSearchDocs: null,
+        responseFindPopularDocs: null
     })
 
     return {
         responseFindDocById: state.responseFindById,
         responseUpdateDoc: state.responseUpdate,
+        responseFindPopularDocs: state.responseFindPopular,
         responseDeleteDoc: state.responseDelete,
         responseFindDocBySlug: state.responseFindBySlug,
         responseCreateDoc: state.responseCreate,
         responseFindAllDocs: state.responseFindAll,
         responseSearchDocs: state.responseSearch,
+        findPopularDocs: async function () {
+            const docs = await apiFetch('/docs/popular', { method: 'GET' })
+            dispatch({type: 'FindPopular', payload: docs})
+        },
         searchDocs: async function (query) {
             const docs = await apiFetch('/docs/search', {
                 method: 'POST',

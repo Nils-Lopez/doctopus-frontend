@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
 import {useRoles} from '../../../utils/hooks/Roles'
+import {useTranslation} from "react-i18next"
 
 const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, setLang}) => {
   const [roleEnValue, setRoleEnValue] = useState("")
@@ -15,6 +16,7 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
   const [roles, setRoles] = useState([])
   const [rolesLoading, setRolesLoading] = useState(false)
   const [pending, setPending] = useState("")
+  const { t, i18n } = useTranslation() 
 
   useEffect(() => {
     if (defaults && defaults[0]) {
@@ -174,7 +176,7 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
         </ul>
       </div> : null}
     <div className="field">
-      {location !== "templates" && location !== "templates-parents" && location !== "templates-tags" ? <label className="label title is-5">{location === "support-form-doc" ? "Types" : "Roles"}</label> : null}
+      {location !== "templates" && location !== "templates-parents" && location !== "templates-tags" ? <label className="label has-text-left">{location === "support-form-doc" ? "Types" : "Roles"}</label> : null}
       <div className="columns">
         <div className="column is-four-fifth">
           {(!roles || !roles[0]) ? <>
@@ -182,7 +184,7 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
           </> : <div className="select is-fullwidth is-multiple">
             <select value={currentRole} onChange={changeCurrentRole} name={"roles" + location + scope} id={"roles" + location + scope}>
                 {pending !== "" ? <>
-                  <option value={pending}>{pending} (draft)</option>
+                  <option value={pending}>{pending} ({t('draft')})</option>
                 </> : null}
                 {roles.map((t) => {
                   if (t.scope === scope) {
@@ -197,11 +199,11 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
         </div>
         <div className="column is-one-fifth">
           {(!roles || !roles[0]) && !roleForm ? <>
-            {(roleEnValue !== "" || roleFrValue !== "") && !rolesLoading ? <button className="button is-primary" onClick={searchRoleValue}>Search</button> : <button className="button is-primary is-disabled" onClick={searchRoleValue} disabled>Search</button>}
+            {(roleEnValue !== "" || roleFrValue !== "") && !rolesLoading ? <button className="button is-primary" onClick={searchRoleValue}>{t('search')}</button> : <button className="button is-primary is-disabled" onClick={searchRoleValue} disabled>{t('search')}</button>}
           </> : <>
             {!roleForm ? <>{roleEnValue !== "" || roleFrValue !== "" ? <button className="button is-primary " onClick={handleRoleBtn}>
-            {isRoleExisting() ? "Add" : "Create"}
-              </button> : <button className="button is-primary is-disabled" disabled>Add</button>}</> : <button className="button is-primary" onClick={handleCreateRole}>Confirm</button>}
+            {isRoleExisting() ? t('add') : t('create')}
+              </button> : <button className="button is-primary is-disabled" disabled>{t('add')}</button>}</> : <button className="button is-primary" onClick={handleCreateRole}>{t('confirm')}</button>}
               <span className="tag is-danger is-medium ml-2 mt-1 button" onClick={() => {
                 setRoles([]);
                 setRoleForm(false)
@@ -210,15 +212,15 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
         </div>
       </div>
       {roleForm ? <div className="field">
-        <label className="label subtitle is-6 is-flex is-justify-content-start">{location === "support-form-doc" ? "Type description" : location !== "templates-tags" ? "Role description" : "Tag description"}</label>
+        <label className="label has-text-left">{location === "support-form-doc" ? "Type description" : location !== "templates-tags" ? "Role description" : "Tag description"}</label>
         <textarea className="textarea" onChange={handleRoleDescChange} value={lang === "en" ? roleDescEn : roleDescFr}/>
       </div> : null}
-      {selectedRoles.map((role) => {
+      {selectedRoles ? selectedRoles.map((role) => {
         return <Fragment key={role.slug}>
           <span className="tag is-success is-medium mr-1">{getContent(role.title, lang)}</span>
           <span className="tag is-danger is-medium mr-2 button" onClick={(e) => handleDeleteRole(e, role)}><FontAwesomeIcon icon={faTrash}/></span>
         </Fragment>
-      })}
+      }) : null}
     </div>
   </>
 }

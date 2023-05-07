@@ -8,6 +8,8 @@ import {usePeople} from "../../../../utils/hooks/People"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
+import {useTranslation} from "react-i18next"
+
 const ActorForm = ({selectedPeople, selectPerson, lang, client, setAlert}) => {
   
   const [personValue, setPersonValue] = useState("")
@@ -18,8 +20,8 @@ const ActorForm = ({selectedPeople, selectPerson, lang, client, setAlert}) => {
   const [peopleLoading, setPeopleLoading] = useState(false)
   const [pending, setPending] = useState(false)
 
-    const [created, setCreated] = useState(false)
-
+  const [created, setCreated] = useState(false)
+  const { t, i18n } = useTranslation() 
 
   const handlePersonChange = (e) => {
     e.preventDefault()
@@ -130,7 +132,7 @@ const ActorForm = ({selectedPeople, selectPerson, lang, client, setAlert}) => {
   return <>
     
     <div className="field">
-      <label className="label title is-5">Actors</label>
+      <label className="label title is-5">{t('actors')}</label>
       <div className="columns">
         <div className="column is-three-fifth">
           {(!people || !people[0]) ? <>
@@ -150,11 +152,11 @@ const ActorForm = ({selectedPeople, selectPerson, lang, client, setAlert}) => {
         </div>
         <div className="column is-one-fifth">
           {(!people || !people[0]) && !personForm ? <>
-            {personValue !== "" && !peopleLoading ? <button className="button is-primary" onClick={searchPersonValue}>Search</button> : <button className="button is-primary is-disabled" disabled>Search</button>}
+            {personValue !== "" && !peopleLoading ? <button className="button is-primary" onClick={searchPersonValue}>{t('search')}</button> : <button className="button is-primary is-disabled" disabled>{t('search')}</button>}
           </> : <>
             {(personValue !== "" && selectedRoles[0]) || (personValue !== "" && !isPersonExisting(personValue)) ? <button className="button is-primary " onClick={handlePersonBtn}>
-            {isPersonExisting(personValue) ? "Add" : "Create"}
-          </button> : <button className="button is-primary is-disabled" disabled>Add</button>}
+            {isPersonExisting(personValue) ? t('add') : t('create')}
+          </button> : <button className="button is-primary is-disabled" disabled>{t('add')}</button>}
           </>}
         </div>
       </div>
@@ -174,7 +176,7 @@ const ActorForm = ({selectedPeople, selectPerson, lang, client, setAlert}) => {
             <div className="modal-background"></div>
             <div className="modal-card">
                 <div className="modal-card-head has-background-white-ter">
-                    <p className="modal-card-title is-size-3 ml-6">Create Person</p>
+                    <p className="modal-card-title is-size-3 ml-6">{t('create-person')}</p>
                     <button onClick={() => setPersonForm(false)} className="delete is-large ml-4" aria-label="close"></button>
                 </div>
                 <div className="modal-card-body has-background-white-ter">

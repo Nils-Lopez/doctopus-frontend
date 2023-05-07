@@ -6,13 +6,15 @@ import ParentForm from "./ParentForm"
 import RoleForm from "../../atoms/forms/RoleForm"
 
 import {useDocs} from "../../../utils/hooks/docs/Docs"
-import {useBrotherhoods} from "../../../utils/hooks/docs/Brotherhoods"
+import {useDocTemplates} from "../../../utils/hooks/templates/DocTemplates"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { useTranslation } from "react-i18next";
 
-const DocForm = ({client, setAlert, template}) => {
-  
+const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, setDataUpdate}) => {
+  const { t, i18n } = useTranslation();
+
   const [titleValue, setTitleValue] = useState("")
   const [defaultSlug, setDefaultSlug] = useState("")
   const [slugValue, setSlugValue] = useState("")
@@ -26,6 +28,15 @@ const DocForm = ({client, setAlert, template}) => {
   const [showSupportForm, setShowSupportForm] = useState(false)
   const [showParentForm, setShowParentForm] = useState(false)
   const [copyrightsValue, setCopyrightsValue] = useState("")
+  const [isbnValue, setIsbnValue] = useState("")
+  const [pagesValue, setPagesValue] = useState("")
+  const [publiDateValue, setPubliDateValue] = useState("")
+  const [durationValue, setDurationValue] = useState("")
+  const [thumbValue, setThumbValue] = useState("")
+  const [issnValue, setIssnValue] = useState("")
+  const [dateValue, setDateValue] = useState("")
+  const [volumeValue, setVolumeValue] = useState("")
+  const [numberValue, setNumberValue] = useState("")
 
   const [selectedTags, selectTag] = useState([])
   
@@ -40,8 +51,18 @@ const DocForm = ({client, setAlert, template}) => {
   const [selectedRoles, selectRole] = useState([])
   const [pendingExemplaries, setPendingExemplaries] = useState([])
 
-  const [brotherhoods, setBrotherhoods] = useState([])
-  const [brotherhoodsLoading, setBrotherhoodsLoading] = useState(false)
+  const [selectedTemplate, selectTemplate] = useState('')
+  const [subTemplate, setSubTemplate] = useState(null)
+  const [selectedSubTemplate, selectSubTemplate] = useState("")
+  const [templateModel, setTemplateModel] = useState({})
+
+  const [docTemplates, setDocTemplates] = useState([])
+
+  const [template, setFullTemplate] = useState(false)
+
+  const [docTemplatesLoading, setDocTemplatesLoading] = useState(false)
+
+  const [loading, setLoading] = useState(false)
 
   const {
     createDoc, 
@@ -61,7 +82,46 @@ const DocForm = ({client, setAlert, template}) => {
       setDefaultSlug(newSlug)
     }
   }  
+
+   const handlePubliDateChange = (e) => {
+    e.preventDefault()
+    setPubliDateValue(e.target.value)
+  }
+ 
+  const handleIsbnChange = (e) => {
+    e.preventDefault()
+    setIsbnValue(e.target.value)
+  }
   
+  const handleIssnChange = (e) => {
+    e.preventDefault()
+    setIssnValue(e.target.value)
+  }
+
+  const handlePagesChange = (e) => {
+    e.preventDefault()
+    setPagesValue(e.target.value)
+  }
+  
+  const handleDurationChange = (e) => {
+    e.preventDefault()
+    setDurationValue(e.target.value)
+  }
+
+  const handleDateChange = (e) => {
+    e.preventDefault()
+    setDateValue(e.target.value)
+  }
+  
+  const handleVolumeChange = (e) => {
+    e.preventDefault()
+    setVolumeValue(e.target.value)
+  }
+  const handleNumberChange = (e) => {
+    e.preventDefault()
+    setNumberValue(e.target.value)
+  }
+
   const handleLangChange = (e) => {
     e.preventDefault()
       if (idLang === "en") {
@@ -149,6 +209,7 @@ const DocForm = ({client, setAlert, template}) => {
 
 
   const handleDocSubmit = async (e) => {
+    setLoading(true)
     e.preventDefault()
     const reqData = {
       doc: {
@@ -156,7 +217,17 @@ const DocForm = ({client, setAlert, template}) => {
         title: titleValue,
         description: template && template.description ? [{ lang: "en", content: descEnValue }, { lang: "fr", content: descFrValue }] : null,
         languages: selectedLangs,
-        additionalCopyrights: copyrightsValue
+        additionalCopyrights: copyrightsValue,
+        publishedAt:  publiDateValue,
+        date: dateValue,
+        eanIsbn: isbnValue,
+        issn: issnValue,
+        pages: pagesValue,
+        duration: durationValue,
+        thumb: thumbValue,
+        volume: volumeValue,
+        number: numberValue,
+        template: template,
       },
       types: selectedTypes,
       tags: selectedTags,
@@ -164,43 +235,244 @@ const DocForm = ({client, setAlert, template}) => {
       parents: [...selectedOrg, ...selectedPeople, ...selectedProjects, selectedDoc],
       brotherhood: selectedBrotherHood
     }
-    await createDoc(reqData)
+    if (!dataUpdate) {
+     await createDoc(reqData)
+    } else {
+     await updateDoc(reqData, dataUpdate._id)
+    }
 
   }
   
   useEffect(() => {
     if (responseCreateDoc && responseCreateDoc.success) {
       setAlert({ type: "success", message: { en: "Document has been successfully created.", fr: "Le document a été créé avec succès"}})
+      setLoading(false)
     } else if (responseCreateDoc && !responseCreateDoc.success) {
       setAlert({ type: "error", message: { en: "An error occured while creating document.", fr: "Une erreure est survenue lors de la création du document"}})
+            setLoading(false)
     }
   }, [responseCreateDoc])
   
-  useEffect(() => {
-    if (template && template.schema_name) {
-      selectTag(template.tag_defaults)
-      selectLang(template.languages.defaults)
+    useEffect(() => {
+    if (responseUpdateDoc && responseUpdateDoc.success) {
+      setAlert({ type: "success", message: { en: "Document has been successfully updated.", fr: "Le document a été mis à jour avec succès"}})
+            setLoading(false)
+      setDataUpdate({...responseUpdateDoc.data, success: true})
+    } else if (responseUpdateDoc && !responseUpdateDoc.success) {
+      setAlert({ type: "error", message: { en: "An error occured while updating document.", fr: "Une erreure est survenue lors de la mise à jour du document"}})
+            setLoading(false)
     }
-  }, [template])
+  }, [responseUpdateDoc])
+  
+    if (template && (template.tag_defaults !== selectedTags || template.type_defaults !== selectedTypes || (template.languages && template.languages.defaults !== selectedLangs))) {
+      selectTag(template.tag_defaults)
+      selectLang(template.languages ? template.languages.defaults : [])
+      selectType(template.type_defaults)
+    }
+    if (template && template.support_issn_default && template.support_issn_default !== "" && issnValue === "") {
+      setIssnValue(template.support_issn_default)
+    }
+  console.log(selectedTags)
 
 
-  const handleSelectBrotherHood = (e) => {
+
+  const handleSelectTemplate = (e) => {
     e.preventDefault()
-    brotherhoods.map((brotherhood) => {
-      if (brotherhood.title === e.target.value) {
-        selectBrotherHood(brotherhood)
+    selectTemplate(e.target.value)
+    docTemplates.map((template) => {
+      if (template.schema_name === e.target.value) {
+        setTemplateModel(template)
       }
     })
-    if (!selectedBrotherHood.title) {
-      selectBrotherHood(e.target.value)
+
+  }
+  
+  const handleSelectSubTemplate = (e) => {
+    e.preventDefault()
+    selectSubTemplate(e.target.value)
+    templateModel.schema_childs.map((template) => {
+      if (template.schema_name === e.target.value) {
+        setSubTemplate(template)
+      }
+    })
+    if (e.target.value === "None") {
+      setSubTemplate(false)
     }
   }
 
+  const {
+    responseFindAllDocTemplates,
+    findAllDocTemplates
+  } = useDocTemplates()
 
-  return <form onSubmit={handleDocSubmit}>
+  if (!docTemplates[0] && !docTemplatesLoading) {
+    findAllDocTemplates()
+    setDocTemplatesLoading(true)
+  }
+
+  useEffect(() => {
+    if (responseFindAllDocTemplates && responseFindAllDocTemplates.success) {
+      setDocTemplates(responseFindAllDocTemplates.data)
+    }
+  }, [responseFindAllDocTemplates])
+
+  useEffect(() => {
+    docTemplates.map((template) => {
+      if (client.user.defaultTemplate && client.user.defaultTemplate === template._id && selectedTemplate === "") {
+        selectTemplate(template.schema_name)
+        setTemplateModel(template)
+      }
+    })
+  }, [docTemplates])
+
+  useEffect(() => {
+    if (!subTemplate || !templateModel.schema_childs.includes(subTemplate)) {
+
+      setFullTemplate(templateModel)
+    } else {
+      console.log('la')
+      let model = templateModel
+      if (model.languages.exist) {
+        model.languages.defaults = [...new Set([...model.languages.defaults, ...subTemplate.languages.defaults])]
+      }
+      if (model.tag) {
+        model.tag_defaults = [...new Set([...model.tag_defaults, ...subTemplate.tag_defaults])]
+      }
+      if (model.type) {
+        model.type_defaults = [...new Set([...model.type_defaults, ...subTemplate.type_defaults])]
+      }
+      if (model.support_role) {
+        model.support_role_defaults = [...new Set([...model.support_role_defaults, ...subTemplate.support_role_defaults])]
+      }
+      if (model.support_issn) {
+        model.support_issn_default = subTemplate.support_issn_default
+      }
+      if (model.parent_role) {
+        model.parent_role_defaults = [...new Set([...model.parent_role_defaults, ...subTemplate.parent_role_defaults])]
+      }
+      if (model.parent_entity) {
+        model.parent_entity_defaults =  [...new Set([...model.parent_entity_defaults, ...subTemplate.parent_entity_defaults])]
+      }
+      if (model.parent_person) {
+        model.parent_person_defaults = [...new Set([...model.parent_person_defaults, ...subTemplate.parent_person_defaults])]
+      }
+      if (model.parent_project) {
+        model.parent_project_defaults = [...new Set([...model.parent_project_defaults, ...subTemplate.parent_project_defaults])]
+      }
+      setFullTemplate(model)
+      console.log("tags: ", model.tag_defaults)
+    }
+  }, [subTemplate, templateModel])
+
+  useEffect(() => {
+   if (dataUpdate) {
+      setSlugValue(dataUpdate.slug)
+      setTitleValue(dataUpdate.title)
+      if (dataUpdate.description && dataUpdate.description[0]) {
+       setDescFrValue(getContent(dataUpdate.description, "fr"))
+       setDescEnValue(getContent(dataUpdate.description, "en"))
+      }
+      selectLang(dataUpdate.languages)
+      setCopyrightsValue(dataUpdate.additionalCopyrights)
+      setDateValue(dataUpdate.date)
+      setPubliDateValue(dataUpdate.publishedAt)
+      setIsbnValue(dataUpdate.eanIsbn)
+      setIssnValue(dataUpdate.issn)
+      setPagesValue(dataUpdate.pages)
+      setDurationValue(dataUpdate.duration)
+      setThumbValue(dataUpdate.thumb)
+      setVolumeValue(dataUpdate.volume)
+      setNumberValue(dataUpdate.number)
+      selectType(dataUpdate.types)
+      selectTag(dataUpdate.tags)
+      setPendingSupports(dataUpdate.supports)
+      dataUpdate.parents.map((p) => {
+       if (p.project) {
+        selectProject([...selectedProjects, p])
+        
+       } else if (p.person) {
+        selectPerson([...selectedPeople, p])
+        
+       } else if (p.entity) {
+        selectOrg([...selectedOrg, p])
+       } else {
+        selectDoc([...selectedDoc, p])
+       }
+      })
+      if (dataUpdate.template) {
+       setFullTemplate(dataUpdate.template)
+      }
+      
+   }
+  }, [dataUpdate])
+
+  return loading ? <>
+   <div className="loader">
+  <div className="inner one"></div>
+  <div className="inner two"></div>
+  <div className="inner three"></div>
+</div> 
+  </> : <form onSubmit={handleDocSubmit}>
+    <div className="columns">
+            {!dataUpdate ? <div className="column is-one-third">
+              <div className="field">
+            <label className="label">{t('type')}</label>
+            <div className="select">
+              <select value={selectedType} onChange={handleSelectType}>
+                <option>{t('document')}</option>
+                <option>{t('organization')}</option>
+                <option>{t('person')}</option>
+              </select>
+            </div>
+          </div>
+            </div> : null}
+            <div className="column is-one-third">
+              <div className="field">
+            <label className="label">{t('model')}</label>
+            <div className="select">
+             <select value={selectedTemplate} onChange={handleSelectTemplate}>
+             
+                {docTemplates.map((template) => {
+                  
+                    if (!template.schema_parent) {
+                      return <Fragment key={template.schema_slug}>
+                    <option>{template.schema_name}</option>
+                  </Fragment>
+                  
+                    }
+                })}
+              </select>
+            </div>
+          </div>
+              </div>
+               
+
+          {template && template.schema_childs && template.schema_childs[0] ? <>
+          <div className="column is-one-third">
+              <div className="field">
+            <label className="label">{t('template')}</label>
+            <div className="select">
+             <select value={selectedSubTemplate} onChange={handleSelectSubTemplate}>
+             <option value="None">None</option>
+
+                {templateModel.schema_childs.map((template) => {
+                  
+                    return <Fragment key={template.schema_slug}>
+                    <option>{template.schema_name}</option>
+                  </Fragment>
+                  
+                })}
+              </select>
+            </div>
+          </div>
+              </div>
+             </> : null}
+            
+          </div>
+    
     <div className="is-flex is-justify-content-start">
       <button className="button is-light mb-3" onClick={handleIdentityShowing}>
-        <h3 className="title is-4">Identity </h3>
+        <h3 className="title is-4">{t('identity')}</h3>
       </button>
     </div>
     
@@ -214,30 +486,30 @@ const DocForm = ({client, setAlert, template}) => {
       <div className="columns">
       <div className="column">
         <div className="field">
-          <label className="label">
-            Title
+          <label className="label has-text-left">
+          {t('title')}
           </label>
           <input type="text" className="input" value={titleValue} onChange={handleTitleChange}/>
         </div>
       </div>
       <div className="column">
         <div className="field">
-          <label className="label">
-            Slug
+          <label className="label has-text-left">
+          {t('slug')}
           </label>
           <input type="text" className="input" value={slugValue} onChange={handleSlugChange}/>
         </div>
       </div>
     </div>
     {template && template.description ? <div className="field" id="docDesc">
-      <label className="label title is-5">
-        Description
+      <label className="label has-text-left">
+      {t('description')}
       </label>
       <textarea className="textarea" value={idLang === "fr" ? descFrValue : descEnValue} onChange={handleDescChange}></textarea>
       </div> : null}
-      {template && template.language && template.language.exist ? <div className="field" id="docLang">
-      <label className="label title is-5">
-        Language
+      {template && template.languages && template.languages.exist ? <div className="field" id="docLang">
+      <label className="label has-text-left">
+      {t('language')}
       </label>
       
       <div className="is-flex">
@@ -254,12 +526,86 @@ const DocForm = ({client, setAlert, template}) => {
       </div> : null}
       <RoleForm location="support-form-doc" scope="docs" lang={idLang} selectedRoles={selectedTypes} selectRole={selectType}/>
       {template && template.tag ? <DocTagsForm selectedTags={selectedTags} selectTag={selectTag} scope="docs" lang={idLang} /> : null}
-      <div className="field mt-2">
-          <label className="label">
-            Copyrights
-          </label>
-          <input type="text" className="input" value={copyrightsValue} onChange={handleCopyrightsChange}/>
-        </div>
+      {template && template.copyright ? <div className="field mt-2">
+        <label className="label has-text-left">
+        {t('copyrights')}
+        </label>
+        <input type="text" className="input" value={copyrightsValue} onChange={handleCopyrightsChange}/>
+      </div> : null}
+      {template && template.support_publishedAt ? <div className="field">
+      <label className="label has-text-left">
+        {t('sort-date')}
+      </label>
+      
+      <input type="date" className="input" value={publiDateValue} onChange={handlePubliDateChange}/>
+    </div> : null}
+    {template && template.support_publishedAt ? <div className="field">
+      <label className="label has-text-left">
+        {t('text-date')}
+      </label>
+      
+      <input type="text" className="input" value={dateValue} onChange={handleDateChange}/>
+    </div> : null}
+    {template && template.support_eanIsbn ?  <div className="field">
+      <label className="label has-text-left">
+        {t('ean-isbn')}
+      </label>
+      
+      <input type="text" className="input" value={isbnValue} onChange={handleIsbnChange}/>
+    </div> : null}
+     {template && template.support_pages ? <div className="field">
+      <label className="label has-text-left">
+        {t('pages')}
+      </label>
+      
+      <input type="text" className="input" value={pagesValue} onChange={handlePagesChange}/>
+    </div> : null}
+    {template && template.support_duration ?  <div className="field">
+      <label className="label has-text-left">
+        {t('duration')}
+      </label>
+      
+      <input type="text" className="input" step="1" value={durationValue} onChange={handleDurationChange}/>
+    </div> : null}
+    {template && template.support_thumb ? <div className="field">
+       <label className="label has-text-left">
+        {t('thumbnail')}
+      </label>
+      <div className="file has-name is-fullwidth">
+  <label className="file-label">
+    <input className="file-input" type="file" onChange={(e) => setThumbValue(e.target.value)} name="resume"/>
+    <span className="file-cta">
+      <span className="file-icon">
+        <i className="fas fa-upload"></i>
+      </span>
+      <span className="file-label">
+        {t('choose-file')}
+      </span>
+    </span>
+    {thumbValue !== "" ? <span className="file-name">
+      {thumbValue}
+    </span> : null}
+  </label>
+      </div>
+    </div> : null}
+    {template && template.support_number ? <>
+      <div className="field">
+        <label className="label has-text-left">{t('number')}</label>
+        <input type="text" className="input" value={numberValue} onChange={handleNumberChange} />
+      </div>
+    </> : null}
+    {template && template.support_volume ? <>
+      <div className="field">
+        <label className="label has-text-left">{t('volume')}</label>
+        <input type="text" className="input" value={volumeValue} onChange={handleVolumeChange} />
+      </div>
+    </> : null}
+    {template && template.support_issn ? <>
+      <div className="field">
+        <label className="label has-text-left">{t('issn')}</label>
+        <input type="text" className="input" value={issnValue} onChange={handleIssnChange}/>
+      </div>
+    </> : null}
     </> : null}
     
     <hr/>
@@ -267,20 +613,20 @@ const DocForm = ({client, setAlert, template}) => {
    
     <div className="is-flex is-justify-content-start">
       <button className="button is-light mb-3" onClick={handleSupportShowing}>
-        <h3 className="title is-4">Supports</h3>
+        <h3 className="title is-4">{t('supports')}</h3>
       </button>
     </div>
     {showSupportForm ? <SupportForm pendingSupports={pendingSupports} setPendingSupports={setPendingSupports} selectedRoles={selectedRoles} selectRole={selectRole} pendingExemplaries={pendingExemplaries} setPendingExemplaries={setPendingExemplaries} template={template}/> : null}
     <hr/>
     <div className="is-flex is-justify-content-start">
       <button className="button is-light mb-3" onClick={handleParentsShowing}>
-        <h3 className="title is-4">Parents</h3>
+        <h3 className="title is-4">{t('parents')}</h3>
       </button>
     </div>
     {showParentForm ? <ParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} selectedPeople={selectedPeople} selectedDoc={selectedDoc} selectDoc={selectDoc} selectPerson={selectPerson} selectedProj={selectedProjects} selectProj={selectProject} template={template} client={client} setAlert={setAlert}/> : null}
     <footer className="card-footer mt-3 pt-4 is-flex is-justify-content-center">
       <button className="button is-primary is-medium" type="submit">
-        Create
+      {t('create')}
       </button>
     </footer>
   </form>

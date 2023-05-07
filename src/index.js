@@ -5,6 +5,7 @@ import reportWebVitals from './reportWebVitals';
 import bulmaSwitch from "bulma-switch"
 import './index.css';
 import './mystyles.scss'
+import "./i18n.js"
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

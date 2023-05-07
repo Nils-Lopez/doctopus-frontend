@@ -10,8 +10,10 @@ import {useAuth} from '../../utils/hooks/Auth'
 
   import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
+import { useTranslation } from "react-i18next";
 
 const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAlert}) => {
+    const { t, i18n } = useTranslation();
 
     const [signUpModal, setSignUpModal] = useState(false)
     const [logInModal, setLogInModal] = useState(false)
@@ -23,6 +25,8 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
     const [userDropdown, setUserDropdown] = useState(false)
 
     const [formAlert, setFormAlert] = useState(false)
+
+    const [lang, setLang] = useState("en")
 
     const {
         login, 
@@ -56,13 +60,13 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
     useEffect(() => {
         if (responseSignUp && loadingSignUp) {
             if (responseSignUp.success) {
-                setAlert({type: "success", message: {en: "Account successfully created, welcome to dOctopus !", fr: "Votre compte a été créé avec succès, bienvenue sur dOctopus !"}})
+                setAlert({type: "success", message: {en: t('signup-success'), fr: t('signup-success')}})
                 bake_cookie(cookieKey, {session: responseSignUp.data.session, id: responseSignUp.data.user._id}, {path: "/"})
                 setClient(responseSignUp.data)
                 setSignUpModal(false)
                 setLoadingSignUp(false)
             } else {
-                setFormAlert({type: "error", message: {en: "Email adress already taken.", fr: "L'adresse email est déjà prise"}})
+                setFormAlert({type: "error", message: {en: t('email-taken'), fr: t('email-taken')}})
                 setLoadingSignUp(false)
             }
         }
@@ -71,13 +75,13 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
     useEffect(() => {
         if (responseLogin && loadingLogin) {
             if (responseLogin.success) {
-                setAlert({type: "success", message: {en: "Successfully connected !", fr: "Connecté avec succès !"}})
+                setAlert({type: "success", message: {en: t('login-success'), fr: t('login-success')}})
                 bake_cookie(cookieKey, {session: responseLogin.data.session, id: responseLogin.data.user._id}, {path: "/"})
                 setClient(responseLogin.data)
                 setLogInModal(false)
                 setLoadingLogin(false)
             } else {
-                setFormAlert({type: "error", message: {en: "Wrong credentials.", fr: "Mot de passe ou adresse email incorrect."}})
+                setFormAlert({type: "error", message: {en: t('wrong-cred'), fr: t('wrong-cred')}})
                 setLoadingLogin(false)
             }
         }
@@ -97,10 +101,10 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
     useEffect(() => {
         if (responseLogout && loadingLogout) {
             if (responseLogout.success) {
-                setAlert({ type: "success", message: { en: "Successfully logged out.", fr: "Vous avez été déconnecté !"}})
+                setAlert({ type: "success", message: { en: t('logout-success'), fr: t('logout-success')}})
                 setLoadingLogout(false)
             } else {
-                setAlert({type: "error", message: {en: "An error occured.", fr: "Un problème est survenu."}})
+                setAlert({type: "error", message: {en: t('error'), fr: t('error')}})
                 setLoadingLogout(false)
             }
         }
@@ -114,11 +118,25 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
                 
                 <div className="buttons">
                     {!client ? <>
+                        <div className="navbar-item mr-4 mb-1">
+                            <a href="" className={lang === "en" ? "langchoose has-text-dark" : "langchoose"} onClick={(e) => {
+                                e.preventDefault()
+                                i18n.changeLanguage("en")
+                                setLang("en")
+                            }}>EN</a>
+                            
+                            <a href="" className={lang === "fr" ? "has-text-dark" : ""} onClick={(e) => {
+                                e.preventDefault()
+                                i18n.changeLanguage("fr")
+                                setLang("fr")
+                            }}>FR</a>
+                        </div>
+               
                         <button onClick={() => setSignUpModal(true)} className="button is-primary">
-                            <strong>Sign Up</strong>
+                            <strong>{t('signup')}</strong>
                         </button>
                         <button onClick={() => setLogInModal(true)} className="button is-light">
-                            Log In
+                            {t('login')}
                         </button>
                     </> : <>
                         
@@ -134,24 +152,22 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
                                     <div className="dropdown-menu dropdown-user-logged is-mobile is-tablet" id="dropdown-menu" role="menu">
                                     <div className="dropdown-content">
                                         <a href="#" className="dropdown-item pl-6">
-        Watchlist
+        {t('watchlist')}
                                             </a>
                                             <a href="#" className="dropdown-item  pl-6">
-        History
+        {t('history')}
       </a>
-      <a href="#" className="dropdown-item pl-6">
-        Profile
-      </a>
+
       <a className="dropdown-item  pl-6">
-        Settings
+        {t('settings')}
       </a>
       
       <a href="#" className="dropdown-item pl-6">
-        Help
+        {t('help')}
       </a>
       <hr className="dropdown-divider"/>
       <button className="button is-small mt-2 is-dark" onClick={() => handleLogOut()}>
-        Logout
+        {t('logout')}
       </button>
     </div>
   </div>

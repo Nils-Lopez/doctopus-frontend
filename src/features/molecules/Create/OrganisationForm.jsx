@@ -7,11 +7,12 @@ import {useEntities} from "../../../utils/hooks/Entities"
 import ActorForm from "../../atoms/forms/orgs/ActorForm"
 import ProjectParentForm from "../../atoms/forms/docs/ProjectParentForm"
 import DocTagsForm from "../../atoms/forms/docs/DocTagsForm"
+import { useTranslation } from "react-i18next";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
-const OrganisationForm = ({client, setAlert, template, setCreated}) => {
+const OrganisationForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) => {
   
   const [nameValue, setNameValue] = useState("")
   const [descEnValue, setDescEnValue] = useState("")
@@ -28,6 +29,8 @@ const OrganisationForm = ({client, setAlert, template, setCreated}) => {
   const [selectedActors, selectActor] = useState([])
   const [selectedProj, selectProj] = useState([])
 
+  const [loading, setLoading] = useState(false)
+
   const {
     findEntityById, 
     responseFindEntityById, 
@@ -40,6 +43,7 @@ const OrganisationForm = ({client, setAlert, template, setCreated}) => {
     findEntityBySlug, 
     responseFindEntityBySlug
   } = useEntities()
+
 
 
   const handleNameChange = (e) => {
@@ -109,9 +113,28 @@ const OrganisationForm = ({client, setAlert, template, setCreated}) => {
         return "Error"
       }
     }
+    
+  useEffect(() => {
+    if (dataUpdate) {
+      setNameValue(dataUpdate.name)
+            if (dataUpdate.description && dataUpdate.description[0]) {
+       setDescFrValue(getContent(dataUpdate.description, "fr"))
+       setDescEnValue(getContent(dataUpdate.description, "en"))
+      }
+      setUrlValue(dataUpdate.url)
+      setCityValue(dataUpdate.city)
+      setCountryValue(dataUpdate.country)
+      selectLang(dataUpdate.languages)
+      selectRole(dataUpdate.roles)
+      selectActor(dataUpdate.actors)
+      selectProj(dataUpdate.proj)
+      
+    }
+  }, [dataUpdate])
 
   const handleFormSubmit = async (e) => {
     e.preventDefault()
+    setLoading(true)
     const reqData = {
       entity: {
         name: nameValue,
@@ -133,16 +156,36 @@ const OrganisationForm = ({client, setAlert, template, setCreated}) => {
   useEffect(() => {
     if (responseCreateEntity && responseCreateEntity.success) {
       setAlert({ type: "success", message: { en: "Organisation has been successfully created.", fr: "L'organisation a été créé avec succès" } })
+      setLoading(false)
       if (setCreated) {
         
         setCreated(responseCreateEntity.data)
       }
     } else if (responseCreateEntity && !responseCreateEntity.success) {
       setAlert({ type: "error", message: { en: "An error occured while creating organisation.", fr: "Une erreure est survenue lors de la création de l'organisation"}})
+      setLoading(false)
     }
   }, [responseCreateEntity])
   
-  return <div>
+    useEffect(() => {
+    if (responseUpdateEntity && responseUpdateEntity.success) {
+      setAlert({ type: "success", message: { en: "Organisation has been successfully created.", fr: "L'organisation a été créé avec succès" } })
+      setLoading(false)
+       setDataUpdate({success:true})
+    } else if (responseUpdateEntity && !responseUpdateEntity.success) {
+      setAlert({ type: "error", message: { en: "An error occured while creating organisation.", fr: "Une erreure est survenue lors de la création de l'organisation"}})
+      setLoading(false)
+    }
+  }, [responseUpdateEntity])
+  
+  const { t, i18n } = useTranslation();
+
+
+  return loading ? <div className="loader">
+  <div className="inner one"></div>
+  <div className="inner two"></div>
+  <div className="inner three"></div>
+</div>  : <div>
     <div className="tabs">
         <ul>
           <li onClick={() => setIdLang("fr")} className={idLang === "fr" ? "is-active" : ""}><a href="#" onClick={(e) => e.preventDefault()}>Français</a></li>
@@ -150,25 +193,25 @@ const OrganisationForm = ({client, setAlert, template, setCreated}) => {
         </ul>
       </div>
     <div className="field">
-      <label className="label">
-        Name
+      <label className="label has-text-left">
+        {t('name')}
       </label>
       <input type="text" value={nameValue} onChange={handleNameChange} className="input"/>
     </div>
     <div className="field">
-      <label className="label">
-        Description
+      <label className="label has-text-left">
+        {t('description')}
       </label>
       <textarea value={idLang === "en" ? descEnValue : descFrValue} onChange={handleDescChange} className="textarea"></textarea>
     </div>
     <div className="field" id="docLang">
-      <label className="label title is-5">
-        Language
+      <label className="label has-text-left">
+        {t('language')}
       </label>
       
       <div className="is-flex">
                 <input type="text" placeholder="Default language" className="input" value={idLang === "en" ? langEnValue : langFrValue} onChange={handleLangChange} />
-                <button onClick={addLang} className="button is-small is-primary mt-1 ml-2">Add</button>
+                <button onClick={addLang} className="button is-small is-primary mt-1 ml-2">{t('add')}</button>
                 
         </div>
         {selectedLangs.map((lang) => {
@@ -179,21 +222,21 @@ const OrganisationForm = ({client, setAlert, template, setCreated}) => {
         })}
       </div>
       <div className="field">
-        <label className="label">
-          Website
+        <label className="label has-text-left">
+          {t('link-url')}
         </label>
         <input type="text" value={urlValue} onChange={handleUrlChange} className="input"/>
       </div>
     <div className="columns">
       <div className="column field">
-        <label className="label">
-          City
+        <label className="label has-text-left">
+          {t('city')}
         </label>
         <input type="text" value={cityValue} onChange={handleCityChange} className="input"/>
       </div>
       <div className="column field">
-        <label className="label">
-          Country
+        <label className="label has-text-left">
+          {t('country')}
         </label>
         <input type="text" value={countryValue} onChange={handleCountryChange} className="input"/>
       </div>
@@ -203,7 +246,7 @@ const OrganisationForm = ({client, setAlert, template, setCreated}) => {
     <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj} lang={idLang}/>
      <footer className="card-footer mt-3 pt-4 is-flex is-justify-content-center">
       <button className="button is-primary is-medium" onClick={handleFormSubmit}>
-        Create
+        {t('create')}
       </button>
     </footer>
   </div>

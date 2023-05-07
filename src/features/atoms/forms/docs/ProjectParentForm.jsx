@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
 import {useProjects} from "../../../../utils/hooks/Projects"
+import {useTranslation} from "react-i18next"
 
 const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, hideRoles, client,setAlert}) => {
   const [projectValue, setProjectValue] = useState("")
@@ -16,6 +17,7 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
   const [idLang, setIdLang] = useState("fr")
   
   const [created, setCreated] = useState(false)
+  const { t, i18n } = useTranslation()
 
   const [projects, setProjects] = useState([])
   const [projectsLoading, setProjectsLoading] = useState(false)
@@ -161,15 +163,15 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
 
   return <>
     <div className="field">
-      {!location || location !== "templates-parents" ? <label className="label title is-5">Projects</label> : null}
+      {!location || location !== "templates-parents" ? <label className="label title is-5">{t('projects')}</label> : null}
       <div className="columns">
         <div className="column is-three-fifth">
           {(!projects || !projects[0]) ? <>
-            <input type="text" list="projects" className="input" value={projectValue} placeholder={location === "templates-parents" ? "Default projects" : ""} onChange={handleProjChange}/>
+            <input type="text" list="projects" className="input" value={projectValue} placeholder={location === "templates-parents" ? t('defaults-projects') : ""} onChange={handleProjChange}/>
           </> : <div className="select is-fullwidth is-multiple">
             <select value={currentProj} onChange={changeCurrentProj} name={"projects" + location} id={"roles" + location}>
                 {pending !== "" && isNotIncluded(pending, projects) ? <>
-                  <option value={pending}>{pending} (draft)</option>
+                  <option value={pending}>{pending} ({t('draft')})</option>
                 </> : null}
                 {projects.map((t, i) => {
                   if (i < 7) {
@@ -184,11 +186,11 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
         </div>
         <div className="column is-one-fifth">
           {(!projects || !projects[0]) && !projForm ? <>
-            {projectValue !== "" && !projectsLoading ? <button className="button is-primary" onClick={searchProjectValue}>Search</button> : <button className="button is-primary is-disabled" disabled>Search</button>}
+            {projectValue !== "" && !projectsLoading ? <button className="button is-primary" onClick={searchProjectValue}>{t('search')}</button> : <button className="button is-primary is-disabled" disabled>{t('search')}</button>}
           </> : <>
             {(projectValue !== "" && selectedRoles[0]) || (projectValue !== "" && !isProjExisting(projectValue)) || (projectValue !== "" && isProjExisting(projectValue)) || (projectValue !== "" && hideRoles) ? <button className="button is-primary " onClick={handleProjBtn}>
-              {isProjExisting(projectValue) ? "Add" : "Create"}
-            </button> : <button className="button is-primary is-disabled" disabled>Add</button>}
+              {isProjExisting(projectValue) ? t('add') : t('create')}
+            </button> : <button className="button is-primary is-disabled" disabled>{t('add')}</button>}
             <span className="tag is-danger is-medium ml-2 mt-1 button" onClick={() => {
                 setProjects([]);
               }}><FontAwesomeIcon icon={faTrash}/></span>
@@ -221,7 +223,7 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
             <div className="modal-background"></div>
             <div className="modal-card">
                 <div className="modal-card-head has-background-white-ter">
-                    <p className="modal-card-title is-size-3 ml-6">Create Project</p>
+                    <p className="modal-card-title is-size-3 ml-6">{t('create-project')}</p>
                     <button onClick={() => setProjForm(false)} className="delete is-large ml-4" aria-label="close"></button>
                 </div>
                 <div className="modal-card-body has-background-white-ter">

@@ -7,26 +7,71 @@ body {
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
   overflow-x: hidden;
+  overflow-y: auto;
 }
 
 html {
   height: 100%;
+  overflow-y: hidden;
 }
+
+.app-ctn {
+  min-height: 100vh;
+  height: 100%;
+  overflow-y: hidden;
+  position: relative;
+}
+
+
 .page-content {
   padding-top: 0px;
   padding-bottom: 150px;
-}
-
-.footer-app {
-  position:fixed;
-  bottom: 0;
+  height: 100%;
+  overflow-y: hidden;
 
 }
 
+@media only screen and (min-width: 450px) {
+  .footer-app {
+    position:absolute;
+    bottom: 0;
+  
+  }
+  
+}
+
+.langchoose {
+  padding-right: 15px;
+  margin-right:15px;
+  border-right: 1.5px solid grey;
+}
+
+
+.panel-hover:hover {
+  cursor: pointer;
+  filter: opacity(0.75);
+}
+
+
+.appAlert {
+  position: absolute;
+  z-index: 100;
+  top: 50px;
+  width: 100%;
+}
+ 
 .results-col {
   height: 100%;
   cursor: pointer;
   
+}
+
+.indextag {
+  cursor: pointer;
+}
+
+.indextag:hover {
+  scale: 0.95;
 }
 
 .results-col:hover {
@@ -39,16 +84,17 @@ html {
 }
 
 
-.border-top {
+.poweredBy {
   padding-top: 5px;
   padding-left: 7px;
-  padding-right: 7px;
+  padding-right: 0px;
 
   padding-bottom: 5px;
-
+  opacity: 0.85;
   position: fixed;
   right: 5px;
-  bottom: 120px;
+  bottom: 10px;
+
 }
 
 .lg-navbar {
@@ -61,25 +107,13 @@ code {
     monospace;
 }
 
-.template-form-panel {
-  height: 330px;
-  overflow-y: auto;
-  
-}
 
 .page-content {
   margin-top: 65px;
+  overflow: hidden;
 }
 
-@media (min-width: 770px) {
-  .template-fixed {
-  position: fixed;
-}
 
-.settings-scrollable {
-  margin-left: 33%;
-}
-}
 
 .background-landing-ctn {
   width: 120%;
