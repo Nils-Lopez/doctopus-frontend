@@ -147,13 +147,20 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) =
       setFirstNameValue(dataUpdate.firstName)
       setLastNameValue(dataUpdate.lastName)
       setUrlValue(dataUpdate.website)
-      selectLang(dataUpdate)
+      selectLang(dataUpdate.languages)
            if (dataUpdate.description && dataUpdate.description[0]) {
        setDescFrValue(getContent(dataUpdate.description, "fr"))
        setDescEnValue(getContent(dataUpdate.description, "en"))
       }
+      setCountryValue(dataUpdate.country)
+      dataUpdate.country.map((c) => {
+        c.labels.map((label) => {
+          setCountryValue(label.content)
+        })
+      })
+      console.log('country : ', dataUpdate.country)
       setCityValue(dataUpdate.city)
-      dataUpdate.activites.map((a) => {
+      dataUpdate.activities.map((a) => {
         if (a.projects && a.projects[0]) {
           selectProj([...selectedProj, a])
         } else if (a.entities && a.entities[0]) {
@@ -175,6 +182,7 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) =
         birthDate: birthDateValue,
         deathDate: deathDateValue,
         city: cityValue,
+        country: countryValue,
         firstName: firstNameValue,
         lastName: lastNameValue,
         website: urlValue,

@@ -200,7 +200,7 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
       {projectValue !== "" && (template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="parents" location="proj-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
       
       {selectedProj.map((proj) => {
-        if (proj.project && proj.project.title) {
+        if (proj && proj.project && proj.project.title) {
           return <Fragment key={proj.project.slug}>
           <span className="tag is-primary is-large mr-3">
             <>

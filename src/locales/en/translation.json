@@ -59,6 +59,8 @@
     "edit": "Edit",
     "delete": "Delete",
     "cancel": "Cancel",
+    "update": "Update",
+    "project": "Project",
     "description": "Description",
     "copyrights": "Copyrights",
     "language": "Language",

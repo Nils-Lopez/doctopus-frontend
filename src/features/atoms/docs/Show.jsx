@@ -29,12 +29,7 @@ const Show = ({doc, handleSearchTag, client, setAlert, handleSearchParent, handl
     return dataUpdate && !dataUpdate.success ? <>
      <DocForm client={client} setAlert={setAlert} dataUpdate={dataUpdate} setDataUpdate={setDataUpdate}/>
     </> : <>
-          {client && client.user && (client.user.type === "admin" || client.user.type === "moderator" || client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? <div className="is-flex is-justify-content-end">
-              <button className="button is-primary" onClick={() => setDataUpdate(doc)}>
-                  {t('update')}
-              </button>
-          </div>
- : null }        <div className="is-flex is-justify-content-end">
+             <div className="is-flex is-justify-content-end">
         {types && types[0] ? <>
             {types.map((type) => {
                 return <Fragment key={JSON.stringify(type)}>
@@ -44,6 +39,11 @@ const Show = ({doc, handleSearchTag, client, setAlert, handleSearchParent, handl
                 </Fragment>
             })}
         </> : null}
+        {client && client.user && (client.user.type === "admin" || client.user.type === "moderator" || client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? 
+              <button className="button is-info ml-3 is-small" onClick={() => setDataUpdate(doc)}>
+                  {t('update')}
+              </button>
+ : null }  
         </div>
         <h1 className="mt-2">{title}</h1>
         {description && description[0] ? <p>{getContent(description, i18n.language)}</p> : null}

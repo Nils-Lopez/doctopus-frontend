@@ -2,7 +2,7 @@ import React, {Fragment} from "react";
 import {useTranslation} from "react-i18next"
 
 
-const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", handleSearchDoc = "false", relTypes}) => {
+const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", handleSearchDoc = "false", relTypes, client}) => {
     const colClasses = location !== "index" ? "is-one-third" : "is-one-quarter"
 
     const { t, i18n } = useTranslation() 
@@ -11,7 +11,8 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
             <div className="box results-col " onClick={() => {
                    
                 if (handleSearchDoc !== "false") {
-                    handleSearchDoc(item.doc.id)
+                    console.log('ici : ', item.doc)
+                    handleSearchDoc(item.doc)
                 } else {
                     setDisplay(item.doc)
                 }
@@ -56,9 +57,9 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
                                 {item.doc.additionalCopyrights && item.doc.additionalCopyrights !== "" ? <>
                                     <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{t('credits')}: {item.doc.additionalCopyrights} </span>
                                 </> : null}
-                                {item.doc.views && item.doc.views !== "" && item.doc.views !== null ? <>
+                                {client && client.user && (client.user.type === "admin" || client.user.type === "moderator" || client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? item.doc.views && item.doc.views !== "" && item.doc.views !== null ? <>
                                     <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.doc.views} {t("views")}</span>
-                                </> : null}
+                                </> : null : null}
                                 
                         </div>
                     </div>
