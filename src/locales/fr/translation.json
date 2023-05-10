@@ -25,6 +25,7 @@
     "email-taken": "Cette adresse e-mail est déjà utilisée",
     "signup-success": "Connexion réussie, bienvenue sur dOctopus",
     "admin": "Administrateur",
+    "upload-file": "Ajouter le fichier",
     "models": "Modèles",
     "model": "Modèle",
     "app": "Application",

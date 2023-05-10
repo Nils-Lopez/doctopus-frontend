@@ -24,6 +24,7 @@
     "email-taken": "This e-mail address is already in use",
     "signup-success": "Successfully logged in, welcome to dOctopus",
     "admin": "Admin",
+    "upload-file": "Upload File",
     "models": "Models",
     "app": "App",
     "database": "Database",
