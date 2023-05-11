@@ -7,6 +7,7 @@ import LogInModal from '../molecules/Auth/LogInModal'
 
 //API Hooks
 import {useAuth} from '../../utils/hooks/Auth'
+import {useAuth} from '../../utils/hooks/Users'
 
   import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
@@ -37,6 +38,8 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
         responseLogout
     } = useAuth()
 
+	const { updateUser, responseUpdateUser } = useUsers()
+
     //Handle submitting forms
 
     const handleSignUp = (e) => {
@@ -52,6 +55,18 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
         login(data)
         setLoadingLogin(true)
     }
+
+	const handleUpdateUser = ({lang}) => {
+		if (client && client.user) {
+			updateUser({defaultLang: lang}, client.user._id) 
+		}
+	}
+
+	//useEffect(() => {
+	//	if (reponseUpdateUser && responseUpdateUser.success) {
+			
+	//	}
+	//}, [responseUpdateUser])
 
     const cookieKey = "VISITOR_COOKIE_TOKEN"
 
@@ -165,6 +180,21 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
       <a href="#" className="dropdown-item pl-6">
         {t('help')}
       </a>
+	<div className="dropdown-item is-flex is-justify-content-center">
+                            <a href="" className={lang === "en" ? "langchoose has-text-dark" : "langchoose"} onClick={(e) => {
+                                e.preventDefault()
+                                i18n.changeLanguage("en")
+                                setLang("en")
+handleUpdateUser({lang: "en"})
+                            }}>EN</a>
+                            
+                            <a href="" className={lang === "fr" ? "has-text-dark" : ""} onClick={(e) => {
+                                e.preventDefault()
+                                i18n.changeLanguage("fr")
+                                setLang("fr")
+									handleUpdateUser({lang: "fr"})
+                            }}>FR</a>
+                        </div>
       <hr className="dropdown-divider"/>
       <button className="button is-small mt-2 is-dark" onClick={() => handleLogOut()}>
         {t('logout')}

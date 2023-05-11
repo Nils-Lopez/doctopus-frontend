@@ -2,6 +2,8 @@ import React, {Fragment, useState, useEffect} from "react";
 import {useTranslation} from "react-i18next"
 import BoxItemParent from "../parents/SearchItem.jsx"
 
+import {useUsers} from "../../../utils/hooks/Users.jsx"
+
 import DocForm from "../../molecules/Create/DocForm"
 
 const Show = ({doc, handleSearchTag, client, setAlert, handleSearchParent, handleSearchDoc}) => {
@@ -15,6 +17,8 @@ const Show = ({doc, handleSearchTag, client, setAlert, handleSearchParent, handl
     tags,
       } = doc
     
+	const {updateUser} = useUsers()
+
     const [dataUpdate, setDataUpdate] = useState(false)
     
     useEffect(() => {
@@ -24,6 +28,12 @@ const Show = ({doc, handleSearchTag, client, setAlert, handleSearchParent, handl
       }
     }, [dataUpdate])
     
+
+	const handleUpdateUser = () => {
+		if (client && client.user) {
+			const watchlist = client.user.watchlist.push(doc._id)			updateUser({watchlist: watchlist}, client.user._id)
+		}
+	}
 
     const { t, i18n } = useTranslation() 
     return dataUpdate && !dataUpdate.success ? <>
@@ -115,6 +125,12 @@ const Show = ({doc, handleSearchTag, client, setAlert, handleSearchParent, handl
                 </Fragment>
             })}
         </div> : null }
+		{client && client.user ? <div className="is-flex is-justify-content-end">
+			<button className="button is-primary" onClick={(e) => {
+				e.preventDefault()
+				handleUpdateUser()
+			}}>{t('Add to watchlist')}</button>
+		</div> : null}
         <div className="columns is-multiline is-flex is-justify-content-center">
         {parents && parents ? <>
                         
