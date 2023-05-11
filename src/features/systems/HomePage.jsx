@@ -11,7 +11,7 @@ import {useDocs} from "../../utils/hooks/docs/Docs.js"
 
 import { useTranslation } from "react-i18next";
 
-
+import {useUsers} from "../../utils/hooks/Users.jsx"
 
 const HomePage = ({client, setAlert}) => {
   const { t, i18n } = useTranslation();
@@ -34,6 +34,10 @@ const HomePage = ({client, setAlert}) => {
     findPopularDocs, 
     responseFindPopularDocs
   } = useDocs()
+	
+	const {
+		updateUser
+	} = useUsers()
 
   useEffect(() => {
     if (responseSearch && responseSearch.success && responseSearch.data && (responseSearch.data.items[0] || responseSearch.data.docs[0] || responseSearch.data.tags[0])) {
@@ -53,6 +57,9 @@ const HomePage = ({client, setAlert}) => {
     if (!loadingSearch) {
       e.preventDefault()
       search(searchValue)
+	if (client && client.user) {
+		updateUser({history: client.user.history.push(query: searchValue)}, client.user._id)
+	}
       setLoadingSearch(true)
       setDisplayDoc(false)
       setEmpty(false)

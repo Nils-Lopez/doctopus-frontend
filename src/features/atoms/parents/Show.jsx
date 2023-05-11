@@ -52,30 +52,39 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc}) =
      }
     }, [dataUpdate])
 
-if (!docs[0]) {
-    const newDocs = []
-    if (productions) {
-        productions.map((prod) => {
-            if (prod.docs) {
-                prod.docs.map((doc) => {
-                    if (!newDocs.includes({...doc, relTypes: prod.roles[0]})) newDocs.push({...doc, relTypes: prod.roles[0]})                  
+    useEffect(() => {
+        if ((productions && productions[0]) || (createdDocs && createdDocs[0])) {
+            if (!docs[0]) {
+                console.log("prods :", productions)
+                console.log('createdDocs: ', createdDocs)
+                const newDocs = []
+                if (productions) {
+                    productions.map((prod) => {
+                        if (prod.docs) {
+                            prod.docs.map((doc) => {
+                                if (!newDocs.includes({...doc, relTypes: prod.roles[0]}) && !newDocs.includes({...doc})) newDocs.push({...doc, relTypes: prod.roles[0]})                  
+                            })
+                        } else if (prod.title) {
+                            if (!newDocs.includes(prod)) newDocs.push(prod)
+                        }
+                    })
+                }
+                
+                if (createdDocs){
+                    createdDocs.map((doc) => {
+                        if (!newDocs.includes(doc)) newDocs.push(doc)
+                    })
+                }
+                console.log('new: ', newDocs)
+                const finalDocs = newDocs.filter(function(item, pos) {
+                    return newDocs.indexOf(item) == pos;
                 })
-            } else if (prod.title) {
-                if (!newDocs.includes(prod)) newDocs.push(prod)
+                if (finalDocs[0] && finalDocs !== docs) {
+                    setDocs([...new Set(finalDocs)])
+                }
             }
-        })
-    }
-    
-    if (createdDocs){
-        createdDocs.map((doc) => {
-            if (!newDocs.includes(doc)) newDocs.push(doc)
-        })
-    }
-    console.log('new: ', newDocs)
-    if (newDocs[0] && newDocs !== docs) {
-        setDocs([...new Set(newDocs)])
-    }
-}
+        }
+    }, [docs, parent])
 
     useEffect(() => {
         if (page === 1) {

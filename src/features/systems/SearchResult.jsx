@@ -25,8 +25,8 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
     const [searchTags, setSearchTags] = useState(false)
     const [searchTagsLoading, setSearchTagsLoading] = useState(false)
     const [loading, setLoading] = useState(false)
-   
-
+    const [showParentDoc, setShowParentDoc] = useState(false)
+    const [showDocParent, setShowDocParent] = useState(false)
 
     const { t, i18n } = useTranslation();
 
@@ -48,15 +48,20 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
     const handleBack = () => {
         if (searchTags) {
             setSearchTags(false)
-        } else if (displayParent) {
+        } else if (displayParent && !showParentDoc) {
           setDisplayParent(false)
         } else if (displayDoc) {
+          if (showParentDoc) { 
+            setShowParentDoc(false)
+            setDisplayDoc(false)
+          } else {
             if (dataList.length === 1) {
                 setDisplayDoc(false)
                 setResult({})
             } else {
                 setDisplayDoc(false)
             }
+          }
         } else if (page === 1) {
             setResult({})
         } else  {
@@ -97,7 +102,10 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
     const {findPersonById, responseFindPersonById} = usePeople()
 
     const handleSearchParent = (parent) => {
-      console.log('ici broski : ', parent)
+        if (showParentDoc) {
+          setShowParentDoc(false)
+          setShowDocParent(true)
+        }
         if (parent.entities) {
             findProjectById(parent._id)
             setLoading(true)
@@ -147,7 +155,8 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
     const {findDocById, responseFindDocById} = useDocs()
     
     const handleSearchDoc = (doc) => {
-      findDocById(doc.id)
+      findDocById(doc._id)
+      setShowParentDoc(true)
       setLoading(true)
     }
     
@@ -176,7 +185,7 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
         </div>
         {searchTags.docs ? <>
             <ShowTag docs={searchTags.docs} tag={searchTags.tag} client={client} setAlert={setAlert} setDisplayDoc={setDisplayDoc} handleSearchTag={setSearchTags}/>
-        </> : displayParent ? <> 
+        </> : displayParent && !showParentDoc ? <> 
             <ShowParent parent={displayParent} setAlert={setAlert} client={client} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>
         </> : displayDoc ? <>
             <ShowDoc doc={displayDoc} setAlert={setAlert} client={client} handleSearchTag={handleSearchTag} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>

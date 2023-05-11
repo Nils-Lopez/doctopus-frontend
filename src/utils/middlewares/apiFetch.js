@@ -10,8 +10,8 @@ export async function apiFetch (endpoint, options = {} ) {
         ...options
     }
     
-    const apiUrl = "https://doctopus-cd-backend.herokuapp.com/api"
-    //const apiUrl = "http://localhost:5000/api"
+    // const apiUrl = "https://doctopus-cd-backend.herokuapp.com/api"
+    const apiUrl = "http://localhost:5000/api"
     //const apiUrl = "https://u1hjug-5000.csb.app/api"
     
     if (options.body !== null && typeof options.body === 'object') {
