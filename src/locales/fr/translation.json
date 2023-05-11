@@ -17,6 +17,7 @@
     "result": "Résultat",
     "template-name": "Nom du template",
     "tags": "Tags",
+"Add to watchlist": "Ajouter aux favoris",
     "empty-tag": "Cette balise n'apparaît sur aucun document.",
     "error": "Une erreur s'est produite, réessayez plus tard ou envoyez un courriel à contact@oqto.tech.",
     "logout-success": "Déconnexion réussie.",

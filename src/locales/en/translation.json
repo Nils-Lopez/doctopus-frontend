@@ -16,6 +16,7 @@
     "back": "Back",
     "result": "Result",
     "tags": "Tags",
+"Add to watchlist": "Add to watchlist",
     "empty-tag": "This tag doesn't appear on any document.",
     "error": "An error occured, try again later or email contact@oqto.tech",
     "logout-success": "Successfully logged out.",
