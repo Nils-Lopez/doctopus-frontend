@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { BlobServiceClient } from "@azure/storage-blob";
 
 async function uploadImage(containerName, file) {
-  const blobServiceClient = new BlobServiceClient(
-    "connection-string-to-your-storage-account + sas tokken"
+  const blobServiceClient = new BlobServiceClient.fromConnectionString(
+    "BlobEndpoint=https://imagesdoctopus.blob.core.windows.net/;QueueEndpoint=https://imagesdoctopus.queue.core.windows.net/;FileEndpoint=https://imagesdoctopus.file.core.windows.net/;TableEndpoint=https://imagesdoctopus.table.core.windows.net/;SharedAccessSignature=sv=2022-11-02&ss=bfqt&srt=c&sp=rwdlacupiytfx&se=2024-11-05T07:09:47Z&st=2023-05-10T22:09:47Z&spr=https,http&sig=hoZeG0RVtXt4LWRbQWUdv4tf0MkzwSaIBMB9fLQdccA%3Dsp=racwdl&st=2023-05-10T22:06:25Z&se=2024-11-05T07:06:25Z&sv=2022-11-02&sr=c&sig=SvW3dueZPevT4OZPIjSFsdo8KTZGwK%2F3O%2Fcu1rNpmxc%3D"
   );
   const containerClient = blobServiceClient.getContainerClient(containerName);
   const blobClient = containerClient.getBlobClient(file.name);
