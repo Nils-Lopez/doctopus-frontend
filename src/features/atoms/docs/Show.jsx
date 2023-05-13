@@ -2,9 +2,11 @@ import React, {Fragment, useState, useEffect} from "react";
 import {useTranslation} from "react-i18next"
 import BoxItemParent from "../parents/SearchItem.jsx"
 
+import {useUsers} from "../../../utils/hooks/Users.js"
+
 import DocForm from "../../molecules/Create/DocForm"
 
-const Show = ({doc, handleSearchTag, client, setAlert, handleSearchParent, handleSearchDoc}) => {
+const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchParent, handleSearchDoc}) => {
     const {
         title,
         description,
@@ -15,6 +17,9 @@ const Show = ({doc, handleSearchTag, client, setAlert, handleSearchParent, handl
     tags,
       } = doc
     
+      const [addingWatchlist, setAddingWatchlist] = useState(false)
+	const {updateUser, responseUpdateUser} = useUsers()
+
     const [dataUpdate, setDataUpdate] = useState(false)
     
     useEffect(() => {
@@ -24,6 +29,24 @@ const Show = ({doc, handleSearchTag, client, setAlert, handleSearchParent, handl
       }
     }, [dataUpdate])
     
+
+	const handleUpdateUser = () => {
+		if (client && client.user) {
+            
+			const watchlist = [...client.user.watchList, doc]
+            console.log('watchlist', watchlist)	
+            updateUser({watchList: watchlist}, client.user._id)
+		}
+	}
+
+    useEffect(() => {
+       if (responseUpdateUser && responseUpdateUser.success && responseUpdateUser.data) {
+           setClient({user: responseUpdateUser.data})
+           setAddingWatchlist(false)
+       } else {
+        setAddingWatchlist(false)
+       }
+    }, [responseUpdateUser])
 
     const { t, i18n } = useTranslation() 
     return dataUpdate && !dataUpdate.success ? <>
@@ -40,7 +63,7 @@ const Show = ({doc, handleSearchTag, client, setAlert, handleSearchParent, handl
             })}
         </> : null}
         {client && client.user && (client.user.type === "admin" || client.user.type === "moderator" || client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? 
-              <button className="button is-info ml-3 is-small" onClick={() => setDataUpdate(doc)}>
+              <button className="button tag is-info ml-3 is-medium" onClick={() => setDataUpdate(doc)}>
                   {t('update')}
               </button>
  : null }  
@@ -76,9 +99,15 @@ const Show = ({doc, handleSearchTag, client, setAlert, handleSearchParent, handl
                                 {doc.additionalCopyrights && doc.additionalCopyrights !== "" ? <>
                                     <span className="tag is-light is-medium  mb-2  ml-1 mr-1">{t('credits')}: {doc.additionalCopyrights} </span>
                                 </> : null}
-                                 {client && client.user && (client.user.type === "admin" || client.user.type === "moderator" || client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? <> {doc.views && doc.views !== "" && doc.views !== null ? <>
+                                 {client && client.user && (client.user.type === "admin" || client.user.type === "moderator" || client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") && doc.views && doc.views !== "" && doc.views !== null ? <>
                                     <span className="tag is-light is-medium  mb-2  ml-1 mr-1">{doc.views} {t("views")}</span>
-                                </> : null}</> : null}
+                                </> : null}
+                                {client && client.user ? !addingWatchlist ?		<button className="button tag is-medium is-primary ml-1" onClick={(e) => {
+				e.preventDefault()
+				handleUpdateUser()
+                setAddingWatchlist(true)
+			}}>{t('Add to watchlist')}</button> : 		<button className="button tag is-medium is-primary ml-1 disabled is-disabled" disabled>{t('Loading...')}</button>
+		 : null}
         </div>                    
         {supports && supports[0] ? <div className="container mt-3">
             {supports.map((supp) => {
@@ -115,6 +144,7 @@ const Show = ({doc, handleSearchTag, client, setAlert, handleSearchParent, handl
                 </Fragment>
             })}
         </div> : null }
+
         <div className="columns is-multiline is-flex is-justify-content-center">
         {parents && parents ? <>
                         

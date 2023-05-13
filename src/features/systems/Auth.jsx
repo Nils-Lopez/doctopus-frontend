@@ -7,10 +7,12 @@ import LogInModal from '../molecules/Auth/LogInModal'
 
 //API Hooks
 import {useAuth} from '../../utils/hooks/Auth'
+import {useUsers} from '../../utils/hooks/Users'
 
   import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from "react-i18next";
+import {Link} from "react-router-dom"
 
 const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAlert}) => {
     const { t, i18n } = useTranslation();
@@ -37,6 +39,8 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
         responseLogout
     } = useAuth()
 
+	const { updateUser, responseUpdateUser } = useUsers()
+
     //Handle submitting forms
 
     const handleSignUp = (e) => {
@@ -52,6 +56,18 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
         login(data)
         setLoadingLogin(true)
     }
+
+	const handleUpdateUser = ({lang}) => {
+		if (client && client.user) {
+			updateUser({defaultLanguage: lang}, client.user._id) 
+		}
+	}
+
+	//useEffect(() => {
+	//	if (reponseUpdateUser && responseUpdateUser.success) {
+			
+	//	}
+	//}, [responseUpdateUser])
 
     const cookieKey = "VISITOR_COOKIE_TOKEN"
 
@@ -110,6 +126,7 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
         }
     }, [responseLogout])
 
+
     return <>
         <div className="navbar-end">
             
@@ -151,12 +168,12 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
                                 {userDropdown ? <>
                                     <div className="dropdown-menu dropdown-user-logged is-mobile is-tablet" id="dropdown-menu" role="menu">
                                     <div className="dropdown-content">
-                                        <a href="#" className="dropdown-item pl-6">
+                                        <Link to="/watchlist" className="dropdown-item pl-6">
         {t('watchlist')}
-                                            </a>
-                                            <a href="#" className="dropdown-item  pl-6">
+                                            </Link>
+                                            <Link to="/history" className="dropdown-item  pl-6">
         {t('history')}
-      </a>
+      </Link>
 
       <a className="dropdown-item  pl-6">
         {t('settings')}
@@ -165,6 +182,21 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
       <a href="#" className="dropdown-item pl-6">
         {t('help')}
       </a>
+	<div className="dropdown-item is-flex is-justify-content-center">
+                            <a href="" className={lang === "en" ? "langchoose has-text-dark" : "langchoose"} onClick={(e) => {
+                                e.preventDefault()
+                                i18n.changeLanguage("en")
+                                setLang("en")
+handleUpdateUser({lang: "en"})
+                            }}>EN</a>
+                            
+                            <a href="" className={lang === "fr" ? "has-text-dark" : ""} onClick={(e) => {
+                                e.preventDefault()
+                                i18n.changeLanguage("fr")
+                                setLang("fr")
+									handleUpdateUser({lang: "fr"})
+                            }}>FR</a>
+                        </div>
       <hr className="dropdown-divider"/>
       <button className="button is-small mt-2 is-dark" onClick={() => handleLogOut()}>
         {t('logout')}

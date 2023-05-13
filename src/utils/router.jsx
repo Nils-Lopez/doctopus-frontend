@@ -19,6 +19,7 @@ import Alert from '../features/atoms/Alert';
 
 //hooks
 import {useUsers} from "./hooks/Users"
+import { useTranslation } from "react-i18next";
 
 
 const Router = () => {
@@ -26,6 +27,7 @@ const Router = () => {
     const [client, setClient] = useState(false) 
     const [loadingClient, setLoadingClient] = useState(false)
     const [alert, setAlert] = useState(false) 
+    const { t, i18n } = useTranslation();
 
     const cookieKey = "VISITOR_COOKIE_TOKEN"
 
@@ -45,8 +47,10 @@ const Router = () => {
     useEffect(() => {
         if (responseFindUserById && loadingClient) {
             if (responseFindUserById.success) {
+                console.log(responseFindUserById.data)
                 setClient({user: responseFindUserById.data })
                 setLoadingClient(false)
+                i18n.changeLanguage(responseFindUserById.data.defaultLanguage)
             } else {
                 delete_cookie(cookieKey)
                 setLoadingClient(false)
@@ -69,12 +73,15 @@ const Router = () => {
             <div className="content">
                 <Routes>
             <Route path="/">
-              <Route index element={<HomePage client={client} setAlert={setAlert}/>}/>
+              <Route index element={<HomePage client={client} setClient={setClient} watchlist={false} setAlert={setAlert}/>}/>
                 {client && client.user && (client.user.type === "admin" || client.user.type === "moderator" || client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? <>
                     <Route path="/admin/create" element={<Create client={client} setAlert={setAlert} />} />
                     <Route path="/admin/dashboard" element={<Dashboard client={client} setAlert={setAlert} />}/>                 
                     <Route path="/admin/settings" element={<Settings client={client} setClient={setClient} setAlert={setAlert} />} />
                 </> : null}
+                <Route path="/watchlist" element={<HomePage client={client} setClient={setClient} setAlert={setAlert} watchlist={true}/>}/>
+                <Route path="/history" element={<HomePage client={client} setClient={setClient} setAlert={setAlert} history={true}/>}/>
+
                 <Route path="/about" element={<AboutUs/>}/>
                 <Route path="*" element={<>
                     <div className="container">

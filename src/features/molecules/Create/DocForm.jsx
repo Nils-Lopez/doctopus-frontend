@@ -261,18 +261,22 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
     } else if (responseUpdateDoc && !responseUpdateDoc.success) {
       setAlert({ type: "error", message: { en: "An error occured while updating document.", fr: "Une erreure est survenue lors de la mise à jour du document"}})
             setLoading(false)
+            setDataUpdate(false)
     }
   }, [responseUpdateDoc])
   
-    if (template && (template.tag_defaults !== selectedTags || template.type_defaults !== selectedTypes || (template.languages && template.languages.defaults !== selectedLangs))) {
-      selectTag(template.tag_defaults)
-      selectLang(template.languages ? template.languages.defaults : [])
-      selectType(template.type_defaults)
+   useEffect(() => {
+    if (!dataUpdate) {
+      if (template && (template.tag_defaults !== selectedTags || template.type_defaults !== selectedTypes || (template.languages && template.languages.defaults !== selectedLangs))) {
+        selectTag(template.tag_defaults)
+        selectLang(template.languages ? template.languages.defaults : [])
+        selectType(template.type_defaults)
+      }
+      if (template && template.support_issn_default && template.support_issn_default !== "" && issnValue === "") {
+        setIssnValue(template.support_issn_default)
+      }
     }
-    if (template && template.support_issn_default && template.support_issn_default !== "" && issnValue === "") {
-      setIssnValue(template.support_issn_default)
-    }
-  console.log(selectedTags)
+   }, [template])
 
 
 
@@ -386,19 +390,25 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
       selectType(dataUpdate.types)
       selectTag(dataUpdate.tags)
       setPendingSupports(dataUpdate.supports)
+      const orgs = []
+      const people = []
+      const projects = []
+      const pDocs = []
       dataUpdate.parents.map((p) => {
        if (p.project) {
-        selectProject([...selectedProjects, p])
-        
+        projects.push(p)
        } else if (p.person) {
-        selectPerson([...selectedPeople, p])
-        
+        people.push(p)        
        } else if (p.entity) {
-        selectOrg([...selectedOrg, p])
+        orgs.push(p)
        } else {
-        selectDoc([...selectedDoc, p])
+        pDocs.push(p)
        }
       })
+      selectProject(projects)
+      selectDoc(pDocs)
+      selectPerson(people)
+      selectOrg(orgs)
       if (dataUpdate.template) {
        setFullTemplate(dataUpdate.template)
       }
@@ -455,7 +465,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
              <select value={selectedSubTemplate} onChange={handleSelectSubTemplate}>
              <option value="None">None</option>
 
-                {templateModel.schema_childs.map((template) => {
+                {templateModel && templateModel.schema_childs && templateModel.schema_childs.map((template) => {
                   
                     return <Fragment key={template.schema_slug}>
                     <option>{template.schema_name}</option>
@@ -626,7 +636,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
     {showParentForm ? <ParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} selectedPeople={selectedPeople} selectedDoc={selectedDoc} selectDoc={selectDoc} selectPerson={selectPerson} selectedProj={selectedProjects} selectProj={selectProject} template={template} client={client} setAlert={setAlert}/> : null}
     <footer className="card-footer mt-3 pt-4 is-flex is-justify-content-center">
       <button className="button is-primary is-medium" type="submit">
-      {t('create')}
+      {dataUpdate ? t('update')  : t('create')}
       </button>
     </footer>
   </form>

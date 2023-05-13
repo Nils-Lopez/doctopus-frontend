@@ -7,7 +7,7 @@ const SupportPreviewCard = ({support, editSupportPreview, deleteSupportPreview})
     <div className="card">
   <header className="card-header">
     <p className="card-header-title">
-      {support.title[0].content !== "" ? getContent(support.title) : null}
+      {support.title && support.title[0] && support.title[0].content !== "" ? getContent(support.title, i18n.language) : null}
     </p>
     <br/>
     
@@ -15,7 +15,7 @@ const SupportPreviewCard = ({support, editSupportPreview, deleteSupportPreview})
   </header>
   <div className="card-content">
     <div className="content">
-      {support.description[0].content !== "" ? getContent(support.description, i18n.language) : null}
+      {support.description && support.description[0] && support.description[0].content !== "" ? getContent(support.description, i18n.language) : null}
       <br/>
       {support.pages !== "" ? support.pages : support.duration}
     </div>
