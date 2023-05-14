@@ -28,6 +28,23 @@ export const getBlobsInContainer = async (containerClient) => {
 };
 
 
+async function deleteBlobIfItExists(containerClient, blobName){
+
+  // include: Delete the base blob and all of its snapshots.
+  // only: Delete only the blob's snapshots and not the blob itself.
+  const options = {
+    deleteSnapshots: 'include' // or 'only'
+  }
+
+  // Create blob client from container client
+  const blockBlobClient = await containerClient.getBlockBlobClient(blobName);
+
+  await blockBlobClient.deleteIfExists(options);
+
+  return console.log(`deleted blob ${blobName}`);
+
+}
+
 const createBlobInContainer = async (containerClient, file) => {
   
   // create blobClient for container
@@ -43,22 +60,26 @@ const createBlobInContainer = async (containerClient, file) => {
   await blobClient.setMetadata({UserName : 'shubham'});
 };
 
-const uploadFileToBlob = async (file) => {
+const uploadFileToBlob = async (file, remove) => {
   if (!file) return [];
-
-  // get BlobService = notice `?` is pulled out of sasToken - if created in Azure portal
+    // get BlobService = notice `?` is pulled out of sasToken - if created in Azure portal
   const blobService = new BlobServiceClient(
     `https://${storageAccountName}.blob.core.windows.net/?${sasToken}`
   );
   // get Container - full public read access
   const containerClient = blobService.getContainerClient(containerName);
 
-  // upload file
-  await createBlobInContainer(containerClient, file);
-  // get list of blobs in container
-  const listBlobs = await getBlobsInContainer(containerClient)
+  if (remove) {
+    await deleteBlobIfItExists(containerClient, file)
+    return true
+  } else {
+      // upload file
+      await createBlobInContainer(containerClient, file);
+      // get list of blobs in container
+      const listBlobs = await getBlobsInContainer(containerClient)
+      return listBlobs
+  }
 
-  return listBlobs
 };
 // </snippet_uploadFileToBlob>
 
