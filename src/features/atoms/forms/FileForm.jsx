@@ -2,12 +2,17 @@
 import React, { useState, Fragment } from 'react';
 import uploadFileToBlob, { isStorageConfigured } from './azureBlob';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleCheck, faChevronDown, faChevronUp, faUpload, faCross } from '@fortawesome/free-solid-svg-icons'
+import { faCircleCheck, faChevronDown, faChevronUp, faUpload, faTrash } from '@fortawesome/free-solid-svg-icons'
+
+import {useTranslation} from "react-i18next"
+
 const storageConfigured = isStorageConfigured();
 
 const FileUpload = () => {
   // all blobs in container
   const [blobList, setBlobList] = useState([]);
+
+  const {t, i18n} = useTranslation()
 
   // current file to upload into container
   const [fileSelected, setFileSelected] = useState(null);
@@ -47,6 +52,8 @@ const FileUpload = () => {
     setInputKey(Math.random().toString(36));
   };
 
+  
+
   // display form
   const DisplayForm = () => (
     <div className="is-flex is-justify-content-center mb-3">
@@ -59,7 +66,7 @@ const FileUpload = () => {
       <FontAwesomeIcon icon={faUpload} className="is-primary"/>
       </span>
       <span className="file-label">
-        Choose a file…
+        {t('choose-file')}
       </span>
     </span>
     {fileSelected ? <span className="file-name">
@@ -80,6 +87,12 @@ const FileUpload = () => {
       e.preventDefault()
       setDisplayFile(!displayFile)
     }
+    
+    const handleDeleteFile = (e) => {
+      e.preventDefault()
+    }
+    
+    
 
   return (
     <div className="container">
@@ -91,7 +104,7 @@ const FileUpload = () => {
     <span className="file-cta">
   
       <span className="file-label" onClick={handleDisplayFile}>
-        {!displayFile ? <>Show file <FontAwesomeIcon icon={faChevronDown} className="is-primary mt-1 ml-2"/></> : <>Hide file <FontAwesomeIcon icon={faChevronUp} className="is-primary mt-1 ml-2"/></>}
+        {!displayFile ? <>{t('show-file')}<FontAwesomeIcon icon={faChevronDown} className="is-primary mt-1 ml-2"/></> : <>{t('hide-file')} <FontAwesomeIcon icon={faChevronUp} className="is-primary mt-1 ml-2"/></>}
       </span>
     </span>
   <span className="file-name">
@@ -103,14 +116,14 @@ const FileUpload = () => {
   
 </div>
 <div className="mt-3">
-<FontAwesomeIcon icon={faCross} className="is-primary mt-1 ml-2"/>
+      <button className="button is-danger delete-img-btn" onClick={handleDeleteFile}><FontAwesomeIcon icon={faTrash} className="is-primary mt-1 ml-2"/></button>
       {displayFile && <img src={fileUrl} alt={fileUrl} className="image is-preview is-flex is-justify-content-center" />}
       </div>
     </div> : <>
     {storageConfigured && !uploading && DisplayForm()}
-      {storageConfigured && uploading && <div>Uploading</div>}
+      {storageConfigured && uploading && <div>{t('uploading')}</div>}
     </>}
-      {!storageConfigured && <div>Storage is not configured.</div>}
+      {!storageConfigured && <div>{t('storage-not-configured')}</div>}
     </div>
   );
 };
