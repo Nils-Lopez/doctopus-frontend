@@ -24,6 +24,11 @@ html {
   opacity: 0.75;
 }
 
+.is-preview {
+  max-width: 500px;
+  max-height: 500px;
+}
+
 .app-ctn {
   min-height: 100vh;
   height: 100%;

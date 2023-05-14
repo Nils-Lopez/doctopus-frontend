@@ -1,79 +1,118 @@
-import React, {useState, useRef} from "react"
-import { fileUpload } from "../../../utils/middlewares/fileUpload.js";
 
-// Filepond Plugin imports
-import { FilePond, registerPlugin } from "react-filepond";
-import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
-import FilePondPluginFileEncode from "filepond-plugin-file-encode";
-import FilePondPluginFilePreview from "filepond-plugin-pdf-preview";
+import React, { useState, Fragment } from 'react';
+import uploadFileToBlob, { isStorageConfigured } from './azureBlob';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleCheck, faChevronDown, faChevronUp, faUpload, faCross } from '@fortawesome/free-solid-svg-icons'
+const storageConfigured = isStorageConfigured();
 
+const FileUpload = () => {
+  // all blobs in container
+  const [blobList, setBlobList] = useState([]);
 
-// Register the plugins for usage
-registerPlugin(
-  FilePondPluginFileValidateType,
-  FilePondPluginFileEncode,
-  FilePondPluginFilePreview
-);
+  // current file to upload into container
+  const [fileSelected, setFileSelected] = useState(null);
+  const [fileUrl, setFileUrl] = useState(false)
 
-const FileForm = ({client, setAlert, file, setFile}) => {
-  const [pdfFile, setpdfFile] = useState([]);
+  // UI/form management
+  const [uploading, setUploading] = useState(false);
+  const [inputKey, setInputKey] = useState(Math.random().toString(36));
 
-  const filePondPdfRef = useRef(null);
+  const [displayFile, setDisplayFile] = useState(false)
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const containerName = "container-name";
-
-    const fileString = await fileUpload(pdfFile, containerName);
-    console.log("url string:", fileString);
-	setFile(fileString)
+  const onFileChange = (event) => {
+    // capture file into state
+    setFileSelected(event.target.files[0]);
   };
 
-  return ( 
-      <form method="post" onSubmit={handleSubmit}>
-        <FilePond
-          fileSizeBase={1000}
-          checkValidity={true}
-          allowFileTypeValidation={true}
-          allowFileSizeValidation={true}
-          allowFileEncode={true}
-          chunkUploads={true}
-          acceptedFileTypes={["application/pdf"]}
-          files={pdfFile}
-          onupdatefiles={setpdfFile}
-          allowMultiple={false}
-          maxFiles={1}
-          name="files"
-          ref={filePondPdfRef}
-          onaddfile={(error, fileItem) => {
-            if (error) {
-              console.log(error);
-            }
+  const onFileUpload = async () => {
+    // prepare UI
+    setUploading(true);
 
-            if (fileItem.file.size > 1000000) {
-              console.error("File size is too large");
-            }
-          }}
-          oninit={() => console.log("FilePond instance has initialised")}
-          labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
-        />
-        <button
-          type="submit"
-          style={{
-            width: "100%",
-            height: "50px",
-            backgroundColor: "#225BD8",
-            color: "white",
-            border: "none",
-            borderRadius: "8px",
-            marginTop: "10px",
-            fontSize: "20px",
-          }}
-        >
-          Submit for file
-        </button>
-      </form>
+    // *** UPLOAD TO AZURE STORAGE ***
+    const blobsInContainer = await uploadFileToBlob(fileSelected);
+
+    // prepare UI for results
+    blobsInContainer.map((blob) => {
+      console.log('blob : ', blob, fileSelected.name, blob.includes(fileSelected.name))
+      if (blob.includes(fileSelected.name)) {
+        setFileUrl(blob)
+        console.log("url:" , fileUrl)
+      }
+    })
+    setBlobList(blobsInContainer);
+
+    // reset state/form
+    setFileSelected(null);
+    setUploading(false);
+    setInputKey(Math.random().toString(36));
+  };
+
+  // display form
+  const DisplayForm = () => (
+    <div className="is-flex is-justify-content-center mb-3">
+      
+      <div className="file has-name is-primary">
+  <label className="file-label">
+    <input className="file-input" type="file" name="resume" onChange={onFileChange} key={inputKey || ''}/>
+    <span className="file-cta">
+      <span className="file-icon">
+      <FontAwesomeIcon icon={faUpload} className="is-primary"/>
+      </span>
+      <span className="file-label">
+        Choose a file…
+      </span>
+    </span>
+    {fileSelected ? <span className="file-name">
+      {fileSelected.name}
+    </span> : null}
+    
+  </label>
+  {fileSelected ? <button type="submit" className="button is-primary ml-3 is-rounded" onClick={onFileUpload}>
+  <FontAwesomeIcon icon={faCircleCheck} className="is-primary"/>
+      </button> : null}
+</div>
+
+    </div>
+    
   );
-}
 
-export default FileForm;
+    const handleDisplayFile = (e) => {
+      e.preventDefault()
+      setDisplayFile(!displayFile)
+    }
+
+  return (
+    <div className="container">
+     
+      {fileUrl ? <div className="mb-3">
+      
+      <div className="file has-name is-primary">
+  <label className="file-label">
+    <span className="file-cta">
+  
+      <span className="file-label" onClick={handleDisplayFile}>
+        {!displayFile ? <>Show file <FontAwesomeIcon icon={faChevronDown} className="is-primary mt-1 ml-2"/></> : <>Hide file <FontAwesomeIcon icon={faChevronUp} className="is-primary mt-1 ml-2"/></>}
+      </span>
+    </span>
+  <span className="file-name">
+      {fileUrl.split("/")[fileUrl.split('/').length - 1]}
+    </span> 
+    
+  </label>
+
+  
+</div>
+<div className="mt-3">
+<FontAwesomeIcon icon={faCross} className="is-primary mt-1 ml-2"/>
+      {displayFile && <img src={fileUrl} alt={fileUrl} className="image is-preview is-flex is-justify-content-center" />}
+      </div>
+    </div> : <>
+    {storageConfigured && !uploading && DisplayForm()}
+      {storageConfigured && uploading && <div>Uploading</div>}
+    </>}
+      {!storageConfigured && <div>Storage is not configured.</div>}
+    </div>
+  );
+};
+
+export default FileUpload;

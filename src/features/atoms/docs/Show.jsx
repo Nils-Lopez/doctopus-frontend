@@ -32,9 +32,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
 
 	const handleUpdateUser = () => {
 		if (client && client.user) {
-            
-			const watchlist = [...client.user.watchList, doc]
-            console.log('watchlist', watchlist)	
+            const watchlist = [...client.user.watchList, doc]
             updateUser({watchList: watchlist}, client.user._id)
 		}
 	}
