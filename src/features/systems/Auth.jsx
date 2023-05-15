@@ -7,11 +7,12 @@ import LogInModal from '../molecules/Auth/LogInModal'
 
 //API Hooks
 import {useAuth} from '../../utils/hooks/Auth'
-import {useAuth} from '../../utils/hooks/Users'
+import {useUsers} from '../../utils/hooks/Users'
 
   import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from "react-i18next";
+import {Link} from "react-router-dom"
 
 const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAlert}) => {
     const { t, i18n } = useTranslation();
@@ -58,7 +59,7 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
 
 	const handleUpdateUser = ({lang}) => {
 		if (client && client.user) {
-			updateUser({defaultLang: lang}, client.user._id) 
+			updateUser({defaultLanguage: lang}, client.user._id) 
 		}
 	}
 
@@ -125,6 +126,7 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
         }
     }, [responseLogout])
 
+
     return <>
         <div className="navbar-end">
             
@@ -166,12 +168,12 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
                                 {userDropdown ? <>
                                     <div className="dropdown-menu dropdown-user-logged is-mobile is-tablet" id="dropdown-menu" role="menu">
                                     <div className="dropdown-content">
-                                        <a href="#" className="dropdown-item pl-6">
+                                        <Link to="/watchlist" className="dropdown-item pl-6">
         {t('watchlist')}
-                                            </a>
-                                            <a href="#" className="dropdown-item  pl-6">
+                                            </Link>
+                                            <Link to="/history" className="dropdown-item  pl-6">
         {t('history')}
-      </a>
+      </Link>
 
       <a className="dropdown-item  pl-6">
         {t('settings')}

@@ -15,6 +15,54 @@ html {
   overflow-y: hidden;
 }
 
+.pointer {
+  cursor: pointer;
+  
+}
+
+.delete-img-btn {
+  position: absolute;
+  right: -50px;
+  border-radius: 50%;
+  cursor: pointer;
+
+  z-index: 100;
+}
+
+.baby {
+  scale: 0.16;
+ position: absolute;
+ margin-bottom: -145px;
+}
+
+.delete-sound {
+  bottom: -35px;
+}
+
+.file-img {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+
+  border-radius: 3%;
+}
+
+.file-video {
+  width: auto;
+  height: 400px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 3%;
+}
+.pointer:hover {
+  opacity: 0.75;
+}
+
+.is-preview {
+  max-width: 500px;
+  max-height: 500px;
+}
+
 .app-ctn {
   min-height: 100vh;
   height: 100%;

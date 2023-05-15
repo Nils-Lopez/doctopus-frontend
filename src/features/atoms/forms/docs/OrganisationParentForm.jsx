@@ -3,6 +3,7 @@ import React, {useState, useEffect, Fragment} from "react"
 import RoleForm from "../RoleForm"
 import OrganisationForm from "../../../molecules/Create/OrganisationForm"
 
+import ParentSearchItem from "../../parents/SearchItem"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
@@ -192,19 +193,16 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
         </div>
       </div>
       {organisationValue !== "" && location !== "activity-form" && (template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="parents" location="org-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
+      <div className="columns is-multiline">
       {selectedOrg.map((org) => {
         if (org.entity) {
           return <Fragment key={org.entity.slug}>
-            <span className="tag is-primary is-large mr-3">{org.entity.name} {!hideRoles && (!template || template && template.parent_role) && org.roles[0] ? <>({
-              org.roles.map((role, i) => {
-                const roleStr = i > 0 ? (", " + (role.title) ? getContent(role.title, lang) : "") : getContent(role.title, lang)
-                return roleStr
-              })
-            })</> : null}</span>
-             <span className="tag is-danger is-large mr-2 button" onClick={(e) => handleDeleteOrg(e, org)}><FontAwesomeIcon icon={faTrash}/></span>
+           
+             <ParentSearchItem item={org} handleDelete={handleDeleteOrg}/>
         </Fragment>
         }
       })}
+      </div>
     </div>
     {orgForm ? <div className={"modal " + (isActive ? "is-active" : "")}>
       <div className="modal-background"></div>

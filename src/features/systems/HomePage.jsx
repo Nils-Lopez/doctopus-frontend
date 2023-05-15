@@ -5,15 +5,17 @@ import {Link} from "react-router-dom"
 import SearchBar from "../atoms/SearchBar"
 import SearchResult from "./SearchResult"
 import SearchItem from "../atoms/docs/SearchItem"
+import FileUpload from "../atoms/forms/FileForm"
 
 import {useSearch} from "../../utils/hooks/Search.js"
 import {useDocs} from "../../utils/hooks/docs/Docs.js"
 
 import { useTranslation } from "react-i18next";
 
-import {useUsers} from "../../utils/hooks/Users.jsx"
+import {useUsers} from "../../utils/hooks/Users.js"
+import { useNavigate } from "react-router-dom";
 
-const HomePage = ({client, setAlert}) => {
+const HomePage = ({client, setClient, setAlert, watchlist, history}) => {
   const { t, i18n } = useTranslation();
 
   const [searchValue, setSearchValue] = useState("")
@@ -58,7 +60,8 @@ const HomePage = ({client, setAlert}) => {
       e.preventDefault()
       search(searchValue)
 	if (client && client.user) {
-		updateUser({history: client.user.history.push(query: searchValue)}, client.user._id)
+    console.log(client.user.history)
+		updateUser({history:  [...client.user.history, {query: searchValue}]}, client.user._id)
 	}
       setLoadingSearch(true)
       setDisplayDoc(false)
@@ -77,7 +80,27 @@ const HomePage = ({client, setAlert}) => {
       console.log(popularDocs)
     }
   }, [responseFindPopularDocs])
+
+    if (client && client.user && watchlist && result.docs !== client.user.watchList) {
+      console.log(client.user.watchList)
+      setResult({docs: client.user.watchList})
+    }
   
+    if (client && client.user && history && result.docs !== client.user.watchList) {
+      setResult({docs: client.user.watchList})
+    }
+    let navigate = useNavigate();
+
+    const handleSearch = async (value) => {
+      navigate("/"); 
+      setSearchValue(value)
+      search(value)
+      setLoadingSearch(true)
+      setDisplayDoc(false)
+      setEmpty(false)
+    }
+
+
   return <>
     <div>
       <div className="is-flex is-justify-content-center">
@@ -92,7 +115,7 @@ const HomePage = ({client, setAlert}) => {
   <div className="inner one"></div>
   <div className="inner two"></div>
   <div className="inner three"></div>
-</div> : (!result.docs || !result.docs[0]) ? <Landing popularDocs={popularDocs} setDisplayDoc={setDisplayDoc} setResult={setResult} t={t}/> : <SearchResult result={result} client={client} setAlert={setAlert} page={page} setPage={setPage} loadingSearch={loadingSearch} setResult={setResult} displayDoc={displayDoc} setDisplayDoc={setDisplayDoc} displayParent={displayParent} setDisplayParent={setDisplayParent} setLoading={setLoadingSearch}/>}
+</div> : (!result.docs || !result.docs[0]) ? <Landing popularDocs={popularDocs} setDisplayDoc={setDisplayDoc} setResult={setResult} t={t}/> : <SearchResult result={result} client={client} setClient={setClient} setAlert={setAlert} page={page} setPage={setPage} loadingSearch={loadingSearch} setResult={setResult} displayDoc={displayDoc} setDisplayDoc={setDisplayDoc} displayParent={displayParent} setDisplayParent={setDisplayParent} setLoading={setLoadingSearch} watchlist={watchlist} history={history} handleSearch={handleSearch}/>}
           </>}
           
       </div>

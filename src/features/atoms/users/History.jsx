@@ -2,32 +2,31 @@ import React, {useState, Fragment} from "react"
 
 import {useTranslation} from "react-i18next"
 
-const History = ({client, setAlert, handleSearch, setDisplayHistory}) => {
+const History = ({client, setAlert, handleSearch, setHideHistory}) => {
 	
    	const { t, i18n } = useTranslation()
-
+	console.log(client)
 	return <>
-	<nav className="panel">
-  <p className="panel-heading">
+	<nav className="panel mt-4 pT-0 pb-2">
+  <p className="panel-heading mb-0">
     {t('history')}
   </p> 
   {client && client.user && client.user.history.map((query) => {
-		<Fragment key={JSON.stringify(query)}>
-			<a className="panel-block" onClick={(e) => {
+		return <Fragment key={query}>
+			<a className="panel-block pointer pb-4 pt-4 mt-0" onClick={(e) => {
 		e.preventDefault()
-		setDisplayHistory(false)
-		handleSearch(query)
+		setHideHistory(true)
+		handleSearch(query.query)
 
 	}}>
     <span className="panel-icon">
       <i className="fas fa-book" aria-hidden="true"></i>
     </span>
-    <p>{query.query}</p>
-	<p className="has-text-right text-muted has-text-light is-6">{query.createdAt}</p>
+    <p><strong>{query.query}</strong> <small className="ml-4 has-text-grey">{query.createdAt ? "(" + query.createdAt + ")" : null}</small></p>
+	
   </a>
 		</Fragment>
 	})}
- 
 </nav>
 	</>
 }

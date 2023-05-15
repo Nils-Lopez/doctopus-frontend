@@ -3,13 +3,13 @@ import React, {Fragment, useEffect, useState} from "react"
 import SearchItem from "../docs/SearchItem"
 import {useTranslation} from "react-i18next"
 
-const Watchlist = ({docs, setDisplayDoc, setDisplayWatchlist}) => {
+const Watchlist = ({docs, setDisplayDoc, setHideWatchlist}) => {
 
     const [dataList, setDataList] = useState([])
     const [page, setPage] = useState(1)
 
     const handleDisplay = (doc) => {
-setDisplayWatchlist(false)
+setHideWatchlist(true)
         setDisplayDoc(doc)
     }
     const { t, i18n } = useTranslation()

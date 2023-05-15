@@ -5,9 +5,12 @@ import SearchItemParent from "../atoms/parents/SearchItem"
 import ShowTag from "../atoms/tags/Show"
 import ShowDoc from "../atoms/docs/Show"
 import ShowParent from "../atoms/parents/Show"
+import Watchlist from "../atoms/users/Watchlist"
+import History from "../atoms/users/History"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRotateLeft } from '@fortawesome/free-solid-svg-icons'
+import {Navigate, useNavigate} from 'react-router-dom';
 
 import {useTags} from "../../utils/hooks/Tags"
 import {useProjects} from "../../utils/hooks/Projects"
@@ -17,7 +20,7 @@ import {useDocs} from "../../utils/hooks/docs/Docs"
 
 import { useTranslation } from "react-i18next";
 
-const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, setResult, displayDoc, setDisplayDoc, setDisplayParent, displayParent}) => {
+const SearchResult = ({result, client, setAlert, setClient, page, setPage, handleSearch, loadingSearch, setResult, displayDoc, setDisplayDoc, setDisplayParent, displayParent, watchlist, history}) => {
 
     const [dataList, setDataList] = useState([])
     const [tags, setTags] = useState([])
@@ -27,9 +30,10 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
     const [loading, setLoading] = useState(false)
     const [showParentDoc, setShowParentDoc] = useState(false)
     const [showDocParent, setShowDocParent] = useState(false)
-
+    const [goHome, setGoHome] = useState(false)
     const { t, i18n } = useTranslation();
 
+    let navigate = useNavigate();
 
     useEffect(() => {
         if (page === 1) {
@@ -44,9 +48,18 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
     if (tags !== result.tags) {
         setTags(result.tags)
     }
+    
+    if (goHome && !watchlist) {
+      setGoHome(false)
+      setResult({})
+    }
 
     const handleBack = () => {
-        if (searchTags) {
+        if (watchlist || history) {
+          setGoHome(true)
+          navigate('/')
+          setResult({})
+        } else if (searchTags) {
             setSearchTags(false)
         } else if (displayParent && !showParentDoc) {
           setDisplayParent(false)
@@ -171,7 +184,13 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
       }
     }, [responseFindDocById])
 
-    return loading || searchTagsLoading ? <div className="loader">
+    useEffect(() => {
+      if (goHome) {
+        navigate('/')
+      }
+    }, [goHome])
+
+    return  loading || searchTagsLoading ? <div className="loader">
     <div className="inner one"></div>
     <div className="inner two"></div>
     <div className="inner three"></div>
@@ -183,12 +202,12 @@ const SearchResult = ({result, client, setAlert, page, setPage, loadingSearch, s
                 <strong>&nbsp;{t('back')}</strong>
             </button>
         </div>
-        {searchTags.docs ? <>
+        {client && client.user && watchlist ? <><Watchlist docs={client.user.watchList} setDisplayDoc={handleSearchDoc} setHideWatchlist={setGoHome}/></> : history ? <><History client={client} handleSearch={handleSearch} setHideHistory={setGoHome}/></> : searchTags.docs ? <>
             <ShowTag docs={searchTags.docs} tag={searchTags.tag} client={client} setAlert={setAlert} setDisplayDoc={setDisplayDoc} handleSearchTag={setSearchTags}/>
         </> : displayParent && !showParentDoc ? <> 
             <ShowParent parent={displayParent} setAlert={setAlert} client={client} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>
         </> : displayDoc ? <>
-            <ShowDoc doc={displayDoc} setAlert={setAlert} client={client} handleSearchTag={handleSearchTag} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>
+            <ShowDoc doc={displayDoc} setClient={setClient} setAlert={setAlert} client={client} handleSearchTag={handleSearchTag} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>
         </> : <>
         {tags && tags[0] ? <>
         <h3 className="subtitle has-text-right is-5 has-text-grey mt-0 pt-0 mb-4">{t('tags')}</h3>

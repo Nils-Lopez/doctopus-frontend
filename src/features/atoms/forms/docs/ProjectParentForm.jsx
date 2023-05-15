@@ -2,6 +2,7 @@ import React, {useState, useEffect, Fragment} from "react"
 
 import RoleForm from "../RoleForm"
 import ProjectForm from "../orgs/ProjectForm"
+import ParentSearchItem from "../../parents/SearchItem"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
@@ -202,20 +203,9 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
       {selectedProj.map((proj) => {
         if (proj && proj.project && proj.project.title) {
           return <Fragment key={proj.project.slug}>
-          <span className="tag is-primary is-large mr-3">
-            <>
-              {proj.project.title}
-            </>
-            &nbsp;
-            {!hideRoles && (!template || template && template.parent_role) && proj.roles[0] ? <>
-              ({proj.roles.map((role, i) => {
-                const roleStr = i > 0 ? ", " + getContent(role.title, lang) : getContent(role.title, lang)
-                return roleStr
-              })})
-            </> : null}
-            </span>
-            <span className="tag is-danger is-large mr-2 button" onClick={(e) => handleDeleteProj(e, proj)}><FontAwesomeIcon icon={faTrash}/></span>
-        </Fragment>
+                                  <ParentSearchItem item={proj} handleDelete={handleDeleteProj}/>
+
+             </Fragment>
         }
       })}
     </div>

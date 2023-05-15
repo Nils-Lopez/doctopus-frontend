@@ -5,6 +5,8 @@ import RoleForm from "../../atoms/forms/RoleForm"
 import ExemplariesForm from "../../atoms/forms/docs/ExemplariesForm"
 import { useTranslation } from "react-i18next";
 
+import FileForm from "../../atoms/forms/FileForm"
+
 const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selectRole, pendingExemplaries, setPendingExemplaries, roles, template}) => {
     
   const [idLang, setIdLang] = useState("fr")
@@ -145,22 +147,8 @@ const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selec
        <label className="label has-text-left">
         PDF
       </label>
-      <div className="file has-name is-fullwidth">
-  <label className="file-label">
-    <input className="file-input" type="file" onChange={(e) => setPdfValue(e.target.value)} name="resume"/>
-    <span className="file-cta">
-      <span className="file-icon">
-        <i className="fas fa-upload"></i>
-      </span>
-      <span className="file-label">
-        {t('choose-file')}
-      </span>
-    </span>
-    {pdfValue !== "" ? <span className="file-name">
-      {pdfValue}
-    </span> : null}
-  </label>
-</div>
+ 
+<FileForm setFile={setPdfValue}/>
     </div> : null}
     
     {template && template.support_format ? <>

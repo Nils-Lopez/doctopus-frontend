@@ -1,7 +1,7 @@
 import React, {useState, useEffect, Fragment} from "react"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 
 import {useTags} from '../../../../utils/hooks/Tags'
 import {useTranslation} from "react-i18next"
@@ -204,8 +204,9 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang, location}) => {
       
       {selectedTags ? selectedTags.map((tag) => {
         return <Fragment key={tag.slug}>
-          <span className="tag is-primary is-medium mr-1">{getContent(tag.title, lang)}</span>
-          <span className="tag is-danger is-medium mr-2 button" onClick={(e) => handleDeleteTag(e, tag)}><FontAwesomeIcon icon={faTrash}/></span>
+          <span className="tag is-info is-medium mr-1 mb-1">{getContent(tag.title, lang)}         <i className="has-text-light ml-3 pointer" onClick={(e) => {
+                handleDeleteTag(e, tag)
+              }}><FontAwesomeIcon icon={faCircleXmark} /></i>  </span>
             </Fragment>
       }) : null}
 

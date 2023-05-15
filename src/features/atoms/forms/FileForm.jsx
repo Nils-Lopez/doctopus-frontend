@@ -1,80 +1,148 @@
-import React, {useState, useRef} from "react
-import { fileUpload } from "../../../utils/middlewares/fileUpload.js";
 
-// Filepond Plugin imports
-import { FilePond, registerPlugin } from "react-filepond";
-import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
-import FilePondPluginFileEncode from "filepond-plugin-file-encode";
-import FilePondPluginFilePreview from "filepond-plugin-pdf-preview";
+import React, { useState, useEffect } from 'react';
+import uploadFileToBlob, { isStorageConfigured } from './azureBlob';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleCheck, faChevronDown, faChevronUp, faUpload, faTrash } from '@fortawesome/free-solid-svg-icons'
 
-// FilePond styles
-import "filepond/dist/filepond.min.css";
-import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
+import {useTranslation} from "react-i18next"
 
-// Register the plugins for usage
-registerPlugin(
-  FilePondPluginFileValidateType,
-  FilePondPluginFileEncode,
-  FilePondPluginFilePreview
-);
+const storageConfigured = isStorageConfigured();
 
-const FileForm = ({client, setAlert, file, setFile}) => {
-  const [pdfFile, setpdfFile] = useState([]);
+const FileUpload = ({setFile}) => {
+  // all blobs in container
+  const [blobList, setBlobList] = useState([]);
 
-  const filePondPdfRef = useRef(null);
+  const {t, i18n} = useTranslation()
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const containerName = "container-name";
+  // current file to upload into container
+  const [fileSelected, setFileSelected] = useState(null);
+  const [fileUrl, setFileUrl] = useState(false)
 
-    const fileString = await fileUpload(pdfFile, containerName);
-    console.log("url string:", fileString);
-	setFile(fileString)
+  // UI/form management
+  const [uploading, setUploading] = useState(false);
+  const [inputKey, setInputKey] = useState(Math.random().toString(36));
+
+  const [displayFile, setDisplayFile] = useState(false)
+
+  const onFileChange = (event) => {
+    // capture file into state
+    setFileSelected(event.target.files[0]);
   };
 
-  return ( 
-      <form method="post" onSubmit={handleSubmit}>
-        <FilePond
-          fileSizeBase={1000}
-          checkValidity={true}
-          allowFileTypeValidation={true}
-          allowFileSizeValidation={true}
-          allowFileEncode={true}
-          chunkUploads={true}
-          acceptedFileTypes={["application/pdf"]}
-          files={pdfFile}
-          onupdatefiles={setpdfFile}
-          allowMultiple={false}
-          maxFiles={1}
-          name="files"
-          ref={filePondPdfRef}
-          onaddfile={(error, fileItem) => {
-            if (error) {
-              console.log(error);
-            }
+  const onFileUpload = async () => {
+    // prepare UI
+    setUploading(true);
 
-            if (fileItem.file.size > 1000000) {
-              console.error("File size is too large");
-            }
-          }}
-          oninit={() => console.log("FilePond instance has initialised")}
-          labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
-        />
-        <button
-          type="submit"
-          style={{
-            width: "100%",
-            height: "50px",
-            backgroundColor: "#225BD8",
-            color: "white",
-            border: "none",
-            borderRadius: "8px",
-            marginTop: "10px",
-            fontSize: "20px",
-          }}
-        >
-          Submit for file
-        </button>
-      </form>
+    // *** UPLOAD TO AZURE STORAGE ***
+    const blobsInContainer = await uploadFileToBlob(fileSelected);
+
+    // prepare UI for results
+    blobsInContainer.map((blob) => {
+      console.log('blob : ', blob, fileSelected.name, blob.includes(fileSelected.name))
+      if (blob.includes(fileSelected.name)) {
+        setFileUrl(blob)
+        console.log("url:" , fileUrl)
+      }
+    })
+    setBlobList(blobsInContainer);
+
+    // reset state/form
+    setFileSelected(null);
+    setUploading(false);
+    setInputKey(Math.random().toString(36));
+  };
+
+  useEffect(() => {
+    if (fileUrl) {
+      setFile(fileUrl);
+    }
+  }, [fileUrl]);
+
+  // display form
+  const DisplayForm = () => (
+    <div className="mb-3">
+      
+      <div className="file has-name is-primary">
+  <label className="file-label">
+    <input className="file-input" type="file" name="resume" onChange={onFileChange} key={inputKey || ''}/>
+    <span className="file-cta">
+      <span className="file-icon">
+      <FontAwesomeIcon icon={faUpload} className="is-primary"/>
+      </span>
+      <span className="file-label">
+        {t('choose-file')}
+      </span>
+    </span>
+    {fileSelected ? <span className="file-name">
+      {fileSelected.name}
+    </span> : null}
+    
+  </label>
+  {fileSelected ? <button type="submit" className="button is-primary ml-3 is-rounded" onClick={onFileUpload}>
+  <FontAwesomeIcon icon={faCircleCheck} className="is-primary"/>
+      </button> : null}
+</div>
+
+    </div>
+    
   );
+
+    const handleDisplayFile = (e) => {
+      e.preventDefault()
+      setDisplayFile(!displayFile)
+    }
+    
+    const handleDeleteFile = (e) => {
+      e.preventDefault()
+      uploadFileToBlob(fileUrl.split("/")[fileUrl.split('/').length - 1], "remove")
+      setFileUrl(false)
+      setFileSelected(null)
+      setDisplayFile(false)
+     
+    }
+    
+  return (
+    <div className="container">
+     
+      {fileUrl ? <div className="mb-3">
+      
+      <div className="file has-name is-primary">
+  <label className="file-label">
+    <span className="file-cta">
+  
+      <span className="file-label" onClick={handleDisplayFile}>
+        {!displayFile ? <>{t('show-file')}<FontAwesomeIcon icon={faChevronDown} className="is-primary mt-1 ml-2"/></> : <>{t('hide-file')} <FontAwesomeIcon icon={faChevronUp} className="is-primary mt-1 ml-2"/></>}
+      </span>
+    </span>
+  <span className="file-name">
+      {fileUrl.split("/")[fileUrl.split('/').length - 1]}
+    </span> 
+    
+  </label>
+  {displayFile&&     <button className={"button is-danger is-rounded is-small mt-1 ml-2  pointer "} onClick={handleDeleteFile}><FontAwesomeIcon icon={faTrash} className="is-primary "/></button>
 }
+  
+</div>
+{displayFile && <div className="mt-3">
+      {
+        fileUrl.split('.')[fileUrl.split('.').length - 1].toLowerCase() === "pdf" ? <embed src={fileUrl} width="100%" height="300px" /> : 
+        ["png" , "jpg" , "jpeg" , "gif" , "ico" , "svg"].includes(fileUrl.split('.')[fileUrl.split('.').length - 1].toLowerCase()) ? <img src={fileUrl} alt="file" className="file-img"/> :
+        ["mp4", "avi", "mov", "wmv", "flv", "mkv", "webm"].includes(fileUrl.split('.')[fileUrl.split('.').length - 1].toLowerCase()) ? <video src={fileUrl}  className="file-video" controls/> : 
+        ["wav", "mp3", "flac", "m4a"].includes(fileUrl.split('.')[fileUrl.split('.').length - 1].toLowerCase()) ? <audio src={fileUrl} controls/> : null
+      }
+      </div>}
+    </div> : <>
+    {storageConfigured && !uploading && DisplayForm()}
+      {storageConfigured && uploading && <div className="button is-light is-disabled" disabled>{t('uploading')} <div className="loader baby">
+          <div className="inner one"></div>
+          <div className="inner two"></div>
+          <div className="inner three"></div>
+        </div>
+      </div>}
+    </>}
+      {!storageConfigured && <div>{t('storage-not-configured')}</div>}
+    </div>
+  );
+};
+
+export default FileUpload;

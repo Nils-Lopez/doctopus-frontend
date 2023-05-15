@@ -9,8 +9,11 @@ import {useDocs} from "../../../utils/hooks/docs/Docs"
 import {useDocTemplates} from "../../../utils/hooks/templates/DocTemplates"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from "react-i18next";
+
+import FileForm from "../../atoms/forms/FileForm"
+
 
 const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, setDataUpdate}) => {
   const { t, i18n } = useTranslation();
@@ -261,18 +264,22 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
     } else if (responseUpdateDoc && !responseUpdateDoc.success) {
       setAlert({ type: "error", message: { en: "An error occured while updating document.", fr: "Une erreure est survenue lors de la mise à jour du document"}})
             setLoading(false)
+            setDataUpdate(false)
     }
   }, [responseUpdateDoc])
   
-    if (template && (template.tag_defaults !== selectedTags || template.type_defaults !== selectedTypes || (template.languages && template.languages.defaults !== selectedLangs))) {
-      selectTag(template.tag_defaults)
-      selectLang(template.languages ? template.languages.defaults : [])
-      selectType(template.type_defaults)
+   useEffect(() => {
+    if (!dataUpdate) {
+      if (template && (template.tag_defaults !== selectedTags || template.type_defaults !== selectedTypes || (template.languages && template.languages.defaults !== selectedLangs))) {
+        selectTag(template.tag_defaults)
+        selectLang(template.languages ? template.languages.defaults : [])
+        selectType(template.type_defaults)
+      }
+      if (template && template.support_issn_default && template.support_issn_default !== "" && issnValue === "") {
+        setIssnValue(template.support_issn_default)
+      }
     }
-    if (template && template.support_issn_default && template.support_issn_default !== "" && issnValue === "") {
-      setIssnValue(template.support_issn_default)
-    }
-  console.log(selectedTags)
+   }, [template])
 
 
 
@@ -386,19 +393,25 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
       selectType(dataUpdate.types)
       selectTag(dataUpdate.tags)
       setPendingSupports(dataUpdate.supports)
+      const orgs = []
+      const people = []
+      const projects = []
+      const pDocs = []
       dataUpdate.parents.map((p) => {
        if (p.project) {
-        selectProject([...selectedProjects, p])
-        
+        projects.push(p)
        } else if (p.person) {
-        selectPerson([...selectedPeople, p])
-        
+        people.push(p)        
        } else if (p.entity) {
-        selectOrg([...selectedOrg, p])
+        orgs.push(p)
        } else {
-        selectDoc([...selectedDoc, p])
+        pDocs.push(p)
        }
       })
+      selectProject(projects)
+      selectDoc(pDocs)
+      selectPerson(people)
+      selectOrg(orgs)
       if (dataUpdate.template) {
        setFullTemplate(dataUpdate.template)
       }
@@ -455,7 +468,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
              <select value={selectedSubTemplate} onChange={handleSelectSubTemplate}>
              <option value="None">None</option>
 
-                {templateModel.schema_childs.map((template) => {
+                {templateModel && templateModel.schema_childs && templateModel.schema_childs.map((template) => {
                   
                     return <Fragment key={template.schema_slug}>
                     <option>{template.schema_name}</option>
@@ -519,8 +532,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
         </div>
         {selectedLangs.map((lang) => {
         return <Fragment key={lang.code}>
-          <span className="tag is-success is-medium mr-1 mt-2">{getContent(lang.labels, idLang)}</span>
-          <span className="tag is-danger is-medium mr-2 button mt-2" onClick={(e) => handleDeleteLang(e, lang)}><FontAwesomeIcon icon={faTrash}/></span>
+          <span className="tag is-light is-medium mr-1 mt-2">{getContent(lang.labels, idLang)} <i className="has-text-danger ml-3 pointer" onClick={(e) => handleDeleteLang(e, lang)}><FontAwesomeIcon icon={faCircleXmark} /></i></span>
         </Fragment>
       })}
       </div> : null}
@@ -571,22 +583,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
        <label className="label has-text-left">
         {t('thumbnail')}
       </label>
-      <div className="file has-name is-fullwidth">
-  <label className="file-label">
-    <input className="file-input" type="file" onChange={(e) => setThumbValue(e.target.value)} name="resume"/>
-    <span className="file-cta">
-      <span className="file-icon">
-        <i className="fas fa-upload"></i>
-      </span>
-      <span className="file-label">
-        {t('choose-file')}
-      </span>
-    </span>
-    {thumbValue !== "" ? <span className="file-name">
-      {thumbValue}
-    </span> : null}
-  </label>
-      </div>
+     <FileForm setFile={setThumbValue}/>
     </div> : null}
     {template && template.support_number ? <>
       <div className="field">
@@ -626,7 +623,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
     {showParentForm ? <ParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} selectedPeople={selectedPeople} selectedDoc={selectedDoc} selectDoc={selectDoc} selectPerson={selectPerson} selectedProj={selectedProjects} selectProj={selectProject} template={template} client={client} setAlert={setAlert}/> : null}
     <footer className="card-footer mt-3 pt-4 is-flex is-justify-content-center">
       <button className="button is-primary is-medium" type="submit">
-      {t('create')}
+      {dataUpdate ? t('update')  : t('create')}
       </button>
     </footer>
   </form>
