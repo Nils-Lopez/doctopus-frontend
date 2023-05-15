@@ -2,6 +2,7 @@ import React, {useState, useEffect, Fragment} from "react"
 
 import RoleForm from "../RoleForm"
 import PersonForm from "../../../molecules/Create/PersonForm"
+import ParentSearchItem from "../../parents/SearchItem"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
@@ -203,13 +204,8 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
       {selectedPeople && selectedPeople[0] ? selectedPeople.map((person) => {
         if (person.person && person.person.name) {
           return <Fragment key={person.person.name + "selected"}>
-            <span className="tag is-primary is-large mr-3">{person.person.name} {!hideRoles && (!template || template && template.parent_role) && person.roles[0] ? <>({
-              person.roles.map((role, i) => {
-                const roleStr = i > 0 ? ", " + getContent(role.title, lang) : getContent(role.title, lang)
-                return roleStr
-              })
-            })</> : null}</span>
-            <span className="tag is-danger is-large mr-2 button" onClick={(e) => handleDeletePerson(e, person)}><FontAwesomeIcon icon={faTrash}/></span>
+                                     <ParentSearchItem item={person} handleDelete={handleDeletePerson}/>
+
           </Fragment>
         }
       }) : null}

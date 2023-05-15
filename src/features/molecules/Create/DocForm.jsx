@@ -9,8 +9,11 @@ import {useDocs} from "../../../utils/hooks/docs/Docs"
 import {useDocTemplates} from "../../../utils/hooks/templates/DocTemplates"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from "react-i18next";
+
+import FileForm from "../../atoms/forms/FileForm"
+
 
 const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, setDataUpdate}) => {
   const { t, i18n } = useTranslation();
@@ -529,8 +532,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
         </div>
         {selectedLangs.map((lang) => {
         return <Fragment key={lang.code}>
-          <span className="tag is-success is-medium mr-1 mt-2">{getContent(lang.labels, idLang)}</span>
-          <span className="tag is-danger is-medium mr-2 button mt-2" onClick={(e) => handleDeleteLang(e, lang)}><FontAwesomeIcon icon={faTrash}/></span>
+          <span className="tag is-light is-medium mr-1 mt-2">{getContent(lang.labels, idLang)} <i className="has-text-danger ml-3 pointer" onClick={(e) => handleDeleteLang(e, lang)}><FontAwesomeIcon icon={faCircleXmark} /></i></span>
         </Fragment>
       })}
       </div> : null}
@@ -581,22 +583,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
        <label className="label has-text-left">
         {t('thumbnail')}
       </label>
-      <div className="file has-name is-fullwidth">
-  <label className="file-label">
-    <input className="file-input" type="file" onChange={(e) => setThumbValue(e.target.value)} name="resume"/>
-    <span className="file-cta">
-      <span className="file-icon">
-        <i className="fas fa-upload"></i>
-      </span>
-      <span className="file-label">
-        {t('choose-file')}
-      </span>
-    </span>
-    {thumbValue !== "" ? <span className="file-name">
-      {thumbValue}
-    </span> : null}
-  </label>
-      </div>
+     <FileForm setFile={setThumbValue}/>
     </div> : null}
     {template && template.support_number ? <>
       <div className="field">

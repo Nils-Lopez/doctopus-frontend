@@ -2,7 +2,11 @@ import React, {Fragment} from "react";
 import {useTranslation} from "react-i18next"
 
 
-const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", handleSearchDoc = "false", relTypes, client}) => {
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
+
+const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", handleSearchDoc = "false", relTypes, client, handleDelete}) => {
     const colClasses = location !== "index" ? "is-one-third" : "is-one-quarter"
 
     const { t, i18n } = useTranslation() 
@@ -29,6 +33,9 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
                         {item.doc.types && item.doc.types[0] ? getContent(item.doc.types[0].title, i18n.language) : t('document')}
                     </span>
                 </div>}
+                {handleDelete ? <i className="has-text-danger ml-3 pointer" onClick={(e) => {
+                handleDelete(e, item)
+              }}><FontAwesomeIcon icon={faCircleXmark} /></i> : null}
             <h3 className="subtitle is-5 mb-1 mt-1">{item.doc.title}</h3>
                 <p>{item.doc.description && item.doc.description[0] ? getContent(item.doc.description, i18n.language).substring(0,20) + "..." : null}</p>
                

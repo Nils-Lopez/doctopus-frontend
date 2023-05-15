@@ -1,7 +1,7 @@
 import React, {useState, useEffect, Fragment} from "react"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 
 import {useRoles} from '../../../utils/hooks/Roles'
 import {useTranslation} from "react-i18next"
@@ -204,10 +204,11 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
             {!roleForm ? <>{roleEnValue !== "" || roleFrValue !== "" ? <button className="button is-primary " onClick={handleRoleBtn}>
             {isRoleExisting() ? t('add') : t('create')}
               </button> : <button className="button is-primary is-disabled" disabled>{t('add')}</button>}</> : <button className="button is-primary" onClick={handleCreateRole}>{t('confirm')}</button>}
-              <span className="tag is-danger is-medium ml-2 mt-1 button" onClick={() => {
+
+              <i className="has-text-danger ml-3 pointer" onClick={(e) => {
                 setRoles([]);
                 setRoleForm(false)
-              }}><FontAwesomeIcon icon={faTrash}/></span>
+              }}><FontAwesomeIcon icon={faCircleXmark} /></i>
           </>}
         </div>
       </div>
@@ -217,8 +218,9 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
       </div> : null}
       {selectedRoles ? selectedRoles.map((role) => {
         return <Fragment key={role.slug}>
-          <span className="tag is-success is-medium mr-1">{getContent(role.title, lang)}</span>
-          <span className="tag is-danger is-medium mr-2 button" onClick={(e) => handleDeleteRole(e, role)}><FontAwesomeIcon icon={faTrash}/></span>
+          <span className="tag is-info mb-1 is-medium mr-1">{getContent(role.title, lang)}        <i className="has-text-light ml-3 pointer" onClick={(e) => {
+                handleDeleteRole(e, role)
+              }}><FontAwesomeIcon icon={faCircleXmark} /></i>  </span>
         </Fragment>
       }) : null}
     </div>

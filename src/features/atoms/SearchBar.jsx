@@ -89,7 +89,7 @@ const SearchBar = ({searchValue, setSearchValue}) => {
     </div> */}
     <div className='column is-paddingless'>
         {searchValue.length > 0 ? <button className='button is-primary is-large search-button' type="submit"><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/> &nbsp; {t('what')}</button> :
-        <button className='button is-primary is-large search-button'><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/> &nbsp; {t('search')}</button>}
+        <button className='button is-primary is-large search-button'><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/> &nbsp; <strong>{t('search')}</strong></button>}
     </div>
         </div>
         

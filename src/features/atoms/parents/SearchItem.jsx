@@ -1,9 +1,14 @@
 import React, {Fragment} from "react"
+
 import {useTranslation} from "react-i18next"
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 
 import DocSearchItem from "../docs/SearchItem.jsx"
 
-const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes}) => {
+const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDelete}) => {
     //console.log("item : ", item)
     const { t, i18n } = useTranslation() 
     if (item.project) {
@@ -21,6 +26,9 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes}) => {
                     </> : <span className="tag is-primary">
                         {getContent(relTypes.title, i18n.language)}
                     </span>}
+                    {handleDelete ? <i className="has-text-danger ml-3 pointer" onClick={(e) => {
+                handleDelete(e, item)
+              }}><FontAwesomeIcon icon={faCircleXmark} /></i> : null}
                     </div>
                     <h3 className="subtitle is-5 mb-1 mt-1">{item.project.title}</h3>
                 <p>{item.project.description && item.project.description[0] && getContent(item.project.description, i18n.language) ? getContent(item.project.description, i18n.language).substring(0,25) + "..." : null}</p>
@@ -39,6 +47,9 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes}) => {
                     </> :<span className="tag is-primary">
                         {t('person')}
                     </span>}
+                    {handleDelete ? <i className="has-text-danger ml-3 pointer" onClick={(e) => {
+                handleDelete(e, item)
+              }}><FontAwesomeIcon icon={faCircleXmark} /></i> : null}
                 </div>
                 <h3 className="subtitle is-5 mb-1 mt-1">{item.person.name !== "" ? item.person.name : item.person.firstName + " " + item.person.lastName}</h3>
                 <span className='has-text-grey'><small>{item.person.country && item.person.country[0] ? getContent(item.person.country[0].labels, i18n.language) + (item.person.city ? ", " : "") : null}{item.person.city}</small></span>
@@ -77,6 +88,9 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes}) => {
                     </> :<span className="tag is-primary">
                         {t('organization')}
                     </span>}
+                    {handleDelete ? <i className="has-text-danger ml-3 pointer" onClick={(e) => {
+                handleDelete(e, item)
+              }}><FontAwesomeIcon icon={faCircleXmark} /></i> : null}
                 </div>
                 <h3 className="subtitle is-5 mb-1 mt-1">{item.entity.name}</h3>
                 <span className='has-text-grey'><small>{item.entity.country ? item.entity.country + ", " : null}{item.entity.city}</small></span>
@@ -85,7 +99,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes}) => {
             </div>
         </div>
     } else if (item.doc) {
-        return <DocSearchItem item={item} handleSearchDoc={handleSearchDoc}/>
+        return <DocSearchItem item={item} handleSearchDoc={handleSearchDoc} handleDelete={handleDelete}/>
     }
 }
 

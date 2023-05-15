@@ -1,6 +1,7 @@
 import React, {useState, useEffect, Fragment} from "react"
 
 import RoleForm from "../RoleForm"
+import ParentSearchItem from "../../parents/SearchItem"
 
 import {useDocs} from "../../../../utils/hooks/docs/Docs"
 
@@ -184,13 +185,9 @@ const searchDocValue = (e) => {
       {selectedDoc && selectedDoc[0] ? selectedDoc.map((doc) => {
         if (doc.doc && (doc.doc.title || doc.doc.slug)) {
           return <Fragment key={doc.doc._id + "selected"}>
-            <span className="tag is-primary is-large mr-3">{doc.doc.title ? doc.doc.title : doc.doc.slug} {!hideRoles && (!template || template && template.parent_role) && doc.roles[0] ? <>({
-              doc.roles.map((role, i) => {
-                const roleStr = i > 0 ? ", " + getContent(role.title, lang) : getContent(role.title, lang)
-                return roleStr
-              })
-            })</> : null}</span>
-            <span className="tag is-danger is-large mr-2 button" onClick={(e) => handleDeleteDoc(e, doc)}><FontAwesomeIcon icon={faTrash}/></span>
+            
+                         <ParentSearchItem item={doc} handleDelete={handleDeleteDoc}/>
+
           </Fragment>
         }
       }) : null}

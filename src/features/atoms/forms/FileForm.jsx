@@ -1,5 +1,5 @@
 
-import React, { useState, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 import uploadFileToBlob, { isStorageConfigured } from './azureBlob';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleCheck, faChevronDown, faChevronUp, faUpload, faTrash } from '@fortawesome/free-solid-svg-icons'
@@ -8,7 +8,7 @@ import {useTranslation} from "react-i18next"
 
 const storageConfigured = isStorageConfigured();
 
-const FileUpload = () => {
+const FileUpload = ({setFile}) => {
   // all blobs in container
   const [blobList, setBlobList] = useState([]);
 
@@ -52,11 +52,15 @@ const FileUpload = () => {
     setInputKey(Math.random().toString(36));
   };
 
-  
+  useEffect(() => {
+    if (fileUrl) {
+      setFile(fileUrl);
+    }
+  }, [fileUrl]);
 
   // display form
   const DisplayForm = () => (
-    <div className="is-flex is-justify-content-center mb-3">
+    <div className="mb-3">
       
       <div className="file has-name is-primary">
   <label className="file-label">
@@ -90,10 +94,13 @@ const FileUpload = () => {
     
     const handleDeleteFile = (e) => {
       e.preventDefault()
+      uploadFileToBlob(fileUrl.split("/")[fileUrl.split('/').length - 1], "remove")
+      setFileUrl(false)
+      setFileSelected(null)
+      setDisplayFile(false)
+     
     }
     
-    
-
   return (
     <div className="container">
      
@@ -112,16 +119,26 @@ const FileUpload = () => {
     </span> 
     
   </label>
-
+  {displayFile&&     <button className={"button is-danger is-rounded is-small mt-1 ml-2  pointer "} onClick={handleDeleteFile}><FontAwesomeIcon icon={faTrash} className="is-primary "/></button>
+}
   
 </div>
-<div className="mt-3">
-      <button className="button is-danger delete-img-btn" onClick={handleDeleteFile}><FontAwesomeIcon icon={faTrash} className="is-primary mt-1 ml-2"/></button>
-      {displayFile && <img src={fileUrl} alt={fileUrl} className="image is-preview is-flex is-justify-content-center" />}
-      </div>
+{displayFile && <div className="mt-3">
+      {
+        fileUrl.split('.')[fileUrl.split('.').length - 1].toLowerCase() === "pdf" ? <embed src={fileUrl} width="100%" height="300px" /> : 
+        ["png" , "jpg" , "jpeg" , "gif" , "ico" , "svg"].includes(fileUrl.split('.')[fileUrl.split('.').length - 1].toLowerCase()) ? <img src={fileUrl} alt="file" className="file-img"/> :
+        ["mp4", "avi", "mov", "wmv", "flv", "mkv", "webm"].includes(fileUrl.split('.')[fileUrl.split('.').length - 1].toLowerCase()) ? <video src={fileUrl}  className="file-video" controls/> : 
+        ["wav", "mp3", "flac", "m4a"].includes(fileUrl.split('.')[fileUrl.split('.').length - 1].toLowerCase()) ? <audio src={fileUrl} controls/> : null
+      }
+      </div>}
     </div> : <>
     {storageConfigured && !uploading && DisplayForm()}
-      {storageConfigured && uploading && <div>{t('uploading')}</div>}
+      {storageConfigured && uploading && <div className="button is-light is-disabled" disabled>{t('uploading')} <div className="loader baby">
+          <div className="inner one"></div>
+          <div className="inner two"></div>
+          <div className="inner three"></div>
+        </div>
+      </div>}
     </>}
       {!storageConfigured && <div>{t('storage-not-configured')}</div>}
     </div>

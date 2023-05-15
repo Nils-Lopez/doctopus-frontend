@@ -3,28 +3,20 @@ import {useTranslation} from "react-i18next"
 
 const SupportPreviewCard = ({support, editSupportPreview, deleteSupportPreview}) => {
   const { t, i18n } = useTranslation()
+  console.log(support)
   return <>
-    <div className="card">
-  <header className="card-header">
-    <p className="card-header-title">
-      {support.title && support.title[0] && support.title[0].content !== "" ? getContent(support.title, i18n.language) : null}
-    </p>
-    <br/>
+    <div className="card pt-5">
+      <h3 className="subtitle">{support.title && support.title[0] && support.title[0].content !== "" ? t('title') + ": " +  getContent(support.title, i18n.language) : null}</h3>
+ 
     
-    <time>{support.date}</time>
-  </header>
-  <div className="card-content">
-    <div className="content">
-      {support.description && support.description[0] && support.description[0].content !== "" ? getContent(support.description, i18n.language) : null}
+      {support.description && support.description[0] && support.description[0].content !== "" ? t('description') + ": " + getContent(support.description, i18n.language) : null}
       <br/>
-      {support.pages !== "" ? support.pages : support.duration}
-    </div>
-  </div>
-  <footer className="card-footer pt-1 pb-1">
+
+  <footer className="card-footer pt-1 mt-5 pb-1">
     <button onClick={(e) => {
       e.preventDefault()
       editSupportPreview(support)
-    }} className="button is-primary ml-2">{t('edit')}</button>
+    }} className="button is-light ml-2">{t('edit')}</button>
     <button onClick={(e) => {
       e.preventDefault()
       deleteSupportPreview(support)
