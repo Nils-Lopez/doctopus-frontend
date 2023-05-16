@@ -6,10 +6,12 @@ import { faCircleCheck, faChevronDown, faChevronUp, faUpload, faTrash } from '@f
 
 import {useTranslation} from "react-i18next"
 
-const storageConfigured = isStorageConfigured();
 
 const FileUpload = ({setFile}) => {
   // all blobs in container
+
+  const storageConfigured = isStorageConfigured();
+
   const [blobList, setBlobList] = useState([]);
 
   const {t, i18n} = useTranslation()
@@ -53,7 +55,7 @@ const FileUpload = ({setFile}) => {
   };
 
   useEffect(() => {
-    if (fileUrl) {
+    if (fileUrl ) {
       setFile(fileUrl);
     }
   }, [fileUrl]);

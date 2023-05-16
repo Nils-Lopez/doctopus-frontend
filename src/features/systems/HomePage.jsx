@@ -5,7 +5,6 @@ import {Link} from "react-router-dom"
 import SearchBar from "../atoms/SearchBar"
 import SearchResult from "./SearchResult"
 import SearchItem from "../atoms/docs/SearchItem"
-import FileUpload from "../atoms/forms/FileForm"
 
 import {useSearch} from "../../utils/hooks/Search.js"
 import {useDocs} from "../../utils/hooks/docs/Docs.js"
