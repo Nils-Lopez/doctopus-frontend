@@ -9,7 +9,7 @@ COPY . .
 RUN npm run build
 EXPOSE 3000
 #Either run in normally
-CMD ["npm","start"]
+CMD ["npm","start"] 
 
 #or run in production
 #RUN npm install -g serve
