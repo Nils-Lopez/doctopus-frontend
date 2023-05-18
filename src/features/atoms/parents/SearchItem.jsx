@@ -8,10 +8,10 @@ import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 
 import DocSearchItem from "../docs/SearchItem.jsx"
 
-const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDelete}) => {
+const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDelete, parent}) => {
     //console.log("item : ", item)
     const { t, i18n } = useTranslation() 
-    if (item.project) {
+    if (item.project && parent !== "project") {
         return <div className="column is-one-quarter" >
             <div className="box results-col " onClick={() => handleSearchParent(item.project)}>
             <div className="is-flex is-justify-content-end mb-0 mt-0">
@@ -35,7 +35,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
                 
             </div>
         </div>
-    } else if (item.person) {
+    } else if (item.person && parent !== "person") {
         if (item.person.productions)
         return <div className="column is-one-quarter">
             <div className="box results-col " onClick={() => handleSearchParent(item.person)}>
@@ -61,8 +61,8 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
                     </div>
                     <div className="is-flex is-justify-content-start ">
                         <div className="mt-0">
-                        {item.person.productions.map((prod, i) => {
-                            if (i < 2) {
+                        {item.person.productions && item.person.productions.map((prod, i) => {
+                            if (i < 2 && prod.docs) {
                                 return prod.docs.map((doc) => {
                                     return <Fragment key={JSON.stringify(doc)}>
                                         <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{doc.title.slice(0,20) + "..."}</span>
@@ -77,7 +77,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
                 
             </div>
         </div>
-    } else if (item.entity) {
+    } else if (item.entity && parent !== "entity") {
         return <div className="column is-one-quarter">
             <div className="box results-col " onClick={() => handleSearchParent(item.entity)}>
             <div className="is-flex is-justify-content-end mt-0 mb-0">
@@ -98,9 +98,12 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
                 
             </div>
         </div>
-    } else if (item.doc) {
+    } else if (item.doc && parent !== "doc") {
         return <DocSearchItem item={item} handleSearchDoc={handleSearchDoc} handleDelete={handleDelete}/>
+    }else if (item.parent_doc && parent !== "parent_doc") {
+        return <DocSearchItem item={{...item, doc: item.parent_doc}} handleSearchDoc={handleSearchDoc} handleDelete={handleDelete}/>
     }
+    
 }
 
 const getContent = (value, lang = "en") => {

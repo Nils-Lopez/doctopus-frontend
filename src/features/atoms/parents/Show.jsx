@@ -11,7 +11,7 @@ import ProjectForm from "../forms/orgs/ProjectForm"
 const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc}) => {
     
     const [dataUpdate, setDataUpdate] = useState(false)
-    
+    console.log(parent)
     const { t, i18n } = useTranslation() 
     const {
         roles, 
@@ -38,7 +38,8 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc}) =
         projects, 
         productionIds, 
         prodIds, 
-        createdDocs
+        createdDocs,
+        childs
     } = parent
 
     const [dataList, setDataList] = useState([])
@@ -159,18 +160,36 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc}) =
                                 </> : null}
                                
                                 <hr />
-        </div>   
+        </div> 
+        <div className="columns is-multiline is-flex is-justify-content-center">
+            {childs && childs[0] ? childs.map((child) => {
+                let parentType = undefined
+                if (child.person  && parent._id === child.person._id) parentType = "person"
+                if (child.project && parent._id === child.project._id) parentType = "project"
+                if (child.entity && parent._id === child.entity._id) parentType = "entity"
+                if (child.roles && child.roles[0]) {
+                    return <Fragment key={JSON.stringify(child)}>
+                    <SearchItemParent item={child} handleSearchParent={handleSearchParent} relTypes={child.roles[0]} parent={parentType}/>
+                </Fragment>   
+                } else {
+                    return <Fragment key={JSON.stringify(child)}>
+                    <SearchItemParent item={child} handleSearchParent={handleSearchParent}  parent={parentType}/>
+                </Fragment>   
+                }
+                
+            }) : null}
+         </div>     
         <div className="columns is-multiline is-flex is-justify-content-center">
             {actors && actors[0] ? actors.map((actor) => {
                 return <Fragment key={JSON.stringify(actor)}>
-                    <SearchItemParent parent={actor} handleSearchParent={handleSearchParent} relTypes={actor.role}/>
+                    <SearchItemParent item={actor} handleSearchParent={handleSearchParent} relTypes={actor.role}/>
                 </Fragment>   
             }) : null}
          </div>     
          <div className="columns is-multiline is-flex is-justify-content-center">
             {projects && projects[0] ? projects.map((project) => {
                 return <Fragment key={JSON.stringify(project)}>
-                    <SearchItemParent parent={{project: project}} handleSearchParent={handleSearchParent}/>
+                    <SearchItemParent item={{project: project}} handleSearchParent={handleSearchParent}/>
                 </Fragment>   
             }) : null}
          </div>                

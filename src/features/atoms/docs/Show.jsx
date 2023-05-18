@@ -16,7 +16,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
         parents,
     tags,
       } = doc
-    
+    console.log("p", parents)
       const [addingWatchlist, setAddingWatchlist] = useState(false)
 	const {updateUser, responseUpdateUser} = useUsers()
 
@@ -45,6 +45,16 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
         setAddingWatchlist(false)
        }
     }, [responseUpdateUser])
+
+    const includeParentType = (type, parents) => {
+        let included = false
+        parents.map((parent) => {
+            if (parent[type]) {
+                included = true
+            }
+        })
+        return included
+    }
 
     const { t, i18n } = useTranslation() 
     return dataUpdate && !dataUpdate.success ? <>
@@ -142,17 +152,66 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                 </Fragment>
             })}
         </div> : null }
-
+        {includeParentType("project", parents) ? <>
+        <h3 className="subtitle has-text-grey has-text-left is-5">Projects</h3>
         <div className="columns is-multiline is-flex is-justify-content-center">
         {parents && parents ? <>
                         
                         {parents.map((parent) => {
-                            return <Fragment key={JSON.stringify(parent)}>                                   
+                            if (parent.project) {
+                                return <Fragment key={JSON.stringify(parent)}>    
                                 <BoxItemParent item={parent} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>
                             </Fragment>
+                            }
                         })}
                     </> : null}
         </div>
+        </> : null}
+        {includeParentType("parent_doc", parents) ? <>
+        <hr />
+        <h3 className="subtitle has-text-grey has-text-left is-5">Docs</h3>
+        <div className="columns is-multiline is-flex is-justify-content-center">
+        {parents && parents ? <>
+                        
+                        {parents.map((parent) => {
+                            if (parent.parent_doc) {
+                                return <Fragment key={JSON.stringify(parent)}>    
+                                <BoxItemParent item={parent} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>
+                            </Fragment>
+                            }
+                        })}
+                    </> : null}
+        </div> </> : null}
+        {includeParentType("person", parents) ? <>
+        <hr />
+        <h3 className="subtitle has-text-grey has-text-left is-5">Peoples</h3>
+        <div className="columns is-multiline is-flex is-justify-content-center">
+        {parents && parents ? <>
+                        
+                        {parents.map((parent) => {
+                            if (parent.person) {
+                                return <Fragment key={JSON.stringify(parent)}>    
+                                <BoxItemParent item={parent} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>
+                            </Fragment>
+                            }
+                        })}
+                    </> : null}
+        </div></> : null}
+        {includeParentType("entity", parents) ? <>
+        <hr />
+        <h3 className="subtitle has-text-grey has-text-left is-5">Organizations</h3>
+        <div className="columns is-multiline is-flex is-justify-content-center">
+        {parents && parents ? <>
+                        
+                        {parents.map((parent) => {
+                            if (parent.entity) {
+                                return <Fragment key={JSON.stringify(parent)}>    
+                                <BoxItemParent item={parent} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>
+                            </Fragment>
+                            }
+                        })}
+                    </> : null}
+        </div></> : null}
         <div className="container mt-3">
         {tags && tags[0] ? <>
             {tags.map((type) => {
