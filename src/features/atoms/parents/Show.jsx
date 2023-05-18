@@ -167,13 +167,13 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc}) =
                 if (child.person  && parent._id === child.person._id) parentType = "person"
                 if (child.project && parent._id === child.project._id) parentType = "project"
                 if (child.entity && parent._id === child.entity._id) parentType = "entity"
-                if (child.roles && child.roles[0]) {
+                if (child.roles && child.roles[0] && child.roles[0].title && child.roles[0].title !== "") {
                     return <Fragment key={JSON.stringify(child)}>
-                    <SearchItemParent item={child} handleSearchParent={handleSearchParent} relTypes={child.roles[0]} parent={parentType}/>
+                    <SearchItemParent item={child} handleSearchParent={handleSearchParent} relTypes={child.roles[0]} handleSearchDoc={handleSearchDoc} parent={parentType}/>
                 </Fragment>   
                 } else {
                     return <Fragment key={JSON.stringify(child)}>
-                    <SearchItemParent item={child} handleSearchParent={handleSearchParent}  parent={parentType}/>
+                    <SearchItemParent item={child} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc} parent={parentType}/>
                 </Fragment>   
                 }
                 

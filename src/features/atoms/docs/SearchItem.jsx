@@ -10,8 +10,7 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
     const colClasses = location !== "index" ? "is-one-third" : "is-one-quarter"
 
     const { t, i18n } = useTranslation() 
-
-    return <div className={"column " + colClasses}>
+    return <div className={"column " + colClasses} onClick={() =>     console.log('item : ', item)}>
             <div className="box results-col " onClick={() => {
                    
                 if (handleSearchDoc !== "false") {
@@ -23,7 +22,7 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
             }}>
             {!relTypes ? <div className="is-flex is-justify-content-end mt-0 mb-0">
                     <span className="tag is-primary">
-                        {item.doc.types && item.doc.types[0] ? getContent(item.doc.types[0].title, i18n.language) : t('document')}
+                        {item.doc.types && item.doc.types[0] && getContent(item.doc.types[0].title, i18n.language) !== "Error" ? getContent(item.doc.types[0].title, i18n.language) : t('document')}
                     </span>
                 </div> : <div className="is-flex is-justify-content-space-between mt-0 mb-0">
                     <span className="tag is-info">
