@@ -13,7 +13,7 @@ function reducer (state, action) {
 const useSearch = () => {
     const [state, dispatch] = useReducer(reducer, {
         loading: false,
-        responseSearch: null
+        responseSearch: false
     })
 
     return {
@@ -21,9 +21,7 @@ const useSearch = () => {
         search: async function (query) {
             const roles = await apiFetch('/search/query', {
                 method: 'POST',
-                body: {
-                    query: query
-                }
+                body: query
             })
             dispatch ({type: 'Search', payload: roles})
         }

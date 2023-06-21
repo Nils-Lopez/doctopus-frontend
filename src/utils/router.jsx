@@ -47,7 +47,6 @@ const Router = () => {
     useEffect(() => {
         if (responseFindUserById && loadingClient) {
             if (responseFindUserById.success) {
-                console.log(responseFindUserById.data)
                 setClient({user: responseFindUserById.data })
                 setLoadingClient(false)
                 i18n.changeLanguage(responseFindUserById.data.defaultLanguage)
@@ -71,9 +70,29 @@ const Router = () => {
             </div>        
         </> : null}
             <div className="content">
+                
                 <Routes>
+                    
             <Route path="/">
-              <Route index element={<HomePage client={client} setClient={setClient} watchlist={false} setAlert={setAlert}/>}/>
+              <Route path="/" element={<HomePage client={client} setClient={setClient} watchlist={false} setAlert={setAlert}/>}/>
+              <Route path="/search">
+                <Route path=":query" element={<HomePage client={client} setClient={setClient} watchlist={false} setAlert={setAlert}/>}/>
+              </Route>
+              <Route path="/person">
+                <Route path=":person_slug" element={<HomePage client={client} setClient={setClient} watchlist={false} setAlert={setAlert}/>}/>
+              </Route>    
+              <Route path="/project">
+                <Route path=":project_slug" element={<HomePage client={client} setClient={setClient} watchlist={false} setAlert={setAlert}/>}/>
+              </Route>  
+              <Route path="/document">
+                <Route path=":doc_slug" element={<HomePage client={client} setClient={setClient} watchlist={false} setAlert={setAlert}/>}/>
+              </Route>
+              <Route path="/entity">
+                <Route path=":entity_slug" element={<HomePage client={client} setClient={setClient} watchlist={false} setAlert={setAlert}/>}/>
+              </Route>
+                <Route path="/tag">
+                <Route path=":tag_slug" element={<HomePage client={client} setClient={setClient} watchlist={false} setAlert={setAlert}/>}/>
+                </Route>
                 {client && client.user && (client.user.type === "admin" || client.user.type === "moderator" || client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? <>
                     <Route path="/admin/create" element={<Create client={client} setAlert={setAlert} />} />
                     <Route path="/admin/dashboard" element={<Dashboard client={client} setAlert={setAlert} />}/>                 
@@ -97,28 +116,7 @@ const Router = () => {
             </Routes>
         </div>
 
-        <footer className="footer box footer-app">
-            <div className="content">
-                <div className="columns">
-                        <div className="column has-text-right">
-                        <a href="https://oqto.tech">OQTO Tech</a>
-                            <p className="is-size-7 mb-0 mt-1">© 2023 - dOctopus, Document Manager</p>
-                            <a className="is-size-7 mt-0" href="https://oqto.tech">https://oqto.tech</a>
-                        </div>  
-                        <div className="column has-text-centered">
-                            
-                            Contredanse
-                            <p className="is-size-7 mb-0 mt-1">© 2023 - All data rights reserved</p>
-                            <a className="is-size-7 mt-0" href="https://contredanse.org">https://contredanse.org</a>
-                        </div>  
-                        <div className="column has-text-left">
-                            Contact
-                            <p className="is-size-7 mb-0 mt-1"><a className="is-size-7 mt-0" href="mailto:centrededoc@contredanse.org">centrededoc@contredanse.org</a></p>
-                            <p className="is-size-7 mb-0 mt-1"><a className="is-size-7 mt-0" href="mailto:contact@oqto.tech">contact@oqto.tech</a></p>
-                        </div>  
-                </div>
-            </div>
-        </footer>
+        
        </div>
         </BrowserRouter>
     </div>

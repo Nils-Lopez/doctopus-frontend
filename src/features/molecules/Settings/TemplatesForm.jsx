@@ -550,6 +550,7 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
          </div>
      </div> : null}
      <hr />
+     {!parentTemplate || (parentTemplate && (parentTemplate.support_issn || parentTemplate.support_role))}
      <h3 className="title is-4 ">{t('supports')}</h3>
      {(parentTemplate  && parentTemplate.support_role) || !parentTemplate ?
      <div className="columns ml-6 mr-6">

@@ -81,6 +81,7 @@ const usePeople = () => {
                 method: 'PUT',
                 body: data
             })
+            console.log('payload: ', person)
             dispatch({type: 'Update', payload: person})
         }, 
         deletePerson: async function (id) {

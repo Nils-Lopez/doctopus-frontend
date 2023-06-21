@@ -21,7 +21,7 @@ const Settings = ({client, setClient, setAlert}) => {
     </span>
     {t('models')}
   </a>
-  <a className="panel-block">
+  {/* <a className="panel-block">
     <span className="panel-icon">
       <i className="fas fa-book" aria-hidden="true"></i>
     </span>
@@ -38,9 +38,9 @@ const Settings = ({client, setClient, setAlert}) => {
       <i className="fas fa-book" aria-hidden="true"></i>
     </span>
     {t('admin')}
-  </a>
+  </a> */}
                     </div>
-                     <div className="panel is-grey">
+                     {/* <div className="panel is-grey">
                         <p className="panel-heading">
                             {t('user')}
                         </p>
@@ -63,7 +63,7 @@ const Settings = ({client, setClient, setAlert}) => {
     {t('security')}
   </a>
 
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <div className="column is-two-third settings-scrollable mt-5">

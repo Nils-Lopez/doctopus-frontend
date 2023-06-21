@@ -7,7 +7,7 @@ import { faCircleCheck, faChevronDown, faChevronUp, faUpload, faTrash } from '@f
 import {useTranslation} from "react-i18next"
 
 
-const FileUpload = ({setFile}) => {
+const FileUpload = ({setFile, pdf}) => {
   // all blobs in container
 
   const storageConfigured = isStorageConfigured();
@@ -58,7 +58,16 @@ const FileUpload = ({setFile}) => {
     if (fileUrl ) {
       setFile(fileUrl);
     }
+    
   }, [fileUrl]);
+
+  useEffect(() => {
+    if (pdf && pdf !== fileUrl ) {
+      console.log('iciii : ', pdf)
+      setFileUrl(pdf);
+    }
+    
+  }, [pdf]);
 
   // display form
   const DisplayForm = () => (
@@ -100,7 +109,7 @@ const FileUpload = ({setFile}) => {
       setFileUrl(false)
       setFileSelected(null)
       setDisplayFile(false)
-     
+      setFile("")
     }
     
   return (

@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 
 import FileForm from "../../atoms/forms/FileForm"
 
-const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selectRole, pendingExemplaries, setPendingExemplaries, roles, template}) => {
+const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selectRole, pendingExemplaries, setPendingExemplaries, roles, template, dataUpdate}) => {
     
   const [idLang, setIdLang] = useState("fr")
   const [titleEnValue, setTitleEnValue] = useState("")
@@ -31,6 +31,7 @@ const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selec
     e.preventDefault()
     setTitleFrValue(e.target.value)
   }
+
   const handleDescEnChange = (e) => {
     e.preventDefault()
     setDescEnValue(e.target.value)
@@ -60,10 +61,13 @@ const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selec
     setAccessValue(e.target.value)
   }
 
+  const handlePdfValue = (v) => {
+    setPdfValue(v)
+  }
 
 
-  const handleNewSupportBtn = (e) => {
-    e.preventDefault()
+
+  const handleNewSupportBtn = () => {
     const newSupport = {
       title: [{lang: "en", content: titleEnValue}, {lang: "fr", content: titleFrValue}],
       description: [{lang: "en", content: descEnValue}, {lang: "fr", content: descFrValue}],
@@ -74,19 +78,24 @@ const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selec
       exemplaries: pendingExemplaries, 
       roles: selectedRoles
     }
-    setPendingSupports([...pendingSupports, newSupport])
-    setTitleEnValue("")
-    setTitleFrValue("")
-    selectRole([])
-    setDescEnValue("")
-    setDescFrValue("")
-    setUrlValue("")
-    setPdfValue("")
-    setFormatValue("")
+    setPendingSupports([newSupport])
+    console.log('eeh new support', newSupport, pdfValue)
+    // setTitleEnValue("")
+    // setTitleFrValue("")
+    // selectRole([])
+    // setDescEnValue("")
+    // setDescFrValue("")
+    // setUrlValue("")
+    // setPdfValue("")
+    // setFormatValue("")
 
-    setAccessValue("")
-    setPendingExemplaries([])
+    // setAccessValue("")
+    // setPendingExemplaries([])
   }
+
+  useEffect(() => {
+    handleNewSupportBtn()
+  }, [pdfValue, urlValue, formatValue, accessValue, pendingExemplaries, selectedRoles, descEnValue, descFrValue, titleEnValue, titleFrValue])
   
   const deleteSupportPreview = (support) => {
     const filtered = pendingSupports.filter((supp) => {return supp !== support})
@@ -114,12 +123,40 @@ const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selec
     }
   }, [template])
   
+  const getContent = (value, lang) => {
+    if (value) {
+      return value.filter(obj => obj.lang === lang)[0] ? value.filter(obj => obj.lang === lang)[0].content : value.filter(obj => obj.lang === "en")[0] ? value.filter(obj => obj.lang === "en")[0].content : value.filter(obj => obj.lang === "fr")[0].content
+    } else {
+      return "Error"
+    }
+  }
+
+  useEffect(() => {
+    if (dataUpdate && dataUpdate.supports && dataUpdate.supports.length > 0) {
+      const updateSupport = dataUpdate.supports[0]
+      if (updateSupport.title && updateSupport.title.length > 0) {
+        setTitleEnValue(getContent(updateSupport.title, "fr"))
+        setTitleFrValue(getContent(updateSupport.title, "fr"))
+      } else if (updateSupport.description && updateSupport.description.length > 0) {
+        setDescEnValue(getContent(updateSupport.description, "en"))
+        setDescFrValue(getContent(updateSupport.description, "fr"))
+      }
+      console.log("pdf:", updateSupport.pdf)
+      setAccessValue(updateSupport.accessibility)
+      setFormatValue(updateSupport.format)
+      setUrlValue(updateSupport.url)
+      setPdfValue(updateSupport.pdf)
+      selectRole(updateSupport.roles)
+      setPendingExemplaries(updateSupport.exemplaries)
+    }
+  }, [dataUpdate])
+
   return <>
-    {pendingSupports.map((support) => {
+    {/* {pendingSupports.map((support) => {
       return <Fragment key={support.title["fr"] + support.title["en"] + support.date}>
         <SupportPreviewCard support={support} editSupportPreview={editSupportPreview} deleteSupportPreview={deleteSupportPreview}/>
       </Fragment>
-    })}
+    })} */}
       <div className="tabs">
         <ul>
           <li onClick={() => {setIdLang("fr")}} className={idLang === "fr" ? "is-active" : ""}><a href="#">Français</a></li>
@@ -148,7 +185,7 @@ const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selec
         PDF
       </label>
  
-<FileForm setFile={setPdfValue}/>
+<FileForm setFile={handlePdfValue} pdf={pdfValue}/>
     </div> : null}
     
     {template && template.support_format ? <>
@@ -166,9 +203,9 @@ const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selec
     </> : null}
   {template && template.copies ? <ExemplariesForm setPendingExemplaries={setPendingExemplaries} pendingExemplaries={pendingExemplaries} template={template} /> : null}
     
-    <div className="is-flex is-justify-content-end">
+    {/* <div className="is-flex is-justify-content-end">
       <button onClick={handleNewSupportBtn} className="button is-primary">{t('create-support')}</button>
-    </div>
+    </div> */}
   </>
 }
 

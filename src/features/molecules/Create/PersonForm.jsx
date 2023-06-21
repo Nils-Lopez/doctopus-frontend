@@ -182,7 +182,7 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) =
         birthDate: birthDateValue,
         deathDate: deathDateValue,
         city: cityValue,
-        country: countryValue,
+        country: (dataUpdate && dataUpdate.country&& dataUpdate.country.labels && dataUpdate.country.labels[0] && countryValue !== dataUpdate.country.labels[0].content) || (!dataUpdate.country || dataUpdate.country && !dataUpdate.country.labels || dataUpdate.country && dataUpdate.country.labels && !dataUpdate.country.labels[0]) ? {labels: [{ lang: "en", content: countryValue }], code: countryValue.charAt(2)} : dataUpdate.country,
         firstName: firstNameValue,
         lastName: lastNameValue,
         website: urlValue,
@@ -192,10 +192,12 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) =
       projects: selectedProj,
       roles: selectedRoles
     }
+    console.log(reqData)
     if (!dataUpdate) {
       createPerson(reqData)
      
     } else {
+      console.log('data: ', reqData, dataUpdate._id)
       updatePerson(reqData, dataUpdate._id)
     }
   }

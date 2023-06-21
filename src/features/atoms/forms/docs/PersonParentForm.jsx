@@ -201,6 +201,7 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
         </div>
       </div>
       {personValue !== "" && (template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="parents" location="people-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
+      <div className="columns is-multiline">
       {selectedPeople && selectedPeople[0] ? selectedPeople.map((person) => {
         if (person.person && person.person.name) {
           return <Fragment key={person.person.name + "selected"}>
@@ -209,6 +210,7 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
           </Fragment>
         }
       }) : null}
+      </div>
     </div>
     {personForm ? <div className={"modal " + (isActive ? "is-active" : "")}>
             <div className="modal-background"></div>

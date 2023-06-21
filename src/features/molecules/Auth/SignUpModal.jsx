@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import SignUpForm from './SignUpForm';
 import { useTranslation } from "react-i18next";
 
-const SignUpModal = ({isActive, setSignUpModal, handleSubmit, formAlert, setFormAlert}) => {
+const SignUpModal = ({isActive, setSignUpModal, setLogInModal, handleSubmit, formAlert, setFormAlert}) => {
     const { t, i18n } = useTranslation();
 
     return <>
@@ -20,7 +20,11 @@ const SignUpModal = ({isActive, setSignUpModal, handleSubmit, formAlert, setForm
     
                         <p className='is-7 mt-3'><small>{t('already-registered')} ?</small></p>
    
-                        <a href=""><strong>{t('login')}</strong></a>
+                        <a onClick={(e) => {
+                            e.preventDefault()
+                            setLogInModal(true)
+                            setSignUpModal(false)
+                        }}><strong>{t('login')}</strong></a>
                 </div>
                 </div>
                    

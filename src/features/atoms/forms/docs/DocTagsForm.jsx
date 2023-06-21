@@ -5,8 +5,9 @@ import { faTrash, faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 
 import {useTags} from '../../../../utils/hooks/Tags'
 import {useTranslation} from "react-i18next"
+import { use } from "i18next"
 
-const DocTagsForm = ({selectedTags, selectTag, scope, lang, location}) => {
+const DocTagsForm = ({selectedTags, handleSearchTag, selectTag, scope, lang, location, tag, setUpdateTag, merge, setMergeTag, setAlert}) => {
   const [tagFrValue, setTagFrValue] = useState("")
   const [tagEnValue, setTagEnValue] = useState("")
   const [tagForm, setTagForm] = useState(false)
@@ -18,9 +19,27 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang, location}) => {
   const { t, i18n } = useTranslation()
 
   const getContent = (value, lang) => {
-    return value.filter(obj => obj.lang === lang)[0] ? value.filter(obj => obj.lang === lang)[0].content : value.filter(obj => obj.lang === "en")[0] ? value.filter(obj => obj.lang === "en")[0].content : value.filter(obj => obj.lang === "fr")[0].content
+    if (value) {
+      return value.filter(obj => obj.lang === lang)[0] ? value.filter(obj => obj.lang === lang)[0].content : value.filter(obj => obj.lang === "en")[0] ? value.filter(obj => obj.lang === "en")[0].content : value.filter(obj => obj.lang === "fr")[0].content
+    } else {
+      return "Error"
+    }
   }
  
+  useEffect(() => {
+    if (tag) {
+      if (tag.title&& tag.title[0]) {
+        setTagEnValue(getContent(tag.title, "en"))
+      setTagFrValue(getContent(tag.title, "fr"))
+      }
+      setTagForm(true)
+      if (tag.description && tag.description[0]) {
+        setTagDescEn(getContent(tag.description, "en"))
+      setTagDescFr(getContent(tag.description, "fr"))
+      }
+    }
+  }, [tag])
+
   const handleTagChange = (e) => {
     e.preventDefault()
     if (lang === "en") {
@@ -44,34 +63,55 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang, location}) => {
   const handleTagBtn = (e) => {
     e.preventDefault()
     const tagDoc = isTagExisting()
-    let unique = true
-    selectedTags.map((tag) => {
-      tag.title.map((title) => {
-        if (title.content.toLowerCase() === tagEnValue.toLowerCase() && tagEnValue !== "" || title.content.toLowerCase() === tagFrValue.toLowerCase() && tagFrValue !== "") {
-          unique = false
-        }
+    if (!merge) {
+      let unique = true
+      selectedTags.map((tag) => {
+        tag.title.map((title) => {
+          if (title.content.toLowerCase() === tagEnValue.toLowerCase() && tagEnValue !== "" || title.content.toLowerCase() === tagFrValue.toLowerCase() && tagFrValue !== "") {
+            unique = false
+          }
+        })
       })
-    })
-    if (unique) {
-      if (tagDoc) {
-        selectTag([...selectedTags, tagDoc])
-        setTagEnValue("")
-        setTagFrValue("")
-      } else {
-        setTagForm(true)
+      if (unique) {
+        if (tagDoc) {
+          selectTag([...selectedTags, tagDoc])
+          setTagEnValue("")
+          setTagFrValue("")
+        } else {
+          setTagForm(true)
+        }
       }
-    }
+    } else if (tagDoc) {
+      mergeTags({origin: merge, duplicate: tagDoc})
+      setMergeTag("loading")
+      setTimeout(() => {
+        setMergeTag(false)
+        setAlert({type: "success", message: {en: t('tag-merged'), fr: t('tag-merged')}})
+        handleSearchTag(merge)
+      } , 500)
+    } 
   }
   
   const handleCreateTag = (e) => {
     e.preventDefault()
     const newTag = { slug: tagEnValue.replaceAll(' ', '-').toLowerCase(), title: [{ lang: "en", content: tagEnValue }, { lang: "fr", content: tagFrValue }], description: [{ lang: "en", content: tagDescEn }, { lang: "fr", content: tagDescFr}], scope: scope}
-    selectTag([...selectedTags, newTag])
+    if (!tag) { 
+      selectTag([...selectedTags, newTag])
     setTagFrValue("")
     setTagEnValue("")
     setTagDescEn("")
     setTagDescFr("")
     setTagForm(false)
+    } else {
+      newTag.slug = tag.slug
+      updateTag(newTag, tag._id)
+      setUpdateTag("loading")
+      setTimeout(() => {
+        setUpdateTag(false)
+        setAlert({type: "success", message: {en: t('tag-updated'), fr: t('tag-updated')}})
+        handleSearchTag(tag)
+      }, 500)
+    }
   }
   
   const handleTagDescChange = (e) => {
@@ -94,19 +134,23 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang, location}) => {
   
   const {
     searchTags, 
-    responseSearchTags
+    responseSearchTags,
+    updateTag,
+    responseUpdateTag,
+    mergeTags, 
+    responseMergeTags
   } = useTags()
 
   const searchTagValue = (e) => {
     e.preventDefault()
-    if (tagEnValue !== "" && tagEnValue !== "") {
+   if (tagEnValue !== "") {
       setTagsLoading(true)
-      searchTags(tagEnValue + " " + tagFrValue)
-    } else if (tagEnValue !== "") {
-      setTagsLoading(true)
+      console.log("ici en : ", tagEnValue)
+
       searchTags(tagEnValue)
     } else if (tagFrValue !== "") {
       setTagsLoading(true)
+      console.log("ici : ", tagFrValue)
       searchTags(tagFrValue)
     }
   }
@@ -114,27 +158,47 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang, location}) => {
   useEffect(() => {
     if (responseSearchTags && responseSearchTags.success && responseSearchTags.data[0] && tagsLoading) {
         setTagsLoading(false)
-        setTags([...responseSearchTags.data])
+        if (!merge) {
+          setTags([...responseSearchTags.data])
+          responseSearchTags.data.map((tag) => {
+          
+              
+            console.log(tag, tagFrValue, tagEnValue)
+            if (getContent(tag.title, lang) === tagFrValue || getContent(tag.title, lang) === tagEnValue) {
+              setPending("existing")
+              console.log('eh jsuis la')
+              selectTag([...selectedTags, tag])
+              setTagFrValue("")
+              setTagEnValue("")
+              setTagDescEn("")
+              setTagDescFr("")
+              setTagForm(false)
+              setTags([])
+            }
+            
+          })
+          if (pending !== "existing") {
+            setPending(lang === "en" ? tagEnValue : tagFrValue)
+          } else {
+            setPending("")
+          }
+      } else {
+        responseSearchTags.data.map((tag) => {
+          if (tag._id !== merge._id) {
+            setTags([...tags, tag])
+          }
+        })
+      }
     } else if (responseSearchTags && tagsLoading) {
+      console.log('eh jsuis la aussi ', responseSearchTags, tagsLoading)
       setTagsLoading(false)
-      setTagForm(true)
+      if (!merge) setTagForm(true)
+      else {
+        setAlert({type: "error", message: {en: t('tag-not-found'), fr: t('tag-not-found')}})
+      }
     }
   }, [responseSearchTags])
 
-  useEffect(() => {
-    if (tags && tags[0]) {
-       tags.map((tag) => {
-        if (getContent(tag.title, lang) === tagEnValue || getContent(tag.title, lang) === tagEnValue) {
-          setPending("existing")
-        }
-      })
-      if (pending !== "existing") {
-        setPending(lang === "en" ? tagEnValue : tagFrValue)
-      } else {
-        setPending("")
-      }
-    }
-  }, [tags])
 
   const changeCurrentTag = (e) => {
     e.preventDefault()
@@ -156,12 +220,30 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang, location}) => {
     })
     return !included
   }
+
+  // useEffect(() => {
+  //   console.log('tag : ', tag, responseUpdateTag)
+  //   if (tag === "loading") {
+  //     if (responseUpdateTag && responseUpdateTag.success) {
+  //       setUpdateTag(false)
+        // conlert({type: "success", message: {en: t('tag-updated'), fr: t('tag-updated')}})
   
+  //     } else {
+  //       setUpdateTag(false)
+  //       conlert({type: "error", message: {en: t('tag-not-updated'), fr: t('tag-not-updated')}})
+  //     }
+  //   }
+  // }, [responseUpdateTag, tag])
+  
+  // useEffect(() => {
+  //   console.log('responseUpdateTag : ', responseUpdateTag)
+  // }, [responseUpdateTag])
+
   return <>
     <div className="field">
       {location !== "templates-tags" ? <label className="label has-text-left">{t('tags')}</label> : null}
       <div className="columns">
-        <div className="column is-four-fifth">
+        <div className="column is-three-quarter">
           {(!tags || !tags[0]) ? <>
             <input type="text" className="input" value={lang === "en" ? tagEnValue : tagFrValue} onChange={handleTagChange} />
           </> : <>
@@ -169,6 +251,7 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang, location}) => {
              <select value={currentTag} onChange={changeCurrentTag} name={"tags"} id={"tags"}>
 
                 {tags.map((t, i) => {
+                  if (i === 0 && currentTag !== t.slug) setCurrentTag(t.slug)
                   if (i < 7) {
                       return <Fragment key={t.slug}>
                       <option value={t.slug}>{getContent(t.title, lang)}</option>
@@ -182,18 +265,24 @@ const DocTagsForm = ({selectedTags, selectTag, scope, lang, location}) => {
              </div>
           </>}
         </div>
-        <div className="column is-one-fifth">
+        <div className="column is-one-quarter">
           {(!tags || !tags[0]) && !tagForm ? <>
-            {(tagEnValue !== "" || tagFrValue !== "") && !tagsLoading ? <button className="button is-primary" onClick={searchTagValue}>{t('search')}</button> : <button className="button is-primary is-disabled" onClick={searchTagValue} disabled>{t('search')}</button>}
-          </> : <>
-             {!tagForm ? <>{tagFrValue !== "" || tagEnValue !== "" ? <button className="button is-primary " onClick={handleTagBtn}>
-              {isTagExisting() ? t('add') : t('create')}
-            </button> : <button className="button is-primary is-disabled" disabled>{t('add')}</button>}</> : <button className="button is-primary" onClick={handleCreateTag}>{t('confirm')}</button>}
-            <span className="tag is-danger is-medium ml-2 mt-1 button" onClick={() => {
-                setTags([]);
+            {(tagEnValue !== "" || tagFrValue !== "") && !tagsLoading ? <button className="button is-primary is-medium tag" onClick={searchTagValue}>{t('search')}</button> : <button className="button is-primary is-disabled" onClick={searchTagValue} disabled>{t('search')}</button>}
+          </> : <div className="is-flex pr-2">
+             {!tagForm ? <>{tagFrValue !== "" || tagEnValue !== "" ? <button className="button is-primary is-medium tag " onClick={handleTagBtn}>
+              {!merge ? isTagExisting() ? t('add') : t('create') : t('merge')}
+            </button> : <button className="button is-primary is-disabledis-medium tag" disabled>{t('add')}</button>}</> : <button className="button is-primary is-medium tag" onClick={handleCreateTag}>{t('confirm')}</button>}
+            {!tag ? <i className="has-text-light ml-3 pointer has-text-danger " onClick={(e) => {
+                setTags([])
                 setTagForm(false)
-              }}><FontAwesomeIcon icon={faTrash}/></span>
-          </>}
+                setTagFrValue("")
+                setTagEnValue("") 
+                setTagDescEn("")
+                setTagDescFr("")
+                setPending("")
+              }}><FontAwesomeIcon icon={faCircleXmark} /></i>   : null}
+              
+          </div>}
          
         </div>
       </div>

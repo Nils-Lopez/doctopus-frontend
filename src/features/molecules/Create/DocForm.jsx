@@ -13,10 +13,12 @@ import { faTrash, faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from "react-i18next";
 
 import FileForm from "../../atoms/forms/FileForm"
-
+import {useNavigate} from "react-router-dom"
 
 const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, setDataUpdate}) => {
   const { t, i18n } = useTranslation();
+
+  let navigate = useNavigate()
 
   const [titleValue, setTitleValue] = useState("")
   const [defaultSlug, setDefaultSlug] = useState("")
@@ -168,6 +170,8 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
     e.preventDefault()
     setSlugValue(e.target.value)
   }
+
+
 
   const handleCopyrightsChange = (e) => {
     e.preventDefault()
@@ -382,7 +386,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
       selectLang(dataUpdate.languages)
       setCopyrightsValue(dataUpdate.additionalCopyrights)
       setDateValue(dataUpdate.date)
-      setPubliDateValue(dataUpdate.publishedAt)
+      setPubliDateValue(dataUpdate.publishedAt ? dataUpdate.publishedAt.split('T')[0] : "")
       setIsbnValue(dataUpdate.eanIsbn)
       setIssnValue(dataUpdate.issn)
       setPagesValue(dataUpdate.pages)
@@ -392,7 +396,6 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
       setNumberValue(dataUpdate.number)
       selectType(dataUpdate.types)
       selectTag(dataUpdate.tags)
-      setPendingSupports(dataUpdate.supports)
       const orgs = []
       const people = []
       const projects = []
@@ -418,6 +421,22 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
       
    }
   }, [dataUpdate])
+
+  const [confirmDelete, setConfirmDelete] = useState(false)
+
+  const handleDeleteDoc = (e) => {
+    e.preventDefault()
+    if (confirmDelete) {
+      deleteDoc(dataUpdate._id)
+      setConfirmDelete(false)
+      setAlert({ type: "success", message: { en: "Document has been successfully deleted.", fr: "Le document a été créé avec succès"}})
+      navigate('/')
+
+    } else {
+      setConfirmDelete(true)
+    }
+
+  }
 
   return loading ? <>
    <div className="loader">
@@ -583,7 +602,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
        <label className="label has-text-left">
         {t('thumbnail')}
       </label>
-     <FileForm setFile={setThumbValue}/>
+     <FileForm setFile={setThumbValue} pdf={thumbValue}/>
     </div> : null}
     {template && template.support_number ? <>
       <div className="field">
@@ -613,7 +632,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
         <h3 className="title is-4">{t('supports')}</h3>
       </button>
     </div>
-    {showSupportForm ? <SupportForm pendingSupports={pendingSupports} setPendingSupports={setPendingSupports} selectedRoles={selectedRoles} selectRole={selectRole} pendingExemplaries={pendingExemplaries} setPendingExemplaries={setPendingExemplaries} template={template}/> : null}
+    {showSupportForm ? <SupportForm pendingSupports={pendingSupports} setPendingSupports={setPendingSupports} selectedRoles={selectedRoles} selectRole={selectRole} pendingExemplaries={pendingExemplaries} setPendingExemplaries={setPendingExemplaries} template={template} dataUpdate={dataUpdate}/> : null}
     <hr/>
     <div className="is-flex is-justify-content-start">
       <button className="button is-light mb-3" onClick={handleParentsShowing}>
@@ -621,11 +640,24 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
       </button>
     </div>
     {showParentForm ? <ParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} selectedPeople={selectedPeople} selectedDoc={selectedDoc} selectDoc={selectDoc} selectPerson={selectPerson} selectedProj={selectedProjects} selectProj={selectProject} template={template} client={client} setAlert={setAlert}/> : null}
-    <footer className="card-footer mt-3 pt-4 is-flex is-justify-content-center">
+   <div className="container">
+   <div className="is-flex is-justify-content-end">{dataUpdate ?
+      <button className="button is-danger is-small mt-3" onClick={handleDeleteDoc}>
+        {confirmDelete ? t('confirm') : t('delete')}
+      </button>
+   : null}</div>
+    <footer className=" is-flex is-justify-content-center">
+    
+      <div className="is-fullwidth is-flex is-justify-content-center">
       <button className="button is-primary is-medium" type="submit">
       {dataUpdate ? t('update')  : t('create')}
       </button>
+   
+      </div>
+      
     </footer>
+   </div>
+ 
   </form>
 }
 

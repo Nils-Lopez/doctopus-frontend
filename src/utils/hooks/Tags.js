@@ -19,6 +19,10 @@ function reducer (state, action) {
             return { ...state, responseSearch: action.payload }  
         case 'FindDoc':
             return { ...state, responseFindDoc: action.payload }
+        case 'FindDocSlug':
+            return { ...state, responseFindDocSlug: action.payload }
+        case 'Merge':
+            return { ...state, responseMerge: action.payload }
         default:
             throw new Error ('Action inconnue' + action.type)
     }
@@ -34,7 +38,9 @@ const useTags = () => {
         responseDeleteTag: null,
         responseFindAllTags: null,
         responseSearchTags: null,
-        responseFindDocByTag: null
+        responseFindDocByTag: null,
+        responseFindDocByTagSlug: null,
+        responseMergeTags: null
     })
 
     return {
@@ -46,12 +52,26 @@ const useTags = () => {
         responseFindAllTags: state.responseFindAllTags,
         responseSearchTags: state.responseSearch,
         responseFindDocByTag: state.responseFindDoc,
+        responseMergeTags: state.responseMerge,
+        mergeTags: async function (data) {
+            const tags = await apiFetch('/tags/merge', {
+                method: 'POST',
+                body: data
+            })
+            dispatch({type: 'Merge', payload: tags})
+        },  
         findDocByTag: async function (id) {
             const docs = await apiFetch('/tags/docs/id/' + id , {
                 method: 'GET'
             })
-            console.log('dcs : ', docs)
             dispatch({type: 'FindDoc', payload: docs})
+        },
+        responseFindDocByTagSlug: state.responseFindDocSlug,
+        findDocByTagSlug: async function (slug) {
+            const docs = await apiFetch('/tags/docs/slug/' + slug , {
+                method: 'GET'
+            })
+            dispatch({type: 'FindDocSlug', payload: docs})
         },
         searchTags: async function (query) {
             const tags = await apiFetch('/tags/search', {

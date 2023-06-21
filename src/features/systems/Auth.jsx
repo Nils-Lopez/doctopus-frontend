@@ -166,7 +166,7 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
                                 </button>
                             </div>
                                 {userDropdown ? <>
-                                    <div className="dropdown-menu dropdown-user-logged is-mobile is-tablet" id="dropdown-menu" role="menu">
+                                    <div className="dropdown-menu dropdown-user-logged is-mobile is-tablet" id="dropdown-menu" role="menu" onClick={() => setUserDropdown(!userDropdown)}>
                                     <div className="dropdown-content">
                                         <Link to="/watchlist" className="dropdown-item pl-6">
         {t('watchlist')}
@@ -175,13 +175,13 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
         {t('history')}
       </Link>
 
-      <a className="dropdown-item  pl-6">
+      {/* <a className="dropdown-item  pl-6">
         {t('settings')}
       </a>
       
       <a href="#" className="dropdown-item pl-6">
         {t('help')}
-      </a>
+      </a> */}
 	<div className="dropdown-item is-flex is-justify-content-center">
                             <a href="" className={lang === "en" ? "langchoose has-text-dark" : "langchoose"} onClick={(e) => {
                                 e.preventDefault()
@@ -210,8 +210,8 @@ handleUpdateUser({lang: "en"})
                 </div>
             </div>
         </div> 
-        {signUpModal ? <SignUpModal isActive={signUpModal} setSignUpModal={setSignUpModal} handleSubmit={handleSignUp} formAlert={formAlert} setFormAlert={setFormAlert} loading={loadingSignUp}/> : null}
-        {logInModal ? <LogInModal isActive={logInModal} setLogInModal={setLogInModal} handleSubmit={handleLogIn} formAlert={formAlert} setFormAlert={setFormAlert} loading={loadingLogin}/> : null}  
+        {signUpModal ? <SignUpModal isActive={signUpModal} setSignUpModal={setSignUpModal} setLogInModal={setLogInModal} handleSubmit={handleSignUp} formAlert={formAlert} setFormAlert={setFormAlert} loading={loadingSignUp}/> : null}
+        {logInModal ? <LogInModal isActive={logInModal} setLogInModal={setLogInModal} setSignUpModal={setSignUpModal} handleSubmit={handleLogIn} formAlert={formAlert} setFormAlert={setFormAlert} loading={loadingLogin}/> : null}  
     </>
 }
 

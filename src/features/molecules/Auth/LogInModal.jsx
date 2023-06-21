@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 
 import LogInForm from './LogInForm';
 import { useTranslation } from 'react-i18next';
-const LogInModal = ({isActive, setLogInModal, handleSubmit, formAlert, setFormAlert, loading}) => {
+const LogInModal = ({isActive, setLogInModal, setSignUpModal, handleSubmit, formAlert, setFormAlert, loading}) => {
 
     const { t, i18n } = useTranslation();
 
@@ -24,7 +24,11 @@ const LogInModal = ({isActive, setLogInModal, handleSubmit, formAlert, setFormAl
     
                         <p className='is-7 mt-3'><small>{t('no-account')}</small></p>
    
-                        <a href=""><strong>{t('signup')}</strong></a>
+                        <a onClick={(e) => {
+                            e.preventDefault()
+                            setLogInModal(false)
+                            setSignUpModal(true)
+                        }}><strong>{t('signup')}</strong></a>
                         
                     </div>
                 </div>

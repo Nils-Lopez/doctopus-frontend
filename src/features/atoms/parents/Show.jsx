@@ -1,5 +1,7 @@
 import React, {Fragment, useState, useEffect} from "react";
 import {useTranslation} from "react-i18next"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faRotateLeft } from '@fortawesome/free-solid-svg-icons'
 
 import SearchItemParent from "./SearchItem"
 import SearchItemDoc from "../docs/SearchItem"
@@ -8,10 +10,11 @@ import PersonForm from "../../molecules/Create/PersonForm"
 import OrganisationForm from "../../molecules/Create/OrganisationForm"
 import ProjectForm from "../forms/orgs/ProjectForm"
 
-const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc}) => {
+const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, handleBack}) => {
     
     const [dataUpdate, setDataUpdate] = useState(false)
-    console.log(parent)
+
+
     const { t, i18n } = useTranslation() 
     const {
         roles, 
@@ -41,6 +44,7 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc}) =
         createdDocs,
         childs
     } = parent
+    console.log('childs : ', parent)
 
     const [dataList, setDataList] = useState([])
     const [page, setPage] = useState(1)
@@ -48,6 +52,7 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc}) =
     
     useEffect(() => {
      if (dataUpdate && dataUpdate.success) {
+        console.log("update: ", dataUpdate)
       handleSearchParent(dataUpdate)
       setDataUpdate(false)
      }
@@ -96,7 +101,7 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc}) =
  
     }, [page, docs])
 
-    console.log('datalist: ', docs)
+    let filteredRoles = roles.filter(function({id}) {return !this.has(id) && this.add(id)}, new Set);
 
     return dataUpdate && !dataUpdate.success ? <>
      {dataUpdate.projects ? 
@@ -107,60 +112,76 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc}) =
       <PersonForm client={client} setAlert={setAlert} dataUpdate={dataUpdate} setDataUpdate={setDataUpdate}/>
      </>}
     </> : <>
-     {client && client.user && (client.user.type === "admin" || client.user.type === "moderator" || client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? <div className="is-flex is-justify-content-end">
-              <button className="button is-primary" onClick={() => setDataUpdate(parent)}>
+     <div className="is-flex is-justify-content-space-between mb-5">
+        <div>
+        <button className="button is-light is-medium tag" id="backBtn" onClick={handleBack}>
+                <FontAwesomeIcon icon={faRotateLeft} size="lg"/>
+                <strong>&nbsp;{t('back')}</strong>
+            </button>
+        {client && client.user && (client.user.type === "admin" || client.user.type === "moderator" || client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? <>
+              <button className="button is-primary ml-3 is-medium tag" onClick={() => setDataUpdate(parent)}>
                   {t('update')}
               </button>
-          </div>
+          </>
  : null }
-        <div className="is-flex is-justify-content-end">
-        {roles && roles[0] ? <>
-            {roles.map((type) => {
-                return <Fragment key={JSON.stringify(type)}>
-                    <span className="tag is-medium is-primary mr-1 ml-1 mb-0">
-                        {getContent(type.title, i18n.language)}
-                    </span>
-                </Fragment>
-            })}
-        </> : null}
         </div>
-        <h1 className="mt-2">{title && title !== "" ? title : name && name !== "" ? name : firstName + " " + lastName}</h1>
-        {description && description[0] ? <p>{getContent(description, i18n.language)}</p> : null}
-        {languages && languages[0] ? <p>{getContent(languages[0].labels, i18n.language)}</p> : null}
+        <div>
+        {roles && roles[0] ? <>
+            {
+            filteredRoles.map((type) => {
+                    return <Fragment key={JSON.stringify(type)}>
+                        <span className="tag is-medium is-primary mr-1 ml-1 mb-0">
+                            {getContent(type.title, i18n.language)}
+                        </span>
+                    </Fragment>
+               
+                
+            })}
+        </> : <span className="tag is-medium is-primary mr-1 ml-1 mb-0">
+                        {parent.projects ? t('organization') : parent.entities ? t('project') : t('person')}
+                    </span>}
+        </div>
+     </div>
+        <h1 className="mt-2 has-text-left title is-1">{title && title !== "" ? title : name && name !== "" ? name : firstName + " " + lastName}</h1>
+        {description && description[0] ? <p className=" subtitle is-5 mt-2 has-text-left">{getContent(description, i18n.language)}</p> : null}
+        {languages && languages[0] ? <p className="has-text-left">{getContent(languages[0].labels, i18n.language)}</p> : null}
         
         <div className="container mt-3">
-        {country && country !== "" ? <>
+        {country && country !== "" ? <div className="is-flex is-justify-content-start">
                                 {typeof country === "string" ?<span className="tag is-light is-small mb-2 ml-1 mr-1">{country}</span> : country.map((c) => {
                                    if (c.labels[0]) {
                                     return <Fragment key={JSON.stringify(c)}><span className="tag is-light is-small mb-2 ml-1 mr-1">{getContent(c.labels, i18n.language)}</span></Fragment>
                                    }
                             })}
-                                </> : null} 
-                                { city && city !== "" ? <> 
-                                    <span className="tag is-light is-small mb-2 ml-1 mr-1">{city}</span>
-                                </> :null} 
-                                { website && website !== "" ? <> 
-                                    <span className="tag is-light is-small mb-2 ml-1 mr-1"><a href={website}>{website}</a></span>
-                                </> : null}
-                                { url && url !== "" ? <> 
-                                    <span className="tag is-light is-small mb-2 ml-1 mr-1"><a href={url}>{url}</a></span>
-                                </> : null}
-                                {birthDate && birthDate !== "" ? <>
-                                    <span className="tag is-light is-small mb-2 ml-1 mr-1">{birthDate} {deathDate && deathDate !== "" ? " - " + deathDate : null}</span>
-                                </> : null}
-                                {startedAt && startedAt !== "" ? <>
-                                    <span className="tag is-light is-small mb-2 ml-1 mr-1">{startedAt} {endedAt && endedAt !== "" ? " - " + endedAt : null}</span>
-                                </> : null}
+                                </div> : null} 
+                                { city && city !== "" ? <div className="is-flex is-justify-content-start"> 
+                                    <span className="tag is-light is-small mb-2 mr-1">{city}</span>
+                                </div> :null} 
+                                { website && website !== "" ? <div className="is-flex is-justify-content-start"> 
+                                    <span className="tag is-light is-small mb-2  mr-1"><a href={website}>{website}</a></span>
+                                </div> : null}
+                                { url && url !== "" ? <div className="is-flex is-justify-content-start"> 
+                                    <span className="tag is-light is-small mb-2 mr-1"><a href={url}>{url}</a></span>
+                                </div> : null}
+                                {birthDate && birthDate !== "" ? <div className="is-flex is-justify-content-start">
+                                    <span className="tag is-light is-small mb-2  mr-1">{birthDate} {deathDate && deathDate !== "" ? " - " + deathDate : null}</span>
+                                </div> : null}
+                                {startedAt && startedAt !== "" ? <div className="is-flex is-justify-content-start">
+                                    <span className="tag is-light is-small mb-2  mr-1">{startedAt} {endedAt && endedAt !== "" ? " - " + endedAt : null}</span>
+                                </div> : null}
 
-                               {issn && issn !== "" ? <>
-                                    <span className="tag is-light is-small mb-2 ml-1 mr-1">ISSN: {issn} </span>
-                                </> : null}
-                                {date && date !== "" ? <>
-                                    <span className="tag is-light is-small mb-2 ml-1 mr-1">{date} </span>
-                                </> : null}
+                               {issn && issn !== "" ? <div className="is-flex is-justify-content-start">
+                                    <span className="tag is-light is-small mb-2  mr-1">ISSN: {issn} </span>
+                                </div> : null}
+                                {date && date !== "" ? <div className="is-flex is-justify-content-start">
+                                    <span className="tag is-light is-small mb-2  mr-1">{date} </span>
+                                </div> : null}
                                
-                                <hr />
         </div> 
+        {childs && childs[0] ? <>
+            <hr />
+        <h3 className="subtitle has-text-grey has-text-left is-5">{t('documents')}</h3>
+        </> : null}
         <div className="columns is-multiline is-flex is-justify-content-center">
             {childs && childs[0] ? childs.map((child) => {
                 let parentType = undefined
