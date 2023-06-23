@@ -51,7 +51,8 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
   const [selectedTypes, selectType] = useState([])
   const [selectedBrotherHood, selectBrotherHood] = useState("")
   const [selectedDoc, selectDoc] = useState([])
-
+  const [selectedProds, selectProd] = useState([])
+  
   const [pendingSupports, setPendingSupports] = useState([])
   const [selectedRoles, selectRole] = useState([])
   const [pendingExemplaries, setPendingExemplaries] = useState([])
@@ -239,7 +240,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
       types: selectedTypes,
       tags: selectedTags,
       supports: pendingSupports,
-      parents: [...selectedOrg, ...selectedPeople, ...selectedProjects, selectedDoc],
+      parents: [...selectedProds, ...selectedOrg, ...selectedPeople, ...selectedProjects, selectedDoc],
       brotherhood: selectedBrotherHood
     }
     if (!dataUpdate) {
@@ -639,7 +640,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
         <h3 className="title is-4">{t('parents')}</h3>
       </button>
     </div>
-    {showParentForm ? <ParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} selectedPeople={selectedPeople} selectedDoc={selectedDoc} selectDoc={selectDoc} selectPerson={selectPerson} selectedProj={selectedProjects} selectProj={selectProject} template={template} client={client} setAlert={setAlert}/> : null}
+    {showParentForm ? <ParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} selectedProds={selectedProds} selectProd={selectProd} selectedPeople={selectedPeople} selectedDoc={selectedDoc} selectDoc={selectDoc} selectPerson={selectPerson} selectedProj={selectedProjects} selectProj={selectProject} template={template} client={client} setAlert={setAlert}/> : null}
    <div className="container">
    <div className="is-flex is-justify-content-end">{dataUpdate ?
       <button className="button is-danger is-small mt-3" onClick={handleDeleteDoc}>

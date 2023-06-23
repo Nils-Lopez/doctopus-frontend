@@ -16,7 +16,11 @@ const SignUpModal = ({isActive, setSignUpModal, setLogInModal, handleSubmit, for
                 </div>
                 <div className="modal-card-body has-background-white-ter">
                     <SignUpForm handleSubmit={handleSubmit} formAlert={formAlert} setFormAlert={setFormAlert} />
-                   <div className="border-t">
+                   
+                </div>
+                   
+                <footer className="modal-card-foot has-background-white-ter border-0">
+                <div className="border-t">
     
                         <p className='is-7 mt-3'><small>{t('already-registered')} ?</small></p>
    
@@ -26,9 +30,7 @@ const SignUpModal = ({isActive, setSignUpModal, setLogInModal, handleSubmit, for
                             setSignUpModal(false)
                         }}><strong>{t('login')}</strong></a>
                 </div>
-                </div>
-                   
-                
+                </footer>
             </div>
             
         </div>

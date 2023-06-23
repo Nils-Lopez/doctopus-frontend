@@ -8,12 +8,65 @@ import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 
 import DocSearchItem from "../docs/SearchItem.jsx"
 
-const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDelete, parent}) => {
-    //console.log("item : ", item)
+const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDelete, parent, i, handleSearchScapinParent}) => {
+    const index = i - ((i/4).toString()[0] * 4)
+    let colClasses = i || index === 0 ? " smooth-appear" : ""
+    colClasses += i && index === 0 ? "" : index === 4 ? " sm5" : index === 3 ? " sm4" : index === 2 ? " sm3" : index === 1 ? " sm2" : ""
+ 
     const { t, i18n } = useTranslation() 
-    if (item.project && parent !== "project") {
+    if (parent !== "production" && item.scapin) {
+        return <div className="column is-one-quarter">
+            <div className={"box  "+colClasses} onClick={() => handleSearchScapinParent(item, "parent")}>
+            <div className="is-flex is-justify-content-end mt-0 mb-0">
+            {item.person ? <>
+                        <span className="tag is-white is-medium pb-5 pr-0 has-text-info">
+                        {t('person')}
+                    </span>
+                    </> :<span className="tag is-white is-medium pb-5 pr-0 has-text-info">
+                        {t('organization')}
+                    </span>}
+                    
+                </div>
+                {item.entity ? <>
+                    <h3 className="subtitle is-5 mb-1 mt-1">{item.entity.name}</h3>
+                <span className='has-text-grey'><small>{item.entity.country ? item.entity.country + ", " : null}{item.entity.city}</small></span>
+                <p>{item.entity.description && item.entity.description[0] ? getContent(item.entity.description, i18n.language).substring(0,20) + "..." : null}</p>
+                
+                </>: <>
+                <h3 className="subtitle is-5 mb-1 mt-1">{item.person.name}</h3>
+                <span className='has-text-grey'><small>{item.person.country ? item.person.country + ", " : null}{item.person.city}</small></span>
+                <p>{item.person.description && item.person.description[0] ? getContent(item.person.description, i18n.language).substring(0,20) + "..." : null}</p>
+                
+                </>}
+                {item.roles && item.roles[0] ? <>
+                    <hr />
+         
+                    <div className="is-flex is-justify-content-space-around">
+                        <div>
+                        {item.roles.map((tag, i) => {
+                            let title = getContent(tag.title, i18n.language)
+                            if (i < 2 && title !== "Error" && title !== "") {
+                                return <Fragment key={JSON.stringify(tag)}>
+                                <span className="tag is-info is-small mb-2 " >{title}</span>
+                               
+                            </Fragment>
+                            } else if (i < 2) {
+                                let title = getContent(item.doc.tags[i + 1].title, i18n.language)
+
+                                return <Fragment key={JSON.stringify(tag)}>
+                                <span className="tag is-info is-small mb-2 " >{title}</span>
+                               
+                            </Fragment>
+                            }
+                        })}
+                        </div>
+                    </div>
+                </> : null}
+            </div>
+        </div>
+    } else if (item.project && parent !== "project") {
         return <div className="column is-one-quarter" >
-            <div className="box results-col " onClick={() => handleSearchParent(item.project)}>
+            <div className={"box results-col "+ colClasses} onClick={() => handleSearchParent(item.project)}>
             <div className="is-flex is-justify-content-end mb-0 mt-0">
                     {!relTypes ? <>
                         {item.roles && item.roles[0] ? <>
@@ -38,7 +91,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
     } else if (item.person && parent !== "person") {
         if (item.person.productions)
         return <div className="column is-one-quarter">
-            <div className="box results-col " onClick={() => handleSearchParent(item.person)}>
+            <div className={"box results-col " +colClasses} onClick={() => handleSearchParent(item.person)}>
             <div className="is-flex is-justify-content-end mt-0 mb-0 tag-bottom">
             {item.person.roles && item.person.roles[0] ? <>
                         <span className="tag is-white is-medium pb-5 pr-0 has-text-info">
@@ -64,7 +117,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
         </div>
     } else if (item.entity && parent !== "entity") {
         return <div className="column is-one-quarter">
-            <div className="box results-col " onClick={() => handleSearchParent(item.entity)}>
+            <div className={"box results-col "+colClasses} onClick={() => handleSearchParent(item.entity)}>
             <div className="is-flex is-justify-content-end mt-0 mb-0">
             {item.roles && item.roles[0] ? <>
                         <span className="tag is-white is-medium pb-5 pr-0 has-text-info">
@@ -83,11 +136,32 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
                 
             </div>
         </div>
+    } else if (parent === "production") {
+            return <div className={"column is-one-quarter"} onClick={() => handleSearchScapinParent(item)}>
+                    <div className={"box results-col " +colClasses} onClick={() => {
+                           
+                        console.log('c tout ')
+                    }}>
+                    <div className="is-flex is-justify-content-end mt-0 mb-0">
+                            <span className="tag is-white is-medium pb-5 pr-0 has-text-info">
+                                {item.prod && item.prod.roles && item.prod.roles[0] && getContent(item.prod.roles[0].title, i18n.language) !== "Error" ? getContent(item.doc.roles[0].title, i18n.language) : t('production')}
+                            </span>
+                        </div> 
+                        {handleDelete ? <i className="has-text-danger ml-3 pointer" onClick={(e) => {
+                        handleDelete(e, item)
+                      }}><FontAwesomeIcon icon={faCircleXmark} /></i> : null}
+                                  {item.doc && item.doc.thumb && item.doc.thumb !== "" ? <img src={item.doc.thumb} alt="file" className="thumb-img"/> : null}
+        
+                    <h3 className="subtitle is-6 mb-1 mt-1">{item.prod && item.prod.title}</h3>
+                    <h3 className="subtitle is-6 mb-1 mt-1 has-text-grey mt-3"><small>{item.prod && item.prod.date}</small></h3>
+                </div>
+            </div>
+             
     } else if (item.doc && parent !== "doc") {
-        return <DocSearchItem item={item} handleSearchDoc={handleSearchDoc} handleDelete={handleDelete}/>
-    }else if (item.parent_doc && parent !== "parent_doc") {
-        return <DocSearchItem item={{...item, doc: item.parent_doc}} handleSearchDoc={handleSearchDoc} handleDelete={handleDelete}/>
-    }
+        return <DocSearchItem item={item} handleSearchDoc={handleSearchDoc} handleDelete={handleDelete} i={i}/>
+    } else if (item.parent_doc && parent !== "parent_doc") {
+        return <DocSearchItem item={{...item, doc: item.parent_doc}} handleSearchDoc={handleSearchDoc} handleDelete={handleDelete}i={i}/>
+    } 
     
 }
 

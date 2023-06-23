@@ -22,7 +22,7 @@ const Admin = () => {
         <div className="button is-primary">
           <Link to="/admin/create">
             <div className="has-text-white is-flex">
-              <p className="mr-2 mt-1 mb-1"><strong>{t('create')}</strong></p> <p className="mt-1 mb-1"><FontAwesomeIcon icon={faCirclePlus} /></p>
+              <p className="mr-2 mt-1 mb-1"><strong>{t('new')}</strong></p> <p className="mt-1 mb-1"><FontAwesomeIcon icon={faCirclePlus} /></p>
             </div>
           </Link>
         </div>

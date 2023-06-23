@@ -20,20 +20,22 @@ const LogInModal = ({isActive, setLogInModal, setSignUpModal, handleSubmit, form
   <div className="inner two"></div>
   <div className="inner three"></div>
 </div></div> : <LogInForm handleSubmit={handleSubmit} formAlert={formAlert} setFormAlert={setFormAlert} />}
+                
+                </div>
+                <footer className="modal-card-foot has-background-white-ter border-0">
                 <div className="border-t">
     
-                        <p className='is-7 mt-3'><small>{t('no-account')}</small></p>
-   
-                        <a onClick={(e) => {
-                            e.preventDefault()
-                            setLogInModal(false)
-                            setSignUpModal(true)
-                        }}><strong>{t('signup')}</strong></a>
-                        
-                    </div>
-                </div>
-                
-               
+    <p className='is-7 mt-3'><small>{t('no-account')}</small></p>
+
+    <a onClick={(e) => {
+        e.preventDefault()
+        setLogInModal(false)
+        setSignUpModal(true)
+    }}><strong>{t('signup')}</strong></a>
+    
+</div>
+                </footer>
+              
             </div>
             
         </div>

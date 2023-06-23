@@ -1,7 +1,7 @@
 import React, {Fragment, useState, useEffect} from "react";
 import {useTranslation} from "react-i18next"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRotateLeft } from '@fortawesome/free-solid-svg-icons'
+import { faRotateLeft, faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 
 import SearchItemParent from "./SearchItem"
 import SearchItemDoc from "../docs/SearchItem"
@@ -9,6 +9,8 @@ import SearchItemDoc from "../docs/SearchItem"
 import PersonForm from "../../molecules/Create/PersonForm"
 import OrganisationForm from "../../molecules/Create/OrganisationForm"
 import ProjectForm from "../forms/orgs/ProjectForm"
+
+import {useProds} from "../../../utils/hooks/Prods"
 
 const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, handleBack}) => {
     
@@ -42,9 +44,29 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
         productionIds, 
         prodIds, 
         createdDocs,
-        childs
+        childs,
+        parents
     } = parent
-    console.log('childs : ', parent)
+
+    const [productionsScapin, setProductions] = useState(false)
+    const [prodLoading, setProdLoading] = useState(false)
+
+    const {findProdById, responseFindProdBydId, findProdByIds, responseFindProdByIds} = useProds()
+
+
+    useEffect(() => {
+        if (prodIds && prodIds[0] && !prodLoading && !productionsScapin[0]) {
+            setProdLoading(true)
+            findProdByIds(prodIds)
+        }
+    }, [prodIds, productionIds])
+
+    useEffect(() => {
+        if (responseFindProdByIds && prodLoading) {
+            setProductions(responseFindProdByIds)
+            setProdLoading(false)
+        }
+    }, [responseFindProdByIds])
 
     const [dataList, setDataList] = useState([])
     const [page, setPage] = useState(1)
@@ -101,9 +123,40 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
  
     }, [page, docs])
 
-    let filteredRoles = roles.filter(function({id}) {return !this.has(id) && this.add(id)}, new Set);
+    let filteredRoles = roles && roles.filter(function({id}) {return !this.has(id) && this.add(id)}, new Set);
 
-    return dataUpdate && !dataUpdate.success ? <>
+    const [showScapinParent, setShowScapinParent] = useState(false)
+    
+    const handleSearchScapinParent = (item, type) => {
+        if (!type){
+            console.log('eh jsuis la : ', {...item.prod,scapin: true, parents: item.parents})
+        if (!showScapinParent && item) setShowScapinParent({...item.prod,scapin: true, parents: item.parents})
+        else setShowScapinParent(false)
+        } else {
+
+        }
+    }
+
+    const [productionsPage, setProductionsPage] = useState(1)
+    const [parentsPage, setParentsPage] = useState(1)
+    const [childsPage, setChildsPage] = useState(1)
+
+    const handleNextPage = (list, currentPage, setNewPage, next, rowSize) => {
+        if (next) {
+            if (list.length > (currentPage*rowSize)) {
+                setNewPage(currentPage+1)
+            }
+        } else {
+            if (page !== 1) {
+                let newPage = currentPage - 1
+                setNewPage(newPage)
+            }
+        }
+    }
+
+    return showScapinParent ? <>
+        <Show parent={showScapinParent} client={client} setAlert={setAlert} handleSearchParent={handleSearchScapinParent} handleSearchDoc={handleSearchDoc} handleBack={handleSearchScapinParent}/>
+    </> : dataUpdate && !dataUpdate.success ? <>
      {dataUpdate.projects ? 
       <OrganisationForm client={client} setAlert={setAlert} dataUpdate={dataUpdate} setDataUpdate={setDataUpdate}/>
      : dataUpdate.entities ? <>
@@ -143,9 +196,12 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
         </div>
      </div>
         <h1 className="mt-2 has-text-left title is-1">{title && title !== "" ? title : name && name !== "" ? name : firstName + " " + lastName}</h1>
-        {description && description[0] ? <p className=" subtitle is-5 mt-2 has-text-left">{getContent(description, i18n.language)}</p> : null}
-        {languages && languages[0] ? <p className="has-text-left">{getContent(languages[0].labels, i18n.language)}</p> : null}
-        
+        {parent && parent.scapin ? <>
+            {parent.description && parent.description !== "" ? <p className=" subtitle is-5 mt-2 has-text-left">{parent.description}</p> : null}
+        </> : <>
+            {description && description[0] ? <p className=" subtitle is-5 mt-2 has-text-left">{getContent(description, i18n.language)}</p> : null}
+            {languages && languages[0] ? <p className="has-text-left">{getContent(languages[0].labels, i18n.language)}</p> : null}
+        </>}
         <div className="container mt-3">
         {country && country !== "" ? <div className="is-flex is-justify-content-start">
                                 {typeof country === "string" ?<span className="tag is-light is-small mb-2 ml-1 mr-1">{country}</span> : country.map((c) => {
@@ -174,28 +230,93 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
                                     <span className="tag is-light is-small mb-2  mr-1">ISSN: {issn} </span>
                                 </div> : null}
                                 {date && date !== "" ? <div className="is-flex is-justify-content-start">
-                                    <span className="tag is-light is-small mb-2  mr-1">{date} </span>
+                                    <span className="tag is-light is-small mb-2  mr-1">{parent.scapin && t('season')} {date} </span>
                                 </div> : null}
-                               
+                                {parent.publishedAt && parent.publishedAt !== "" ? <div className="is-flex is-justify-content-start">
+                                    
+                                    <span className="tag is-light is-small mb-2  mr-1">{t('firstdate')} {parent.publishedAt} </span>
+                                </div> : null}
+                                {parent.duration && parent.duration !== "" ? <div className="is-flex is-justify-content-start">
+                                    <span className="tag is-light is-small mb-2  mr-1">{t('duration')} {parent.duration} </span>
+                                </div> : null}
+                              {parent.scapin ? <div className="is-flex is-justify-content-end">
+                                    <a href={"https://scapin.aml-cfwb.be/recherche/details/?pid=" + parent._id} target="_blank" className="tag button is-white has-text-primary is-medium">{t('read-more-scapin')}</a>
+                                </div> : null}
         </div> 
+        {productionsScapin && productionsScapin[0] ? <>
+            <hr />
+
+        <div className="is-flex is-justify-content-space-between">
+        <h3 className="subtitle has-text-grey has-text-left is-5 mb-1">{t('productions')}</h3>
+
+        <div className="mt--1">
+        {productionsPage !== 1 ? <button className="button is-white" onClick={() => setProductionsPage(productionsPage - 1)}><FontAwesomeIcon icon={faAngleLeft} className=" is-size-3 has-text-grey"/></button> :null}
+
+                {productionsScapin.length > (8*productionsPage) ? <button className="button is-white" onClick={() => handleNextPage(productionsScapin, productionsPage, setProductionsPage, true, 8)}><FontAwesomeIcon icon={faAngleRight} className=" is-size-3 has-text-grey"/></button> :null}
+            </div>
+        </div>
+        </> : null}
+        <div className="columns is-multiline mb-6">
+        {productionsScapin && productionsScapin[0] ? productionsScapin.map((prodScapin, i) => {
+            if ((productionsPage === 1 && i < 8) || (i > (((productionsPage - 1)*8)-1)) && (i < (((productionsPage )*8)))) {
+
+                return <Fragment key={JSON.stringify(prodScapin)}>
+                <SearchItemParent item={prodScapin.item} handleSearchScapinParent={handleSearchScapinParent} parent="production" i={i}/>
+            </Fragment>
+            }
+        }): null}
+        
+        </div>
+        {parents && parents[0] ? <>
+            <hr />
+            <div className="is-flex is-justify-content-space-between">
+        <h3 className="subtitle has-text-grey has-text-left is-5 mb-1">{t('parents')}</h3>
+
+        <div className="mt--1">
+        {parentsPage !== 1 ? <button className="button is-white" onClick={() => setParentsPage(parentsPage - 1)}><FontAwesomeIcon icon={faAngleLeft} className=" is-size-3 has-text-grey"/></button> :null}
+
+                {parents.length > (8*parentsPage) ? <button className="button is-white" onClick={() => handleNextPage(parents, parentsPage, setParentsPage, true, 8)}><FontAwesomeIcon icon={faAngleRight} className=" is-size-3 has-text-grey"/></button> :null}
+            </div>
+        </div>        </> : null}
+        <div className="columns is-multiline mb-6">
+        {parents && parents[0] ? parents.map((p, i) => {
+            if ((parentsPage === 1 && i < 8) || (i > (((parentsPage - 1)*8)-1)) && (i < (((parentsPage )*8)))) {
+                return <Fragment key={JSON.stringify(p)}>
+                <SearchItemParent item={p} handleSearchScapinParent={handleSearchScapinParent} i={i}/>
+            </Fragment>
+            }
+        }): null}
+        </div>
         {childs && childs[0] ? <>
             <hr />
-        <h3 className="subtitle has-text-grey has-text-left is-5">{t('documents')}</h3>
+            <div className="is-flex is-justify-content-space-between">
+        <h3 className="subtitle has-text-grey has-text-left is-5 mb-1">{t('documents')}</h3>
+
+        <div className="mt--1">
+        {childsPage !== 1 ? <button className="button is-white" onClick={() => setChildsPage(childsPage - 1)}><FontAwesomeIcon icon={faAngleLeft} className=" is-size-3 has-text-grey"/></button> :null}
+
+                {childs.length > (15*childsPage) ? <button className="button is-white" onClick={() => handleNextPage(childs, childsPage, setChildsPage, true, 15)}><FontAwesomeIcon icon={faAngleRight} className=" is-size-3 has-text-grey"/></button> :null}
+            </div>
+        </div>     
         </> : null}
         <div className="columns is-multiline is-flex is-justify-content-center">
-            {childs && childs[0] ? childs.map((child) => {
+            {childs && childs[0] ? childs.map((child, i) => {
+            if ((childsPage === 1 && i < 15) || (i > (((childsPage - 1)*15)-1)) && (i < (((childsPage)*15)))) {
+                console.log('eh jsuis la' , childs.length)
                 let parentType = undefined
                 if (child.person  && parent._id === child.person._id) parentType = "person"
                 if (child.project && parent._id === child.project._id) parentType = "project"
                 if (child.entity && parent._id === child.entity._id) parentType = "entity"
                 if (child.roles && child.roles[0] && child.roles[0].title && child.roles[0].title !== "") {
+                    
                     return <Fragment key={JSON.stringify(child)}>
-                    <SearchItemParent item={child} handleSearchParent={handleSearchParent} relTypes={child.roles[0]} handleSearchDoc={handleSearchDoc} parent={parentType}/>
+                    <SearchItemParent item={child} handleSearchParent={handleSearchParent} relTypes={child.roles[0]} handleSearchDoc={handleSearchDoc} parent={parentType} i={i}/>
                 </Fragment>   
                 } else {
                     return <Fragment key={JSON.stringify(child)}>
-                    <SearchItemParent item={child} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc} parent={parentType}/>
+                    <SearchItemParent item={child} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc} parent={parentType} i={i}/>
                 </Fragment>   
+                }
                 }
                 
             }) : null}

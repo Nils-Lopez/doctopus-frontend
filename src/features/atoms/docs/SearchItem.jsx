@@ -46,8 +46,8 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
               }}><FontAwesomeIcon icon={faCircleXmark} /></i> : null}
                           {item.doc && item.doc.thumb && item.doc.thumb !== "" ? <img src={item.doc.thumb} alt="file" className="thumb-img"/> : null}
 
-            <h3 className="subtitle is-6 mb-1 mt-1">{item.doc.title}</h3>
-            <h3 className="subtitle is-6 mb-1 mt-1 has-text-grey mt-3"><small>{item.doc.date}</small></h3>
+            <h3 className="subtitle is-6 mb-1 mt-1">{item.doc && item.doc.title}</h3>
+            <h3 className="subtitle is-6 mb-1 mt-1 has-text-grey mt-3"><small>{item.doc && item.doc.date}</small></h3>
                 {/* <p>{item.doc.description && item.doc.description[0] ? getContent(item.doc.description, i18n.language).substring(0,20) + "..." : null}</p>
                
                     

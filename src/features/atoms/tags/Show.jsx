@@ -3,7 +3,7 @@ import React, {Fragment, useEffect, useState} from "react"
 import SearchItem from "../docs/SearchItem"
 import {useTranslation} from "react-i18next"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRotateLeft } from '@fortawesome/free-solid-svg-icons'
+import { faRotateLeft, faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 import DocTagsForm from "../forms/docs/DocTagsForm"
 
 const Show = ({client, docs, tag, setDisplayDoc, handleSearchTag, handleBack, setAlert}) => {
@@ -35,6 +35,20 @@ const Show = ({client, docs, tag, setDisplayDoc, handleSearchTag, handleBack, se
 
     }
 
+    const [childsPage, setChildsPage] = useState(1)
+
+    const handleNextPage = (list, currentPage, setNewPage, next, rowSize) => {
+        if (next) {
+            if (list.length > (currentPage*rowSize)) {
+                setNewPage(currentPage+1)
+            }
+        } else {
+            if (page !== 1) {
+                let newPage = currentPage - 1
+                setNewPage(newPage)
+            }
+        }
+    }
 
     return <>
     <div className="is-flex is-justify-content-space-between">
@@ -66,35 +80,25 @@ const Show = ({client, docs, tag, setDisplayDoc, handleSearchTag, handleBack, se
               
         <h3 className="subtitle  is-4 has-text-grey mt-0 pt-0 mb-1"><small>{t('tag')}:</small></h3>
         <h3 className="subtitle is-2 has-text-grey mt-0 pt-0 mb-6"><strong className="has-text-primary">{getContent(tag.title, i18n.language)}</strong></h3>
+          <div className="is-flex is-justify-content-end">
+          <div className="mt--1 mb-3">
+        {childsPage !== 1 ? <button className="button is-white" onClick={() => setChildsPage(childsPage - 1)}><FontAwesomeIcon icon={faAngleLeft} className=" is-size-3 has-text-grey"/></button> :null}
+
+                {docs.length > (15*childsPage) ? <button className="button is-white" onClick={() => handleNextPage(docs, childsPage, setChildsPage, true, 15)}><FontAwesomeIcon icon={faAngleRight} className=" is-size-3 has-text-grey"/></button> :null}
+            </div>
+        
+          </div>
         <div className="columns is-multiline">
-            {dataList.map((doc, i) => {
+            {docs.map((doc, i) => {
+                          if ((childsPage === 1 && i < 15) || (i > (((childsPage - 1)*15)-1)) && (i < (((childsPage)*15)))) {
+
                 return <Fragment key={JSON.stringify(doc)}>
-                    <SearchItem item={{doc: doc}} setDisplay={handleDisplay}/>
+                    <SearchItem item={{doc: doc}} setDisplay={handleDisplay} i={i}/>
                 </Fragment>
+                          }
             })}
         </div>
-        {docs && docs.length > 20 ? <div className="is-flex is-justify-content-end ">
-                <nav className="pagination" role="navigation" aria-label="pagination">
-              
-              <ul className="pagination-list">
-                <li>
-                  <a href="#searchBlock" className={"pagination-link " + (page === 1 ? "is-current" : "")} aria-label="Page 1" aria-current="page" onClick={() => setPage(1)}>1</a>
-                </li>
-                <li>
-                  <a href="#searchBlock" className={"pagination-link " + (page === 2 ? "is-current" : "")} aria-label="Goto page 2" onClick={() => setPage(2)}>2</a>
-                </li>
-                {docs.length > 40 ? <li>
-                  <a href="#searchBlock" className={"pagination-link " + (page === 3 ? "is-current" : "")} aria-label="Goto page 3" onClick={() => setPage(3)}>3</a>
-                </li> : null}
-                {docs.length > 60 ? <li>
-                  <a href="#searchBlock" className={"pagination-link " + (page === 4 ? "is-current" : "")} aria-label="Goto page 3" onClick={() => setPage(4)}>4</a>
-                </li> : null}
-                {docs.length > 80 ? <li>
-                  <a href="#searchBlock" className={"pagination-link " + (page === 5 ? "is-current" : "")} aria-label="Goto page 3" onClick={() => setPage(5)}>5</a>
-                </li> : null}
-              </ul>
-            </nav>
-          </div> : null}
+        
         </> : client && client.user && (client.user.type === "admin" || client.user.type === "moderator" || client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ?
 <>
         {updateTag === "loading" ? <div className="loader">

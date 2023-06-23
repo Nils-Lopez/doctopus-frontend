@@ -20,7 +20,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
         parents,
     tags,
       } = doc
-console.log(parents)
+
       const [addingWatchlist, setAddingWatchlist] = useState(false)
 	const {updateUser, responseUpdateUser} = useUsers()
     const [displayFile, setDisplayFile] = useState(false)
@@ -81,13 +81,17 @@ console.log(parents)
 
     const checkWatchlist = () => {
         let alreadyIn = false
-        client.user.watchList.map((watch) => {
-            if (watch._id === doc._id) {
-                alreadyIn = true
-            }
-        })
+        if (client && client.user) {
+            client.user.watchList.map((watch) => {
+                if (watch._id === doc._id) {
+                    alreadyIn = true
+                }
+            })
+        }
         return alreadyIn
     }
+
+    console.log('check', checkWatchlist())
     return dataUpdate && !dataUpdate.success ? <>
      <DocForm client={client} setAlert={setAlert} dataUpdate={dataUpdate} setDataUpdate={setDataUpdate}/>
     </> : <>
@@ -98,7 +102,7 @@ console.log(parents)
                 <strong>&nbsp;{t('back')}</strong>
             </button>
             
-    {client && client.user ? !addingWatchlist ?	checkWatchlist ? <button className="button is-primary ml-3 is-medium tag" onClick={(e) => {
+    {client && client.user ? !addingWatchlist ?	checkWatchlist() ? <button className="button is-primary ml-3 is-medium tag" onClick={(e) => {
 				e.preventDefault()
 				handleUpdateUser("remove")
                 setAddingWatchlist(true)

@@ -248,6 +248,15 @@ code {
   border-left: 1px solid rgba(10, 10, 10, 0.1);
 }
 
+.tagline {
+  position: absolute;
+  top: 60px;
+  left: 101px;
+}
+
+.has-icons-right> .input {
+  cursor: pointer;
+}
 
 
 .notification {
@@ -261,13 +270,14 @@ body {
   overflow: auto;
 }
 
-.landing {
+.content:has(> .landing) {
   background-image: url("./background-landing.JPG");
   background-size: cover;
   min-height: 100%;
   background-repeat: no-repeat;
   background-position: center;
   background-attachment: fixed;
+  padding-bottom: 100px;
 }
 .image404 {
   width: 50%;
@@ -568,6 +578,9 @@ label input[type=checkbox] {
   content: "";
 }
 
+.mt--1 {
+  margin-top: -10px; 
+}
 
 .loader {
   position: absolute;
@@ -580,9 +593,11 @@ label input[type=checkbox] {
 }
 
 .border-t {
-  border-top: 1px solid #747d8c;
   width: 60%;
+
   margin: auto;
+  margin-top: -15px;
+
 }
 .inner {
   position: absolute;

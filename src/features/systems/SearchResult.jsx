@@ -9,7 +9,7 @@ import Watchlist from "../atoms/users/Watchlist"
 import History from "../atoms/users/History"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRotateLeft } from '@fortawesome/free-solid-svg-icons'
+import { faRotateLeft, faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 import {useLocation, useNavigate} from 'react-router-dom';
 
 import {useTags} from "../../utils/hooks/Tags"
@@ -78,11 +78,12 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
           setNavHistory(['/'])
           setResult({})
         } else if (displayDoc || displayParent || searchTags) {
+          console.log('result: ', result)
           setDisplayDoc(false)
           setDisplayParent(false)
           setDisplayTag(false)
           setSearchTags(false)
-          const newNavHistory = navHistory.splice(0, navHistory.length-1)
+          const newNavHistory = navHistory.splice(0, navHistory.length-2)
            setNavHistory(newNavHistory)
           navigate(newNavHistory[newNavHistory.length - 1] ? newNavHistory[newNavHistory.length - 1] : '/')
 
@@ -234,6 +235,21 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
       }
     }, [goHome])
 
+    const [docsPage, setDocsPage] = useState(1)
+
+    const handleNextPage = (list, currentPage, setNewPage, next, rowSize) => {
+        if (next) {
+            if (list.length > (currentPage*rowSize)) {
+                setNewPage(currentPage+1)
+            }
+        } else {
+            if (page !== 1) {
+                let newPage = currentPage - 1
+                setNewPage(newPage)
+            }
+        }
+    }
+
     return  loading || searchTagsLoading ? <div className="loader">
     <div className="inner one"></div>
     <div className="inner two"></div>
@@ -270,14 +286,16 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
                 </div> }     
             </> : null}
             {page === 1 && result.items && result.items[0] ? <>
+
                 <hr className='mb-3 mt-4'/>
             <h3 className="subtitle has-text-right is-5 has-text-grey mt-1 mb-3">{t('result')}</h3>
 
         <div className="columns is-multiline">
         
-            {result.items && result.items[0] && result.items.map((item) => {
+            {result.items && result.items[0] && result.items.map((item, i) => {
                 return <Fragment key={JSON.stringify(item)}>
-                    <SearchItemParent item={item} handleSearchParent={handleSearchParent}/>
+                    <SearchItemParent item={item} handleSearchParent={handleSearchParent} i={i}
+                    />
                 </Fragment>
             })}
             
@@ -285,15 +303,23 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
             </> : null}
         {
           result.docs && result.docs[0] ? <>
-            <hr className='mb-3 mt-4'/>
-            <h3 className="subtitle has-text-right is-5 has-text-grey mt-1 mb-3">Documents</h3>
+                        <hr />
 
+           <div className="is-flex is-justify-content-space-between">
+        <h3 className="subtitle has-text-grey has-text-left is-5 mb-1">{t('documents')}</h3>
+
+        <div className="mt--1">
+        {docsPage !== 1 ? <button className="button is-white" onClick={() => setDocsPage(docsPage - 1)}><FontAwesomeIcon icon={faAngleLeft} className=" is-size-3 has-text-grey"/></button> :null}
+
+                {result.docs.length > (15*docsPage) ? <button className="button is-white" onClick={() => handleNextPage(result.docs, docsPage, setDocsPage, true, 15)}><FontAwesomeIcon icon={faAngleRight} className=" is-size-3 has-text-grey"/></button> :null}
+            </div>
+        </div>
         <div className="columns is-multiline">
         
-            {dataList.map((item, index) => {
-                if (index < 20) {
-                    return <Fragment key={JSON.stringify(item)}>
-                        <SearchItem item={item} setDisplay={setDisplayDoc} handleSearchTag={handleSearchTag} i={index}/>
+            {result.docs.map((item, i) => {
+            if ((docsPage === 1 && i < 15) || (i > (((docsPage - 1)*15)-1)) && (i < (((docsPage)*15)))) {
+              return <Fragment key={JSON.stringify(item)}>
+                        <SearchItem item={item} setDisplay={setDisplayDoc} handleSearchTag={handleSearchTag} i={i}/>
                     </Fragment>
                 }
             })}
@@ -301,22 +327,7 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
         </div>
           </> : null
         }
-        {!loadingSearch && result.docs && result.docs.length > 20 ? <div className="is-flex is-justify-content-end ">
-            <nav className="pagination" role="navigation" aria-label="pagination">
-          
-          <ul className="pagination-list">
-            <li>
-              <a className={"pagination-link " + (page === 1 ? "is-current" : "")} aria-label="Page 1" aria-current="page" onClick={() => setPage(1)}>1</a>
-            </li>
-            <li>
-              <a className={"pagination-link " + (page === 2 ? "is-current" : "")} aria-label="Goto page 2" onClick={() => setPage(2)}>2</a>
-            </li>
-            {result.docs.length > 40 ? <li>
-              <a className={"pagination-link " + (page === 3 ? "is-current" : "")} aria-label="Goto page 3" onClick={() => setPage(3)}>3</a>
-            </li> : null}
-          </ul>
-        </nav>
-      </div> : null}
+        
         </>}
         
     </div>

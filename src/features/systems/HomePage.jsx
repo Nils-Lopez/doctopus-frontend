@@ -73,7 +73,7 @@ const HomePage = ({client, setClient, setAlert, watchlist, history}) => {
   const submitSearch = useCallback(async (e) => {
     e.preventDefault()
     if (!loadingSearch) {
-        setLoadingSearch(true)
+        setLoadingSearch(responseSearch ? responseSearch: true)
       search({query: searchValue, filters: filtersValue})
       if (client && client.user) {
         updateUser({history:  [...client.user.history, {query: searchValue}]}, client.user._id)
@@ -163,8 +163,8 @@ const HomePage = ({client, setClient, setAlert, watchlist, history}) => {
 	} = useUsers()
 
   useEffect(() => {
-    if (loadingSearch){
-      if (responseSearch && responseSearch.success && responseSearch.data && responseSearch.data !== result && (responseSearch.data.items[0] || responseSearch.data.docs[0] || responseSearch.data.tags[0])) {
+    if ((loadingSearch && loadingSearch !== responseSearch)){
+      if (responseSearch && responseSearch.success && responseSearch.data && (responseSearch.data.items[0] || responseSearch.data.docs[0] || responseSearch.data.tags[0])) {
         setResult(responseSearch.data)
         setPage(1)
         setEmpty(false)
@@ -182,7 +182,7 @@ const HomePage = ({client, setClient, setAlert, watchlist, history}) => {
         setEmpty(true)
       } 
     }
-  }, [responseSearch.success, loadingSearch, setAlert, t])
+  }, [responseSearch.data, loadingSearch])
   
   useEffect(() => {
     if (result === responseSearch.data && loadingSearch) {
@@ -269,8 +269,8 @@ const Landing = ({popularDocs, setDisplayDoc, setResult, t}) => {
   
  
       <div className="container recents-container mt-6 mb-0 pb-0">
-        <h1 className="title is-4 has-text-white has-text-shadow ">{t('find-in-doctopus')}</h1>
-        <div className="columns is-multiline pb-6 mb-6 mt-2">
+        <h1 className="title is-4 has-text-white has-text-shadow mb-0">{t('find-in-doctopus')}</h1>
+        <div className="columns is-multiline pb-3 mb-0 mt-1">
             <div className="column is-one-fifth">
               <div className="box pt-5 smooth-appear">
                 <h1 className="title is-4 mt-2"><strong className="title is-2"><Counter number={2157}/></strong> <br />{t('books')}</h1>
@@ -297,7 +297,9 @@ const Landing = ({popularDocs, setDisplayDoc, setResult, t}) => {
               </div>
             </div>
         </div>
-        <div className="columns is-multiline pb-0">
+        <h1 className="title is-4 has-text-white has-text-shadow mb-0">{t('new-docs')} :</h1>
+
+        <div className="columns is-multiline pb-3 mb-0 mt-1">
         {popularDocs[0] && popularDocs.map((item, index) => {
 
 return <Fragment key={JSON.stringify(item)}>

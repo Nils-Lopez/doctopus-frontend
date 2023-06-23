@@ -73,14 +73,13 @@ const LogInForm = ({handleSubmit, formAlert, setFormAlert}) => {
                 <a href="" className='is-7 mt-1 ml-1 pt-0 has-text-left is-flex is-justify-content-start'><small>{t('forgot-pwd')}</small></a>
                 <div className="is-flex is-justify-content-center mt-5">
                     <div className="field">
-                        <button className="button is-primary is-medium" role="submit">{t('confirm')}</button>
+                        <button className="button is-primary" role="submit">{t('confirm')}</button>
                     </div>
                 </div>
-                <div className="mt-3">
-                    {formAlert ? <>
+                
+                    {formAlert ? <div className="mt-3">
                         <Alert alertType={formAlert.type} message={formAlert.message} setAlert={setFormAlert}/>
-                    </> : null}
-                </div>
+                    </div> : null}
            </form>
         </div>
     </div>
