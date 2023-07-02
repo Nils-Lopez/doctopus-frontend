@@ -19,7 +19,10 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
         supports,
         parents,
     tags,
+    childs
       } = doc
+
+      console.log(parents)
 
       const [addingWatchlist, setAddingWatchlist] = useState(false)
 	const {updateUser, responseUpdateUser} = useUsers()
@@ -91,7 +94,6 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
         return alreadyIn
     }
 
-    console.log('check', checkWatchlist())
     return dataUpdate && !dataUpdate.success ? <>
      <DocForm client={client} setAlert={setAlert} dataUpdate={dataUpdate} setDataUpdate={setDataUpdate}/>
     </> : <>
@@ -311,6 +313,20 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                             }
                         })}
                     </> : null}
+        </div></> : null}
+        {childs && childs[0] ? <>
+        <hr />
+        <h3 className="subtitle has-text-grey has-text-left is-5">{types && types[0] && types[0]._id === "6404c457e377d276c2dcac8a" ? t('Articles') : t('document')}</h3>
+        <div className="columns is-multiline is-flex is-justify-content-center">
+                        
+                        {childs.map((parent) => {
+                            console.log(parent.roles[0])
+                            if (parent.doc) {
+                                return <Fragment key={JSON.stringify(parent)}>    
+                                <BoxItemParent item={parent} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc} parent="parent_doc" />
+                            </Fragment>
+                            }
+                        })}
         </div></> : null}
         <div className="container mt-3">
         {tags && tags[0] ? <>

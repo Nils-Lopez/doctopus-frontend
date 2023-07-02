@@ -37,9 +37,7 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
                     <span className="tag is-white is-medium has-text-info">
                         {getContent(relTypes.title, i18n.language)}
                     </span>
-                    <span className="tag is-white is-medium has-text-info">
-                        {item.doc.types && item.doc.types[0] ? getContent(item.doc.types[0].title, i18n.language) : t('document')}
-                    </span>
+                  
                 </div>}
                 {handleDelete ? <i className="has-text-danger ml-3 pointer" onClick={(e) => {
                 handleDelete(e, item)

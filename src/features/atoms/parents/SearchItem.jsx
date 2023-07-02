@@ -157,11 +157,11 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
                 </div>
             </div>
              
+    }else if (item.parent_doc && parent !== "parent_doc") {
+        return <DocSearchItem item={{...item, doc: item.parent_doc}} handleSearchDoc={handleSearchDoc} handleDelete={handleDelete}i={i} relTypes={relTypes}/>
     } else if (item.doc && parent !== "doc") {
-        return <DocSearchItem item={item} handleSearchDoc={handleSearchDoc} handleDelete={handleDelete} i={i}/>
-    } else if (item.parent_doc && parent !== "parent_doc") {
-        return <DocSearchItem item={{...item, doc: item.parent_doc}} handleSearchDoc={handleSearchDoc} handleDelete={handleDelete}i={i}/>
-    } 
+        return <DocSearchItem item={item} handleSearchDoc={handleSearchDoc} handleDelete={handleDelete} i={i} relTypes={relTypes}/>
+    }  
     
 }
 
