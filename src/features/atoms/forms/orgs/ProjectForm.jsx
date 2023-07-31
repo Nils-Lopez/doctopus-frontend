@@ -7,6 +7,7 @@ import OrganisationParentForm from "../docs/OrganisationParentForm"
 import ActorForm from "./ActorForm"
 
 import {useTranslation} from "react-i18next"
+import {useNavigate} from "react-router-dom"
 
 const ProjectForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) => {
     
@@ -29,7 +30,9 @@ const ProjectForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) 
         createProject, 
         responseCreateProject,
         updateProject,
-        responseUpdateProject 
+        responseUpdateProject,
+        deleteProject,
+        responseDeleteProject
     } = useProjects()
  
     const handleSubmit = (e) => {
@@ -48,7 +51,7 @@ const ProjectForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) 
         }
 
         if (dataUpdate) {
-         updateProject(reqData)
+         updateProject(reqData, dataUpdate._id)
         } else {
          createProject(reqData)
         }         
@@ -92,9 +95,11 @@ const ProjectForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) 
     
     useEffect(() => {
         if (responseCreateProject && responseCreateProject.success) {
-        setAlert({ type: "success", message: { en: t('project-created'), fr: t('project-created') } })
         if (setCreated) {
             setCreated(responseCreateProject.data)
+        } else {
+            setAlert({ type: "success", message: { en: t('project-created'), fr: t('project-created') } })
+
         }
         setLoading(false)
         } else if (responseCreateProject && !responseCreateProject.success) {
@@ -124,6 +129,22 @@ const ProjectForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) 
         e.preventDefault()
         setDateValue(e.target.value)
     }
+    const [confirmDelete, setConfirmDelete] = useState(false)
+    let navigate = useNavigate()
+
+    const handleDeleteProj = (e) => {
+        e.preventDefault()
+        if (confirmDelete) {
+          deleteProject(dataUpdate._id)
+          setConfirmDelete(false)
+          setAlert({ type: "success", message: { en: "Document has been successfully deleted.", fr: "Le document a été supprimé avec succès"}})
+          navigate('/')
+    
+        } else {
+          setConfirmDelete(true)
+        }
+    
+      }
 
     return loading ? <div className="loader">
   <div className="inner one"></div>
@@ -136,6 +157,11 @@ const ProjectForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) 
                 <li onClick={() => setIdLang("en")} className={idLang === "en" ? "is-active" : ""}><a href="#" onClick={(e) => e.preventDefault()}>English</a></li>
             </ul>
         </div>
+        <div className="is-flex is-justify-content-end">{dataUpdate ?
+      <button className="button is-danger is-small mt-3" onClick={handleDeleteProj}>
+        {confirmDelete ? t('confirm') : t('delete')}
+      </button>
+   : null}</div>
         <div className="field">
             <label className="label">
                 {t('title')}

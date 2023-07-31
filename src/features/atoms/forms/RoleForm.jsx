@@ -38,7 +38,7 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
 
   const handleRoleChange = (e) => {
     e.preventDefault()
-    if (lang === "en") {
+    if (i18n.language === "en") {
       setRoleEnValue(e.target.value)
       setRoleSlug(roleEnValue.replaceAll(" ", "-").toLowerCase())
     } else {
@@ -97,7 +97,7 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
   
   const handleRoleDescChange = (e) => {
     e.preventDefault()
-    if (lang === "en") {
+    if (i18n.language === "en") {
       setRoleDescEn(e.target.value)  
     } else {
       setRoleDescFr(e.target.value)
@@ -146,12 +146,12 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
 
   useEffect(() => {
     roles.map((role) => {
-        if (getContent(role.title, lang) === roleEnValue || getContent(role.title, lang) === roleEnValue) {
+        if (getContent(role.title, i18n.language) === roleEnValue || getContent(role.title, i18n.language) === roleEnValue) {
           setPending("existing")
         }
       })
       if (pending !== "existing") {
-        setPending(lang === "en" ? roleEnValue : roleFrValue)
+        setPending(i18n.language === "en" ? roleEnValue : roleFrValue)
       } else {
         setPending("")
       }
@@ -167,26 +167,20 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
   const [currentRole, setCurrentRole] = useState({})
 
   return <>
-    {setLang ? <div className="tabs">
-        <ul>
-        <li onClick={() => {
-          setLang("fr")
-        }} className={lang === "fr" ? "is-active" : ""}><a href="#" onClick={(e) => e.preventDefault()}>Français</a></li>
-          <li onClick={() => {setLang("en")}} className={lang === "en" ? "is-active" : ""}><a href="#" onClick={(e) => e.preventDefault()}>English</a></li>
-        </ul>
-      </div> : null}
+ 
     <div className="field">
       {location !== "templates" && location !== "templates-parents" && location !== "templates-tags" ? <label className="label has-text-left">{location === "support-form-doc" ? "Types" : "Roles"}</label> : null}
       <div className="columns">
         <div className="column is-four-fifth">
           {(!roles || !roles[0]) ? <>
-            <input type="text" placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default roles" : ""} className="input" value={lang === "en" ? roleEnValue : roleFrValue} onChange={handleRoleChange}/>
+            <input type="text" placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default roles" : ""} className="input" value={i18n.language === "en" ? roleEnValue : roleFrValue} onChange={handleRoleChange}/>
           </> : <div className="select is-fullwidth is-multiple">
             <select value={currentRole} onChange={changeCurrentRole} name={"roles" + location + scope} id={"roles" + location + scope}>
                 {pending !== "" ? <>
                   <option value={pending}>{pending} ({t('draft')})</option>
                 </> : null}
                 {roles.map((t) => {
+                  console.log(t.scope)
                   if (t.scope === scope) {
                     return <Fragment key={t.slug}>
                     <option value={t.slug}>{getContent(t.title, lang)}</option>
@@ -214,11 +208,11 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
       </div>
       {roleForm ? <div className="field">
         <label className="label has-text-left">{location === "support-form-doc" ? "Type description" : location !== "templates-tags" ? "Role description" : "Tag description"}</label>
-        <textarea className="textarea" onChange={handleRoleDescChange} value={lang === "en" ? roleDescEn : roleDescFr}/>
+        <textarea className="textarea" onChange={handleRoleDescChange} value={i18n.language === "en" ? roleDescEn : roleDescFr}/>
       </div> : null}
       {selectedRoles ? selectedRoles.map((role) => {
         return <Fragment key={role.slug}>
-          <span className="tag is-info mb-1 is-medium mr-1">{getContent(role.title, lang)}        <i className="has-text-light ml-3 pointer" onClick={(e) => {
+          <span className="tag is-info mb-1 is-medium mr-1">{getContent(role.title, i18n.language)}        <i className="has-text-light ml-3 pointer" onClick={(e) => {
                 handleDeleteRole(e, role)
               }}><FontAwesomeIcon icon={faCircleXmark} /></i>  </span>
         </Fragment>

@@ -217,8 +217,9 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
 
 
   const handleDocSubmit = async (e) => {
-    setLoading(true)
     e.preventDefault()
+
+    setLoading(true)
     const reqData = {
       doc: {
         slug: slugValue,
@@ -235,17 +236,18 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
         thumb: thumbValue,
         volume: volumeValue,
         number: numberValue,
-        template: template,
+        template: templateModel,
       },
       types: selectedTypes,
       tags: selectedTags,
       supports: pendingSupports,
-      parents: [...selectedProds, ...selectedOrg, ...selectedPeople, ...selectedProjects, selectedDoc],
+      parents: [...selectedProds, ...selectedOrg, ...selectedPeople, ...selectedProjects, ...selectedDoc],
       brotherhood: selectedBrotherHood
     }
     if (!dataUpdate) {
      await createDoc(reqData)
     } else {
+      console.log("reqData: ", reqData.types, reqData.tags)
      await updateDoc(reqData, dataUpdate._id)
     }
 
@@ -269,6 +271,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
     } else if (responseUpdateDoc && !responseUpdateDoc.success) {
       setAlert({ type: "error", message: { en: "An error occured while updating document.", fr: "Une erreure est survenue lors de la mise à jour du document"}})
             setLoading(false)
+            console.log("res: ",responseUpdateDoc)
             setDataUpdate(false)
     }
   }, [responseUpdateDoc])
@@ -289,7 +292,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
 
 
   const handleSelectTemplate = (e) => {
-    e.preventDefault()
+    if (!e.auto) e.preventDefault()
     selectTemplate(e.target.value)
     docTemplates.map((template) => {
       if (template.schema_name === e.target.value) {
@@ -330,7 +333,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
 
   useEffect(() => {
     docTemplates.map((template) => {
-      if (client.user.defaultTemplate && client.user.defaultTemplate === template._id && selectedTemplate === "") {
+      if (client.user.defaultTemplate && client.user.defaultTemplate === template._id && selectedTemplate === "" && !dataUpdate) {
         selectTemplate(template.schema_name)
         setTemplateModel(template)
       }
@@ -339,7 +342,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
 
   useEffect(() => {
     if (!subTemplate || !templateModel.schema_childs.includes(subTemplate)) {
-
+      console.log('ici')
       setFullTemplate(templateModel)
     } else {
       console.log('la')
@@ -380,6 +383,8 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
    if (dataUpdate) {
       setSlugValue(dataUpdate.slug)
       setTitleValue(dataUpdate.title)
+      setTemplateModel(dataUpdate.template)
+      selectTemplate(dataUpdate.template.schema_name)
       if (dataUpdate.description && dataUpdate.description[0]) {
        setDescFrValue(getContent(dataUpdate.description, "fr"))
        setDescEnValue(getContent(dataUpdate.description, "en"))
@@ -430,7 +435,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
     if (confirmDelete) {
       deleteDoc(dataUpdate._id)
       setConfirmDelete(false)
-      setAlert({ type: "success", message: { en: "Document has been successfully deleted.", fr: "Le document a été créé avec succès"}})
+      setAlert({ type: "success", message: { en: "Document has been successfully deleted.", fr: "Le document a été supprimé avec succès"}})
       navigate('/')
 
     } else {
@@ -480,7 +485,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
               </div>
                
 
-          {template && template.schema_childs && template.schema_childs[0] ? <>
+          {template && template.schema_childs && template.schema_childs[0] && !dataUpdate ? <>
           <div className="column is-one-third">
               <div className="field">
             <label className="label">{t('template')}</label>
@@ -508,7 +513,11 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
         <h3 className="title is-4">{t('identity')}</h3>
       </button>
     </div>
-    
+    <div className="is-flex is-justify-content-end">{dataUpdate ?
+      <button className="button is-danger is-small mt-3" onClick={handleDeleteDoc}>
+        {confirmDelete ? t('confirm') : t('delete')}
+      </button>
+   : null}</div>
     {showIdentityForm ? <>
       <div className="tabs">
         <ul>
@@ -642,11 +651,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
     </div>
     {showParentForm ? <ParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} selectedProds={selectedProds} selectProd={selectProd} selectedPeople={selectedPeople} selectedDoc={selectedDoc} selectDoc={selectDoc} selectPerson={selectPerson} selectedProj={selectedProjects} selectProj={selectProject} template={template} client={client} setAlert={setAlert}/> : null}
    <div className="container">
-   <div className="is-flex is-justify-content-end">{dataUpdate ?
-      <button className="button is-danger is-small mt-3" onClick={handleDeleteDoc}>
-        {confirmDelete ? t('confirm') : t('delete')}
-      </button>
-   : null}</div>
+   
     <footer className=" is-flex is-justify-content-center">
     
       <div className="is-fullwidth is-flex is-justify-content-center">

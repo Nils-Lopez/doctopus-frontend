@@ -9,6 +9,7 @@ import OrganisationParentForm from "../../atoms/forms/docs/OrganisationParentFor
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from "react-i18next";
+import {useNavigate} from "react-router-dom"
 
 const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) => {
   
@@ -77,17 +78,13 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) =
    const handleFirstNameChange = (e) => {
     e.preventDefault()
      setFirstNameValue(e.target.value)
-     if (nameValue !== firstNameValue + " " + lastNameValue) {
-       setNameValue(firstNameValue + " " + lastNameValue)
-     }
+     
   }
   
   const handleLastNameChange = (e) => {
     e.preventDefault()
     setLastNameValue(e.target.value)
-    if (nameValue !== firstNameValue + " " + lastNameValue) {
-       setNameValue(firstNameValue + " " + lastNameValue)
-     }
+    
   }
 
   const handleBirthDateChange = (e) => {
@@ -182,7 +179,7 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) =
         birthDate: birthDateValue,
         deathDate: deathDateValue,
         city: cityValue,
-        country: (dataUpdate && dataUpdate.country&& dataUpdate.country.labels && dataUpdate.country.labels[0] && countryValue !== dataUpdate.country.labels[0].content) || (!dataUpdate.country || dataUpdate.country && !dataUpdate.country.labels || dataUpdate.country && dataUpdate.country.labels && !dataUpdate.country.labels[0]) ? {labels: [{ lang: "en", content: countryValue }], code: countryValue.charAt(2)} : dataUpdate.country,
+        country: (dataUpdate && dataUpdate.country&& dataUpdate.country.labels && dataUpdate.country.labels[0] && countryValue !== dataUpdate.country.labels[0].content) || (!dataUpdate || dataUpdate && !dataUpdate.country || dataUpdate.country && !dataUpdate.country.labels || dataUpdate.country && dataUpdate.country.labels && !dataUpdate.country.labels[0]) ? {labels: [{ lang: "en", content: countryValue }], code: countryValue.charAt(2)} : dataUpdate.country,
         firstName: firstNameValue,
         lastName: lastNameValue,
         website: urlValue,
@@ -204,10 +201,12 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) =
 
   useEffect(() => {
     if (responseCreatePerson && responseCreatePerson.success) {
-      setAlert({ type: "success", message: { en: "Person has been successfully created.", fr: "La personne a été créé avec succès" } })
       setLoading(false)      
       if (setCreated) {
         setCreated(responseCreatePerson.data)
+      } else {
+              setAlert({ type: "success", message: { en: "Person has been successfully created.", fr: "La personne a été créé avec succès" } })
+
       }
     } else if (responseCreatePerson && !responseCreatePerson.success) {
       setAlert({ type: "error", message: { en: "An error occured while creating a new person.", fr: "Un problème est survenu lors de la création d'une nouvelle personne"}})
@@ -226,6 +225,22 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) =
     }
   }, [responseUpdatePerson])
   
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  let navigate = useNavigate()
+
+  const handleDeletePerson = (e) => {
+      e.preventDefault()
+      if (confirmDelete) {
+        deletePerson(dataUpdate._id)
+        setConfirmDelete(false)
+        setAlert({ type: "success", message: { en: "Document has been successfully deleted.", fr: "Le document a été supprimé avec succès"}})
+        navigate('/')
+  
+      } else {
+        setConfirmDelete(true)
+      }
+  
+    }
   return loading ? <>
   <div className="loader">
   <div className="inner one"></div>
@@ -240,6 +255,11 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) =
           <li onClick={() => setIdLang("en")} className={idLang === "en" ? "is-active" : ""}><a href="#" onClick={(e) => e.preventDefault()}>English</a></li>
         </ul>
      </div>
+     <div className="is-flex is-justify-content-end">{dataUpdate ?
+      <button className="button is-danger is-small mt-3" onClick={handleDeletePerson}>
+        {confirmDelete ? t('confirm') : t('delete')}
+      </button>
+   : null}</div>
     <div className="field">
       <label className="label has-text-left">
         {t('name')}

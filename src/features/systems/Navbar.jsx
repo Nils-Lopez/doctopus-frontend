@@ -6,7 +6,7 @@ import {Link} from "react-router-dom"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGear } from '@fortawesome/free-solid-svg-icons'
-import logoOrange from "../../logo-orange.png"
+import logoOrange from "../../logo-cyan.png"
 import { useTranslation } from "react-i18next";
 
 const Navbar = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAlert}) => {

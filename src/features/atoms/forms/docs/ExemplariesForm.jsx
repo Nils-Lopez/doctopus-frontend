@@ -35,7 +35,7 @@ const ExemplariesForm= ({setPendingExemplaries, pendingExemplaries, template}) =
     const newEx = {
       location: locationValue,
       position: positionValue,
-      rank: rankValue,
+      cote: rankValue,
       quality: qualityValue
     }
     setPendingExemplaries([...pendingExemplaries, newEx])

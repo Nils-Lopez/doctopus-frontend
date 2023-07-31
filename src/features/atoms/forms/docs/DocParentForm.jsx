@@ -58,10 +58,12 @@ const DocParentForm = ({selectedDoc, selectDoc, location, template, lang, hideRo
   
   const isDocExisting = (docName) =>  {
     let retrievedDoc = undefined
+    console.log('docs: ', docs)
     docs.map((doc) => {
-      if (doc.title=== currentDoc) {
+      if (doc.title === currentDoc) {
+        console.log('ici: ', doc)
         retrievedDoc = doc
-      } 
+      }   
     })
     if (retrievedDoc) {
       return retrievedDoc
@@ -77,7 +79,7 @@ const DocParentForm = ({selectedDoc, selectDoc, location, template, lang, hideRo
         unique = false
       }
     })
-    
+    console.log('ici:', unique, docDoc, currentDoc)
     if (unique) {
       if (docDoc) {
       selectDoc([...selectedDoc, {doc: docDoc, roles: selectedRoles}])
@@ -104,6 +106,8 @@ const searchDocValue = (e) => {
     }
   }
 
+  const [noDocFound, setNoDocFound] = useState(false)
+
   useEffect(() => {
     if (responseSearchDocs && responseSearchDocs.success && responseSearchDocs.data[0] && docsLoading) {
       setDocsLoading(false)
@@ -111,7 +115,8 @@ const searchDocValue = (e) => {
       setCurrentDoc(responseSearchDocs.data[0].title)
     } else if (responseSearchDocs && docsLoading) {
       setDocsLoading(false)
-      setAlert({type: "error", message: { en: t('cannot-find-doc'), fr:  t('cannot-find-doc')}})
+      setNoDocFound(true)
+      // setAlert({type: "error", message: { en: t('cannot-find-doc'), fr:  t('cannot-find-doc')}})
     }
   }, [responseSearchDocs])
 
@@ -157,14 +162,19 @@ const searchDocValue = (e) => {
                 
             </select>
           </div>}
+          {noDocFound ? <p className="subtitle is-6 has-text-danger has-text-left mt-0">{t('cannot-find-doc')}</p> : null}
+
         </div>
         <div className="column is-one-fifth">
           {!docs || !docs[0] ? <>
             {docValue !== "" && !docsLoading ? <button className="button is-primary" onClick={searchDocValue}>{t('search')}</button> : <button className="button is-primary is-disabled" disabled>{t('search')}</button>}
           </> : <>
-            {(docValue !== "" && selectedRoles[0]) || (docValue !== "" && !isDocExisting(docValue)) || (docValue !== "" && hideRoles) ? <button className="button is-primary " onClick={handleDocBtn}>
+            {(docValue !== "" && selectedRoles[0]) || (docValue !== "" && isDocExisting(docValue)) || (docValue !== "" && hideRoles) ? <button className="button is-primary " onClick={handleDocBtn}>
             {isDocExisting(docValue) ? t('add') : t('create')}
-          </button> : <button className="button is-primary is-disabled" disabled>{t('add')}</button>}
+          </button> : <button className="button is-primary is-disabled" onClick={(e) => {
+            e.preventDefault()
+            console.log(isDocExisting(docValue))
+          }}>{t('add')}</button>}
             <span className="tag is-danger is-medium ml-2 mt-1 button" onClick={() => {
                 setDocs([]);
               }}><FontAwesomeIcon icon={faTrash}/></span>
@@ -172,7 +182,7 @@ const searchDocValue = (e) => {
           
         </div>
       </div>
-      {docValue !== "" && (template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="parents" location="doc-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
+      {docValue !== "" && (template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="docs" location="doc-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
       <datalist id="doc">
         {docs && docs[0] ? docs.map((doc, i) => {
           if (i < 7) {

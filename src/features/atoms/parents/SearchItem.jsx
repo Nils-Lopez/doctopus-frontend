@@ -66,7 +66,9 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
         </div>
     } else if (item.project && parent !== "project") {
         return <div className="column is-one-quarter" >
-            <div className={"box results-col "+ colClasses} onClick={() => handleSearchParent(item.project)}>
+            <div className={"box results-col "+ colClasses} onClick={() => {
+                if (!handleDelete) handleSearchParent(item.project)
+            }}>
             <div className="is-flex is-justify-content-end mb-0 mt-0">
                     {!relTypes ? <>
                         {item.roles && item.roles[0] ? <>
@@ -89,16 +91,22 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
             </div>
         </div>
     } else if (item.person && parent !== "person") {
-        if (item.person.productions)
+        console.log("'ici =: ", relTypes)
         return <div className="column is-one-quarter">
-            <div className={"box results-col " +colClasses} onClick={() => handleSearchParent(item.person)}>
+            <div className={"box results-col " +colClasses} onClick={() => {
+                if (!handleDelete) handleSearchParent(item.person)
+            }}>
             <div className="is-flex is-justify-content-end mt-0 mb-0 tag-bottom">
-            {item.person.roles && item.person.roles[0] ? <>
+            {!relTypes ? <>
+                {item.roles && item.roles[0] ? <>
                         <span className="tag is-white is-medium pb-5 pr-0 has-text-info">
-                        {getContent(item.person.roles[0].title, i18n.language)}
+                        {getContent(item.roles[0].title, i18n.language)}
                     </span>
                     </> :<span className="tag is-white is-medium pb-5 pr-0 has-text-info">
                         {t('person')} 
+                    </span>}
+            </> : <span className="tag is-white is-medium pb-5 pr-0 has-text-info">
+            {getContent(relTypes.title, i18n.language)}
                     </span>}
                     {handleDelete ? <i className="has-text-danger ml-3 pointer" onClick={(e) => {
                 handleDelete(e, item)
@@ -117,7 +125,9 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
         </div>
     } else if (item.entity && parent !== "entity") {
         return <div className="column is-one-quarter">
-            <div className={"box results-col "+colClasses} onClick={() => handleSearchParent(item.entity)}>
+            <div className={"box results-col "+colClasses} onClick={() => {
+                if (!handleDelete) handleSearchParent(item.entity)
+            }}>
             <div className="is-flex is-justify-content-end mt-0 mb-0">
             {item.roles && item.roles[0] ? <>
                         <span className="tag is-white is-medium pb-5 pr-0 has-text-info">

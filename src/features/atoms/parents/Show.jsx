@@ -48,6 +48,8 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
         parents
     } = parent
 
+    console.log('childs: ', childs)
+
     const [productionsScapin, setProductions] = useState(false)
     const [prodLoading, setProdLoading] = useState(false)
 
@@ -302,7 +304,6 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
         <div className="columns is-multiline is-flex is-justify-content-center">
             {childs && childs[0] ? childs.map((child, i) => {
             if ((childsPage === 1 && i < 15) || (i > (((childsPage - 1)*15)-1)) && (i < (((childsPage)*15)))) {
-                console.log('eh jsuis la' , childs.length)
                 let parentType = undefined
                 if (child.person  && parent._id === child.person._id) parentType = "person"
                 if (child.project && parent._id === child.project._id) parentType = "project"
@@ -336,7 +337,7 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
             }) : null}
          </div>                
 
-         <div className="columns is-multiline is-flex is-justify-content-center">
+         {/* <div className="columns is-multiline is-flex is-justify-content-center">
             {dataList && dataList[0] ? dataList.map((doc) => {
              
                     return <Fragment key={JSON.stringify(doc)}>
@@ -344,7 +345,7 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
                     </Fragment>   
                 
             }) : null}
-         </div>
+         </div> */}
          {docs && docs.length > 20 ? <div className="is-flex is-justify-content-end ">
                 <nav className="pagination" role="navigation" aria-label="pagination">
               

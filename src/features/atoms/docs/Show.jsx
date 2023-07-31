@@ -22,8 +22,6 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
     childs
       } = doc
 
-      console.log(parents)
-
       const [addingWatchlist, setAddingWatchlist] = useState(false)
 	const {updateUser, responseUpdateUser} = useUsers()
     const [displayFile, setDisplayFile] = useState(false)
@@ -66,7 +64,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
         setAddingWatchlist(false)
        }
     }, [responseUpdateUser])
-
+    console.log('p: ', parents)
     const includeParentType = (type, parents) => {
         let included = false
         parents.map((parent) => {
@@ -127,6 +125,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                 <div>
                 {types && types[0] ? <>
             {types.map((type) => {
+                console.log("types : ", types)
                 return <Fragment key={JSON.stringify(type)}>
                     <span className="tag is-medium is-primary mr-1 ml-1 mb-0">
                         {getContent(type.title,i18n.language)}
@@ -224,6 +223,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                         <span className="tag is-light is-medium  mb-2    mr-1">{supp.accessibility}</span>
                     </div> : null}
                     {supp.exemplaries && supp.exemplaries[0] ? supp.exemplaries.map((ex) => {
+                            console.log('ex: ', ex)
                         return <Fragment key={JSON.stringify(ex)}>
                           
                             {ex.position && ex.position !== "" ? <div className="is-flex is-justify-content-start">

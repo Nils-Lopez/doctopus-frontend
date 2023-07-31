@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import {useNavigate} from "react-router-dom"
 
 const OrganisationForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) => {
   
@@ -150,16 +151,23 @@ const OrganisationForm = ({client, setAlert, setCreated, dataUpdate, setDataUpda
       actors: selectedActors,
       projects: selectedProj
     } 
-    await createEntity(reqData)
+    if (dataUpdate) {
+      console.log(dataUpdate)
+      await updateEntity(reqData, dataUpdate._id)
+    } else {
+      await createEntity(reqData)
+    }
   }
 
   useEffect(() => {
     if (responseCreateEntity && responseCreateEntity.success) {
-      setAlert({ type: "success", message: { en: "Organisation has been successfully created.", fr: "L'organisation a été créé avec succès" } })
       setLoading(false)
       if (setCreated) {
         
         setCreated(responseCreateEntity.data)
+      } else {
+        setAlert({ type: "success", message: { en: "Organisation has been successfully created.", fr: "L'organisation a été créé avec succès" } })
+
       }
     } else if (responseCreateEntity && !responseCreateEntity.success) {
       setAlert({ type: "error", message: { en: "An error occured while creating organisation.", fr: "Une erreure est survenue lors de la création de l'organisation"}})
@@ -180,7 +188,22 @@ const OrganisationForm = ({client, setAlert, setCreated, dataUpdate, setDataUpda
   
   const { t, i18n } = useTranslation();
 
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  let navigate = useNavigate()
 
+  const handleDeleteOrg = (e) => {
+      e.preventDefault()
+      if (confirmDelete) {
+        deleteEntity(dataUpdate._id)
+        setConfirmDelete(false)
+        setAlert({ type: "success", message: { en: "Document has been successfully deleted.", fr: "Le document a été supprimé avec succès"}})
+        navigate('/')
+  
+      } else {
+        setConfirmDelete(true)
+      }
+  
+    }
   return loading ? <div className="loader">
   <div className="inner one"></div>
   <div className="inner two"></div>
@@ -192,6 +215,11 @@ const OrganisationForm = ({client, setAlert, setCreated, dataUpdate, setDataUpda
           <li onClick={() => setIdLang("en")} className={idLang === "en" ? "is-active" : ""}><a href="#" onClick={(e) => e.preventDefault()}>English</a></li>
         </ul>
       </div>
+      <div className="is-flex is-justify-content-end">{dataUpdate ?
+      <button className="button is-danger is-small mt-3" onClick={handleDeleteOrg}>
+        {confirmDelete ? t('confirm') : t('delete')}
+      </button>
+   : null}</div>
     <div className="field">
       <label className="label has-text-left">
         {t('name')}

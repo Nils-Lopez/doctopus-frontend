@@ -68,6 +68,7 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
     e.preventDefault()
     const orgDoc = isOrgExisting(organisationValue)
     let unique = true
+
     selectedOrg.map((org) => {
       if (org.entity.name === organisationValue) {
         unique = false
@@ -79,6 +80,7 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
       selectRole([])
       setOrganisationValue("")
     } else {
+      console.log('orgDoc :')
       setOrgForm(true)
       setIsActive(true)
     }

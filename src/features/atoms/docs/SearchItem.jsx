@@ -25,7 +25,7 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
                 if (handleSearchDoc !== "false") {
                     console.log('ici : ', item.doc)
                     handleSearchDoc(item.doc)
-                } else {
+                } else if (setDisplay !== undefined) {
                     setDisplay(item.doc)
                 }
             }}>
@@ -120,19 +120,21 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
          
                     <div className="is-flex is-justify-content-space-around">
                         {item.doc.tags.map((tag, i) => {
-                            let title = getContent(tag.title, i18n.language)
+                            if (tag) {
+                                let title = getContent(tag.title, i18n.language)
                             if (i < 2 && title !== "Error" && title !== "") {
                                 return <Fragment key={JSON.stringify(tag)}>
                                 <span className="tag is-info is-small mb-2 " >{title && title.length >= 10 ? title.slice(0, 10) + ".." : title}</span>
                                
                             </Fragment>
                             } else if (i < 2) {
-                                let title = getContent(item.doc.tags[i + 1].title, i18n.language)
+                                let title = item.doc.tags[i + 1] ? getContent(item.doc.tags[i + 1].title, i18n.language) : ""
 
                                 return <Fragment key={JSON.stringify(tag)}>
                                 <span className="tag is-info is-small mb-2 " >{title && title.length >= 10 ? title.slice(0, 10) + ".." : title}</span>
                                
                             </Fragment>
+                            }
                             }
                         })}
                     </div>

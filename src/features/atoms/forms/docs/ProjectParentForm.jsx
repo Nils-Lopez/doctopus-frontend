@@ -105,6 +105,7 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
       setProjectValue(created.title)
       setProjForm(false)
     }
+    console.log('created : ', created)
   }, [created])
 
   const {
@@ -200,7 +201,7 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
       </div>
       {projectValue !== "" && (template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="parents" location="proj-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
       
-      {selectedProj.map((proj) => {
+      {selectedProj?.map((proj) => {
         if (proj && proj.project && proj.project.title) {
           return <Fragment key={proj.project.slug}>
                                   <ParentSearchItem item={proj} handleDelete={handleDeleteProj}/>
@@ -217,7 +218,7 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
                     <button onClick={() => setProjForm(false)} className="delete is-large ml-4" aria-label="close"></button>
                 </div>
                 <div className="modal-card-body has-background-white-ter">
-                  <ProjectForm client={client} setAlert={setAlert} />
+                  <ProjectForm client={client} setAlert={setAlert} setCreated={setCreated}/>
                 </div>
        
             </div>

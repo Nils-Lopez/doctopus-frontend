@@ -58,10 +58,11 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
   const isPersonExisting = (personName) =>  {
     let retrievedPerson = undefined
     people.map((person) => {
-      if (person.name === currentPerson) {
+      if (person.name === personValue) {
         retrievedPerson = person
       } 
     })
+    console.log(people, currentPerson)
     if (retrievedPerson) {
       return retrievedPerson
     } else return false

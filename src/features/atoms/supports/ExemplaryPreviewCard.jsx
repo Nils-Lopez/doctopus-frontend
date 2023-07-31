@@ -15,7 +15,7 @@ const ExemplaryPreviewCard = ({exemplary, editExemplary, deleteExemplary}) => {
           </div>
           <div className="column">
             <h4 className="title is-6">
-              {exemplary.rank}
+              {exemplary.cote}
             </h4>
           </div>
         </div>
