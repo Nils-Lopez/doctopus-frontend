@@ -159,12 +159,15 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
   }
 
   return <>
-    <div className="field">
-      {location !== "templates-parents" ? <label className="label title is-5">{t('organization')}</label> : null}
+
+        { location !== "activity-form" && (template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="parents" location="org-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
+
+    {selectedRoles.length !== 0 || (template && !template.parent_role || !template) ? <>
+      <div className="field">
       <div className="columns">
         <div className="column is-three-fifth">
           {(!orgs || !orgs[0]) ? <>
-          <input type="text" placeholder={location === "templates-parents" ? t('default-organizations') : ""} className="input" value={organisationValue} onChange={handleOrgChange}/>
+          <input type="text" placeholder={location === "templates-parents" ? t('default-organizations') : t('organization')} className="input" value={organisationValue} onChange={handleOrgChange}/>
           </> : <div className="select is-fullwidth is-multiple">
             <select value={currentOrg} onChange={changeCurrentOrg} name={"entiieis"} id={"entiiies"}>
                 {pending !== "" && isNotIncluded(pending, orgs) ? <>
@@ -194,7 +197,6 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
           </>}
         </div>
       </div>
-      {organisationValue !== "" && location !== "activity-form" && (template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="parents" location="org-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
       <div className="columns is-multiline">
       {selectedOrg.map((org) => {
         if (org.entity) {
@@ -206,6 +208,7 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
       })}
       </div>
     </div>
+    </> : null}
     {orgForm ? <div className={"modal " + (isActive ? "is-active" : "")}>
       <div className="modal-background"></div>
         <div className="modal-card">
