@@ -1,7 +1,7 @@
 import React, {useState, useEffect, Fragment} from "react"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faCircleXmark, faCirclePlus, faArrowRotateLeft } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faCircleXmark, faCirclePlus, faArrowRotateLeft, faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons'
 
 import {useRoles} from '../../../utils/hooks/Roles'
 import {useTranslation} from "react-i18next"
@@ -53,8 +53,7 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
     let retrievedRole = undefined
     roles.map((role) => {
       if (role.slug === currentRole) {
-                  retrievedRole = role
-
+        retrievedRole = role
       }
     })
     if (retrievedRole) {
@@ -128,7 +127,7 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
   } = useRoles()
 
   const searchRoleValue = (e) => {
-    e.preventDefault()
+    if (e) e.preventDefault()
     if (roleEnValue !== "" && roleEnValue !== "") {
       setRolesLoading(true)
       searchRoles(roleEnValue + " " + roleFrValue)
@@ -189,14 +188,20 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
       }) : null}
       {!displayRole ? <i className="has-text-info subtitle is-5 ml-2 mt-2  pointer" onClick={(e) => {
                setDisplayRole(true)
-              }}><FontAwesomeIcon icon={faCirclePlus} /></i>  : selectedRoles[0] ? <i className="has-text-info subtitle is-5 ml-2 mt-2 pointer" onClick={(e) => {
+              }}><FontAwesomeIcon icon={faCirclePlus} /></i>  : selectedRoles && selectedRoles[0] ? <i className="has-text-info subtitle is-5 ml-2 mt-2 pointer" onClick={(e) => {
                 setDisplayRole(false)
                }}><FontAwesomeIcon icon={faArrowRotateLeft} /></i> : null}
-        {displayRole && selectedRoles[0] ? <>
+        {displayRole &&  selectedRoles && selectedRoles[0] ? <>
           <div className="columns ml-1 pb-1">
         <div className="column is-four-fifth">
           {(!roles || !roles[0]) ? <>
-            <input type="text" placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default roles" : "Roles"} className="input" value={i18n.language === "en" ? roleEnValue : roleFrValue} onChange={handleRoleChange}/>
+          <div className="control has-icons-right">
+          <input type="text" placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default roles" : "Roles"} className="input" value={i18n.language === "en" ? roleEnValue : roleFrValue} onChange={handleRoleChange}/>
+
+          <span class="icon is-small is-right">
+           <i className="has-text-info  pointer" ><FontAwesomeIcon icon={faMagnifyingGlass} /></i>
+    </span>
+          </div>
           </> : <div className="select is-fullwidth is-multiple">
             <select value={currentRole} onChange={changeCurrentRole} name={"roles" + location + scope} id={"roles" + location + scope}>
                 {pending !== "" ? <>
@@ -235,12 +240,17 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
       </div> : null}
         </> : null}
     </div>
-      {displayRole && !selectedRoles[0] ? <>
+      {displayRole && (!selectedRoles || !selectedRoles[0]) ? <>
       <div className="columns mt-1">
-        <div className="column is-four-fifth">
+        <div className="column is-two-fifth">
           {(!roles || !roles[0]) ? <>
-            <input type="text" placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default roles" : "Roles"} className="input" value={i18n.language === "en" ? roleEnValue : roleFrValue} onChange={handleRoleChange}/>
-          </> : <div className="select is-fullwidth is-multiple">
+            <div className="control has-icons-right">
+          <input type="text" placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default roles" : "Roles"} className="input" value={i18n.language === "en" ? roleEnValue : roleFrValue} onChange={handleRoleChange}/>
+
+          <span class="icon is-small is-right pointer">
+           <i className="has-text-info  pointer" ><FontAwesomeIcon icon={faMagnifyingGlass} /></i>
+    </span>
+    </div>          </> : <div className="select is-fullwidth is-multiple">
             <select value={currentRole} onChange={changeCurrentRole} name={"roles" + location + scope} id={"roles" + location + scope}>
                 {pending !== "" ? <>
                   <option value={pending}>{pending} ({t('draft')})</option>
@@ -257,8 +267,8 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
             </select>
           </div>}
         </div>
-        <div className="column is-one-fifth">
-          {(!roles || !roles[0]) && !roleForm ? <>
+        <div className="column ">
+          {/* {(!roles || !roles[0]) && !roleForm ? <>
             {(roleEnValue !== "" || roleFrValue !== "") && !rolesLoading ? <button className="button is-primary" onClick={searchRoleValue}>{t('search')}</button> : <button className="button is-primary is-disabled" onClick={searchRoleValue} disabled>{t('search')}</button>}
           </> : <>
             {!roleForm ? <>{roleEnValue !== "" || roleFrValue !== "" ? <button className="button is-primary " onClick={handleRoleBtn}>
@@ -269,7 +279,7 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
                 setRoles([]);
                 setRoleForm(false)
               }}><FontAwesomeIcon icon={faCircleXmark} /></i>
-          </>}
+          </>} */}
         </div>
       </div>
       {roleForm ? <div className="field">
