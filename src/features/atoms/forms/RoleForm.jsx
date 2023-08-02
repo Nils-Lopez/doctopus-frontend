@@ -1,7 +1,7 @@
 import React, {useState, useEffect, Fragment} from "react"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faCircleXmark, faCirclePlus, faArrowRotateLeft, faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faCircleXmark, faCirclePlus, faArrowRotateLeft, faMagnifyingGlass, faCircleCheck} from '@fortawesome/free-solid-svg-icons'
 
 import {useRoles} from '../../../utils/hooks/Roles'
 import {useTranslation} from "react-i18next"
@@ -43,10 +43,15 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
     if (i18n.language === "en") {
       setRoleEnValue(e.target.value)
       setRoleSlug(roleEnValue.replaceAll(" ", "-").toLowerCase())
+  
     } else {
       setRoleFrValue(e.target.value)
       setRoleSlug(roleFrValue.replaceAll(" ", "-").toLowerCase())
+     
     }
+    if (e.target.value.length >= 3) {
+      searchRoleValue(e)
+    } 
   }
   
   const isRoleExisting = () =>  {
@@ -61,8 +66,10 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
     } else return false
   }
   
-  const handleRoleBtn = (e) => {
+  const handleRoleBtn = (e, t) => {
     e.preventDefault()
+    
+    
     const roleDoc = isRoleExisting()
     let unique = true
     selectedRoles.map((role) => {
@@ -144,10 +151,11 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
     if (responseSearchRoles && responseSearchRoles.success && responseSearchRoles.data[0] && rolesLoading) {
       setRolesLoading(false)
       setRoles(responseSearchRoles.data)
-      
+
+
     } else if (responseSearchRoles && rolesLoading) {
       setRolesLoading(false)
-      setRoleForm(true)
+      setRoles([])
     }
   }, [responseSearchRoles])
 
@@ -198,41 +206,40 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
           <div className="control has-icons-right">
           <input type="text" placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default roles" : "Roles"} className="input" value={i18n.language === "en" ? roleEnValue : roleFrValue} onChange={handleRoleChange}/>
 
-          <span class="icon is-small is-right">
-           <i className="has-text-info  pointer" ><FontAwesomeIcon icon={faMagnifyingGlass} /></i>
+          <span class="icon is-medium is-right">
+           <i className="has-text-info   pointer" ><FontAwesomeIcon icon={faMagnifyingGlass} /></i>
     </span>
           </div>
-          </> : <div className="select is-fullwidth is-multiple">
-            <select value={currentRole} onChange={changeCurrentRole} name={"roles" + location + scope} id={"roles" + location + scope}>
-                {pending !== "" ? <>
-                  <option value={pending}>{pending} ({t('draft')})</option>
-                </> : null}
+          </> : <div className=" is-half is-multiple">
+            
+            <div className="control has-icons-right">
+          <input type="text"  placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default roles" : "Roles"} className="input" value={i18n.language === "en" ? roleEnValue : roleFrValue} onChange={handleRoleChange}/>
+
+          <span class="icon is-small is-right pointer">
+           <i className="has-text-info  pointer" ><FontAwesomeIcon icon={faMagnifyingGlass} /></i>
+    </span>
+    
+ 
                 {roles.map((t) => {
                   console.log(t.scope)
                   if (t.scope === scope) {
                     return <Fragment key={t.slug}>
-                    <option value={t.slug}>{getContent(t.title, lang)}</option>
+                    <span className="tag is-info mt-1 is-small mr-1 opacity-50" onClick={(e) => {
+                        selectRole([...selectedRoles, t])
+                        setRoles([])
+                        setRoleForm(false)
+                        setRoleFrValue("")
+                        setRoleEnValue("") 
+                        setDisplayRole(false)
+                        }}>{getContent(t.title, i18n.language)}        <i className="has-text-light ml-3 pointer"><FontAwesomeIcon icon={faCircleCheck} /></i>  </span>
                   </Fragment>
                   }
                 })}
-                
-            </select>
+    </div>  
+     
           </div>}
         </div>
-        <div className="column is-one-fifth">
-          {(!roles || !roles[0]) && !roleForm ? <>
-            {(roleEnValue !== "" || roleFrValue !== "") && !rolesLoading ? <button className="button is-primary" onClick={searchRoleValue}>{t('search')}</button> : <button className="button is-primary is-disabled" onClick={searchRoleValue} disabled>{t('search')}</button>}
-          </> : <>
-            {!roleForm ? <>{roleEnValue !== "" || roleFrValue !== "" ? <button className="button is-primary " onClick={handleRoleBtn}>
-            {isRoleExisting() ? t('add') : t('create')}
-              </button> : <button className="button is-primary is-disabled" disabled>{t('add')}</button>}</> : <button className="button is-primary" onClick={handleCreateRole}>{t('confirm')}</button>}
-
-              <i className="has-text-danger ml-3 pointer" onClick={(e) => {
-                setRoles([]);
-                setRoleForm(false)
-              }}><FontAwesomeIcon icon={faCircleXmark} /></i>
-          </>}
-        </div>
+        
       </div>
       {roleForm ? <div className="field">
         <label className="label has-text-left">{location === "support-form-doc" ? "Type description" : location !== "templates-tags" ? "Role description" : "Tag description"}</label>
@@ -244,43 +251,45 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
       <div className="columns mt-1">
         <div className="column is-two-fifth">
           {(!roles || !roles[0]) ? <>
-            <div className="control has-icons-right">
+            <div className="control has-icons-right is-half">
           <input type="text" placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default roles" : "Roles"} className="input" value={i18n.language === "en" ? roleEnValue : roleFrValue} onChange={handleRoleChange}/>
 
           <span class="icon is-small is-right pointer">
            <i className="has-text-info  pointer" ><FontAwesomeIcon icon={faMagnifyingGlass} /></i>
     </span>
-    </div>          </> : <div className="select is-fullwidth is-multiple">
-            <select value={currentRole} onChange={changeCurrentRole} name={"roles" + location + scope} id={"roles" + location + scope}>
-                {pending !== "" ? <>
-                  <option value={pending}>{pending} ({t('draft')})</option>
-                </> : null}
+    </div>          </> : <div className="columns">
+            <div className="column is-half">
+
+            <div className="control has-icons-right">
+          <input type="text"  placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default roles" : "Roles"} className="input" value={i18n.language === "en" ? roleEnValue : roleFrValue} onChange={handleRoleChange}/>
+
+          <span class="icon is-small is-right pointer">
+           <i className="has-text-info  pointer" ><FontAwesomeIcon icon={faMagnifyingGlass} /></i>
+    </span>
+    
+ 
                 {roles.map((t) => {
                   console.log(t.scope)
                   if (t.scope === scope) {
                     return <Fragment key={t.slug}>
-                    <option value={t.slug}>{getContent(t.title, lang)}</option>
+                    <span className="tag is-info mt-1 is-small mr-1 opacity-50" onClick={(e) => {
+                        selectRole([...selectedRoles, t])
+                        setRoles([])
+                        setRoleForm(false)
+                        setRoleFrValue("")
+                        setRoleEnValue("") 
+                        setDisplayRole(false)
+
+                        }}>{getContent(t.title, i18n.language)}        <i className="has-text-light ml-3 pointer"><FontAwesomeIcon icon={faCircleCheck} /></i>  </span>
                   </Fragment>
                   }
                 })}
-                
-            </select>
-          </div>}
+    </div>  
+          </div>
+          </div>
+}
         </div>
-        <div className="column ">
-          {/* {(!roles || !roles[0]) && !roleForm ? <>
-            {(roleEnValue !== "" || roleFrValue !== "") && !rolesLoading ? <button className="button is-primary" onClick={searchRoleValue}>{t('search')}</button> : <button className="button is-primary is-disabled" onClick={searchRoleValue} disabled>{t('search')}</button>}
-          </> : <>
-            {!roleForm ? <>{roleEnValue !== "" || roleFrValue !== "" ? <button className="button is-primary " onClick={handleRoleBtn}>
-            {isRoleExisting() ? t('add') : t('create')}
-              </button> : <button className="button is-primary is-disabled" disabled>{t('add')}</button>}</> : <button className="button is-primary" onClick={handleCreateRole}>{t('confirm')}</button>}
-
-              <i className="has-text-danger ml-3 pointer" onClick={(e) => {
-                setRoles([]);
-                setRoleForm(false)
-              }}><FontAwesomeIcon icon={faCircleXmark} /></i>
-          </>} */}
-        </div>
+     
       </div>
       {roleForm ? <div className="field">
         <label className="label has-text-left">{location === "support-form-doc" ? "Type description" : location !== "templates-tags" ? "Role description" : "Tag description"}</label>

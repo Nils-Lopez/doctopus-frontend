@@ -19,6 +19,17 @@ body {
   padding-bottom: 70px;
 }
 
+.opacity-50 {
+  opacity: 80%;
+  filter: grayscale(0.3);
+}
+
+.opacity-50:hover {
+  opacity: 100%;
+  filter: grayscale(0);
+  cursor: pointer;
+}
+
 .content:has(> .landing) {
   padding-top: 0px;
   padding-bottom: 0px;
