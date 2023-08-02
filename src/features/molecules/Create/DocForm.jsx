@@ -42,9 +42,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
   const [dateValue, setDateValue] = useState("")
   const [volumeValue, setVolumeValue] = useState("")
   const [numberValue, setNumberValue] = useState("")
-
   const [selectedTags, selectTag] = useState([])
-  
   const [selectedOrg, selectOrg] = useState([])
   const [selectedPeople, selectPerson] = useState([])
   const [selectedProjects, selectProject] = useState([])
@@ -52,22 +50,16 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
   const [selectedBrotherHood, selectBrotherHood] = useState("")
   const [selectedDoc, selectDoc] = useState([])
   const [selectedProds, selectProd] = useState([])
-  
   const [pendingSupports, setPendingSupports] = useState([])
   const [selectedRoles, selectRole] = useState([])
   const [pendingExemplaries, setPendingExemplaries] = useState([])
-
   const [selectedTemplate, selectTemplate] = useState('')
   const [subTemplate, setSubTemplate] = useState(null)
   const [selectedSubTemplate, selectSubTemplate] = useState("")
   const [templateModel, setTemplateModel] = useState({})
-
   const [docTemplates, setDocTemplates] = useState([])
-
   const [template, setFullTemplate] = useState(false)
-
   const [docTemplatesLoading, setDocTemplatesLoading] = useState(false)
-
   const [loading, setLoading] = useState(false)
 
   const {
@@ -89,7 +81,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
     }
   }  
 
-   const handlePubliDateChange = (e) => {
+  const handlePubliDateChange = (e) => {
     e.preventDefault()
     setPubliDateValue(e.target.value)
   }
@@ -565,6 +557,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
         </Fragment>
       })}
       </div> : null}
+      
       <RoleForm location="support-form-doc" scope="docs" lang={idLang} selectedRoles={selectedTypes} selectRole={selectType}/>
       {template && template.tag ? <DocTagsForm selectedTags={selectedTags} selectTag={selectTag} scope="docs" lang={idLang} /> : null}
       {template && template.copyright ? <div className="field mt-2">

@@ -59,7 +59,11 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
     roles.map((role) => {
       if (role.slug === currentRole) {
         retrievedRole = role
-      }
+      } else if (roleEnValue === getContent(role.title, "en")) {
+        retrievedRole = roleEnValue
+      } else if (roleFrValue === getContent(role.title, "fr")) {
+        retrievedRole = role
+      }    
     })
     if (retrievedRole) {
       return retrievedRole
@@ -68,8 +72,6 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
   
   const handleRoleBtn = (e, t) => {
     e.preventDefault()
-    
-    
     const roleDoc = isRoleExisting()
     let unique = true
     selectedRoles.map((role) => {
@@ -86,7 +88,7 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
         setRoleFrValue("")
         setRoleDescFr("")
         setDisplayRole(false)
-        setRoles([])
+         setRoles([])
         setRoleDescEn("")
       } else {
         setRoleForm(true)
@@ -180,7 +182,6 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
   }
 
   const [currentRole, setCurrentRole] = useState({})
-
   return <>
  
     <div className="field">
@@ -201,15 +202,19 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
                }}><FontAwesomeIcon icon={faArrowRotateLeft} /></i> : null}
         {displayRole &&  selectedRoles && selectedRoles[0] ? <>
           <div className="columns ml-1 pb-1">
-        <div className="column is-four-fifth">
+        <div className="column is-four- is-flex">
           {(!roles || !roles[0]) ? <>
-          <div className="control has-icons-right">
+          <div className="control has-icons-right has-icons-left">
           <input type="text" placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default roles" : "Roles"} className="input" value={i18n.language === "en" ? roleEnValue : roleFrValue} onChange={handleRoleChange}/>
 
-          <span class="icon is-medium is-right">
-           <i className="has-text-info   pointer" ><FontAwesomeIcon icon={faMagnifyingGlass} /></i>
+          <span class="icon is-medium is-left">
+           <i className="has-text-grey   pointer" ><FontAwesomeIcon icon={faMagnifyingGlass} /></i>
     </span>
+  
           </div>
+            {!isRoleExisting() && (roleEnValue.length >= 3 || roleFrValue.length >= 3) ?   <i className=" ml-3 mt-1 pt-1 has-text-info title is-5 pointer" onClick={(e) => {
+              handleCreateRole(e)
+              }}><FontAwesomeIcon icon={faCirclePlus} /></i> : null}
           </> : <div className=" is-half is-multiple">
             
             <div className="control has-icons-right">
@@ -273,11 +278,12 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
                   if (t.scope === scope) {
                     return <Fragment key={t.slug}>
                     <span className="tag is-info mt-1 is-small mr-1 opacity-50" onClick={(e) => {
+                      console.log('rols: ', selectedRoles)
                         selectRole([...selectedRoles, t])
                         setRoles([])
                         setRoleForm(false)
                         setRoleFrValue("")
-                        setRoleEnValue("") 
+                        setRoleEnValue("")    
                         setDisplayRole(false)
 
                         }}>{getContent(t.title, i18n.language)}        <i className="has-text-light ml-3 pointer"><FontAwesomeIcon icon={faCircleCheck} /></i>  </span>
