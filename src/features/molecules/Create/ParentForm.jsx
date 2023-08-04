@@ -93,8 +93,7 @@ const ParentForm = ({selectedOrg, selectOrg, selectedPeople, selectPerson, selec
       <DocParentForm selectedDoc={selectedDoc} selectDoc={selectDoc} template={template} client={client} setAlert={setAlert} />
     </> : <>
     {selectedProds ? <div className="field">
-      <label className="label title is-5">{t('productions')}</label>
-      <div className="columns">
+      <div className="columns mt-3">
         <div className="column is-three-fifth">
             <div className="control has-icons-right">
               

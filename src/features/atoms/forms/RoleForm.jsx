@@ -175,7 +175,7 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
     
          {displayRole ? <div className="is-flex is-fullwidth mt-2">
             <div className={inputClasses}>
-          <input type="text" placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default roles" : "Roles"} className="input" value={i18n.language === "en" ? roleEnValue : roleFrValue} onChange={handleRoleChange}/>
+          <input type="text" placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default roles" : location.includes("parent") ? "Roles": ""} className="input" value={i18n.language === "en" ? roleEnValue : roleFrValue} onChange={handleRoleChange}/>
 
           <span class="icon is-small is-left pointer">
            <i className="has-text-grey  pointer" ><FontAwesomeIcon icon={faMagnifyingGlass} /></i>
