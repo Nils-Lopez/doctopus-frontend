@@ -64,22 +64,24 @@ const ParentForm = ({selectedOrg, selectOrg, selectedPeople, selectPerson, selec
 
 
   return <>
-    <div className="columns">
-      {template && template.parent_entity ? <div className="column">
-        {create === "organisation" ? <button className="button is-primary has-text-primary has-background-white" onClick={handleOrganisationBtn}>{t('organization')}</button> : <button className="button is-light" onClick={handleOrganisationBtn}>{t('organization')}</button>}
-      </div> : null}
-      {template && template.parent_person ? <div className="column">
-        {create === "person" ? <button className="button is-primary has-text-primary has-background-white" onClick={handlePersonBtn}>{t('person')}</button> : <button className="button is-light" onClick={handlePersonBtn}>{t('person')}</button>}
-      </div> : null}
-      {template && template.parent_project ? <div className="column">
-        {create === "project" ? <button className="button is-primary has-text-primary has-background-white" onClick={handleProjectBtn}>{t('project')}</button> : <button className="button is-light" onClick={handleProjectBtn}>{t('project')}</button>}
-      </div> : null}
-      <div className="column">
-        {create === "doc" ? <button className="button is-primary has-text-primary has-background-white" onClick={handleDocBtn}>{t('document')}</button> : <button className="button is-light" onClick={handleDocBtn}>{t('document')}</button>}
-      </div>
-      {selectedProds ? <div className="column">
-        {create === "prod" ? <button className="button is-primary has-text-primary has-background-white" onClick={handleProdBtn}>{t('production')}</button> : <button className="button is-light" onClick={handleProdBtn}>{t('production')}</button>}
-      </div> : null}
+    <div className="tabs   pl-0 ml-0 mb-1 mt-1 is-centered">
+      <ul className="pl-0 ml-0">
+        {template && template.parent_entity ? <>
+          {create === "organisation" ? <li className=" is-active " ><a>{t('organization')}</a></li> : <li className=" is-light" onClick={handleOrganisationBtn}><a>{t('organization')}</a></li>}
+        </> : null}
+        {template && template.parent_person ? <>
+          {create === "person" ? <li className=" is-active" onClick={handlePersonBtn}><a>{t('person')}</a></li> : <li className=" is-light" onClick={handlePersonBtn}><a>{t('person')}</a></li>}
+        </> : null}
+        {template && template.parent_project ? <>
+          {create === "project" ?  <li className=" is-active" ><a>{t('project')}</a></li> : <li className=" is-light" onClick={handleProjectBtn}><a>{t('project')}</a></li>}
+        </> : null}
+        <>
+          {create === "doc" ?  <li className=" is-active" ><a>{t('document')}</a></li> : <li className=" is-light" onClick={handleDocBtn}><a>{t('document')}</a></li>}
+        </>
+        {selectedProds ? <>
+          {create === "prod" ?  <li className=" is-active" ><a>{t('production')}</a></li> : <li className=" is-light" onClick={handleProdBtn}><a>{t('production')}</a></li>}
+        </> : null}
+      </ul>
     </div>
     {create === "organisation" ? <>
       <OrganisationParentForm selectedOrg={selectedOrg} selectOrg={selectOrg}  template={template} client={client} setAlert={setAlert} />

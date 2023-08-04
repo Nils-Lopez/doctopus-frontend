@@ -51,15 +51,15 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
     }
     if (e.target.value.length >= 3) {
       searchRoleValue(e)
-    } 
+    } else if (e.target.value.length === 0) {
+      setRoles([])
+    }
   }
   
   const isRoleExisting = () =>  {
     let retrievedRole = undefined
     roles.map((role) => {
-      if (role.slug === currentRole) {
-        retrievedRole = role
-      } else if (roleEnValue === getContent(role.title, "en")) {
+     if (roleEnValue === getContent(role.title, "en")) {
         retrievedRole = roleEnValue
       } else if (roleFrValue === getContent(role.title, "fr")) {
         retrievedRole = role
@@ -69,32 +69,7 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
       return retrievedRole
     } else return false
   }
-  
-  const handleRoleBtn = (e, t) => {
-    e.preventDefault()
-    const roleDoc = isRoleExisting()
-    let unique = true
-    selectedRoles.map((role) => {
-       role.title.map((title) => {
-         if (title.content.toLowerCase() === roleEnValue.toLowerCase() && roleEnValue !== "" || title.content.toLowerCase() === roleFrValue.toLowerCase() && roleFrValue !== "") {
-          unique = false
-        }
-      })
-    })
-    if (unique) {
-      if (roleDoc) {
-        selectRole([...selectedRoles, roleDoc])
-        setRoleEnValue("")
-        setRoleFrValue("")
-        setRoleDescFr("")
-        setDisplayRole(false)
-         setRoles([])
-        setRoleDescEn("")
-      } else {
-        setRoleForm(true)
-      }
-    }
-  }
+ 
   
   const handleCreateRole = (e) => {
     e.preventDefault()
@@ -137,16 +112,10 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
 
   const searchRoleValue = (e) => {
     if (e) e.preventDefault()
-    if (roleEnValue !== "" && roleEnValue !== "") {
+    if (e.target.value.length >= 3) {
       setRolesLoading(true)
-      searchRoles(roleEnValue + " " + roleFrValue)
-    } else if (roleEnValue !== "") {
-      setRolesLoading(true)
-      searchRoles(roleEnValue)
-    } else if (roleFrValue !== "") {
-      setRolesLoading(true)
-      searchRoles(roleFrValue)
-    }
+      searchRoles(e.target.value)
+    } 
   }
 
   useEffect(() => {
@@ -174,20 +143,16 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
       }
   }, [roles])
 
-  const changeCurrentRole = (e) => {
-    e.preventDefault()
-    setCurrentRole(e.target.value)
-    setRoleEnValue(e.target.value)
-    setRoleFrValue(e.target.value)
-  }
+  console.log(roles)
 
-  const [currentRole, setCurrentRole] = useState({})
+  let inputClasses = (!isRoleExisting() && (roleEnValue.length >= 3 || roleFrValue.length >= 3 )) ? "control has-icons-left min-90" : "control has-icons-left min-100"
+
   return <>
  
-    <div className="field">
+    <div className="field mt-4">
     {location !== "templates" && location !== "templates-parents" && location !== "templates-tags" && location !== "org-parent-doc" ? <label className="label has-text-left">{location === "support-form-doc" ? "Types" : "Roles"}</label> : null}
 
-    <div className="is-flex is-justify-content-start">
+    <div className="is-flex is-justify-content-start is-fullwidth">
     {selectedRoles ? selectedRoles.map((role) => {
         return <Fragment key={role.slug}>
           <span className="tag is-info mt-1 is-medium mr-1">{getContent(role.title, i18n.language)}        <i className="has-text-light ml-3 pointer" onClick={(e) => {
@@ -200,84 +165,34 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
               }}><FontAwesomeIcon icon={faCirclePlus} /></i>  : selectedRoles && selectedRoles[0] ? <i className="has-text-info subtitle is-5 ml-2 mt-2 pointer" onClick={(e) => {
                 setDisplayRole(false)
                }}><FontAwesomeIcon icon={faArrowRotateLeft} /></i> : null}
-        {displayRole &&  selectedRoles && selectedRoles[0] ? <>
-          <div className="columns ml-1 pb-1">
-        <div className="column is-four- is-flex">
-          {(!roles || !roles[0]) ? <>
-          <div className="control has-icons-right has-icons-left">
-          <input type="text" placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default roles" : "Roles"} className="input" value={i18n.language === "en" ? roleEnValue : roleFrValue} onChange={handleRoleChange}/>
-
-          <span class="icon is-medium is-left">
-           <i className="has-text-grey   pointer" ><FontAwesomeIcon icon={faMagnifyingGlass} /></i>
-    </span>
-  
-          </div>
-            {!isRoleExisting() && (roleEnValue.length >= 3 || roleFrValue.length >= 3) ?   <i className=" ml-3 mt-1 pt-1 has-text-info title is-5 pointer" onClick={(e) => {
-              handleCreateRole(e)
-              }}><FontAwesomeIcon icon={faCirclePlus} /></i> : null}
-          </> : <div className=" is-half is-multiple">
-            
-            <div className="control has-icons-right">
-          <input type="text"  placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default roles" : "Roles"} className="input" value={i18n.language === "en" ? roleEnValue : roleFrValue} onChange={handleRoleChange}/>
-
-          <span class="icon is-small is-right pointer">
-           <i className="has-text-info  pointer" ><FontAwesomeIcon icon={faMagnifyingGlass} /></i>
-    </span>
+    
     
  
-                {roles.map((t) => {
-                  console.log(t.scope)
-                  if (t.scope === scope) {
-                    return <Fragment key={t.slug}>
-                    <span className="tag is-info mt-1 is-small mr-1 opacity-50" onClick={(e) => {
-                        selectRole([...selectedRoles, t])
-                        setRoles([])
-                        setRoleForm(false)
-                        setRoleFrValue("")
-                        setRoleEnValue("") 
-                        setDisplayRole(false)
-                        }}>{getContent(t.title, i18n.language)}        <i className="has-text-light ml-3 pointer"><FontAwesomeIcon icon={faCircleCheck} /></i>  </span>
-                  </Fragment>
-                  }
-                })}
-    </div>  
-     
-          </div>}
+              
+
         </div>
         
-      </div>
-      {roleForm ? <div className="field">
-        <label className="label has-text-left">{location === "support-form-doc" ? "Type description" : location !== "templates-tags" ? "Role description" : "Tag description"}</label>
-        <textarea className="textarea" onChange={handleRoleDescChange} value={i18n.language === "en" ? roleDescEn : roleDescFr}/>
-      </div> : null}
-        </> : null}
-    </div>
-      {displayRole && (!selectedRoles || !selectedRoles[0]) ? <>
-      <div className="columns mt-1">
-        <div className="column is-two-fifth">
-          {(!roles || !roles[0]) ? <>
-            <div className="control has-icons-right is-half">
+    
+         {displayRole ? <div className="is-flex is-fullwidth mt-2">
+            <div className={inputClasses}>
           <input type="text" placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default roles" : "Roles"} className="input" value={i18n.language === "en" ? roleEnValue : roleFrValue} onChange={handleRoleChange}/>
 
-          <span class="icon is-small is-right pointer">
-           <i className="has-text-info  pointer" ><FontAwesomeIcon icon={faMagnifyingGlass} /></i>
+          <span class="icon is-small is-left pointer">
+           <i className="has-text-grey  pointer" ><FontAwesomeIcon icon={faMagnifyingGlass} /></i>
     </span>
-    </div>          </> : <div className="columns">
-            <div className="column is-half">
-
-            <div className="control has-icons-right">
-          <input type="text"  placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default roles" : "Roles"} className="input" value={i18n.language === "en" ? roleEnValue : roleFrValue} onChange={handleRoleChange}/>
-
-          <span class="icon is-small is-right pointer">
-           <i className="has-text-info  pointer" ><FontAwesomeIcon icon={faMagnifyingGlass} /></i>
-    </span>
-    
  
-                {roles.map((t) => {
-                  console.log(t.scope)
+    </div>      
+    {!isRoleExisting() && (roleEnValue.length >= 3 || roleFrValue.length >= 3 ) ?   <i className=" ml-3 mt-1 pt-1 has-text-info title is-5 pointer" onClick={(e) => {
+              handleCreateRole(e)
+              }}><FontAwesomeIcon icon={faCirclePlus} /></i> : null}
+              
+        </div>  : null}
+       
+       <div className="is-flex is-justify-content-start">
+       {roles.map((t) => {
                   if (t.scope === scope) {
                     return <Fragment key={t.slug}>
-                    <span className="tag is-info mt-1 is-small mr-1 opacity-50" onClick={(e) => {
+                    <span className="tag is-info mt-2 is-small mr-1 opacity-50" onClick={(e) => {
                       console.log('rols: ', selectedRoles)
                         selectRole([...selectedRoles, t])
                         setRoles([])
@@ -289,21 +204,13 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
                         }}>{getContent(t.title, i18n.language)}        <i className="has-text-light ml-3 pointer"><FontAwesomeIcon icon={faCircleCheck} /></i>  </span>
                   </Fragment>
                   }
-                })}
-    </div>  
+                })}  
+       </div>
           </div>
-          </div>
-}
-        </div>
-     
-      </div>
-      {roleForm ? <div className="field">
-        <label className="label has-text-left">{location === "support-form-doc" ? "Type description" : location !== "templates-tags" ? "Role description" : "Tag description"}</label>
-        <textarea className="textarea" onChange={handleRoleDescChange} value={i18n.language === "en" ? roleDescEn : roleDescFr}/>
-      </div> : null}
-      </> : null}
+
       
-    </div>
+     
+     
   </>
 }
 

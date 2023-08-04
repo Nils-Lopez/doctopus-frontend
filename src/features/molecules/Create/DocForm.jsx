@@ -643,7 +643,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
       </button>
     </div>
     {showParentForm ? <ParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} selectedProds={selectedProds} selectProd={selectProd} selectedPeople={selectedPeople} selectedDoc={selectedDoc} selectDoc={selectDoc} selectPerson={selectPerson} selectedProj={selectedProjects} selectProj={selectProject} template={template} client={client} setAlert={setAlert}/> : null}
-   <div className="container">
+   <div className="container mt-5">
    
     <footer className=" is-flex is-justify-content-center">
     

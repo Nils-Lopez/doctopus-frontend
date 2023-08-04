@@ -5,7 +5,7 @@ import OrganisationForm from "../../../molecules/Create/OrganisationForm"
 
 import ParentSearchItem from "../../parents/SearchItem"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faTrash, faCircleXmark, faCirclePlus, faArrowRotateLeft, faMagnifyingGlass, faCircleCheck } from '@fortawesome/free-solid-svg-icons'
 
 import { useEntities } from "../../../../utils/hooks/Entities"
 import {useTranslation} from "react-i18next"
