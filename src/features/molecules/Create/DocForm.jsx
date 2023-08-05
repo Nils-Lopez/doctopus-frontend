@@ -4,16 +4,16 @@ import DocTagsForm from "../../atoms/forms/docs/DocTagsForm"
 import SupportForm from "./SupportForm"  
 import ParentForm from "./ParentForm"  
 import RoleForm from "../../atoms/forms/RoleForm"
+import FileForm from "../../atoms/forms/FileForm"
+import SearchTagsForm from "../../atoms/forms/docs/SearchTagsForm"
 
 import {useDocs} from "../../../utils/hooks/docs/Docs"
 import {useDocTemplates} from "../../../utils/hooks/templates/DocTemplates"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faCircleXmark } from '@fortawesome/free-solid-svg-icons'
+import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from "react-i18next";
-
-import FileForm from "../../atoms/forms/FileForm"
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, setDataUpdate}) => {
   const { t, i18n } = useTranslation();
@@ -559,7 +559,8 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
       </div> : null}
       
       <RoleForm location="support-form-doc" scope="docs" lang={idLang} selectedRoles={selectedTypes} selectRole={selectType}/>
-      {template && template.tag ? <DocTagsForm selectedTags={selectedTags} selectTag={selectTag} scope="docs" lang={idLang} /> : null}
+      {/* {template && template.tag ? <DocTagsForm selectedTags={selectedTags} selectTag={selectTag} scope="docs" lang={idLang} /> : null} */}
+      {template && template.tag ? <SearchTagsForm selectedTags={selectedTags} selectTag={selectTag} /> : null}
       {template && template.copyright ? <div className="field mt-2">
         <label className="label has-text-left">
         {t('copyrights')}

@@ -3,9 +3,10 @@ import React, {useState, useEffect, Fragment} from "react"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 
+import SearchForm from "../SearchForm"
+
 import {useTags} from '../../../../utils/hooks/Tags'
 import {useTranslation} from "react-i18next"
-import { use } from "i18next"
 
 const DocTagsForm = ({selectedTags, handleSearchTag, selectTag, scope, lang, location, tag, setUpdateTag, merge, setMergeTag, setAlert}) => {
   const [tagFrValue, setTagFrValue] = useState("")

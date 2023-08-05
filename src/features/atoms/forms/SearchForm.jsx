@@ -146,12 +146,15 @@ const ItemForm = ({scope, location, selectedItems, handleAddItem, selectItem, de
   }, [items])
 
   console.log(items)
+  const [itemFull, setItemFull] = useState(false)
 
   let inputClasses = (!isItemExisting() && (itemEnValue.length >= 3 || itemFrValue.length >= 3 )) ? "control has-icons-left min-90" : "control has-icons-left min-100"
 
+  let divClasses = mainField === "content" ? "field mt-1" : "field mt-4"
+
   return <>
  
-    <div className="field mt-4">
+    <div className={divClasses}>
 
     <div className="is-flex is-justify-content-start is-fullwidth">
     {!handleAddItem && selectedItems ? selectedItems.map((item) => {
@@ -192,8 +195,8 @@ const ItemForm = ({scope, location, selectedItems, handleAddItem, selectItem, de
         </div>  : null}
        
        <div className="is-flex is-justify-content-start">
-       {items.map((t) => {
-                  if (!scope || t.scope === scope) {
+       {items.map((t, i) => {
+                  if ((!scope || t.scope === scope) && i < 5 ) {
                     return <Fragment key={t.slug}>
                     <span className="tag is-info mt-2 is-small mr-1 opacity-50" onClick={(e) => {
 
@@ -207,7 +210,10 @@ const ItemForm = ({scope, location, selectedItems, handleAddItem, selectItem, de
                         setItemEnValue("")    
                         setDisplayItem(false)
 
-                        }}>{mainField === "content" ? getContent(t.title, i18n.language) : t[mainField]}        <i className="has-text-light ml-3 pointer"><FontAwesomeIcon icon={faCircleCheck} /></i>  </span>
+                        }}
+                        onMouseEnter={() => setItemFull(t)}
+                        onMouseLeave={() => setItemFull(false)}
+                        >{mainField === "content" ? getContent(t.title, i18n.language) : itemFull !== t && t[mainField] && t[mainField].length > 10 ? t[mainField].slice(0,10) + "..." : t[mainField]}        <i className="has-text-light ml-3 pointer"><FontAwesomeIcon icon={faCircleCheck} /></i>  </span>
                   </Fragment>
                   }
                 })}  

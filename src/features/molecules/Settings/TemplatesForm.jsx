@@ -17,6 +17,7 @@ import ProjectParentForm from "../../atoms/forms/docs/ProjectParentForm"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from "react-i18next";
+import SearchTagsForm from '../../atoms/forms/docs/SearchTagsForm';
 
 const TemplatesForm = ({client, setClient, setAlert}) => {
     
@@ -523,7 +524,7 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
        <div className="column">
 <div className="field">
            {tagValue ? <>
-             <DocTagsForm location={"templates-tags"} selectedTags={selectedTags} selectTag={selectTag} lang={idLang} />
+             <SearchTagsForm selectedTags={selectedTags} selectTag={selectTag} location="templates-tags"/>
            </> : <>
            <input type="text" className="input" disabled/>
            </>}
