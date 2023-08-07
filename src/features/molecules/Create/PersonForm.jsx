@@ -339,7 +339,13 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) =
       </div>
       
     <RoleForm scope="parents" location="org-form" selectedRoles={selectedRoles} selectRole={selectRole} lang={idLang} />
+    <label className="label has-text-left">
+        {t('projects')}
+      </label>
     <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj} lang={idLang} client={client} setAlert={setAlert}/>
+    <label className="label has-text-left mt-5 mb-0 pb-0">
+        {t('organization')}
+      </label>
     <OrganisationParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} lang={idLang} client={client} setAlert={setAlert}/>
     <button className="button is-large is-primary" onClick={handlePersonSubmit}>
       {t('create')}

@@ -63,6 +63,12 @@ const useEntities = () => {
             })
             dispatch({type: 'FindById', payload: entity})
         },
+        findEntityByScapin : async function (id) {
+            const entity = await apiFetch('/entities/scapin/' + id, {
+                method: 'GET'
+            })
+            dispatch({type: 'FindById', payload: entity})
+        },
         findEntityBySlug: async function (slug) {
             const entity = await apiFetch('/entities/slug/' + slug, {
                 method: 'GET'

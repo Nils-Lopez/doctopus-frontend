@@ -143,9 +143,9 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
 
     const {findProjectById, responseFindProjectById} = useProjects()
 
-    const {findEntityById, responseFindEntityById} = useEntities()
+    const {findEntityById, responseFindEntityById, findEntityByScapin} = useEntities()
 
-    const {findPersonById, responseFindPersonById} = usePeople()
+    const {findPersonById, responseFindPersonById, findPersonByScapin} = usePeople()
 
     const handleSearchParent = (parent) => {
         setDisplayDoc(false)
@@ -191,6 +191,8 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
           setLoading(false)
         }  
       }
+      console.log('resperson', responseFindEntityById)
+
     }, [responseFindEntityById])
     
      useEffect(() => {
@@ -202,6 +204,7 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
           setLoading(false)
         }  
       }
+      console.log('resperson', responseFindPersonById)
     }, [responseFindPersonById])
     
       
@@ -212,6 +215,20 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
         navigate('/document/' + doc._id)
       findDocById(doc._id)
       setShowParentDoc(true)
+      setLoading(true)
+      } else {
+        navigate('/')
+      }
+    }
+
+    const handleSearchScapinParent = (doc) => {
+      if (doc) {
+        console.log('eh jsuis ici aussi, ', doc)
+        if (doc.person) {
+          findPersonByScapin(doc._id)
+        } else if (doc.entity) {
+          findEntityByScapin(doc._id)
+        }
       setLoading(true)
       } else {
         navigate('/')
@@ -265,7 +282,7 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
         {client && client.user && watchlist ? <><Watchlist docs={client.user.watchList} handleBack={handleBack} setDisplayDoc={handleSearchDoc} setHideWatchlist={setGoHome}/></> : history ? <><History client={client} handleSearch={handleSearch} setHideHistory={setGoHome} handleBack={handleBack}/></> : searchTags.docs ? <>
             <ShowTag docs={searchTags.docs} tag={searchTags.tag} client={client} setAlert={setAlert} handleBack={handleBack} setDisplayDoc={setDisplayDoc} handleSearchTag={setSearchTags}/>
         </> : displayParent && !showParentDoc ? <> 
-            <ShowParent parent={displayParent} setAlert={setAlert} client={client} handleSearchParent={handleSearchParent} handleBack={handleBack} handleSearchDoc={handleSearchDoc}/>
+            <ShowParent parent={displayParent} setAlert={setAlert} client={client} handleSearchParent={handleSearchParent} handleBack={handleBack} handleSearchDoc={handleSearchDoc} handleSearchScapinID={handleSearchScapinParent}/>
         </> : displayDoc ? <>
             <ShowDoc doc={displayDoc} setClient={setClient} setAlert={setAlert} client={client} handleBack={handleBack} handleSearchTag={handleSearchTag} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>
         </> : <>

@@ -89,8 +89,9 @@ const useProds = () => {
                     console.log(production[0])
                     const parents = []
                     productor.map((p) => {
+                        console.log(p)
                         const parentSchema = {
-                            _id: p.ID,
+                            _id: p.OrganismeID,
                             roles: [{
                                 title: [{lang: "fr", content: "Producteur"}]
                             }],
@@ -103,8 +104,10 @@ const useProds = () => {
                         parents.push(parentSchema)
                     })
                     team.map((t) => {
+                        console.log(t)
+
                         const parentSchema = {
-                            _id: t.ID, 
+                            _id: t.MembreEquipeID, 
                             roles: [{
                                 title: [{lang: "fr", content: t.Fonction}],
                                 _id: t.FonctionID

@@ -12,7 +12,7 @@ import ProjectForm from "../forms/orgs/ProjectForm"
 
 import {useProds} from "../../../utils/hooks/Prods"
 
-const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, handleBack}) => {
+const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, handleSearchScapinID, handleBack}) => {
     
     const [dataUpdate, setDataUpdate] = useState(false)
 
@@ -48,7 +48,7 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
         parents
     } = parent
 
-    console.log('childs: ', childs)
+    // console.log('childs: ', productionIds)
 
     const [productionsScapin, setProductions] = useState(false)
     const [prodLoading, setProdLoading] = useState(false)
@@ -60,6 +60,9 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
         if (prodIds && prodIds[0] && !prodLoading && !productionsScapin[0]) {
             setProdLoading(true)
             findProdByIds(prodIds)
+        } else if (productionIds && productionIds[0] && !prodLoading && !productionsScapin[0]) {
+            setProdLoading(true)
+            findProdByIds(productionIds)
         }
     }, [prodIds, productionIds])
 
@@ -135,7 +138,7 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
         if (!showScapinParent && item) setShowScapinParent({...item.prod,scapin: true, parents: item.parents})
         else setShowScapinParent(false)
         } else {
-
+            handleSearchScapinID(item)
         }
     }
 
@@ -157,7 +160,7 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
     }
 
     return showScapinParent ? <>
-        <Show parent={showScapinParent} client={client} setAlert={setAlert} handleSearchParent={handleSearchScapinParent} handleSearchDoc={handleSearchDoc} handleBack={handleSearchScapinParent}/>
+        <Show parent={showScapinParent} client={client} setAlert={setAlert} handleSearchParent={handleSearchScapinParent} handleSearchScapinID={handleSearchScapinID} handleSearchDoc={handleSearchDoc} handleBack={handleSearchScapinParent}/>
     </> : dataUpdate && !dataUpdate.success ? <>
      {dataUpdate.projects ? 
       <OrganisationForm client={client} setAlert={setAlert} dataUpdate={dataUpdate} setDataUpdate={setDataUpdate}/>

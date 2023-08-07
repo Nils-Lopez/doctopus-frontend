@@ -132,7 +132,7 @@ const ActorForm = ({selectedPeople, selectPerson, lang, client, setAlert}) => {
   return <>
     
     <div className="field">
-      <label className="label title is-5">{t('actors')}</label>
+      <label className="label has-text-left mb-3 mt-5">{t('actors')}</label>
       <div className="columns">
         <div className="column is-three-fifth">
           {(!people || !people[0]) ? <>

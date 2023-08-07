@@ -16,7 +16,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
     const { t, i18n } = useTranslation() 
     if (parent !== "production" && item.scapin) {
         return <div className="column is-one-quarter">
-            <div className={"box  "+colClasses} onClick={() => handleSearchScapinParent(item, "parent")}>
+            <div className={"box results-col "+colClasses} onClick={() => handleSearchScapinParent(item, "parent")}>
             <div className="is-flex is-justify-content-end mt-0 mb-0">
             {item.person ? <>
                         <span className="tag is-white is-medium pb-5 pr-0 has-text-info">

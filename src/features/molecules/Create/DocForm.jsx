@@ -516,7 +516,8 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
           <li onClick={() => setIdLang("en")} className={idLang === "en" ? "is-active" : ""}><a href="#" onClick={(e) => e.preventDefault()}>English</a></li>
         </ul>
       </div>
-      <div className="columns">
+      
+      {template && template.languages && template.languages.exist ? <div className="columns">
       <div className="column">
         <div className="field">
           <label className="label has-text-left">
@@ -526,36 +527,36 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
         </div>
       </div>
       <div className="column">
-        <div className="field">
+      
+        <div className="field" id="docLang">
           <label className="label has-text-left">
-          {t('slug')}
+          {t('language')}
           </label>
-          <input type="text" className="input" value={slugValue} onChange={handleSlugChange}/>
-        </div>
+      
+              <div className="is-flex">
+                <input type="text" placeholder="Default language" className="input" value={idLang === "en" ? langEnValue : langFrValue} onChange={handleLangChange} />
+                <button onClick={addLang} className="button is-small is-primary mt-1 ml-2">Add</button>      
+              </div>
+        {selectedLangs.map((lang) => {
+        return <Fragment key={lang.code}>
+          <span className="tag is-light is-medium mr-1 mt-2">{getContent(lang.labels, idLang)} <i className="has-text-danger ml-3 pointer" onClick={(e) => handleDeleteLang(e, lang)}><FontAwesomeIcon icon={faCircleXmark} /></i></span>
+        </Fragment>
+      })}
+      </div> 
       </div>
-    </div>
+    </div>:  <div className="field">
+          <label className="label has-text-left">
+          {t('title')}
+          </label>
+          <input type="text" className="input" value={titleValue} onChange={handleTitleChange}/>
+        </div>}
     {template && template.description ? <div className="field" id="docDesc">
       <label className="label has-text-left">
       {t('description')}
       </label>
       <textarea className="textarea" value={idLang === "fr" ? descFrValue : descEnValue} onChange={handleDescChange}></textarea>
       </div> : null}
-      {template && template.languages && template.languages.exist ? <div className="field" id="docLang">
-      <label className="label has-text-left">
-      {t('language')}
-      </label>
-      
-      <div className="is-flex">
-                <input type="text" placeholder="Default language" className="input" value={idLang === "en" ? langEnValue : langFrValue} onChange={handleLangChange} />
-                <button onClick={addLang} className="button is-small is-primary mt-1 ml-2">Add</button>
-                
-        </div>
-        {selectedLangs.map((lang) => {
-        return <Fragment key={lang.code}>
-          <span className="tag is-light is-medium mr-1 mt-2">{getContent(lang.labels, idLang)} <i className="has-text-danger ml-3 pointer" onClick={(e) => handleDeleteLang(e, lang)}><FontAwesomeIcon icon={faCircleXmark} /></i></span>
-        </Fragment>
-      })}
-      </div> : null}
+     
       
       <RoleForm location="support-form-doc" scope="docs" lang={idLang} selectedRoles={selectedTypes} selectRole={selectType}/>
       {/* {template && template.tag ? <DocTagsForm selectedTags={selectedTags} selectTag={selectTag} scope="docs" lang={idLang} /> : null} */}

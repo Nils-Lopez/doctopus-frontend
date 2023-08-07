@@ -271,7 +271,10 @@ const OrganisationForm = ({client, setAlert, setCreated, dataUpdate, setDataUpda
       </div>
     <RoleForm scope="parents" location="org-form" selectedRoles={selectedRoles} selectRole={selectRole} lang={idLang} />
     <ActorForm selectedPeople={selectedActors} selectPerson={selectActor} lang={idLang} client={client} setAlert={setAlert}/>
-    <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj} lang={idLang}/>
+    <label className="label has-text-left mb-0 pb-0 mt-5">
+          {t('projects')}
+        </label>
+    <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj} lang={idLang} location="org-form"/>
      <footer className="card-footer mt-3 pt-4 is-flex is-justify-content-center">
       <button className="button is-primary is-medium" onClick={handleFormSubmit}>
         {t('create')}

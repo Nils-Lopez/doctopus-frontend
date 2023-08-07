@@ -71,8 +71,8 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
   } = useProjects()
 
 
-  return <>
-    
+  return <div className="mt--1">
+
       {(template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="parents" location="org-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
       {(selectedRoles && selectedRoles[0]) || (template && !template.parent_role) ? 
         <SearchForm selectedItems={selectedProj} handleAddItem={handleAddProj} searchItems={searchProjects} responseSearchItems={responseSearchProjects} mainField={"title"} setFormModal={setProjForm}/>
@@ -101,7 +101,7 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
             </div>
             
         </div> : null}
-  </>
+  </div>
 }
 
 export default ProjectParentForm

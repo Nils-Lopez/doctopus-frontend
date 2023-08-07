@@ -17,6 +17,8 @@ function reducer (state, action) {
             return { ...state, responseFindAllPeople: action.payload }
         case 'Search':
             return { ...state, responseSearch: action.payload }  
+        case 'FindByScapin':
+            return { ...state, responseFindById: action.payload }      
         default:
             throw new Error ('Action inconnue' + action.type)
     }
@@ -59,6 +61,13 @@ const usePeople = () => {
         },
         findPersonById : async function (id) {
             const person = await apiFetch('/people/id/' + id, {
+                method: 'GET'
+            })
+            dispatch({type: 'FindById', payload: person})
+        },
+        findPersonByScapin : async function (id) {
+            console.log('yoooo')
+            const person = await apiFetch('/people/scapin/' + id, {
                 method: 'GET'
             })
             dispatch({type: 'FindById', payload: person})
