@@ -1,9 +1,7 @@
 // 1. Import the initial variables
 @import "../node_modules/bulma/sass/utilities/initial-variables";
 @import "../node_modules/bulma/sass/utilities/functions";
-@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap');
-
-// 2. Set your own initial variables
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500&family=Libre+Bodoni&family=Roboto+Mono&display=swap');// 2. Set your own initial variables
 // Update blue
 $blue: #EE6636;
 // Add pink and its invert
@@ -21,7 +19,10 @@ $info: #EE6636;
 $danger: $red;
 $success: #00b894;
 $link: $primary;
-$family-sans-serif: 'Libre Baskerville', serif;
+$family-primary: 'Roboto Mono', monospace;
+$family-secondary: 'Libre Bodoni', serif;
+$title-family: $family-secondary;
+$subtitle-family: $family-secondary;
 $radius: 7px;
 
 // 6. Import the rest of Bulma

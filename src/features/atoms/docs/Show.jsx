@@ -127,7 +127,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
             {types.map((type) => {
                 console.log("types : ", types)
                 return <Fragment key={JSON.stringify(type)}>
-                    <span className="tag is-medium is-primary mr-1 ml-1 mb-0">
+                    <span className="tag is-large is-white has-text-info mr-1 ml-1 mb-0">
                         {getContent(type.title,i18n.language)}
                     </span>
                 </Fragment>
@@ -140,7 +140,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
             <div className="columns">
                 <div className="column ">
                 <h1 className="mt-2 title is-1 has-text-left">{title}</h1>
-                {description && description[0] ? <p className=" subtitle is-5 mt-5 has-text-left">{getContent(description, i18n.language)}</p> : null}
+                {description && description[0] ? <p className="  mt-5 has-text-left">{getContent(description, i18n.language)}</p> : null}
                 {languages && languages[0] ? <p className="has-text-left">{getContent(languages[0].labels, i18n.language)}</p> : null}
 
                 </div>
@@ -156,7 +156,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                             <iframe src={supports[0].url} width="740" height="460" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
                         </div>
                     : null}
-        {description && description[0] ? <p className=" subtitle is-5 mt-5 has-text-left">{getContent(description, i18n.language)}</p> : null}
+        {description && description[0] ? <p className="  mt-5 has-text-left">{getContent(description, i18n.language)}</p> : null}
         {languages && languages[0] ? <p className="has-text-left">{getContent(languages[0].labels, i18n.language)}</p> : null}
 
         </>}

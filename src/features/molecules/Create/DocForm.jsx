@@ -239,7 +239,6 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
     if (!dataUpdate) {
      await createDoc(reqData)
     } else {
-      console.log("reqData: ", reqData.types, reqData.tags)
      await updateDoc(reqData, dataUpdate._id)
     }
 

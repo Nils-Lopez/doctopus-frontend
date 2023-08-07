@@ -86,6 +86,7 @@ const useProds = () => {
 
                         }
                     }
+                    console.log(production[0])
                     const parents = []
                     productor.map((p) => {
                         const parentSchema = {
