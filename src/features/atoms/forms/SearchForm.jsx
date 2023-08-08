@@ -145,7 +145,6 @@ const ItemForm = ({scope, location, selectedItems, handleAddItem, selectItem, de
       }
   }, [items])
 
-  console.log(items)
   const [itemFull, setItemFull] = useState(false)
 
   let inputClasses = (!isItemExisting() && (itemEnValue.length >= 3 || itemFrValue.length >= 3 )) ? "control has-icons-left min-90" : "control has-icons-left min-100"

@@ -143,7 +143,6 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
       }
   }, [roles])
 
-  console.log(roles)
 
   let inputClasses = (!isRoleExisting() && (roleEnValue.length >= 3 || roleFrValue.length >= 3 )) ? "control has-icons-left min-90" : "control has-icons-left min-100"
 
@@ -177,7 +176,7 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
             <div className={inputClasses}>
           <input type="text" placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default roles" : location.includes("parent") ? "Roles": ""} className="input" value={i18n.language === "en" ? roleEnValue : roleFrValue} onChange={handleRoleChange}/>
 
-          <span class="icon is-small is-left pointer">
+          <span className="icon is-small is-left pointer">
            <i className="has-text-grey  pointer" ><FontAwesomeIcon icon={faMagnifyingGlass} /></i>
     </span>
  

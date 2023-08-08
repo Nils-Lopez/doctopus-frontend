@@ -14,6 +14,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom"
+import { useIsbns } from '../../../utils/hooks/Isbn';
 
 const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, setDataUpdate}) => {
   const { t, i18n } = useTranslation();
@@ -333,10 +334,8 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
 
   useEffect(() => {
     if (!subTemplate || !templateModel.schema_childs.includes(subTemplate)) {
-      console.log('ici')
       setFullTemplate(templateModel)
     } else {
-      console.log('la')
       let model = templateModel
       if (model.languages.exist) {
         model.languages.defaults = [...new Set([...model.languages.defaults, ...subTemplate.languages.defaults])]
@@ -366,7 +365,6 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
         model.parent_project_defaults = [...new Set([...model.parent_project_defaults, ...subTemplate.parent_project_defaults])]
       }
       setFullTemplate(model)
-      console.log("tags: ", model.tag_defaults)
     }
   }, [subTemplate, templateModel])
 
@@ -433,6 +431,14 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
       setConfirmDelete(true)
     }
 
+  }
+
+  const {findBookByIsbn, responseFindBookByIsbn} =  useIsbns()
+
+  const handleSearchIsbn = (e) => {
+    e.preventDefault()
+    console.log('sending ISBN')
+    findBookByIsbn(isbnValue)
   }
 
   return loading ? <>
@@ -516,7 +522,17 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
           <li onClick={() => setIdLang("en")} className={idLang === "en" ? "is-active" : ""}><a href="#" onClick={(e) => e.preventDefault()}>English</a></li>
         </ul>
       </div>
-      
+      {template && template.support_eanIsbn ?  
+        <div className="field">
+          <label className="label has-text-left">
+            {t('ean-isbn')}
+          </label>
+          <div className="is-flex">
+              <input type="text" className="input" value={isbnValue} onChange={handleIsbnChange}/>
+
+              {isbnValue && isbnValue.length > 7 && (client && client.user && client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? <button onClick={handleSearchIsbn} className="tag button is-primary mt-2 ml-2 pt-2 pb-2">Search</button> : null}   
+          </div>
+      </div> : null}
       {template && template.languages && template.languages.exist ? <div className="columns">
       <div className="column">
         <div className="field">
@@ -581,13 +597,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
       
       <input type="text" className="input" value={dateValue} onChange={handleDateChange}/>
     </div> : null}
-    {template && template.support_eanIsbn ?  <div className="field">
-      <label className="label has-text-left">
-        {t('ean-isbn')}
-      </label>
-      
-      <input type="text" className="input" value={isbnValue} onChange={handleIsbnChange}/>
-    </div> : null}
+    
      {template && template.support_pages ? <div className="field">
       <label className="label has-text-left">
         {t('pages')}
