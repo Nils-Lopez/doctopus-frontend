@@ -445,7 +445,6 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
     if (responseFindBookByIsbn && responseFindBookByIsbn.success) {
       setAlert({ type: "success", message: { en: "A book was found in our data.", fr: "Un livre a été trouvé dans nos données"}})
       setAutoCompletion(responseFindBookByIsbn.data)
-      console.log(responseFindBookByIsbn.data)
     } else if (responseFindBookByIsbn) {
       setAlert({ type: "error", message: { en: "No book was found in our data.", fr: "Ce livre n'a pas été trouvé dans nos données"}})
     }
@@ -561,7 +560,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
           <div className="is-flex">
               <input type="text" className="input" value={isbnValue} onChange={handleIsbnChange}/>
 
-              {isbnValue && isbnValue.length > 7 && (client && client.user && client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? <button onClick={handleSearchIsbn} className="tag button is-primary mt-2 ml-2 pt-2 pb-2">Search</button> : null}   
+              {isbnValue && isbnValue.length > 7 && (client && client.user) ? <button onClick={handleSearchIsbn} className="tag button is-primary mt-2 ml-2 pt-2 pb-2">Search</button> : null}   
           </div>
       </div> : null}
       {template && template.languages && template.languages.exist ? <div className="columns">

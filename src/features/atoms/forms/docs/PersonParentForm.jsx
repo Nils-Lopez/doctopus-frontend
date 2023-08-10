@@ -10,7 +10,7 @@ import SearchForm from "../SearchForm"
 import {usePeople} from "../../../../utils/hooks/People"
 import {useTranslation} from "react-i18next"
 
-const PersonParentForm = ({selectedPeople, selectPerson, location, template, lang, hideRoles, client, setAlert }) => {
+const PersonParentForm = ({selectedPeople, selectPerson, location, template, lang, hideRoles, client, setAlert, autoCompletion, setAutoCompletion}) => {
   const [personValue, setPersonValue] = useState("")
   const [personForm, setPersonForm] = useState(false)
   const [selectedRoles, selectRole] = useState([])
@@ -73,14 +73,48 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
     responseSearchPeople
   } = usePeople()
 
+  const [draftPerson, setDraftPerson] = useState(false)
+
+  useEffect(() => {
+    if (autoCompletion && autoCompletion.parents && autoCompletion.parents[0]) {
+      const drafts = []
+      autoCompletion.parents.map((p) => {
+        if (p.person) drafts.push(p)
+      })
+      setDraftPerson(drafts)
+    }
+  }, [autoCompletion])
+
+
+  useEffect(() => {
+    if (draftPerson && draftPerson[0]) {
+      selectRole(draftPerson[0].roles)
+      setPersonValue(draftPerson[0].person.name)
+    }
+  }, [draftPerson])
+
+  useEffect(() => {
+    if (selectedPeople && selectedPeople.length > 0 && draftPerson[0] && personValue === draftPerson[0].person.name) {
+        const filtered = []
+        autoCompletion.parents.map((p) => {
+          if (!(p.person && p.person.name === draftPerson[0].person.name)) {
+            filtered.push(p)
+
+          } 
+        })
+       
+        setAutoCompletion({...autoCompletion, parents: filtered})
+        console.log("filtered: ", filtered)
+    }   
+  }, [selectedPeople])
+
+  console.log(draftPerson)
 
   return <>
-    
-        
       {(template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="parents" location="org-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
       
       {selectedRoles && selectedRoles[0] ? 
-          <SearchForm selectedItems={selectedPeople} handleAddItem={handleAddPerson} searchItems={searchPeople} responseSearchItems={responseSearchPeople} mainField={"name"} setFormModal={setPersonForm}/>
+          <SearchForm selectedItems={selectedPeople} handleAddItem={handleAddPerson} searchItems={searchPeople} responseSearchItems={responseSearchPeople} mainField={"name"} setFormModal={setPersonForm}  draftValue={personValue}/>
 
       : null}
       <div className="columns is-multiline">

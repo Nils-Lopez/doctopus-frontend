@@ -5,7 +5,7 @@ import { faTrash, faCircleXmark, faCirclePlus, faArrowRotateLeft, faMagnifyingGl
 
 import {useTranslation} from "react-i18next"
 
-const ItemForm = ({scope, location, selectedItems, handleAddItem, selectItem, defaults, searchItems, responseSearchItems, mainField, setFormModal, setNoDocFound}) => {
+const ItemForm = ({scope, location, selectedItems, handleAddItem, selectItem, defaults, searchItems, responseSearchItems, mainField, setFormModal, setNoDocFound, draftValue}) => {
   const [itemEnValue, setItemEnValue] = useState("")
   const [itemFrValue, setItemFrValue] = useState("")
   const [itemDescEn, setItemDescEn] = useState("")
@@ -27,6 +27,16 @@ const ItemForm = ({scope, location, selectedItems, handleAddItem, selectItem, de
       })
     }
   }, [defaults])
+
+  useEffect(() => {
+
+    if (draftValue) {
+      setItemEnValue(draftValue)
+      setItemFrValue(draftValue)
+      setItemsLoading(true)
+      searchItems(draftValue)
+    }
+  }, [draftValue])
 
   const getContent = (value, lang) => {
     if (mainField === "content") {

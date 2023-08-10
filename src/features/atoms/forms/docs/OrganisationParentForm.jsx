@@ -85,13 +85,19 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
     }
   }, [autoCompletion])
 
-  
+
+  useEffect(() => {
+    if (draftOrg && draftOrg[0]) {
+      selectRole(draftOrg[0].roles)
+      setOrganisationValue(draftOrg[0].entity.name)
+    }
+  }, [draftOrg])
 
   return <>
 
         { location !== "activity-form" && (template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="parents" location="org-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
   {(selectedRoles && selectedRoles[0]) || (template && !template.parent_role) ? <>
-    <SearchForm selectedItems={selectedOrg} handleAddItem={handleAddOrg}searchItems={searchEntities} responseSearchItems={responseSearchEntities} mainField={"name"} setFormModal={setOrgForm}/>
+    <SearchForm selectedItems={selectedOrg} handleAddItem={handleAddOrg}searchItems={searchEntities} responseSearchItems={responseSearchEntities} mainField={"name"} setFormModal={setOrgForm} draftValue={organisationValue}/>
   </> : null}
  <div className="columns is-multiline">
  {selectedOrg && selectedOrg[0] ? selectedOrg.map((org) => {

@@ -144,8 +144,14 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
   }, [roles])
 
 
+  useEffect(() => { 
+    if (selectedRoles && selectedRoles.length > 0) {
+      setDisplayRole(false)
+    }
+  }, [selectedRoles])
+
   let inputClasses = (!isRoleExisting() && (roleEnValue.length >= 3 || roleFrValue.length >= 3 )) ? "control has-icons-left min-90" : "control has-icons-left min-100"
-console.log('selectedRoles: ', selectedRoles)
+  
   return <>
  
     <div className="field mt-4">
