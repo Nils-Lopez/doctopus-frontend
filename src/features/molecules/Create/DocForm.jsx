@@ -434,12 +434,43 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
   }
 
   const {findBookByIsbn, responseFindBookByIsbn} =  useIsbns()
+  const [autoCompletion, setAutoCompletion] = useState(false)
 
   const handleSearchIsbn = (e) => {
     e.preventDefault()
-    console.log('sending ISBN')
     findBookByIsbn(isbnValue)
   }
+
+  useEffect(() => {
+    if (responseFindBookByIsbn && responseFindBookByIsbn.success) {
+      setAlert({ type: "success", message: { en: "A book was found in our data.", fr: "Un livre a été trouvé dans nos données"}})
+      setAutoCompletion(responseFindBookByIsbn.data)
+      console.log(responseFindBookByIsbn.data)
+    } else if (responseFindBookByIsbn) {
+      setAlert({ type: "error", message: { en: "No book was found in our data.", fr: "Ce livre n'a pas été trouvé dans nos données"}})
+    }
+  }, [responseFindBookByIsbn])
+
+  useEffect(() => {
+    if (autoCompletion) {
+      if (autoCompletion.title) setTitleValue(autoCompletion.title)
+      if (autoCompletion.description && autoCompletion.description.length > 0)  {
+        if (autoCompletion.description[0].lang === "fr") {
+          setDescFrValue(autoCompletion.description[0].content)
+          setDescEnValue(autoCompletion.description[1].content)
+        }
+        else {
+          setDescEnValue(autoCompletion.description[0].content)
+          setDescFrValue(autoCompletion.description[1].content)
+        }
+      }
+      if (autoCompletion.date) setDateValue(autoCompletion.date)
+      if (autoCompletion.publishedAt) setPubliDateValue(autoCompletion.publishedAt)
+      if (autoCompletion.thumb) setThumbValue(autoCompletion.thumb)
+      
+    }
+  }, [autoCompletion])
+  
 
   return loading ? <>
    <div className="loader">
@@ -653,7 +684,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
         <h3 className="title is-4">{t('parents')}</h3>
       </button>
     </div>
-    {showParentForm ? <ParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} selectedProds={selectedProds} selectProd={selectProd} selectedPeople={selectedPeople} selectedDoc={selectedDoc} selectDoc={selectDoc} selectPerson={selectPerson} selectedProj={selectedProjects} selectProj={selectProject} template={template} client={client} setAlert={setAlert}/> : null}
+    {showParentForm ? <ParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} selectedProds={selectedProds} selectProd={selectProd} selectedPeople={selectedPeople} selectedDoc={selectedDoc} selectDoc={selectDoc} selectPerson={selectPerson} selectedProj={selectedProjects} selectProj={selectProject} template={template} client={client} setAlert={setAlert} autoCompletion={autoCompletion} setAutoCompletion={setAutoCompletion}/> : null}
    <div className="container mt-5">
    
     <footer className=" is-flex is-justify-content-center">

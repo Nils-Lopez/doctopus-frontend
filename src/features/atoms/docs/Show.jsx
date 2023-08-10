@@ -64,7 +64,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
         setAddingWatchlist(false)
        }
     }, [responseUpdateUser])
-    console.log('p: ', parents)
+    console.log('p: ', types)
     const includeParentType = (type, parents) => {
         let included = false
         parents.map((parent) => {

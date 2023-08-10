@@ -8,6 +8,9 @@
   height: 40vmin;
   pointer-events: none;
 }
+body {
+  overflow-y: hidden;
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
@@ -15,7 +18,30 @@
   }
 }
 
+.dropdown-user-logged {
+  position: absolute;
+  z-index: 1000;
+  display: none;
+}
 
+@media (max-width: 510px) {
+  .title.is-4.title-nav {
+    font-size: 1.3rem !important;
+  }
+  button.navbar-burger {
+    position: fixed;
+    right:0;
+  }
+}
+@media (max-width: 410px) {
+  .title.is-4.title-nav {
+    font-size: 1.1rem !important;
+  }
+  .tagline {
+    display: none;
+  }
+
+}
 .min-100 {
   min-width: 100%;
 }

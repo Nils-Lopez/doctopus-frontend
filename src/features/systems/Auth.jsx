@@ -158,9 +158,9 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
                     </> : <>
                         
                             
-                        <div className="dropdown is-active">
+                        <div className="dropdown is-active is-hoverable" onMouseLeave={() => setUserDropdown(!userDropdown)}>
                             <div className="dropdown-trigger">
-                                <button onClick={() => setUserDropdown(!userDropdown)} className={"button is-primary has-text-white is-rounded "} aria-haspopup="true" aria-controls="dropdown-menu">
+                                <button onClick={() => setUserDropdown(!userDropdown)} onMouseEnter={() => setUserDropdown(!userDropdown)} className={"button is-primary has-text-white is-rounded "} aria-haspopup="true" aria-controls="dropdown-menu">
                                     <FontAwesomeIcon icon={faUser} size="xl"/>
                                     <FontAwesomeIcon icon={userDropdown ? faChevronUp : faChevronDown} />
                                 </button>

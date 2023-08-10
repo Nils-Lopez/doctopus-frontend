@@ -1,4 +1,4 @@
-import React, {useState, Fragment} from "react"
+import React, {useState, Fragment, useEffect} from "react"
 
 import OrganisationParentForm from "../../atoms/forms/docs/OrganisationParentForm"
 import PersonParentForm from "../../atoms/forms/docs/PersonParentForm"
@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaste, faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 
-const ParentForm = ({selectedOrg, selectOrg, selectedPeople, selectPerson, selectedProj, selectProj, selectedDoc, selectDoc, selectedProds, selectProd, template, client, setAlert}) => {
+const ParentForm = ({selectedOrg, selectOrg, selectedPeople, selectPerson, selectedProj, selectProj, selectedDoc, selectDoc, selectedProds, selectProd, template, client, setAlert, autoCompletion, setAutoCompletion}) => {
   
   const [create, setCreate] = useState("organisation")
   const { t, i18n } = useTranslation();
@@ -84,9 +84,9 @@ const ParentForm = ({selectedOrg, selectOrg, selectedPeople, selectPerson, selec
       </ul>
     </div>
     {create === "organisation" ? <>
-      <OrganisationParentForm selectedOrg={selectedOrg} selectOrg={selectOrg}  template={template} client={client} setAlert={setAlert} />
+      <OrganisationParentForm selectedOrg={selectedOrg} selectOrg={selectOrg}  template={template} client={client} setAlert={setAlert} autoCompletion={autoCompletion} setAutoCompletion={setAutoCompletion}/>
     </> : create === "person" ? <>  
-      <PersonParentForm selectedPeople={selectedPeople} selectPerson={selectPerson}  template={template} client={client} setAlert={setAlert} />
+      <PersonParentForm selectedPeople={selectedPeople} selectPerson={selectPerson}  template={template} client={client} setAlert={setAlert} autoCompletion={autoCompletion} setAutoCompletion={setAutoCompletion}/>
     </> : create === "project" ? <>
       <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj}  template={template}  client={client} setAlert={setAlert} />
     </> : create === "doc" ? <>

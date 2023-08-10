@@ -115,7 +115,7 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
             })}
                 </div> : null}
 
-                {item.doc.tags && item.doc.tags[0] ? <>
+                {item.doc && item.doc.tags && item.doc.tags[0] ? <>
                     <hr />
          
                     <div className="is-flex is-justify-content-space-around">

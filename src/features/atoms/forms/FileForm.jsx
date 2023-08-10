@@ -139,7 +139,9 @@ const FileUpload = ({setFile, pdf}) => {
         fileUrl.split('.')[fileUrl.split('.').length - 1].toLowerCase() === "pdf" ? <embed src={fileUrl} width="100%" height="300px" /> : 
         ["png" , "jpg" , "jpeg" , "gif" , "ico" , "svg"].includes(fileUrl.split('.')[fileUrl.split('.').length - 1].toLowerCase()) ? <img src={fileUrl} alt="file" className="file-img"/> :
         ["mp4", "avi", "mov", "wmv", "flv", "mkv", "webm"].includes(fileUrl.split('.')[fileUrl.split('.').length - 1].toLowerCase()) ? <video src={fileUrl}  className="file-video" controls/> : 
-        ["wav", "mp3", "flac", "m4a"].includes(fileUrl.split('.')[fileUrl.split('.').length - 1].toLowerCase()) ? <audio src={fileUrl} controls/> : null
+        ["wav", "mp3", "flac", "m4a"].includes(fileUrl.split('.')[fileUrl.split('.').length - 1].toLowerCase()) ? <audio src={fileUrl} controls/> : fileUrl.includes("books.google") ?
+        <img src={fileUrl} alt="file" className="file-img"/>
+        : null
       }
       </div>}
     </div> : <>

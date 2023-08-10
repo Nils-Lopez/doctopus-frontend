@@ -8,7 +8,7 @@ import ParentSearchItem from "../../parents/SearchItem"
 
 import { useEntities } from "../../../../utils/hooks/Entities"
 import {useTranslation} from "react-i18next"
-const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lang, hideRoles, client, setAlert}) => {
+const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lang, hideRoles, client, setAlert, autoCompletion, setAutoCompletion}) => {
   const [organisationValue, setOrganisationValue] = useState("")
   const [orgForm, setOrgForm] = useState(false)
   const [selectedRoles, selectRole] = useState([])
@@ -72,6 +72,20 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
     setOrgs([])
     
   }
+
+  const [draftOrg, setDraftOrg] = useState(false)
+
+  useEffect(() => {
+    if (autoCompletion && autoCompletion.parents && autoCompletion.parents[0]) {
+      const drafts = []
+      autoCompletion.parents.map((p) => {
+        if (p.entity) drafts.push(p)
+      })
+      setDraftOrg(drafts)
+    }
+  }, [autoCompletion])
+
+  
 
   return <>
 
