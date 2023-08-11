@@ -564,6 +564,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
     {showIdentityForm ? <>
      
       {scanner ? <>
+        <span onClick={() => {setScanner(false)}} className="indextag  has-text-info ml-3 pt-2 pb-0 subtitle is-4"><FontAwesomeIcon icon={faCircleXmark} /></span>
         <BarcodeScannerComponent
         width={500}
         height={500}
@@ -575,11 +576,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
             findBookByIsbn(result.text.replaceAll(' ', '').replaceAll('-', '').replaceAll('.', ''))
             setScanner(false)
           }
-          else {
-            setAlert({ type: "error", message: { en: "Bardcode error, try again.", fr: "Erreur dans le code barre, réessayez"}})
-            setScanner(false)
-
-          }
+          
         }}
         onError={(err) => {
           console.log(err)
