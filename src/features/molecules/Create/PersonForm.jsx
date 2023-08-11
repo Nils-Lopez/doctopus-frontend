@@ -11,7 +11,7 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from "react-i18next";
 import {useNavigate} from "react-router-dom"
 
-const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) => {
+const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate, draftPerson}) => {
   
   const [nameValue, setNameValue] = useState("")
   const [descEnValue, setDescEnValue] = useState("")
@@ -241,6 +241,15 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) =
       }
   
     }
+
+    useEffect(() => {
+      if (draftPerson && draftPerson.name) {
+        setNameValue(draftPerson.name)
+        setFirstNameValue(draftPerson.name.split(' ')[0])
+        setLastNameValue(draftPerson.name.split(' ')[1])
+      }
+    }, [draftPerson])
+
   return loading ? <>
   <div className="loader">
   <div className="inner one"></div>

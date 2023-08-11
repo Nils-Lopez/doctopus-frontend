@@ -157,28 +157,37 @@ const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selec
         <SupportPreviewCard support={support} editSupportPreview={editSupportPreview} deleteSupportPreview={deleteSupportPreview}/>
       </Fragment>
     })} */}
-      <div className="tabs">
-        <ul>
-          <li onClick={() => {setIdLang("fr")}} className={idLang === "fr" ? "is-active" : ""}><a href="#">Français</a></li>
-          <li onClick={() => {setIdLang("en")}} className={idLang === "en" ? "is-active" : ""}><a href="#">English</a></li>
-        </ul>
-      </div>
-    <div className="field mt-3" id="supportTitle">
+    
+    {/* <div className="field mt-3" id="supportTitle">
       <label className="label has-text-left">{t('title')}</label>
-      {idLang === "en" ? <input type="text" className="input" value={titleEnValue} onChange={handleTitleEnChange}/> : <input type="text" className="input" value={titleFrValue} onChange={handleTitleFrChange}/>}
-    </div>
+      {i18n.language === "en" ? <input type="text" className="input" value={titleEnValue} onChange={handleTitleEnChange}/> : <input type="text" className="input" value={titleFrValue} onChange={handleTitleFrChange}/>}
+    </div> */}
     <div className="field" id="supportDesc">
        <label className="label has-text-left">{t('description')}</label>
-      {idLang === "en" ? <textarea className="textarea" value={descEnValue} onChange={handleDescEnChange}/> : <textarea  className="textarea" value={descFrValue} onChange={handleDescFrChange}/>}
+      {i18n.language === "en" ? <input type="text" className="input" value={descEnValue} onChange={handleDescEnChange}/> : <input type="text" className="input" value={descFrValue} onChange={handleDescFrChange}/>}
     </div>
-    {template && template.support_role ? <RoleForm roles={roles} scope="docs" location="support-form-doc" selectedRoles={selectedRoles} selectRole={selectRole} defaults={template.support_role_defaults} lang={idLang} /> : null}
-    {template && template.support_url ? <div className="field">
+    {template && template.support_role ? <RoleForm roles={roles} scope="docs" location="support-form-doc" selectedRoles={selectedRoles} selectRole={selectRole} defaults={template.support_role_defaults} lang={i18n.language} /> : null}
+    
+
+    <div className="columns">
+      <div className="column">
+      {template && template.support_format ? <>
+      <div className="field">
+        <label className="label has-text-left">{t('format')}</label>
+        <input type="text" className="input" value={formatValue} onChange={handleFormatChange} />
+      </div>
+    </> : null}
+      </div>
+      <div className="column">
+      {template && template.support_url ? <div className="field">
       <label className="label has-text-left">
         {t('link-url')}
       </label>
       
       <input type="text" className="input" value={urlValue} onChange={handleUrlChange}/>
     </div> : null}
+      </div>
+    </div>
     
     {template && template.support_pdf ? <div className="field">
        <label className="label has-text-left">
@@ -188,12 +197,7 @@ const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selec
 <FileForm setFile={handlePdfValue} pdf={pdfValue}/>
     </div> : null}
     
-    {template && template.support_format ? <>
-      <div className="field">
-        <label className="label has-text-left">{t('format')}</label>
-        <input type="text" className="input" value={formatValue} onChange={handleFormatChange} />
-      </div>
-    </> : null}
+    
 
     {template && template.support_accessibility ? <>
       <div className="field">

@@ -78,11 +78,17 @@ const ItemForm = ({scope, location, selectedItems, handleAddItem, selectItem, de
   const isItemExisting = () =>  {
     let retrievedItem = undefined
     items.map((item) => {
-     if (itemEnValue === getContent(item.title, "en")) {
+     if (mainField === "name") {
+      if (itemEnValue === item.name) {
+        retrievedItem = item
+      }
+     } else {
+      if (itemEnValue === getContent(item.title, "en")) {
         retrievedItem = itemEnValue
       } else if (itemFrValue === getContent(item.title, "fr")) {
         retrievedItem = item
-      }    
+      } 
+     }   
     })
     if (retrievedItem) {
       return retrievedItem
@@ -103,7 +109,7 @@ const ItemForm = ({scope, location, selectedItems, handleAddItem, selectItem, de
 
     setItemDescEn("")
     } else {
-        setFormModal(true)
+        setFormModal(mainField === "name" ? {name: itemEnValue} : mainField === "title" ? {title: itemEnValue} : true)
     }
   }
   

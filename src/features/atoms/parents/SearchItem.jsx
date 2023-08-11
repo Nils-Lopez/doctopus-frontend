@@ -15,7 +15,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
  
     const { t, i18n } = useTranslation() 
     if (parent !== "production" && item.scapin) {
-        return <div className="column is-one-quarter">
+        return <div className="column is-one-quarter-desktop is-half-tablet">
             <div className={"box results-col "+colClasses} onClick={() => handleSearchScapinParent(item, "parent")}>
             <div className="is-flex is-justify-content-end mt-0 mb-0">
             {item.person ? <>
@@ -65,7 +65,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
             </div>
         </div>
     } else if (item.project && parent !== "project") {
-        return <div className="column is-one-quarter" >
+        return <div className="column is-one-quarter-desktop is-half-tablet" >
             <div className={"box results-col "+ colClasses} onClick={() => {
                 if (!handleDelete) handleSearchParent(item.project)
             }}>
@@ -92,7 +92,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
         </div>
     } else if (item.person && parent !== "person") {
         console.log("'ici =: ", relTypes)
-        return <div className="column is-one-quarter">
+        return <div className="column is-one-quarter-desktop is-half-tablet">
             <div className={"box results-col " +colClasses} onClick={() => {
                 if (!handleDelete) handleSearchParent(item.person)
             }}>
@@ -124,7 +124,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
             </div>
         </div>
     } else if (item.entity && parent !== "entity") {
-        return <div className="column is-one-quarter">
+        return <div className="column is-one-quarter-desktop is-half-tablet">
             <div className={"box results-col "+colClasses} onClick={() => {
                 if (!handleDelete) handleSearchParent(item.entity)
             }}>
@@ -147,7 +147,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
             </div>
         </div>
     } else if (parent === "production") {
-            return <div className={"column is-one-quarter"} onClick={() => handleSearchScapinParent(item)}>
+            return <div className={"column is-one-quarter-desktop is-half-tablet"} onClick={() => handleSearchScapinParent(item)}>
                     <div className={"box results-col " +colClasses} onClick={() => {
                            
                         console.log('c tout ')

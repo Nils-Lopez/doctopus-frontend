@@ -1,3 +1,4 @@
+// Inspired by React's #import and #importAll in react - i18next. js
 import React, {useState, useEffect, Fragment} from "react"
 
 import RoleForm from "../RoleForm"
@@ -41,10 +42,39 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
   }, [template, personValue])
   
   const handleAddPerson = (p) => {
-    selectPerson([...selectedPeople, {person: p, roles: selectedRoles}])
+    const newPerson = {person: p, roles: selectedRoles}
+    selectPerson([...selectedPeople, newPerson])
+      console.log("test", draftPerson[0] && personValue === draftPerson[0].person.name)
+      if (draftPerson[0] && personValue === draftPerson[0].person.name) {
+        const filtered = []
+        autoCompletion.parents.map((p) => {
+          if (!(p.person && p.person.name === draftPerson[0].person.name)) {
+            filtered.push(p)
+
+          } 
+        })
+       
+        setAutoCompletion({...autoCompletion, parents: filtered})
+        if (draftPerson.length > 1) {
+          selectRole([draftPerson[1].roles])
+
+          const filteredDrafts = []
+          draftPerson.map((p) => {
+            if (p.person && p.person.name === draftPerson[0].person.name) {
+              filteredDrafts.push(p)
+            }
+          })
+          setDraftPerson(filteredDrafts)
+          console.log('filteredDrafts', filteredDrafts)
+        } else       selectRole([])
+
+        console.log("filtered: ", filtered)
+    } else {
       selectRole([])
 
-    setPersonValue("")
+      setPersonValue("")
+    }
+    
   }
 
     
@@ -93,20 +123,6 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
     }
   }, [draftPerson])
 
-  useEffect(() => {
-    if (selectedPeople && selectedPeople.length > 0 && draftPerson[0] && personValue === draftPerson[0].person.name) {
-        const filtered = []
-        autoCompletion.parents.map((p) => {
-          if (!(p.person && p.person.name === draftPerson[0].person.name)) {
-            filtered.push(p)
-
-          } 
-        })
-       
-        setAutoCompletion({...autoCompletion, parents: filtered})
-        console.log("filtered: ", filtered)
-    }   
-  }, [selectedPeople])
 
   console.log(draftPerson)
 
@@ -135,7 +151,7 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
                     <button onClick={() => setPersonForm(false)} className="delete is-large ml-4" aria-label="close"></button>
                 </div>
                 <div className="modal-card-body has-background-white-ter">
-                  <PersonForm client={client} setAlert={setAlert} setCreated={setCreated}/>
+                  <PersonForm client={client} setAlert={setAlert} setCreated={setCreated} draftPerson={personForm}/>
                 </div> 
             </div>
             

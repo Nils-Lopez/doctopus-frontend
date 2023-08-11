@@ -11,10 +11,11 @@ import {useDocs} from "../../../utils/hooks/docs/Docs"
 import {useDocTemplates} from "../../../utils/hooks/templates/DocTemplates"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
+import { faCircleXmark, faMagnifyingGlass, faCameraRetro, faCirclePlus} from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom"
 import { useIsbns } from '../../../utils/hooks/Isbn';
+import BarcodeScannerComponent from "react-qr-barcode-scanner";
 
 const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, setDataUpdate}) => {
   const { t, i18n } = useTranslation();
@@ -123,7 +124,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
 
   const handleLangChange = (e) => {
     e.preventDefault()
-      if (idLang === "en") {
+      if (i18n.language === "en") {
         setLangEnValue(e.target.value)
       } else {
         setLangFrValue(e.target.value)
@@ -174,7 +175,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
   
   const handleDescChange = (e) => {
     e.preventDefault()
-    if (idLang === "fr") {
+    if (i18n.language === "fr") {
       setDescFrValue(e.target.value)
     } else {
       setDescEnValue(e.target.value)
@@ -435,10 +436,12 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
 
   const {findBookByIsbn, responseFindBookByIsbn} =  useIsbns()
   const [autoCompletion, setAutoCompletion] = useState(false)
+  const [isbnLoading, setIsbnLoading] = useState(false)
 
   const handleSearchIsbn = (e) => {
     e.preventDefault()
-    findBookByIsbn(isbnValue)
+    setIsbnLoading(true)
+    findBookByIsbn(isbnValue.replaceAll(' ', '').replaceAll('-', '').replaceAll('.', ''))
   }
 
   useEffect(() => {
@@ -448,6 +451,8 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
     } else if (responseFindBookByIsbn) {
       setAlert({ type: "error", message: { en: "No book was found in our data.", fr: "Ce livre n'a pas été trouvé dans nos données"}})
     }
+    setIsbnLoading(false)
+    
   }, [responseFindBookByIsbn])
 
   useEffect(() => {
@@ -463,21 +468,32 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
           setDescFrValue(autoCompletion.description[1].content)
         }
       }
-      if (autoCompletion.date) setDateValue(autoCompletion.date)
+      if (autoCompletion.date) {
+        if (autoCompletion.date.includes('-')) {
+          setPubliDateValue(autoCompletion.date)
+          setDateValue(autoCompletion.date.split('-')[2] + " " +  new Date(autoCompletion.date).toString().split(' ')[1] + " " + autoCompletion.date.split('-')[0])
+          console.log("date: ", new Date(autoCompletion.date))
+        } else {
+          setDateValue(autoCompletion.date)
+        }
+      }
       if (autoCompletion.publishedAt) setPubliDateValue(autoCompletion.publishedAt)
       if (autoCompletion.thumb) setThumbValue(autoCompletion.thumb)
       
     }
   }, [autoCompletion])
+
+  const [scanner, setScanner] = useState(false)
   
 
-  return loading ? <>
+  return loading || isbnLoading ? <>
    <div className="loader">
   <div className="inner one"></div>
   <div className="inner two"></div>
   <div className="inner three"></div>
 </div> 
   </> : <form onSubmit={handleDocSubmit}>
+ 
     <div className="columns">
             {!dataUpdate ? <div className="column is-one-third">
               <div className="field">
@@ -546,23 +562,44 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
       </button>
    : null}</div>
     {showIdentityForm ? <>
-      <div className="tabs">
-        <ul>
-          <li onClick={() => setIdLang("fr")} className={idLang === "fr" ? "is-active" : ""}><a href="#" onClick={(e) => e.preventDefault()}>Français</a></li>
-          <li onClick={() => setIdLang("en")} className={idLang === "en" ? "is-active" : ""}><a href="#" onClick={(e) => e.preventDefault()}>English</a></li>
-        </ul>
-      </div>
-      {template && template.support_eanIsbn ?  
-        <div className="field">
-          <label className="label has-text-left">
-            {t('ean-isbn')}
-          </label>
-          <div className="is-flex">
-              <input type="text" className="input" value={isbnValue} onChange={handleIsbnChange}/>
+     
+      {scanner ? <>
+        <BarcodeScannerComponent
+        width={500}
+        height={500}
+        onUpdate={(err, result) => {
+          if (result && result.text) {
+            console.log("res: ", result.text)
+            setIsbnValue(result.text)
+            setIsbnLoading(true)
+            findBookByIsbn(result.text.replaceAll(' ', '').replaceAll('-', '').replaceAll('.', ''))
+            setScanner(false)
+          }
+          else {
+            setAlert({ type: "error", message: { en: "Bardcode error, try again.", fr: "Erreur dans le code barre, réessayez"}})
+            setScanner(false)
 
-              {isbnValue && isbnValue.length > 7 && (client && client.user) ? <button onClick={handleSearchIsbn} className="tag button is-primary mt-2 ml-2 pt-2 pb-2">Search</button> : null}   
-          </div>
-      </div> : null}
+          }
+        }}
+        onError={(err) => {
+          console.log(err)
+          setAlert({ type: "error", message: { en: "Bardcode error, try again.", fr: "Erreur dans le code barre, réessayez"}})
+          setScanner(false)
+        }}
+      />
+      </> : <>
+        {template && template.support_eanIsbn ?  
+          <div className="field">
+            <label className="label has-text-left">
+              {t('ean-isbn')}
+            </label>
+            <div className="is-flex">
+                <input type="text" className="input" value={isbnValue} onChange={handleIsbnChange}/>
+
+          {isbnValue && isbnValue.length > 7 && (client && client.user) ? <span onClick={handleSearchIsbn} className="indextag  has-text-info ml-3 pt-2 pb-0 subtitle is-4"><FontAwesomeIcon icon={faMagnifyingGlass} /></span> : <span onClick={() => {setScanner(true)}} className="indextag  has-text-info ml-3 pt-2 pb-0 subtitle is-4"><FontAwesomeIcon icon={faCameraRetro} /></span>}   
+            </div>
+        </div> : null}
+      </>}
       {template && template.languages && template.languages.exist ? <div className="columns">
       <div className="column">
         <div className="field">
@@ -580,12 +617,12 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
           </label>
       
               <div className="is-flex">
-                <input type="text" placeholder="Default language" className="input" value={idLang === "en" ? langEnValue : langFrValue} onChange={handleLangChange} />
-                <button onClick={addLang} className="button is-small is-primary mt-1 ml-2">Add</button>      
+                <input type="text" placeholder="Default language" className="input" value={i18n.language === "en" ? langEnValue : langFrValue} onChange={handleLangChange} />
+                <i className="has-text-info subtitle is-5 ml-2 mt-2  pointer" onClick={addLang}><FontAwesomeIcon icon={faCirclePlus} /></i>    
               </div>
         {selectedLangs.map((lang) => {
         return <Fragment key={lang.code}>
-          <span className="tag is-light is-medium mr-1 mt-2">{getContent(lang.labels, idLang)} <i className="has-text-danger ml-3 pointer" onClick={(e) => handleDeleteLang(e, lang)}><FontAwesomeIcon icon={faCircleXmark} /></i></span>
+          <span className="tag is-light is-medium mr-1 mt-2">{getContent(lang.labels, i18n.language)} <i className="has-text-danger ml-3 pointer" onClick={(e) => handleDeleteLang(e, lang)}><FontAwesomeIcon icon={faCircleXmark} /></i></span>
         </Fragment>
       })}
       </div> 
@@ -600,12 +637,12 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
       <label className="label has-text-left">
       {t('description')}
       </label>
-      <textarea className="textarea" value={idLang === "fr" ? descFrValue : descEnValue} onChange={handleDescChange}></textarea>
+      <textarea className="textarea" value={i18n.language === "fr" ? descFrValue : descEnValue} onChange={handleDescChange}></textarea>
       </div> : null}
      
       
-      <RoleForm location="support-form-doc" scope="docs" lang={idLang} selectedRoles={selectedTypes} selectRole={selectType}/>
-      {/* {template && template.tag ? <DocTagsForm selectedTags={selectedTags} selectTag={selectTag} scope="docs" lang={idLang} /> : null} */}
+      <RoleForm location="support-form-doc" scope="docs" lang={i18n.language} selectedRoles={selectedTypes} selectRole={selectType}/>
+      {/* {template && template.tag ? <DocTagsForm selectedTags={selectedTags} selectTag={selectTag} scope="docs" lang={i18n.language} /> : null} */}
       {template && template.tag ? <SearchTagsForm selectedTags={selectedTags} selectTag={selectTag} /> : null}
       {template && template.copyright ? <div className="field mt-2">
         <label className="label has-text-left">
@@ -613,20 +650,26 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
         </label>
         <input type="text" className="input" value={copyrightsValue} onChange={handleCopyrightsChange}/>
       </div> : null}
-      {template && template.support_publishedAt ? <div className="field">
+      {template && template.support_publishedAt ? <>
+       <div className="columns">
+       <div className="column">
+       <div className="field">
       <label className="label has-text-left">
         {t('sort-date')}
       </label>
       
       <input type="date" className="input" value={publiDateValue} onChange={handlePubliDateChange}/>
-    </div> : null}
-    {template && template.support_publishedAt ? <div className="field">
+    </div>
+       </div>
+    <div className="column"><div className="field">
       <label className="label has-text-left">
         {t('text-date')}
       </label>
       
       <input type="text" className="input" value={dateValue} onChange={handleDateChange}/>
-    </div> : null}
+    </div> </div>
+       </div>
+     </> : null}
     
      {template && template.support_pages ? <div className="field">
       <label className="label has-text-left">

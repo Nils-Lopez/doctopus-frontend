@@ -228,8 +228,7 @@ const HomePage = ({client, setClient, setAlert, watchlist, history}) => {
     const className = (!result || !result.docs || !result.docs[0]) && (!result || !result.items || !result.items[0]) && (!result || !result.tags || !result.tags[0]) && !displayDoc && !displayParent && !displayTag ? "landing" : "search"
   return <>
     <div className={className}>
-      <button className="button" onClick={() => console.log((!result.docs || !result.docs[0]) && (!result.docs || !result.docs[0]))}>Btn</button>
-      <div className="is-flex is-justify-content-center mb-6">
+      <div className="is-flex is-justify-content-center mb-6 mt-6">
        <form className="field" onSubmit={submitSearch}>
           <SearchBar searchValue={searchValue} setSearchValue={setSearchValue} filtersData={filtersData} setFiltersValue={setFiltersValue}/>
         </form>
@@ -270,7 +269,7 @@ const Landing = ({popularDocs, setDisplayDoc, setResult, t}) => {
  
       <div className="container recents-container mt-6 mb-0 pb-0 pl-5 pr-4">
         <h1 className="title is-4 has-text-white has-text-shadow mb-0">{t('find-in-doctopus')}</h1>
-        <div className="columns is-multiline pb-3 mb-0 mt-1 is-mobile">
+        <div className="columns is-multiline pb-0 mb-0 mt-1 is-mobile">
             <div className="column results-col  is-one-fifth-desktop is-one-third-tablet is-half-mobile">
               <div className="box pt-5 smooth-appear">
                 <h1 className="title is-5 mt-2"><strong className="title is-2"><Counter number={2157}/></strong> <br />{t('books')}</h1>
@@ -297,9 +296,9 @@ const Landing = ({popularDocs, setDisplayDoc, setResult, t}) => {
               </div>
             </div>
         </div>
-        <h1 className="title is-4 has-text-white has-text-shadow mb-0">{t('new-docs')} :</h1>
+        <h1 className="title is-4 has-text-white has-text-shadow mb-0 pb-0 mt-0 pt-0">{t('new-docs')} :</h1>
 
-        <div className="columns is-multiline pb-3 mb-0 mt-1">
+        <div className="columns is-multiline pb-3 mb-0 mt-0 pt-0">
         {popularDocs[0] && popularDocs.map((item, index) => {
 
 return <Fragment key={JSON.stringify(item)}>

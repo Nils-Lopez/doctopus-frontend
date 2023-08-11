@@ -125,6 +125,8 @@ position: relative;
   animation: smooth-appear 1.75s ease forwards;
 }
 
+
+
 .file-img {
   width: 300px;
   object-fit: cover;
@@ -600,6 +602,17 @@ label input[type=checkbox] {
   min-height: 170px;
   border-radius: 50%;
   perspective: 800px;
+}
+
+.mini-loader {
+  scale: 0.5;
+  position: absolute;
+  margin-top: 0;
+  margin-bottom: 0;
+  
+  max-height: 50px;
+
+  max-width: 50px;
 }
 
 .border-t {

@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import {useNavigate} from "react-router-dom"
 
-const OrganisationForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) => {
+const OrganisationForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate, draftOrg}) => {
   
   const [nameValue, setNameValue] = useState("")
   const [descEnValue, setDescEnValue] = useState("")
@@ -204,6 +204,13 @@ const OrganisationForm = ({client, setAlert, setCreated, dataUpdate, setDataUpda
       }
   
     }
+
+  useEffect(() => {
+    if (draftOrg && draftOrg.name) {
+      setNameValue(draftOrg.name)
+    }
+  }, [draftOrg])
+
   return loading ? <div className="loader">
   <div className="inner one"></div>
   <div className="inner two"></div>

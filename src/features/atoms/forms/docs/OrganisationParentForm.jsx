@@ -19,7 +19,7 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
 
   const { t, i18n } = useTranslation()
 
-
+console.log('org: ', orgForm)
   useEffect(() => {
     if (organisationValue === "" && template && template.parent_entity_defaults && template.parent_entity_defaults[0]) {
       template.parent_entity_defaults.map((org) => {
@@ -44,8 +44,35 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
     if (created && created.name && !orgs.includes(created)) {
       setOrgs([])
       selectOrg([...selectedOrg, {entity: created, roles: selectedRoles}])
+      if (draftOrg[0] && organisationValue === draftOrg[0].entity.name) {
+        const filtered = []
+        autoCompletion.parents.map((p) => {
+          if (!(p.entity && p.entity.name === draftOrg[0].entity.name)) {
+            filtered.push(p)
+
+          } 
+        })
+       
+        setAutoCompletion({...autoCompletion, parents: filtered})
+        if (draftOrg.length > 1) {
+          selectRole([draftOrg[1].roles])
+
+          const filteredDrafts = []
+          draftOrg.map((p) => {
+            if (p.entity && p.entity.name === draftOrg[0].entity.name) {
+              filteredDrafts.push(p)
+            }
+          })
+          setDraftOrg(filteredDrafts)
+          console.log('filteredDrafts', filteredDrafts)
+        } else       selectRole([])
+
+        console.log("filtered: ", filtered)
+    } else {
       selectRole([])
+
       setOrganisationValue("")
+    }
       setOrgForm(false)
     }
   }, [created])
@@ -59,8 +86,36 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
   const handleAddOrg = (org) => {
     selectOrg([...selectedOrg, {entity: org, roles: selectedRoles}])
       selectRole([])
+      if (draftOrg[0] && organisationValue === draftOrg[0].entity.name) {
+        const filtered = []
+        autoCompletion.parents.map((p) => {
+          if (!(p.entity && p.entity.name === draftOrg[0].entity.name)) {
+            filtered.push(p)
 
-    setOrganisationValue("")
+          } 
+        })
+       
+        setAutoCompletion({...autoCompletion, parents: filtered})
+        if (draftOrg.length > 1) {
+          selectRole([draftOrg[1].roles])
+
+          const filteredDrafts = []
+          draftOrg.map((p) => {
+            if (p.entity && p.entity.name === draftOrg[0].entity.name) {
+              filteredDrafts.push(p)
+            }
+          })
+          setDraftOrg(filteredDrafts)
+          console.log('filteredDrafts', filteredDrafts)
+        } else       selectRole([])
+
+        console.log("filtered: ", filtered)
+    } else {
+      selectRole([])
+
+      setOrganisationValue("")
+    }
+    
   }
 
   const handleDeleteOrg = (e, org) => {
@@ -117,7 +172,7 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
               <button onClick={() => setOrgForm(false)} className="delete is-large ml-4" aria-label="close"></button>
               </div>
               <div className="modal-card-body has-background-white-ter"> 
-                <OrganisationForm client={client} setAlert={setAlert} setCreated={setCreated}/>
+                <OrganisationForm client={client} setAlert={setAlert} setCreated={setCreated} draftOrg={orgForm}/>
               </div>
        
             </div>
