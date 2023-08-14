@@ -42,7 +42,7 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
                 {handleDelete ? <i className="has-text-danger ml-3 pointer" onClick={(e) => {
                 handleDelete(e, item)
               }}><FontAwesomeIcon icon={faCircleXmark} /></i> : null}
-                          {item.doc && item.doc.thumb && item.doc.thumb !== "" ? <img src={item.doc.thumb} alt="file" className="thumb-img"/> : null}
+                          {item.doc && item.doc.thumb && item.doc.thumb !== "" ? <img src={item.doc.thumb} alt="file" /> : null}
 
             <h3 className="subtitle is-6 mb-1 mt-1">{item.doc && item.doc.title}</h3>
             <h3 className="subtitle is-6 mb-1 mt-1 has-text-grey mt-3"><small>{item.doc && item.doc.date}</small></h3>
@@ -118,7 +118,7 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
                 {item.doc && item.doc.tags && item.doc.tags[0] ? <>
                     <hr />
          
-                    <div className="is-flex is-justify-content-space-around">
+                    <div className="columns is-multiline is-flex is-justify-content-space-around">
                         {item.doc.tags.map((tag, i) => {
                             if (tag) {
                                 let title = getContent(tag.title, i18n.language)

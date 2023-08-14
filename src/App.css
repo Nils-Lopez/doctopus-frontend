@@ -17,6 +17,64 @@ body {
     animation: App-logo-spin infinite 20s linear;
   }
 }
+.thumb-img {
+  height: 40%;
+  position: absolute;
+  right: 1.5%;
+  border-radius: 1.5%;
+}
+@media (max-width: 950px) {
+  .thumb-img {
+    height: 25%;
+    position: absolute;
+  }
+}
+@media (max-width: 768px) {
+  .thumb-img {
+   height: auto;
+   position: relative;
+  }
+}
+
+@media (min-width: 420px) {
+  .mobile-only {
+    display: none !important;
+  }
+}
+@media (max-width: 419px) {
+  .actions-btn {
+    display: none;
+  }
+  .mobile-only {
+    margin-top: 5px;
+    display: block;
+  }
+}
+
+@media (max-width: 810px) {
+  .search-button > strong {
+    display: none;
+  }
+  .price-block {
+    display: none;
+  }
+}
+
+@media (max-width: 400px) {
+ .auth-btn {
+  display: none !important;
+ }
+}
+
+/* .title-nav {
+  max-width: 300px;
+  overflow-wrap: break-word;  
+    word-wrap: break-word; 
+    word-break: break-word;
+} */
+.filters-label {
+  margin-top: -5px !important;
+}
 
 .dropdown-user-logged {
   position: absolute;

@@ -50,7 +50,7 @@ const ExemplariesForm= ({setPendingExemplaries, pendingExemplaries, template}) =
     setLocationValue(ex.location)
     setQualityValue(ex.quality)
     setPositionValue(ex.position)
-    setRankValue(ex.rank)
+    setRankValue(ex.cote)
   }
   
   const deleteExemplary = (ex) => {

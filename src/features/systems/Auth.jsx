@@ -149,10 +149,10 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
                             }}>FR</a>
                         </div>
                
-                        <button onClick={() => setSignUpModal(true)} className="button is-primary">
+                        <button onClick={() => setSignUpModal(true)} className="button is-primary auth-btn">
                             <strong>{t('signup')}</strong>
                         </button>
-                        <button onClick={() => setLogInModal(true)} className="button is-light">
+                        <button onClick={() => setLogInModal(true)} className="button is-light auth-btn">
                             {t('login')}
                         </button>
                     </> : <>

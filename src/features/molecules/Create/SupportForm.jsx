@@ -104,10 +104,10 @@ const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selec
   }
   
   const editSupportPreview = (support) => {
-    setTitleEnValue(support.title[0].content)
-    setTitleFrValue(support.title[1].content)
-    setDescEnValue(support.description[0].content)
-    setDescFrValue(support.description[1].content)
+    setTitleEnValue(getContent(support.title, "en"))
+    setTitleFrValue(getContent(support.title, "fr"))
+    setDescEnValue(getContent(support.description, "en"))
+    setDescFrValue(getContent(support.description, "fr"))
     setUrlValue(support.url)
     setPdfValue(support.pdf)
     selectRole(support.roles)
@@ -122,7 +122,6 @@ const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selec
      
     }
   }, [template])
-  
   const getContent = (value, lang) => {
     if (value) {
       return value.filter(obj => obj.lang === lang)[0] ? value.filter(obj => obj.lang === lang)[0].content : value.filter(obj => obj.lang === "en")[0] ? value.filter(obj => obj.lang === "en")[0].content : value.filter(obj => obj.lang === "fr")[0].content
@@ -137,7 +136,8 @@ const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selec
       if (updateSupport.title && updateSupport.title.length > 0) {
         setTitleEnValue(getContent(updateSupport.title, "fr"))
         setTitleFrValue(getContent(updateSupport.title, "fr"))
-      } else if (updateSupport.description && updateSupport.description.length > 0) {
+      }
+       if (updateSupport.description) {
         setDescEnValue(getContent(updateSupport.description, "en"))
         setDescFrValue(getContent(updateSupport.description, "fr"))
       }

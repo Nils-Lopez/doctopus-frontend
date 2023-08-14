@@ -50,6 +50,7 @@ body {
   right: 10px;
 }
 
+
 .selected-types-search {
   margin-top: -25px;
   position: relative;
@@ -316,7 +317,7 @@ body {
 
 @media only screen and (max-width: 1023px) {
   .landing-container .search-box {
-    width: 500px;
+    width: 90%;
   }
   .dropdown-user-logged {
     visibility: hidden;
@@ -328,6 +329,10 @@ body {
   .landing-container .search-box {
     width: 450px;
   }
+}
+
+.w-100 {
+  width: 100%;
 }
 
 .footer {

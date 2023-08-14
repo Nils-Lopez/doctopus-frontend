@@ -228,12 +228,12 @@ const HomePage = ({client, setClient, setAlert, watchlist, history}) => {
     const className = (!result || !result.docs || !result.docs[0]) && (!result || !result.items || !result.items[0]) && (!result || !result.tags || !result.tags[0]) && !displayDoc && !displayParent && !displayTag ? "landing" : "search"
   return <>
     <div className={className}>
-      <div className="is-flex is-justify-content-center mb-6 mt-6">
-       <form className="field" onSubmit={submitSearch}>
+      <div className="is-flex is-justify-content-center mb-6 mt-6 w-100">
+       <form className="field w-100" onSubmit={submitSearch}>
           <SearchBar searchValue={searchValue} setSearchValue={setSearchValue} filtersData={filtersData} setFiltersValue={setFiltersValue}/>
         </form>
       </div>    
-      <div className="landing-content">
+      <div className="landing-content pl-5 pr-3">
           {empty ? <>{t('no-match')}</> : <>
             {loadingSearch ? <div className="loader">
   <div className="inner one"></div>

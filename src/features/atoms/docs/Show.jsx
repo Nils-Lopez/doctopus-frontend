@@ -92,35 +92,44 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
         return alreadyIn
     }
 
+    console.log(supports[0])
+
     return dataUpdate && !dataUpdate.success ? <>
      <DocForm client={client} setAlert={setAlert} dataUpdate={dataUpdate} setDataUpdate={setDataUpdate}/>
     </> : <>
              <div className="is-flex is-justify-content-space-between mb-5">
                 <div>
-            <button className="button is-light is-medium tag" id="backBtn" onClick={handleBack}>
+                <button className="button is-light is-medium tag  mb-2 mobile-only" id="backBtn" onClick={handleBack}>
                 <FontAwesomeIcon icon={faRotateLeft} size="lg"/>
                 <strong>&nbsp;{t('back')}</strong>
             </button>
-            
-    {client && client.user ? !addingWatchlist ?	checkWatchlist() ? <button className="button is-primary ml-3 is-medium tag" onClick={(e) => {
+                <div className="actions-btn">
+
+            <button className="button is-light is-medium tag  mb-2" id="backBtn" onClick={handleBack}>
+                <FontAwesomeIcon icon={faRotateLeft} size="lg"/>
+                <strong>&nbsp;{t('back')}</strong>
+            </button>
+
+    {client && client.user ? !addingWatchlist ?	checkWatchlist() ? <button className="button   mb-2 is-primary ml-3 is-medium tag" onClick={(e) => {
 				e.preventDefault()
 				handleUpdateUser("remove")
                 setAddingWatchlist(true)
-			}}>{t('Remove from watchlist')}</button> : <button className="button is-primary ml-3 is-medium tag" onClick={(e) => {
+			}}>{t('Remove from watchlist')}</button> : <button className="button is-primary  mb-2 ml-3 is-medium tag" onClick={(e) => {
 				e.preventDefault()
 				handleUpdateUser()
                 setAddingWatchlist(true)
-			}}>{t('Add to watchlist')}</button> : 		<button className="button is-primary ml-3 is-medium tag disabled is-disabled" disabled>{t('Loading...')}</button>
+			}}>{t('Add to watchlist')}</button> : 		<button className="button is-primary  mb-2 ml-3 is-medium tag disabled is-disabled" disabled>{t('Loading...')}</button>
 		 : null}
      
                 {client && client.user && (client.user.type === "admin" || client.user.type === "moderator" || client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? 
-              <button className="button is-primary ml-3 is-medium tag" onClick={() => setDataUpdate(doc)}>
+              <button className="button is-primary ml-3  is-medium tag" onClick={() => setDataUpdate(doc)}>
                   {t('update')}
               </button>
  : null }  
      {client && client.user && (client.user.type === "admin" || client.user.type === "moderator" || client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") && doc.views && doc.views !== "" && doc.views !== null ? <>
                                     <span className="tag is-light is-medium button  ml-3">{doc.views} {t("views")}</span>
                                 </> : null}
+            </div>
                 </div>
                 <div>
                 {types && types[0] ? <>
@@ -145,14 +154,14 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
 
                 </div>
                 <div className="column">
-                    <img src={thumb} alt="file" className="thumb-img"/> :
+                    <img src={thumb} alt="file" className="thumb-img"/> 
 
                 </div>
             </div>
         </> : <>
         <h1 className="mt-2 title is-1 has-text-left">{title}</h1>
         {supports[0] && supports[0].url && supports[0].url.includes(('vimeo')) ?
-                        <div className="is-flex is-justify-content-center">
+                        <div className="is-flex is-justify-content-center ">
                             <iframe src={supports[0].url} width="740" height="460" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
                         </div>
                     : null}
@@ -199,8 +208,11 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
         {supports && supports[0] ? <div className="container">
             {supports.map((supp) => {
                 return <Fragment key={JSON.stringify(supp)}>
-                    {supp.url && supp.url !== "" && !supp.url.includes('vimeo') ? <div className="is-flex is-justify-content-start">
-                        <span className="tag is-light is-medium  mb-2    mr-1">Url: &nbsp; <a href={supp.url}>{supp.url}</a></span>
+                    {supp.description && supp.description[0] && getContent(supp.description, i18n.language) !== ""  ? <div className="is-flex is-justify-content-start">
+                    <span className="tag is-light is-medium  mb-2  is-clipped  mr-1">{getContent(supp.description, i18n.language)}</span>
+                    </div> :null}
+                    {supp.url && supp.url !== "" && !supp.url.includes('vimeo') ? <div className="is-flex is-justify-content-start ">
+                        <span className="tag is-light is-medium  mb-2  is-clipped  mr-1">Url: &nbsp; <a href={supp.url}>{supp.url}</a></span>
                     </div> : null}
                     {supp.pdf && supp.pdf !== "" ? <div className="is-flex is-justify-content-start">
                     <div className="file has-name is-primary">

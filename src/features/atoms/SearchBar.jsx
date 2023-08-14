@@ -102,7 +102,7 @@ const SearchBar = ({searchValue, setSearchValue, filtersData, setFiltersValue}) 
 
     return <>
     
-      <div className='container landing-container is-flex is-justify-content-center'>
+      <div className='container landing-container is-flex is-justify-content-center  w-100'>
         
   <div className='columns is-mobile box search-box '>
     <div className='column is-three-quarters is-paddingless'>
@@ -110,16 +110,16 @@ const SearchBar = ({searchValue, setSearchValue, filtersData, setFiltersValue}) 
         <label className='search-label label'>
           <span>{t('what')}</span>
         </label>
-        <input className='search-input home-input' placeholder='Title, author, tags ...' type='/search' value={searchValue} onChange={handleSearchChange} />
+        <input className='search-input home-input is-family-monospace' placeholder='Title, author, tags ...' type='/search' value={searchValue} onChange={handleSearchChange} />
       </div>
     </div>
     <div className='column options-searchbar is-paddingless'>
       <div className='price-block'>
         <label className='price-label label'>
-          <span>{t('where')}</span>
+          <span>{t('Filters')}</span>
         </label>
         <a className='button' onClick={() => setTagDropdown(!tagDropdown)} href='#' title='Rent Range'>
-          <span>{t('type')}, {t('date')}...</span>
+          <span className="has-text-grey has-text-muted is-family-monospace pb-3 filters-label">{t('type')}, {t('date')}...</span>
         </a>
         {tagDropdown ? <div className={"dropdown-container is-open is-rounded"} >
           <div className="dropdown p-2 pt-4 pb-4">
@@ -159,7 +159,7 @@ const SearchBar = ({searchValue, setSearchValue, filtersData, setFiltersValue}) 
       </div>
     </div>
     <div className='column is-paddingless'>
-        {searchValue.length > 0 ? <button className='button is-primary is-large search-button' type="submit"><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/> &nbsp; {t('search')}</button> :
+        {searchValue.length > 0 ? <button className='button is-primary is-large search-button' type="submit"><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/> &nbsp; <strong>{t('search')}</strong></button> :
         <button className='button is-primary is-large search-button' onClick={(e) => e.preventDefault()}><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/> &nbsp; <strong>{t('search')}</strong></button>}
     </div>
         </div>
