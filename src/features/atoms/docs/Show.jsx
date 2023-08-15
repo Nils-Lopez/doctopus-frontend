@@ -22,6 +22,8 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
     childs
       } = doc
 
+      console.log(doc)
+
       const [addingWatchlist, setAddingWatchlist] = useState(false)
 	const {updateUser, responseUpdateUser} = useUsers()
     const [displayFile, setDisplayFile] = useState(false)
@@ -95,7 +97,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
     console.log(supports[0])
 
     return dataUpdate && !dataUpdate.success ? <>
-     <DocForm client={client} setAlert={setAlert} dataUpdate={dataUpdate} setDataUpdate={setDataUpdate}/>
+     <DocForm client={client} setClient={setClient} setAlert={setAlert} dataUpdate={dataUpdate} setDataUpdate={setDataUpdate}/>
     </> : <>
              <div className="is-flex is-justify-content-space-between mb-5">
                 <div>
@@ -267,7 +269,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
      
         {includeParentType("project", parents) ? <>
         <h3 className="subtitle has-text-grey has-text-left is-5">Projects</h3>
-        <div className="columns is-multiline is-flex is-justify-content-center">
+        <div className="columns is-multiline is-flex is-justify-content-start">
         {parents && parents ? <>
                         
                         {parents.map((parent) => {
@@ -283,7 +285,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
         {includeParentType("parent_doc", parents) ? <>
         <hr />
         <h3 className="subtitle has-text-grey has-text-left is-5">{t('Docs')}</h3>
-        <div className="columns is-multiline is-flex is-justify-content-center">
+        <div className="columns is-multiline is-flex is-justify-content-start">
         {parents && parents ? <>
                         
                         {parents.map((parent) => {
@@ -298,7 +300,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
         {includeParentType("person", parents) ? <>
         <hr />
         <h3 className="subtitle has-text-grey has-text-left is-5">{t('people')}</h3>
-        <div className="columns is-multiline is-flex is-justify-content-center">
+        <div className="columns is-multiline is-flex is-justify-content-start">
         {parents && parents ? <>
                         
                         {parents.map((parent) => {
@@ -313,7 +315,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
         {includeParentType("entity", parents) ? <>
         <hr />
         <h3 className="subtitle has-text-grey has-text-left is-5">{t('Organizations')}</h3>
-        <div className="columns is-multiline is-flex is-justify-content-center">
+        <div className="columns is-multiline is-flex is-justify-content-start">
         {parents && parents ? <>
                         
                         {parents.map((parent) => {
@@ -328,7 +330,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
         {childs && childs[0] ? <>
         <hr />
         <h3 className="subtitle has-text-grey has-text-left is-5">{types && types[0] && types[0]._id === "6404c457e377d276c2dcac8a" ? t('Articles') : t('document')}</h3>
-        <div className="columns is-multiline is-flex is-justify-content-center">
+        <div className="columns is-multiline is-flex is-justify-content-start">
                         
                         {childs.map((parent) => {
                             console.log(parent.roles[0])

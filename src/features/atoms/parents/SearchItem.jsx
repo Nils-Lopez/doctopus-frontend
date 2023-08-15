@@ -12,7 +12,9 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
     const index = i - ((i/4).toString()[0] * 4)
     let colClasses = i || index === 0 ? " smooth-appear" : ""
     colClasses += i && index === 0 ? "" : index === 4 ? " sm5" : index === 3 ? " sm4" : index === 2 ? " sm3" : index === 1 ? " sm2" : ""
- 
+    
+    console.log('item: ', item)
+
     const { t, i18n } = useTranslation() 
     if (parent !== "production" && item.scapin) {
         return <div className="column is-one-quarter-desktop is-half-tablet">
@@ -87,7 +89,8 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
                     </div>
                     <h3 className="subtitle is-5 mb-1 mt-1">{item.project.title}</h3>
                 <p>{item.project.description && item.project.description[0] && getContent(item.project.description, i18n.language) ? getContent(item.project.description, i18n.language).substring(0,25) + "..." : null}</p>
-                
+                {item.project.childs.length > 0 ? <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.project.childs.length} {t('documents')}</span> : null}
+
             </div>
         </div>
     } else if (item.person && parent !== "person") {
@@ -143,7 +146,8 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
                 <h3 className="subtitle is-5 mb-1 mt-1">{item.entity.name}</h3>
                 <span className='has-text-grey'><small>{item.entity.country ? item.entity.country + ", " : null}{item.entity.city}</small></span>
                 <p>{item.entity.description && item.entity.description[0] ? getContent(item.entity.description, i18n.language).substring(0,20) + "..." : null}</p>
-                
+                {item.entity.childs.length > 0 ? <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.entity.childs.length} {t('documents')}</span> : null}
+
             </div>
         </div>
     } else if (parent === "production") {

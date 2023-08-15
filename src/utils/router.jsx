@@ -94,7 +94,7 @@ const Router = () => {
                 <Route path=":tag_slug" element={<HomePage client={client} setClient={setClient} watchlist={false} setAlert={setAlert}/>}/>
                 </Route>
                 {client && client.user && (client.user.type === "admin" || client.user.type === "moderator" || client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? <>
-                    <Route path="/admin/create" element={<Create client={client} setAlert={setAlert} />} />
+                    <Route path="/admin/create" element={<Create client={client} setClient={setClient} setAlert={setAlert} />} />
                     <Route path="/admin/dashboard" element={<Dashboard client={client} setAlert={setAlert} />}/>                 
                     <Route path="/admin/settings" element={<Settings client={client} setClient={setClient} setAlert={setAlert} />} />
                 </> : null}

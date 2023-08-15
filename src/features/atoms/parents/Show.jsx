@@ -159,6 +159,8 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
         }
     }
 
+    console.log("childs: ", parent)
+
     return showScapinParent ? <>
         <Show parent={showScapinParent} client={client} setAlert={setAlert} handleSearchParent={handleSearchScapinParent} handleSearchScapinID={handleSearchScapinID} handleSearchDoc={handleSearchDoc} handleBack={handleSearchScapinParent}/>
     </> : dataUpdate && !dataUpdate.success ? <>

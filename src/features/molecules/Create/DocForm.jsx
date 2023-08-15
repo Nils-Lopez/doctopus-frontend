@@ -15,9 +15,11 @@ import { faCircleXmark, faMagnifyingGlass, faCameraRetro, faCirclePlus} from '@f
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom"
 import { useIsbns } from '../../../utils/hooks/Isbn';
+import {useUsers} from "../../../utils/hooks/Users.js"
+
 import BarcodeScannerComponent from "react-qr-barcode-scanner";
 
-const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, setDataUpdate}) => {
+const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, dataUpdate, setDataUpdate}) => {
   const { t, i18n } = useTranslation();
 
   let navigate = useNavigate()
@@ -208,6 +210,7 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
       setShowParentForm(true)
     }
   }
+	const {updateUser} = useUsers()
 
 
   const handleDocSubmit = async (e) => {
@@ -238,9 +241,23 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
       parents: [...selectedProds, ...selectedOrg, ...selectedPeople, ...selectedProjects, ...selectedDoc],
       brotherhood: selectedBrotherHood
     }
+    if (draft) reqData.doc.draft = true
+    else reqData.doc.draft = false
     if (!dataUpdate) {
      await createDoc(reqData)
     } else {
+      if (dataUpdate.draft && !draft) {
+        
+                      const newList = []
+                      client.user.drafts.map((watch) => {
+                          if (watch._id !== dataUpdate._id) {
+                              newList.push({_id: watch._id})
+                          }
+                      })
+                      updateUser({drafts: newList}, client.user._id)
+                
+        
+      }
      await updateDoc(reqData, dataUpdate._id)
     }
 
@@ -249,6 +266,9 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
   useEffect(() => {
     if (responseCreateDoc && responseCreateDoc.success) {
       setAlert({ type: "success", message: { en: "Document has been successfully created.", fr: "Le document a été créé avec succès"}})
+      if (draft && setClient) {
+        setClient({...client, user: {...client.user, drafts: [...client.user.drafts, responseCreateDoc.data]}})
+      }
       setLoading(false)
     } else if (responseCreateDoc && !responseCreateDoc.success) {
       setAlert({ type: "error", message: { en: "An error occured while creating document.", fr: "Une erreure est survenue lors de la création du document"}})
@@ -484,7 +504,8 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
   }, [autoCompletion])
 
   const [scanner, setScanner] = useState(false)
-  
+  const [draft, setDraft] = useState(false)
+
 
   return loading || isbnLoading ? <>
    <div className="loader">
@@ -726,11 +747,16 @@ const DocForm = ({client, setAlert, selectedType, handleSelectType, dataUpdate, 
     {showParentForm ? <ParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} selectedProds={selectedProds} selectProd={selectProd} selectedPeople={selectedPeople} selectedDoc={selectedDoc} selectDoc={selectDoc} selectPerson={selectPerson} selectedProj={selectedProjects} selectProj={selectProject} template={template} client={client} setAlert={setAlert} autoCompletion={autoCompletion} setAutoCompletion={setAutoCompletion}/> : null}
    <div className="container mt-5">
    
-    <footer className=" is-flex is-justify-content-center">
+    <footer className=" is-flex is-justify-content-end">
     
-      <div className="is-fullwidth is-flex is-justify-content-center">
-      <button className="button is-primary is-medium" type="submit">
-      {dataUpdate ? t('update')  : t('create')}
+      <div className="is-fullwidth is-flex is-justify-content-end">
+      <button className="button is-white-ter is-radiusless mr-3" type="submit" onClick={() => setDraft(true)}>
+        
+        {t('Save as draft')}
+        </button>
+      <button className="button is-primary is-radiusless " type="submit">
+
+      {dataUpdate ? t('update')  : t('Publish')}
       </button>
    
       </div>

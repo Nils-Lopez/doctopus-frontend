@@ -14,7 +14,7 @@ import {useProjects} from "../../../utils/hooks/entities/Projects"
 import { useTranslation } from "react-i18next";
 
 
-const Create = ({client, setAlert}) => {
+const Create = ({client, setAlert, setClient}) => {
     const {t, i18n} = useTranslation()
     const [selectedType, selectType] = useState('Document')
 
@@ -45,7 +45,7 @@ const Create = ({client, setAlert}) => {
           
           <div className="form">
             {selectedType === "Document" ? 
-              <DocForm client={client} setAlert={setAlert} handleSelectType={handleSelectType} selectedType={selectedType}/>
+              <DocForm client={client} setClient={setClient} setAlert={setAlert} handleSelectType={handleSelectType} selectedType={selectedType}/>
             : selectedType === "Organisation" || selectedType === "Organization" ? 
               <OrganisationForm client={client} setAlert={setAlert} />
             :

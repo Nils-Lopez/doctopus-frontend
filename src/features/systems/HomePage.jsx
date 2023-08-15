@@ -239,7 +239,7 @@ const HomePage = ({client, setClient, setAlert, watchlist, history}) => {
   <div className="inner one"></div>
   <div className="inner two"></div>
   <div className="inner three"></div>
-</div> : (!result || !result.docs ||  !result.docs[0]) && (!result || !result.items || !result.items[0]) && (!result || !result.tags || !result.tags[0]) && !displayDoc && !displayParent && !displayTag ? <Landing popularDocs={popularDocs} setDisplayDoc={setDisplayDoc} setResult={setResult} t={t}/> : <SearchResult result={result} client={client} setClient={setClient} setAlert={setAlert} page={page} setPage={setPage} loadingSearch={loadingSearch} setResult={setResult} displayDoc={displayDoc} setDisplayDoc={setDisplayDoc} displayParent={displayParent} setDisplayParent={setDisplayParent} setLoading={setLoadingSearch} watchlist={watchlist} history={history} handleSearch={handleSearch} displayTag={displayTag} navHistory={navHistory} setNavHistory={setNavHistory} setDisplayTag={setDisplayTag}/>}
+</div> : (!result || !result.docs ||  !result.docs[0]) && (!result || !result.items || !result.items[0]) && (!result || !result.tags || !result.tags[0]) && !displayDoc && !displayParent && !displayTag ? <Landing popularDocs={popularDocs} setDisplayDoc={setDisplayDoc} setResult={setResult} t={t} client={client}/> : <SearchResult result={result} client={client} setClient={setClient} setAlert={setAlert} page={page} setPage={setPage} loadingSearch={loadingSearch} setResult={setResult} displayDoc={displayDoc} setDisplayDoc={setDisplayDoc} displayParent={displayParent} setDisplayParent={setDisplayParent} setLoading={setLoadingSearch} watchlist={watchlist} history={history} handleSearch={handleSearch} displayTag={displayTag} navHistory={navHistory} setNavHistory={setNavHistory} setDisplayTag={setDisplayTag}/>}
           </>}
           
       </div>
@@ -255,7 +255,7 @@ const Counter = ({ number }) => {
   );
 }
 
-const Landing = ({popularDocs, setDisplayDoc, setResult, t}) => {
+const Landing = ({popularDocs, setDisplayDoc, setResult, t, client}) => {
 
   const setDisplay = (item) => {
     setResult({docs: [item]})
@@ -298,6 +298,20 @@ const Landing = ({popularDocs, setDisplayDoc, setResult, t}) => {
             </div>
         </div>
         </div>
+        {client && client.user && client.user.drafts && client.user.drafts[0] && client.type !== "visitor" ? <>
+          <h1 className="title is-4 has-text-white has-text-shadow mb-0 pb-0 mt-0 pt-0">{t('drafts')} :</h1>
+          <div className="columns is-multiline pb-3 mb-4 mt-0 pt-0">
+            {client.user.drafts.map((item, index) => {
+
+              return <Fragment key={JSON.stringify(item)}>
+              <SearchItem item={{doc: item}} setDisplay={setDisplayDoc} i={index}/>
+          </Fragment>
+
+              
+            })}
+        </div>
+        </>: null}
+
         <h1 className="title is-4 has-text-white has-text-shadow mb-0 pb-0 mt-0 pt-0">{t('new-docs')} :</h1>
 
         <div className="columns is-multiline pb-3 mb-0 mt-0 pt-0">
