@@ -233,7 +233,7 @@ const HomePage = ({client, setClient, setAlert, watchlist, history}) => {
           <SearchBar searchValue={searchValue} setSearchValue={setSearchValue} filtersData={filtersData} setFiltersValue={setFiltersValue}/>
         </form>
       </div>    
-      <div className="landing-content pl-5 pr-3">
+      <div className="landing-content pl-3 pr-3">
           {empty ? <>{t('no-match')}</> : <>
             {loadingSearch ? <div className="loader">
   <div className="inner one"></div>
@@ -267,7 +267,8 @@ const Landing = ({popularDocs, setDisplayDoc, setResult, t}) => {
   return <>
   
  
-      <div className="container recents-container mt-6 mb-0 pb-0 pl-5 pr-4">
+      <div className="container recents-container mt-6 mb-0 pb-0 pl-2 pr-4">
+        <div className="metrics">
         <h1 className="title is-4 has-text-white has-text-shadow mb-0">{t('find-in-doctopus')}</h1>
         <div className="columns is-multiline pb-0 mb-0 mt-1 is-mobile">
             <div className="column results-col  is-one-fifth-desktop is-one-third-tablet is-half-mobile">
@@ -295,6 +296,7 @@ const Landing = ({popularDocs, setDisplayDoc, setResult, t}) => {
                 <h1 className="title is-5 mt-2"><strong className="title is-2"><Counter number={472}/></strong> <br />{t('photos')}</h1>
               </div>
             </div>
+        </div>
         </div>
         <h1 className="title is-4 has-text-white has-text-shadow mb-0 pb-0 mt-0 pt-0">{t('new-docs')} :</h1>
 

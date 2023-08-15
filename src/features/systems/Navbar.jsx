@@ -19,8 +19,10 @@ const Navbar = ({bake_cookie, read_cookie, delete_cookie, client, setClient, set
             <div className="navbar-brand">         
                 <div className="navbar-item">
                     <a href="https://contredanse.org" className="mt-1"><img src={logoOrange} className="lg-navbar"/></a>
-                    <h2 className="title is-4 mt-0 mb-1 ml-2 mr-2 title-nav "><strong>{t('documentation-center')}</strong></h2>
-                    <h3 className="subtitle is-6 mt-0 mb-1 ml-2 mr-2 has-text-grey tagline">{t('of-contredanse')}</h3>
+                    <h2 className="title is-4 mt-0 mb-1 ml-2 mr-2 title-nav desktop-only"><strong>{t('documentation-center')}</strong></h2>
+                    <h2 className="title is-4 mt-0 pt-0 mb-3 ml-2 mr-2 title-nav has-text-left nodesk-only"><strong>{t('documentation-center').split('-')[0]} <br/> {t('documentation-center').split('-')[1]}</strong></h2>
+
+                    <h3 className="subtitle is-6 mt-0 mb-1 ml-2 mr-2 has-text-grey tagline desktop-only">{t('of-contredanse')}</h3>
                 </div>   
        
 

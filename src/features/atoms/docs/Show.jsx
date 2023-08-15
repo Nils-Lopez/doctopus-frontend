@@ -155,7 +155,6 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                 </div>
                 <div className="column">
                     <img src={thumb} alt="file" className="thumb-img"/> 
-
                 </div>
             </div>
         </> : <>

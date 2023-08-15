@@ -113,7 +113,13 @@ const SearchBar = ({searchValue, setSearchValue, filtersData, setFiltersValue}) 
         <input className='search-input home-input is-family-monospace' placeholder='Title, author, tags ...' type='/search' value={searchValue} onChange={handleSearchChange} />
       </div>
     </div>
-    <div className='column options-searchbar is-paddingless'>
+    <button type="submit" className="button has-background-transparent no-desktop is-borderless mt-1 pl-1 ml-auto mr-auto is-flex is-justify-content-center pl-3 mt-2 " onClick={(e) => {
+      if (searchValue.length === 0) {
+        e.preventDefault()
+      }
+    }}>    <span className="has-text-primary pointer ml-auto mr-auto title is-4  mt-2 ml-3"><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/></span>
+</button>
+    <div className='column options-searchbar is-paddingless desktop-only'>
       <div className='price-block'>
         <label className='price-label label'>
           <span>{t('Filters')}</span>
@@ -158,7 +164,7 @@ const SearchBar = ({searchValue, setSearchValue, filtersData, setFiltersValue}) 
         </div> :  null}
       </div>
     </div>
-    <div className='column is-paddingless'>
+    <div className='column is-paddingless desktop-only'>
         {searchValue.length > 0 ? <button className='button is-primary is-large search-button' type="submit"><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/> &nbsp; <strong>{t('search')}</strong></button> :
         <button className='button is-primary is-large search-button' onClick={(e) => e.preventDefault()}><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/> &nbsp; <strong>{t('search')}</strong></button>}
     </div>

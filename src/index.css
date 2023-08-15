@@ -330,7 +330,30 @@ body {
     width: 450px;
   }
 }
+.nodesk-only {
+  display: none;
+}
+@media (max-width: 457px) {
+  .desktop-only, .options-searchbar, .metrics {
+    display: none !important;
+  }
+  .nodesk-only {
+    display: block !important;
+  }
+  .navbar-burger {
+    scale: 1.5;
+   
+  }
+  .navbar-burger:hover {
+    background-color: transparent !important;
+  }
+}
 
+.has-background-transparent {
+  background-color: transparent !important;
+}
+.is-borderless, .is-borderless:focus { border: 0 !important; box-shadow: 0 !important; outline: none !important; -webkit-box-shadow: none;
+  box-shadow: none; }
 .w-100 {
   width: 100%;
 }
