@@ -306,7 +306,7 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
             </div>
         </div>     
         </> : null}
-        <div className="columns is-multiline is-flex is-justify-content-center">
+        <div className="columns is-multiline is-flex is-justify-content-start">
             {childs && childs[0] ? childs.map((child, i) => {
             if ((childsPage === 1 && i < 15) || (i > (((childsPage - 1)*15)-1)) && (i < (((childsPage)*15)))) {
                 let parentType = undefined
@@ -327,14 +327,14 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
                 
             }) : null}
          </div>     
-        <div className="columns is-multiline is-flex is-justify-content-center">
+        <div className="columns is-multiline is-flex is-justify-content-start">
             {actors && actors[0] ? actors.map((actor) => {
                 return <Fragment key={JSON.stringify(actor)}>
                     <SearchItemParent item={actor} handleSearchParent={handleSearchParent} relTypes={actor.role}/>
                 </Fragment>   
             }) : null}
          </div>     
-         <div className="columns is-multiline is-flex is-justify-content-center">
+         <div className="columns is-multiline is-flex is-justify-content-start">
             {projects && projects[0] ? projects.map((project) => {
                 return <Fragment key={JSON.stringify(project)}>
                     <SearchItemParent item={{project: project}} handleSearchParent={handleSearchParent}/>

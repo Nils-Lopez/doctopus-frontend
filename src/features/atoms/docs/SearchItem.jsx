@@ -130,10 +130,12 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
                             } else if (i < 2) {
                                 let title = item.doc.tags[i + 1] ? getContent(item.doc.tags[i + 1].title, i18n.language) : ""
 
-                                return <Fragment key={JSON.stringify(tag)}>
+                                if (title !== "Error") {
+                                    return <Fragment key={JSON.stringify(tag)}>
                                 <span className="tag is-info is-small mb-2 " >{title && title.length >= 10 ? title.slice(0, 10) + ".." : title}</span>
                                
                             </Fragment>
+                                }
                             }
                             }
                         })}

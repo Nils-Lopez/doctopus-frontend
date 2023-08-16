@@ -6,7 +6,7 @@ import {useUsers} from "../../../utils/hooks/Users.js"
 
 import DocForm from "../../molecules/Create/DocForm"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRotateLeft } from '@fortawesome/free-solid-svg-icons'
+import { faGlobe, faRotateLeft } from '@fortawesome/free-solid-svg-icons'
 import { faCircleCheck, faChevronDown, faChevronUp, faUpload, faTrash } from '@fortawesome/free-solid-svg-icons'
 
 const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchParent, handleSearchDoc, handleBack}) => {
@@ -148,73 +148,69 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
         
         </div>
         {thumb && thumb !== "" ? <>
-            <div className="columns">
-                <div className="column ">
+            <div className="columns mb-0 pb-0">
+                <div className="column mb-0 pb-0">
                 <h1 className="mt-2 title is-1 has-text-left">{title}</h1>
-                {description && description[0] ? <p className="  mt-5 has-text-left">{getContent(description, i18n.language)}</p> : null}
-                {languages && languages[0] ? <p className="has-text-left">{getContent(languages[0].labels, i18n.language)}</p> : null}
-
+                {languages && languages[0] ? <p className="has-text-left mb-1">{t('language')}: {getContent(languages[0].labels, i18n.language)}</p> : null}
+                {doc.date && doc.date !== "" ? 
+                                    <p className="has-text-left mt-0  mb-0 pt-0">{t('publication date')}: {doc.date} </p>
+                              : null}
+                {doc.eanIsbn && doc.eanIsbn !== "" ? 
+                <p className="has-text-left mt-1  mb-0 pt-0">EAN/ISBN: {doc.eanIsbn} </p>
+                                : null}        
+                                {doc.pages && doc.pages !== "" ? <p className="has-text-left mt-1  mb-0 pt-0">{!(doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2) ? "Pages : " : null} {doc.pages} {doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2 ? "pages" : null}</p> : doc.volume && doc.volume !== "" ? 
+                                <p className="has-text-left mt-1  mb-0 pt-0">{t('volume')} {doc.volume}</p>
+                                : doc.number && doc.number !== "" ? 
+                                <p className="has-text-left mt-1  mb-0 pt-0">{t('number')} {doc.number}</p>
+                                 : null}  
+                               {doc.issn && doc.issn !== "" ?  <p className="has-text-left mt-1  mb-0 pt-0">ISSN: {doc.issn} </p> : null}
+                                {doc.duration && doc.duration !== "" ?  <p className="has-text-left mt-1  mb-0 pt-0">{doc.duration} </p> : null}
+                                {doc.additionalCopyrights && doc.additionalCopyrights !== "" ?  <p className="has-text-left mt-1  mb-0 pt-0">{t('credits')}: {doc.additionalCopyrights} </p> : null}    
+                {description && description[0] ? <p className="  mt-1 mb-0 pb-0 has-text-left">{getContent(description, i18n.language)}</p> : null}
+                
                 </div>
-                <div className="column">
+                <div className="column mb-0 pb-0">
                     <img src={thumb} alt="file" className="thumb-img"/> 
                 </div>
             </div>
         </> : <>
         <h1 className="mt-2 title is-1 has-text-left">{title}</h1>
+                {languages && languages[0] ? <p className="has-text-left mb-1">{t('language')}: {getContent(languages[0].labels, i18n.language)}</p> : null}
+                {doc.date && doc.date !== "" ? 
+                                    <p className="has-text-left mt-0  mb-0 pt-0">{t('publication date')}: {doc.date} </p>
+                              : null}
+                {doc.eanIsbn && doc.eanIsbn !== "" ? 
+                <p className="has-text-left mt-1  mb-0 pt-0">EAN/ISBN: {doc.eanIsbn} </p>
+                                : null}        
+                                {doc.pages && doc.pages !== "" ? <p className="has-text-left mt-1  mb-0 pt-0">{!(doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2) ? "Pages : " : null} {doc.pages} {doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2 ? "pages" : null}</p> : doc.volume && doc.volume !== "" ? 
+                                <p className="has-text-left mt-1  mb-0 pt-0">{t('volume')} {doc.volume}</p>
+                                : doc.number && doc.number !== "" ? 
+                                <p className="has-text-left mt-1  mb-0 pt-0">{t('number')} {doc.number}</p>
+                                 : null}  
+                               {doc.issn && doc.issn !== "" ?  <p className="has-text-left mt-1  mb-0 pt-0">ISSN: {doc.issn} </p> : null}
+                                {doc.duration && doc.duration !== "" ?  <p className="has-text-left mt-1  mb-0 pt-0">{doc.duration} </p> : null}
+                                {doc.additionalCopyrights && doc.additionalCopyrights !== "" ?  <p className="has-text-left mt-1  mb-0 pt-0">{t('credits')}: {doc.additionalCopyrights} </p> : null}    
+                {description && description[0] ? <p className="  mt-1 mb-1 pb-0 has-text-left">{getContent(description, i18n.language)}</p> : null}
+                
+</>}
         {supports[0] && supports[0].url && supports[0].url.includes(('vimeo')) ?
                         <div className="is-flex is-justify-content-center ">
                             <iframe src={supports[0].url} width="740" height="460" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
                         </div>
                     : null}
-        {description && description[0] ? <p className="  mt-5 has-text-left">{getContent(description, i18n.language)}</p> : null}
-        {languages && languages[0] ? <p className="has-text-left">{getContent(languages[0].labels, i18n.language)}</p> : null}
 
-        </>}
-        {thumb && thumb !== "" && supports[0] && supports[0].url && supports[0].url.includes(('vimeo')) ?
-                        <div className="is-flex is-justify-content-center">
-                            <iframe src={supports[0].url} width="740" height="460" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
-                        </div>
-                    : null}
 
-        <div className="container mt-3">
-        {doc.pages && doc.pages !== "" ? <div className="is-flex is-justify-content-start">
-                                    <span className="tag is-light is-medium  mb-2   mr-1">{!(doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2) ? "Pages : " : null} {doc.pages} {doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2 ? "pages" : null}</span>
-                                </div> : doc.volume && doc.volume !== "" ? <div className="is-flex is-justify-content-start"> 
-                                    <span className="tag is-light is-medium  mb-2   mr-1">{t('volume')} {doc.volume}</span>
-                                </div> : doc.number && doc.number !== "" ? <div className="is-flex is-justify-content-start"> 
-                                    <span className="tag is-light is-medium  mb-2   mr-1">{t('number')} {doc.number}</span>
-                                </div> : null}
-                                {doc.date && doc.date !== "" ? <div className="is-flex is-justify-content-start">
-                                    <span className="tag is-light is-medium  mb-2   mr-1">{doc.date} </span>
-                                </div> : null}
-                                {doc.publishedAt && doc.publishedAt !== "" ? <div className="is-flex is-justify-content-start">
-                                    <span className="tag is-light is-medium  mb-2   mr-1">{convertDate(doc.publishedAt)} </span>
-                                </div> : null}
-
-                               {doc.issn && doc.issn !== "" ? <div className="is-flex is-justify-content-start">
-                                    <span className="tag is-light is-medium  mb-2   mr-1">ISSN: {doc.issn} </span>
-                                </div> : null}
-                                {doc.eanIsbn && doc.eanIsbn !== "" ? <div className="is-flex is-justify-content-start">
-                                    <span className="tag is-light is-medium  mb-2   mr-1">EAN/ISBN: {doc.eanIsbn} </span>
-                                </div> : null}
-                                {doc.duration && doc.duration !== "" ? <div className="is-flex is-justify-content-start">
-                                    <span className="tag is-light is-medium  mb-2    mr-1">{doc.duration} </span>
-                                </div> : null}
-                                {doc.additionalCopyrights && doc.additionalCopyrights !== "" ? <div className="is-flex is-justify-content-start">
-                                    <span className="tag is-light is-medium  mb-2    mr-1">{t('credits')}: {doc.additionalCopyrights} </span>
-                                </div> : null}
-                                 
-                                
-        </div>                    
-        {supports && supports[0] ? <div className="container">
+                        
+        {supports && supports[0] ? <>
             {supports.map((supp) => {
                 return <Fragment key={JSON.stringify(supp)}>
-                    {supp.description && supp.description[0] && getContent(supp.description, i18n.language) !== ""  ? <div className="is-flex is-justify-content-start">
-                    <span className="tag is-light is-medium  mb-2  is-clipped  mr-1">{getContent(supp.description, i18n.language)}</span>
-                    </div> :null}
-                    {supp.url && supp.url !== "" && !supp.url.includes('vimeo') ? <div className="is-flex is-justify-content-start ">
-                        <span className="tag is-light is-medium  mb-2  is-clipped  mr-1">Url: &nbsp; <a href={supp.url}>{supp.url}</a></span>
-                    </div> : null}
+                    {supp.description && supp.description[0] && getContent(supp.description, i18n.language) !== ""  ?  <p className="has-text-left mt-1  mb-0 pt-0">{getContent(supp.description, i18n.language)}</p> :null}
+                   
+                    
+                    {supp.format && supp.format !== "" ?  <p className="has-text-left mt-1  mb-0 pt-0">Format: {supp.format}</p> : null}
+                    {supp.accessibility && supp.accessibility !== "" ?  <p className="has-text-left mt-1  mb-0 pt-0">{supp.accessibility}</p> : null}
+                    {supp.url && supp.url !== "" && !supp.url.includes('vimeo') ?  <p className="has-text-left mt-1  mb-0 pt-0"><FontAwesomeIcon icon={faGlobe} className="has-text-primary mr-1 pt-1"/> <a href={supp.url}>{supp.url.replaceAll('//', "$4:").split('/')[0].replaceAll('$4:', "//") }</a>
+                    </p> : null}
                     {supp.pdf && supp.pdf !== "" ? <div className="is-flex is-justify-content-start">
                     <div className="file has-name is-primary">
   <label className="file-label">
@@ -229,28 +225,11 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
     </label>
     </div>
                     </div> : null}
-                    {supp.format && supp.format !== "" ? <div className="is-flex is-justify-content-start">
-                        <span className="tag is-light is-medium  mb-2    mr-1">{supp.format}</span>
-                    </div> : null}
-                    {supp.accessibility && supp.accessibility !== "" ? <div className="is-flex is-justify-content-start">
-                        <span className="tag is-light is-medium  mb-2    mr-1">{supp.accessibility}</span>
-                    </div> : null}
+                    {supp.exemplaries && supp.exemplaries[0] ? <p className="has-text-left mb-0 mt-2 has-text-grey">{t('copies')}: </p>: null}
                     {supp.exemplaries && supp.exemplaries[0] ? supp.exemplaries.map((ex) => {
-                            console.log('ex: ', ex)
                         return <Fragment key={JSON.stringify(ex)}>
-                          
-                            {ex.position && ex.position !== "" ? <div className="is-flex is-justify-content-start">
-                                    <span className="tag is-light is-medium  mb-2   mr-1">{ex.position} </span>
-                                </div> : null}
-                                {ex.location && ex.location !== "" ? <div className="is-flex is-justify-content-start">
-                                    <span className="tag is-light is-medium  mb-2    mr-1">{ex.location} </span>
-                                </div> : null}
-                                {ex.quality && ex.quality !== "" ? <div className="is-flex is-justify-content-start">
-                                    <span className="tag is-light is-medium  mb-2    mr-1"> {ex.quality} </span>
-                                </div> : null}
-                                {ex.cote && ex.cote !== "" && ex.cote !== null ? <div className="is-flex is-justify-content-start">
-                                    <span className="tag is-light is-medium  mb-2    mr-1">{ex.cote}</span>
-                                </div> : null}
+                            <p className="has-text-left mt-0 pt-0">{ex.position} {ex.position && ex.position !== "" ? "|" : null} {ex.location} {ex.location && ex.location!== "" ? "|" : null} {ex.quality} {ex.quality && ex.quality !== "" ? "|" : null} {ex.cote} </p>
+                            
                         </Fragment>
                     }) : null}
                   
@@ -265,8 +244,22 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
 
                 </Fragment>
             })}
-        </div> : null }
-     
+        </> : null }
+        <div className="container mt-3">
+        {tags && tags[0] ? <>
+           
+            {tags.map((type) => {
+                let title = getContent(type.title, i18n.language)
+                if (title !== "" && title !== " ") {
+                    return <Fragment key={JSON.stringify(type)}>
+                        <span className="tag is-medium is-info mr-1 ml-1 mt-1 indextag" onClick={() => handleSearchTag(type)}>
+                            {title && title.length >= 14 ? title.slice(0, 14) + ".." : title}
+                        </span>
+                    </Fragment>
+                }
+            })}
+        </> : null}
+        </div>
         {includeParentType("project", parents) ? <>
         <h3 className="subtitle has-text-grey has-text-left is-5">Projects</h3>
         <div className="columns is-multiline is-flex is-justify-content-start">
@@ -341,22 +334,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                             }
                         })}
         </div></> : null}
-        <div className="container mt-3">
-        {tags && tags[0] ? <>
-            <hr />
-        <h3 className="subtitle has-text-grey has-text-left is-5">{t('tags')}</h3>
-            {tags.map((type) => {
-                let title = getContent(type.title, i18n.language)
-                if (title !== "" && title !== " ") {
-                    return <Fragment key={JSON.stringify(type)}>
-                        <span className="tag is-medium is-info mr-1 ml-1 mt-1 indextag" onClick={() => handleSearchTag(type)}>
-                            {title && title.length >= 14 ? title.slice(0, 14) + ".." : title}
-                        </span>
-                    </Fragment>
-                }
-            })}
-        </> : null}
-        </div>
+        
         
 
     </>

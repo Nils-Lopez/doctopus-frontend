@@ -137,7 +137,7 @@ const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selec
         setTitleEnValue(getContent(updateSupport.title, "fr"))
         setTitleFrValue(getContent(updateSupport.title, "fr"))
       }
-       if (updateSupport.description) {
+       if (updateSupport.description && updateSupport.description.length > 0) {
         setDescEnValue(getContent(updateSupport.description, "en"))
         setDescFrValue(getContent(updateSupport.description, "fr"))
       }

@@ -270,6 +270,7 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
         setClient({...client, user: {...client.user, drafts: [...client.user.drafts, responseCreateDoc.data]}})
       }
       setLoading(false)
+      navigate('/document/' + responseCreateDoc.data._id)
     } else if (responseCreateDoc && !responseCreateDoc.success) {
       setAlert({ type: "error", message: { en: "An error occured while creating document.", fr: "Une erreure est survenue lors de la création du document"}})
             setLoading(false)

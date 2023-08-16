@@ -33,7 +33,10 @@
     "articles": "Articles",
     "videos": "Films",
     "photos": "Pictures",
+    "Docs": "Documents",
     "result": "Result",
+    "publication date": "Publication's date",
+
     "find-in-doctopus": "Find in dOctopus - Catalog of the documentation centre about dance :",
     "recents-docs": "Recent documents :",
     "tags": "Tags",
