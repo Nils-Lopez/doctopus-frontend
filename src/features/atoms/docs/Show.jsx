@@ -94,7 +94,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
         return alreadyIn
     }
 
-    console.log(supports[0])
+    console.log("doc: ", doc)
 
     return dataUpdate && !dataUpdate.success ? <>
      <DocForm client={client} setClient={setClient} setAlert={setAlert} dataUpdate={dataUpdate} setDataUpdate={setDataUpdate}/>

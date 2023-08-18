@@ -48,7 +48,7 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
         parents
     } = parent
 
-    // console.log('childs: ', productionIds)
+    console.log('childs: ', parent)
 
     const [productionsScapin, setProductions] = useState(false)
     const [prodLoading, setProdLoading] = useState(false)

@@ -42,7 +42,7 @@ const DocParentForm = ({selectedDoc, selectDoc, location, template, lang, hideRo
   }
 
   const handleAddDoc = (doc) => {
-    selectDoc([...selectedDoc, {doc: doc, roles: selectedRoles}])
+    selectDoc([...selectedDoc, {parent_doc: doc, roles: selectedRoles}])
     selectRole([])
 
     setDocValue("")
@@ -58,8 +58,8 @@ const DocParentForm = ({selectedDoc, selectDoc, location, template, lang, hideRo
     {noDocFound ? <p className="subtitle is-6 has-text-primary has-text-left mt-0"><small>{t('cannot-find-doc')}</small></p> : null}  
     <div className="columns is-multiline">
       {selectedDoc && selectedDoc[0] ? selectedDoc.map((doc) => {
-        if (doc.doc && (doc.doc.title || doc.doc.slug)) {
-          return <Fragment key={doc.doc._id + "selected"}>
+        if (doc.parent_doc && (doc.parent_doc.title || doc.parent_doc.slug)) {
+          return <Fragment key={doc.parent_doc._id + "selected"}>
             
                          <ParentSearchItem item={doc} handleDelete={handleDeleteDoc}/>
 

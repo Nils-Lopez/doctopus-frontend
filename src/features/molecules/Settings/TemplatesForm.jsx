@@ -103,6 +103,8 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
       selectDocType(template.type_defaults)
     }
   
+    
+
     const handleNewTemplate = () => {
       setNameValue("")
       setDescValue(true)
@@ -371,6 +373,7 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
     }, [parentTemplate])
 
     
+
     return <>
       <div className="panel mb-6 template-form-panel">
         <div className="panel-heading is-flex is-justify-content-space-between heading-template">
@@ -557,7 +560,7 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
               <div className="field is-flex is-flex is-justify-content-start">
              {!parentTemplate ?           <input id="switchExample" type="checkbox" name="switchExample" className="switch is-rtl" checked={typeValue ? "checked" : ""} onChange={() => setTypeValue(!typeValue)} />
 : null}
-<label htmlFor="switchExample" className="label">{t('types')}</label>
+<label htmlFor="switchExample" className="label">{t('supports')} {t('types')}</label>
 </div>
        </div>
        <div className="column">
