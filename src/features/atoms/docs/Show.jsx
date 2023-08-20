@@ -22,7 +22,6 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
     childs
       } = doc
 
-      console.log(doc)
 
       const [addingWatchlist, setAddingWatchlist] = useState(false)
 	const {updateUser, responseUpdateUser} = useUsers()
@@ -36,6 +35,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
         setDataUpdate(false)
       }
     }, [dataUpdate])
+
     const handleDisplayFile = (e) => {
         e.preventDefault()
         setDisplayFile(!displayFile)
@@ -66,7 +66,6 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
         setAddingWatchlist(false)
        }
     }, [responseUpdateUser])
-    console.log('p: ', types)
     const includeParentType = (type, parents) => {
         let included = false
         parents.map((parent) => {
@@ -94,7 +93,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
         return alreadyIn
     }
 
-    console.log("doc: ", doc)
+    console.log('doc: ', doc)
 
     return dataUpdate && !dataUpdate.success ? <>
      <DocForm client={client} setClient={setClient} setAlert={setAlert} dataUpdate={dataUpdate} setDataUpdate={setDataUpdate}/>
@@ -136,7 +135,6 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                 <div>
                 {types && types[0] ? <>
             {types.map((type) => {
-                console.log("types : ", types)
                 return <Fragment key={JSON.stringify(type)}>
                     <span className="tag is-large is-white has-text-info mr-1 ml-1 mb-0">
                         {getContent(type.title,i18n.language)}
@@ -151,7 +149,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
             <div className="columns mb-0 pb-0">
                 <div className="column mb-0 pb-0">
                 <h1 className="mt-2 title is-1 has-text-left">{title}</h1>
-                {languages && languages[0] ? <p className="has-text-left mb-1">{t('language')}: {getContent(languages[0].labels, i18n.language)}</p> : null}
+                {languages && languages[0] ? <p className="has-text-left mb-1">{t('language')}: {languages[0].code.toUpperCase()}</p> : null}
                 {doc.date && doc.date !== "" ? 
                                     <p className="has-text-left mt-0  mb-0 pt-0">{t('publication date')}: {doc.date} </p>
                               : null}

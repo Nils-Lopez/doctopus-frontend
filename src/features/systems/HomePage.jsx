@@ -271,27 +271,27 @@ const Landing = ({popularDocs, setDisplayDoc, setResult, t, client}) => {
         <div className="metrics">
         <h1 className="title is-4 has-text-white has-text-shadow mb-0">{t('find-in-doctopus')}</h1>
         <div className="columns is-multiline pb-0 mb-0 mt-1 is-mobile">
-            <div className="column results-col  is-one-fifth-desktop is-one-third-tablet is-half-mobile">
+            <div className="column results-col-unclickable  is-one-fifth-desktop is-one-third-tablet is-half-mobile">
               <div className="box pt-5 smooth-appear">
                 <h1 className="title is-5 mt-2"><strong className="title is-2"><Counter number={2157}/></strong> <br />{t('books')}</h1>
               </div>
             </div>
-            <div className="column results-col is-one-fifth-desktop is-one-third-tablet is-half-mobile">
+            <div className="column results-col-unclickable is-one-fifth-desktop is-one-third-tablet is-half-mobile">
               <div className="box pt-5 smooth-appear sm2">
                 <h1 className="title is-5 mt-2"><strong className="title is-2"><Counter number={351}/></strong> <br />{t('periodical')}</h1>
               </div>
             </div>
-            <div className="column results-col is-one-fifth-desktop is-one-third-tablet is-half-mobile">
+            <div className="column results-col-unclickable is-one-fifth-desktop is-one-third-tablet is-half-mobile">
               <div className="box pt-5 smooth-appear sm3">
                 <h1 className="title is-5 mt-2"><strong className="title is-2"><Counter number={17377}/></strong> <br />{t('articles')}</h1>
               </div>
             </div>
-            <div className="column results-col is-one-fifth-desktop is-one-third-tablet ml-auto mr-auto tablet-centered-item is-half-mobile">
+            <div className="column results-col-unclickable is-one-fifth-desktop is-one-third-tablet ml-auto mr-auto tablet-centered-item is-half-mobile">
               <div className="box pt-5 smooth-appear sm4">
                 <h1 className="title is-5 mt-2"><strong className="title is-2"><Counter number={2554}/></strong> <br />{t('videos')}</h1>
               </div>
             </div>
-            <div className="column results-col is-half-mobile  is-one-fifth-desktop is-one-third-tablet tablet-centered-item ml-auto mr-auto mt-1">
+            <div className="column results-col-unclickable is-half-mobile  is-one-fifth-desktop is-one-third-tablet tablet-centered-item ml-auto mr-auto mt-1">
               <div className="box pt-5 smooth-appear sm5">
                 <h1 className="title is-5 mt-2"><strong className="title is-2"><Counter number={472}/></strong> <br />{t('photos')}</h1>
               </div>

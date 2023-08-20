@@ -214,7 +214,6 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
 
   const handleDocSubmit = async (e) => {
     e.preventDefault()
-
     setLoading(true)
     const reqData = {
       doc: {
@@ -513,7 +512,7 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
   <div className="inner two"></div>
   <div className="inner three"></div>
 </div> 
-  </> : <form onSubmit={handleDocSubmit}>
+  </> : <div>
  
     <div className="columns">
             {!dataUpdate ? <div className="column is-one-third">
@@ -596,7 +595,7 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
             <div className="is-flex">
                 <input type="text" className="input" value={isbnValue} onChange={handleIsbnChange}/>
 
-          {isbnValue && isbnValue.length > 7 && (client && client.user) ? <span onClick={handleSearchIsbn} className="indextag  has-text-info ml-3 pt-2 pb-0 subtitle is-4"><FontAwesomeIcon icon={faMagnifyingGlass} /></span> : <span className="indextag  has-text-info ml-3 pt-2 pb-0 subtitle is-4"><FontAwesomeIcon icon={faCameraRetro} /></span>}   
+          {!dataUpdate && isbnValue && isbnValue.length > 7 && (client && client.user) ? <span onClick={handleSearchIsbn} className="indextag  has-text-info ml-3 pt-2 pb-0 subtitle is-4"><FontAwesomeIcon icon={faMagnifyingGlass} /></span> : null}   
             </div>
         </div> : null}
       </>}
@@ -622,7 +621,7 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
               </div>
         {selectedLangs.map((lang) => {
         return <Fragment key={lang.code}>
-          <span className="tag is-light is-medium mr-1 mt-2">{getContent(lang.labels, i18n.language)} <i className="has-text-danger ml-3 pointer" onClick={(e) => handleDeleteLang(e, lang)}><FontAwesomeIcon icon={faCircleXmark} /></i></span>
+          <span className="tag is-light is-medium mr-1 mt-2">{lang.code.toUpperCase()} <i className="has-text-danger ml-3 pointer" onClick={(e) => handleDeleteLang(e, lang)}><FontAwesomeIcon icon={faCircleXmark} /></i></span>
         </Fragment>
       })}
       </div> 
@@ -732,11 +731,14 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
     <footer className=" is-flex is-justify-content-end">
     
       <div className="is-fullwidth is-flex is-justify-content-end">
-      <button className="button is-white-ter is-radiusless mr-3" type="submit" onClick={() => setDraft(true)}>
+      <button className="button is-white-ter is-radiusless mr-3"  onClick={(e) => {
+        setDraft(true)
+       handleDocSubmit(e)
+      }}>
         
         {t('Save as draft')}
         </button>
-      <button className="button is-primary is-radiusless " type="submit">
+      <button className="button is-primary is-radiusless " onClick={handleDocSubmit}>
 
       {dataUpdate ? t('update')  : t('Publish')}
       </button>
@@ -746,7 +748,7 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
     </footer>
    </div>
  
-  </form>
+  </div>
 }
 
 export default DocForm

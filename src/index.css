@@ -205,7 +205,11 @@ position: relative;
   cursor: pointer;
   
 }
-
+.results-col-unclickable {
+  height: 100%;
+  cursor: default;
+  
+}
 .indextag {
   cursor: pointer;
 }

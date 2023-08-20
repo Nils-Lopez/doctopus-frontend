@@ -94,7 +94,6 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
             </div>
         </div>
     } else if (item.person && parent !== "person") {
-        console.log("'ici =: ", relTypes)
         return <div className="column is-one-quarter-desktop is-half-tablet">
             <div className={"box results-col " +colClasses} onClick={() => {
                 if (!handleDelete) handleSearchParent(item.person)
@@ -154,7 +153,6 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
             return <div className={"column is-one-quarter-desktop is-half-tablet"} onClick={() => handleSearchScapinParent(item)}>
                     <div className={"box results-col " +colClasses} onClick={() => {
                            
-                        console.log('c tout ')
                     }}>
                     <div className="is-flex is-justify-content-end mt-0 mb-0">
                             <span className="tag is-white is-medium pb-5 pr-0 has-text-info">

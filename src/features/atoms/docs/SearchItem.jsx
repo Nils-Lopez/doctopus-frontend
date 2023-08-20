@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 function checkIfMultiple(num1, num2) {
-    console.log(num1, num1/5)
     return num1 % num2 === 0;
   }
 const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", handleSearchDoc = "false", relTypes, client, handleDelete, watchlist, i}) => {
@@ -19,11 +18,10 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
     }
     const { t, i18n } = useTranslation() 
 
-    return <div className={"column is-one-fifth"} onClick={() =>     console.log('item : ', item)}>
+    return <div className={"column is-one-fifth"} >
             <div className={"box results-col " +colClasses} onClick={() => {
                    
                 if (handleSearchDoc !== "false") {
-                    console.log('ici : ', item.doc)
                     handleSearchDoc(item.doc)
                 } else if (setDisplay !== undefined) {
                     setDisplay(item.doc)
