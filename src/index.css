@@ -215,7 +215,8 @@ position: relative;
 }
 
 .results-col:hover {
-  scale: 0.95;
+  scale: 0.97;
+  -webkit-font-smoothing: subpixel-antialiased;
 }
 
 .tag-bottom {

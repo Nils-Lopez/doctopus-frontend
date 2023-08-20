@@ -127,7 +127,7 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
   console.log(draftPerson)
 
   return <>
-      {(template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="parents" location="org-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
+      {(template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="parents" location={!location || !location.includes("template") ? "org-parent-doc" : "template-parent"} selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
       
       {selectedRoles && selectedRoles[0] ? 
           <SearchForm selectedItems={selectedPeople} handleAddItem={handleAddPerson} searchItems={searchPeople} responseSearchItems={responseSearchPeople} mainField={"name"} setFormModal={setPersonForm}  draftValue={personValue}/>

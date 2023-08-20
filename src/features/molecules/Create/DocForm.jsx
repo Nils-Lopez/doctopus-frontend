@@ -17,7 +17,6 @@ import { useNavigate } from "react-router-dom"
 import { useIsbns } from '../../../utils/hooks/Isbn';
 import {useUsers} from "../../../utils/hooks/Users.js"
 
-import BarcodeScannerComponent from "react-qr-barcode-scanner";
 
 const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, dataUpdate, setDataUpdate}) => {
   const { t, i18n } = useTranslation();
@@ -587,25 +586,7 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
      
       {scanner ? <>
         <span onClick={() => {setScanner(false)}} className="indextag  has-text-info ml-3 pt-2 pb-0 subtitle is-4"><FontAwesomeIcon icon={faCircleXmark} /></span>
-        <BarcodeScannerComponent
-        width={500}
-        height={500}
-        onUpdate={(err, result) => {
-          if (result && result.text) {
-            console.log("res: ", result.text)
-            setIsbnValue(result.text)
-            setIsbnLoading(true)
-            findBookByIsbn(result.text.replaceAll(' ', '').replaceAll('-', '').replaceAll('.', ''))
-            setScanner(false)
-          }
-          
-        }}
-        onError={(err) => {
-          console.log(err)
-          setAlert({ type: "error", message: { en: "Bardcode error, try again.", fr: "Erreur dans le code barre, réessayez"}})
-          setScanner(false)
-        }}
-      />
+      
       </> : <>
         {template && template.support_eanIsbn ?  
           <div className="field">
@@ -615,7 +596,7 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
             <div className="is-flex">
                 <input type="text" className="input" value={isbnValue} onChange={handleIsbnChange}/>
 
-          {isbnValue && isbnValue.length > 7 && (client && client.user) ? <span onClick={handleSearchIsbn} className="indextag  has-text-info ml-3 pt-2 pb-0 subtitle is-4"><FontAwesomeIcon icon={faMagnifyingGlass} /></span> : <span onClick={() => {setScanner(true)}} className="indextag  has-text-info ml-3 pt-2 pb-0 subtitle is-4"><FontAwesomeIcon icon={faCameraRetro} /></span>}   
+          {isbnValue && isbnValue.length > 7 && (client && client.user) ? <span onClick={handleSearchIsbn} className="indextag  has-text-info ml-3 pt-2 pb-0 subtitle is-4"><FontAwesomeIcon icon={faMagnifyingGlass} /></span> : <span className="indextag  has-text-info ml-3 pt-2 pb-0 subtitle is-4"><FontAwesomeIcon icon={faCameraRetro} /></span>}   
             </div>
         </div> : null}
       </>}

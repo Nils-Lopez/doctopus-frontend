@@ -34,7 +34,6 @@
     "react-dom": "^18.2.0",
     "react-filepond": "^7.1.2",
     "react-i18next": "^12.2.0",
-    "react-qr-barcode-scanner": "^1.0.6",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "react-usestateref": "^1.0.8",

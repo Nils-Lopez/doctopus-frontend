@@ -4,6 +4,19 @@
   overflow: hidden;
 }
 
+.thumb-search-item {
+  height: 250px;
+}
+
+.tag-search-item {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  left: 12px;
+  display: flex;
+  justify-content: space-around;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;

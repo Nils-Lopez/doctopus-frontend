@@ -151,11 +151,10 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
   }, [selectedRoles])
 
   let inputClasses = (!isRoleExisting() && (roleEnValue.length >= 3 || roleFrValue.length >= 3 )) ? "control has-icons-left min-90" : "control has-icons-left min-100"
-  
   return <>
  
-    <div className="field mt-4">
-    {location !== "templates" && location !== "templates-parents" && location !== "templates-tags" && location !== "org-parent-doc" ? <label className="label has-text-left">{location === "support-form-doc" ? "Types" : "Roles"}</label> : null}
+    <div className={!location.includes('template') ? "field mt-4" : "field"}>
+    {location !== "templates" && !location.includes('template') && location !== "templates-parents" && location !== "templates-tags" && location !== "org-parent-doc" ? <label className="label has-text-left">{location === "support-form-doc" ? "Types" : "Roles"}</label> : null}
 
     <div className="is-flex is-justify-content-start is-fullwidth">
     {selectedRoles ? selectedRoles.map((role) => {
@@ -178,7 +177,7 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
         </div>
         
     
-         {displayRole ? <div className="is-flex is-fullwidth mt-2">
+         {displayRole ? <div className={!location.includes('template') ? "is-flex is-fullwidth mt-2" : "is-flex is-fullwidth"}>
             <div className={inputClasses}>
           <input type="text" placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default roles" : location.includes("parent") ? "Roles": ""} className="input" value={i18n.language === "en" ? roleEnValue : roleFrValue} onChange={handleRoleChange}/>
 

@@ -366,9 +366,16 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
 
     useEffect(() => {
       if (parentTemplate) {
-        selectType([...selectedTypes, ...parentTemplate.support_role_defaults])
-        selectDocType([...selectedDocTypes, ...parentTemplate.type_defaults])
-        selectTag([...selectedTags, ...parentTemplate.tag_defaults])
+        parentTemplate.support_role_defaults?.map((r) => {
+          if (!selectedTypes.includes(r)) selectType([...selectedTypes, r])
+        })
+        parentTemplate.type_defaults?.map((r) => {
+          if (!selectedDocTypes.includes(r)) selectDocType([...selectedDocTypes, r])
+        })
+        parentTemplate.tag_defaults?.map((t) => {
+          if (!selectedTags.includes(t)) selectTag([...selectedTags, t])
+        })
+
       }
     }, [parentTemplate])
 
@@ -463,12 +470,6 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
       {parentTemplate || (client && client.user && client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ?  <form onSubmit={handleTemplateSubmit}>
      
   
-     <div className="tabs">
-     <ul>
-       <li onClick={() => setIdLang("fr")} className={idLang === "fr" ? "is-active" : ""}><a href="#" onClick={(e) => e.preventDefault()}>Français</a></li>
-       <li onClick={() => setIdLang("en")} className={idLang === "en" ? "is-active" : ""}><a href="#" onClick={(e) => e.preventDefault()}>English</a></li>
-     </ul>
-   </div>
        <div className="field">
          <label className="label ">{t('template-name')}</label>
          <input type="text" className="input" value={nameValue} onChange={handleNameChange} />
@@ -685,25 +686,7 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
     <hr />
 
      <h3 className="title is-4">{t('parents')}</h3>
-     {(parentTemplate  && parentTemplate.parent_role) || !parentTemplate ?
-     <div className="columns ml-6 mr-6">
-       <div className="column is-flex is-justify-content-start">
-              <div className="field">
-{!parentTemplate ?           <input id="switchParentROles" type="checkbox" name="switchParentROles" className="switch is-rtl" checked={parentRolesValue ? "checked" : ""} onChange={() => setParentRolesValue(!parentRolesValue)} />
-: null}
-<label htmlFor="switchParentROles" className="label">{t('roles')}</label>
-</div>
-       </div>
-       <div className="column">
-<div className="field">
-           {parentRolesValue ? <>
-             <RoleForm  scope="parents" location={"templates-parents"} selectedRoles={selectedRoles} selectRole={selectRole} lang={idLang} />
-           </> : <>
-           <input type="text" className="input" disabled/>
-           </>}
-         </div>
-         </div>
-     </div> : null }
+    
      {(parentTemplate  && parentTemplate.parent_entity) || !parentTemplate ?
      <div className="columns ml-6 mr-6">
        <div className="column is-flex is-justify-content-start">
@@ -750,7 +733,7 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
 <label htmlFor="switchParentPeople" className="label">{t('people')}</label>
 </div>
        </div>
-       <div className="column">
+       <div className="column ">
 <div className="field">
            {peopleValue ? <>
              <PersonParentForm location={"templates-parents"} selectedPeople={selectedPeople} selectPerson={selectPerson} lang={idLang} hideRoles={!parentRolesValue} client={client} setAlert={setAlert} />
@@ -760,7 +743,7 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
          </div>
          </div>
      </div> : null }
-     <button type="submit" className="button is-primary">{editTemplate ? t('update-template') : t('create-template')}</button>
+     <button type="submit" className="button is-primary mt-4">{editTemplate ? t('update-template') : t('create-template')}</button>
      </form> : null}
     </>
 }
