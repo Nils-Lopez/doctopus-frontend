@@ -167,6 +167,8 @@ const ItemForm = ({scope, location, selectedItems, handleAddItem, selectItem, de
 
   let divClasses = mainField === "content" ? "field mt-1" : "field mt-4"
 
+  console.log('items', selectedItems)
+
   return <>
  
     <div className={divClasses}>
@@ -174,7 +176,7 @@ const ItemForm = ({scope, location, selectedItems, handleAddItem, selectItem, de
     <div className="is-flex is-justify-content-start is-fullwidth">
     {!handleAddItem && selectedItems ? selectedItems.map((item) => {
         return <Fragment key={item.slug}>
-          <span className="tag is-info mt-1 is-medium mr-1">{getContent(item.title, i18n.language)}        <i className="has-text-light ml-3 pointer" onClick={(e) => {
+          <span className="tag is-info mt-1 is-medium mr-1">{mainField !== "name" ? getContent(item.title, i18n.language) : item.name}        <i className="has-text-light ml-3 pointer" onClick={(e) => {
                 handleDeleteItem(e, item)
               }}><FontAwesomeIcon icon={faCircleXmark} /></i>  </span>
         </Fragment>
@@ -209,7 +211,7 @@ const ItemForm = ({scope, location, selectedItems, handleAddItem, selectItem, de
               
         </div>  : null}
        
-       <div className="is-flex is-justify-content-start">
+       <div className="columns is-multiline pl-3 mt-1 is-flex is-justify-content-start ">
        {items.map((t, i) => {
                   if ((!scope || t.scope === scope) && i < 5 ) {
                     return <Fragment key={t.slug}>
@@ -228,7 +230,7 @@ const ItemForm = ({scope, location, selectedItems, handleAddItem, selectItem, de
                         }}
                         onMouseEnter={() => setItemFull(t)}
                         onMouseLeave={() => setItemFull(false)}
-                        >{mainField === "content" ? getContent(t.title, i18n.language) : itemFull !== t && t[mainField] && t[mainField].length > 10 ? t[mainField].slice(0,10) + "..." : t[mainField]}        <i className="has-text-light ml-3 pointer"><FontAwesomeIcon icon={faCircleCheck} /></i>  </span>
+                        >{mainField === "content" ? getContent(t.title, i18n.language) : t[mainField]}        <i className="has-text-light ml-3 pointer"><FontAwesomeIcon icon={faCircleCheck} /></i>  </span>
                   </Fragment>
                   }
                 })}  

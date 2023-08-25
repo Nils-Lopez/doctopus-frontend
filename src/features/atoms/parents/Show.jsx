@@ -1,7 +1,7 @@
 import React, {Fragment, useState, useEffect} from "react";
 import {useTranslation} from "react-i18next"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRotateLeft, faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons'
+import { faRotateLeft, faAngleRight, faAngleLeft, faCopy, faCheck, faCircleXmark, faShareAlt } from '@fortawesome/free-solid-svg-icons'
 
 import SearchItemParent from "./SearchItem"
 import SearchItemDoc from "../docs/SearchItem"
@@ -11,6 +11,7 @@ import OrganisationForm from "../../molecules/Create/OrganisationForm"
 import ProjectForm from "../forms/orgs/ProjectForm"
 
 import {useProds} from "../../../utils/hooks/Prods"
+import { TwitterShareButton, TwitterIcon, PinterestShareButton, PinterestIcon, FacebookShareButton, FacebookIcon } from 'react-share';
 
 const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, handleSearchScapinID, handleBack}) => {
     
@@ -48,12 +49,11 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
         parents
     } = parent
 
-    console.log('childs: ', parent)
 
     const [productionsScapin, setProductions] = useState(false)
     const [prodLoading, setProdLoading] = useState(false)
 
-    const {findProdById, responseFindProdBydId, findProdByIds, responseFindProdByIds} = useProds()
+    const {findProdByIds, responseFindProdByIds} = useProds()
 
 
     useEffect(() => {
@@ -159,7 +159,17 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
         }
     }
 
-    console.log("childs: ", parent)
+    const [copied, setCopied] = useState(false)
+
+    useEffect(() => {
+        if (copied) {
+            setTimeout(() => {
+                setCopied(false)
+            }, 1300)
+        }
+    }, [copied])
+
+    const [shareBtn, setShareBtn] = useState(false)
 
     return showScapinParent ? <>
         <Show parent={showScapinParent} client={client} setAlert={setAlert} handleSearchParent={handleSearchScapinParent} handleSearchScapinID={handleSearchScapinID} handleSearchDoc={handleSearchDoc} handleBack={handleSearchScapinParent}/>
@@ -178,6 +188,11 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
                 <FontAwesomeIcon icon={faRotateLeft} size="lg"/>
                 <strong>&nbsp;{t('back')}</strong>
             </button>
+            <button className={!copied ? "button is-light is-medium tag is-light ml-3" : "button is-light has-text-primary is-medium tag is-light ml-3"} onClick={()=> {
+                setShareBtn(!shareBtn)
+            }}>
+                {!shareBtn ? <FontAwesomeIcon icon={faShareAlt} size="lg"/> :  <FontAwesomeIcon icon={faCircleXmark} size="lg"/>}
+            </button>
         {client && client.user && (client.user.type === "admin" || client.user.type === "moderator" || client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? <>
               <button className="button is-primary ml-3 is-medium tag" onClick={() => setDataUpdate(parent)}>
                   {t('update')}
@@ -186,22 +201,40 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
  : null }
         </div>
         <div>
+            
         {roles && roles[0] ? <>
             {
             filteredRoles.map((type) => {
                     return <Fragment key={JSON.stringify(type)}>
-                        <span className="tag is-medium is-primary mr-1 ml-1 mb-0">
+                        <span className="tag is-medium has-text-info has-background-transparent mr-1 ml-1 mb-0">
                             {getContent(type.title, i18n.language)}
                         </span>
                     </Fragment>
                
                 
             })}
-        </> : <span className="tag is-medium is-primary mr-1 ml-1 mb-0">
+        </> : <span className="tag is-medium has-text-info has-background-transparent mr-1 ml-1 mb-0">
                         {parent.projects ? t('organization') : parent.entities ? t('project') : t('person')}
                     </span>}
         </div>
      </div>
+     {shareBtn ? <div className="is-flex mt--1 is-justify-content-start ml-5 pl-1" onClick={() => setShareBtn(false)}>
+     <button className={!copied ? "button is-light is-medium tag is-light ml-3" : "button is-light has-text-primary is-medium tag is-light ml-3"} onClick={()=> {
+                navigator.clipboard.writeText(window.location.href)
+                setCopied(true)
+            }}>
+                {!copied ? <FontAwesomeIcon icon={faCopy} size="lg"/> :  <FontAwesomeIcon icon={faCheck} size="lg"/>}
+            </button>
+            <FacebookShareButton url={window.location.href} className="button is-light is-medium tag is-light ml-3">
+            <FacebookIcon size={32} round />
+            </FacebookShareButton>
+            <TwitterShareButton url={window.location.href} className="button is-light is-medium tag is-light ml-3">
+            <TwitterIcon size={32} round />
+            </TwitterShareButton>
+            <PinterestShareButton url={window.location.href} className="button is-light is-medium tag is-light ml-3">
+            <PinterestIcon size={32} round />
+            </PinterestShareButton>
+     </div> : null}
         <h1 className="mt-2 has-text-left title is-1">{title && title !== "" ? title : name && name !== "" ? name : firstName + " " + lastName}</h1>
         {parent && parent.scapin ? <>
             {parent.description && parent.description !== "" ? <p className=" subtitle is-5 mt-2 has-text-left">{parent.description}</p> : null}

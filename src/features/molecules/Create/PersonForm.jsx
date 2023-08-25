@@ -250,6 +250,13 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate, dr
       }
     }, [draftPerson])
 
+    const [merge, setMerge] = useState(false)
+
+    const handleMergePerson = (e) => {
+      e.preventDefault()
+      setMerge(!merge)
+    }
+
   return loading ? <>
   <div className="loader">
   <div className="inner one"></div>
@@ -258,18 +265,22 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate, dr
 </div> 
     
   </> : <>
-    <div className="tabs">
-        <ul>
-          <li onClick={() => setIdLang("fr")} className={idLang === "fr" ? "is-active" : ""}><a href="#" onClick={(e) => e.preventDefault()}>Français</a></li>
-          <li onClick={() => setIdLang("en")} className={idLang === "en" ? "is-active" : ""}><a href="#" onClick={(e) => e.preventDefault()}>English</a></li>
-        </ul>
-     </div>
-     <div className="is-flex is-justify-content-end">{dataUpdate ?
-      <button className="button is-danger is-small mt-3" onClick={handleDeletePerson}>
-        {confirmDelete ? t('confirm') : t('delete')}
-      </button>
+  
+     <div className="is-flex is-justify-content-end">
+      {dataUpdate ?
+      <>
+        <button className="button is-primary is-small mt-3 ml-3" onClick={handleMergePerson}>
+          {!merge ? t('merge') : t('cancel')}
+        </button>
+        {!merge ?  <button className="button is-danger is-small mt-3 ml-3" onClick={handleDeletePerson}>
+          {confirmDelete ? t('confirm') : t('delete')}
+        </button> : null}
+      </>
    : null}</div>
-    <div className="field">
+   {merge ? <>
+      
+   </> : <>
+   <div className="field">
       <label className="label has-text-left">
         {t('name')}
       </label>
@@ -295,13 +306,13 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate, dr
       </label>
       
       <div className="is-flex">
-                <input type="text" placeholder="Default language" className="input" value={idLang === "en" ? langEnValue : langFrValue} onChange={handleLangChange} />
+                <input type="text" placeholder="Default language" className="input" value={i18n.language === "en" ? langEnValue : langFrValue} onChange={handleLangChange} />
                 <button onClick={addLang} className="button is-small is-primary mt-1 ml-2">{t('add')}</button>
                 
         </div>
         {selectedLangs.map((lang) => {
         return <Fragment key={lang.code}>
-          <span className="tag is-success is-medium mr-1 mt-2">{getContent(lang.labels, idLang)}</span>
+          <span className="tag is-success is-medium mr-1 mt-2">{getContent(lang.labels, i18n.language)}</span>
           <span className="tag is-danger is-medium mr-2 button mt-2" onClick={(e) => handleDeleteLang(e, lang)}><FontAwesomeIcon icon={faTrash}/></span>
         </Fragment>
         })}
@@ -338,7 +349,7 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate, dr
       <label className="label has-text-left">
         {t('description')}
       </label>
-      <textarea value={idLang === "en" ? descEnValue : descFrValue} onChange={handleDescChange} className="textarea"></textarea>
+      <textarea value={i18n.language === "en" ? descEnValue : descFrValue} onChange={handleDescChange} className="textarea"></textarea>
     </div>
       <div className="field">
         <label className="label has-text-left">
@@ -347,18 +358,19 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate, dr
         <input type="text" value={urlValue} onChange={handleUrlChange} className="input"/>
       </div>
       
-    <RoleForm scope="parents" location="org-form" selectedRoles={selectedRoles} selectRole={selectRole} lang={idLang} />
+    <RoleForm scope="parents" location="org-form" selectedRoles={selectedRoles} selectRole={selectRole} lang={i18n.language} />
     <label className="label has-text-left">
         {t('projects')}
       </label>
-    <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj} lang={idLang} client={client} setAlert={setAlert}/>
+    <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj} lang={i18n.language} client={client} setAlert={setAlert}/>
     <label className="label has-text-left mt-5 mb-0 pb-0">
         {t('organization')}
       </label>
-    <OrganisationParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} lang={idLang} client={client} setAlert={setAlert}/>
+    <OrganisationParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} lang={i18n.language} client={client} setAlert={setAlert}/>
     <button className="button is-large is-primary" onClick={handlePersonSubmit}>
       {t('create')}
     </button>
+   </>}
   </> 
 }
 

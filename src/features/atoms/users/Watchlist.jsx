@@ -45,7 +45,7 @@ const Watchlist = ({docs, setDisplayDoc, setHideWatchlist}) => {
   
       const title = "My dOctopus Watchlist";
       const headers = [["Document", "Info"]];
-      const additionalInfo = doc => doc.supports && doc.supports[0] ? (doc.supports[0].exemplaries && doc.supports[0].exemplaries[0] ? doc.supports[0].exemplaries[0].position ? doc.supports[0].exemplaries[0].position: doc.supports[0].exemplaries[0].location ? doc.supports[0].exemplaries[0].location : doc.supports[0].exemplaries[0].cote ? doc.supports[0].exemplaries[0].cote : null : null ) : ""
+      const additionalInfo = doc => doc.supports && doc.supports[0] ? (doc.supports[0].exemplaries && doc.supports[0].exemplaries[0] ? doc.supports[0].exemplaries[0].cote ? doc.supports[0].exemplaries[0].cote : doc.supports[0].exemplaries[0].position ? doc.supports[0].exemplaries[0].position: doc.supports[0].exemplaries[0].location ? doc.supports[0].exemplaries[0].location : null : null ) : ""
 
       const data = docs.map(elt=> {
         let title = elt.title.length <= 25 ? elt.title.slice(0, 25) + "..." : elt.title

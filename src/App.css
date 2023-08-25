@@ -16,6 +16,19 @@
   display: flex;
   justify-content: space-around;
 }
+.tag-is-absolute {
+  position: absolute;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.mb--1 {
+  margin-bottom: -15px !important;
+}
+
+.mt--2 {
+  margin-top: -20px !important;
+}
 
 .App-logo {
   height: 40vmin;

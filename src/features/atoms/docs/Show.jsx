@@ -7,7 +7,8 @@ import {useUsers} from "../../../utils/hooks/Users.js"
 import DocForm from "../../molecules/Create/DocForm"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGlobe, faRotateLeft } from '@fortawesome/free-solid-svg-icons'
-import { faCircleCheck, faChevronDown, faChevronUp, faUpload, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faChevronUp,  faCopy, faCheck, faCircleXmark, faShareAlt } from '@fortawesome/free-solid-svg-icons'
+import { TwitterShareButton, TwitterIcon, PinterestShareButton, PinterestIcon, FacebookShareButton, FacebookIcon } from 'react-share';
 
 const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchParent, handleSearchDoc, handleBack}) => {
     const {
@@ -93,7 +94,17 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
         return alreadyIn
     }
 
-    console.log('doc: ', doc)
+    const [copied, setCopied] = useState(false)
+
+    useEffect(() => {
+        if (copied) {
+            setTimeout(() => {
+                setCopied(false)
+            }, 1300)
+        }
+    }, [copied])
+
+    const [shareBtn, setShareBtn] = useState(false)
 
     return dataUpdate && !dataUpdate.success ? <>
      <DocForm client={client} setClient={setClient} setAlert={setAlert} dataUpdate={dataUpdate} setDataUpdate={setDataUpdate}/>
@@ -104,13 +115,18 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                 <FontAwesomeIcon icon={faRotateLeft} size="lg"/>
                 <strong>&nbsp;{t('back')}</strong>
             </button>
+           
                 <div className="actions-btn">
 
             <button className="button is-light is-medium tag  mb-2" id="backBtn" onClick={handleBack}>
                 <FontAwesomeIcon icon={faRotateLeft} size="lg"/>
                 <strong>&nbsp;{t('back')}</strong>
             </button>
-
+            <button className={!copied ? "button is-light is-medium tag is-light ml-3" : "button is-light has-text-primary is-medium tag is-light ml-3"} onClick={()=> {
+                setShareBtn(!shareBtn)
+            }}>
+                {!shareBtn ? <FontAwesomeIcon icon={faShareAlt} size="lg"/> :  <FontAwesomeIcon icon={faCircleXmark} size="lg"/>}
+            </button>
     {client && client.user ? !addingWatchlist ?	checkWatchlist() ? <button className="button   mb-2 is-primary ml-3 is-medium tag" onClick={(e) => {
 				e.preventDefault()
 				handleUpdateUser("remove")
@@ -145,6 +161,23 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                 </div>
         
         </div>
+        {shareBtn ? <div className="is-flex mt--2 is-justify-content-start ml-5 pl-1" onClick={() => setShareBtn(false)}>
+     <button className={!copied ? "button is-light is-medium tag is-light ml-3" : "button is-light has-text-primary is-medium tag is-light ml-3"} onClick={()=> {
+                navigator.clipboard.writeText(window.location.href)
+                setCopied(true)
+            }}>
+                {!copied ? <FontAwesomeIcon icon={faCopy} size="lg"/> :  <FontAwesomeIcon icon={faCheck} size="lg"/>}
+            </button>
+            <FacebookShareButton url={window.location.href} className="button is-light is-medium tag is-light ml-3">
+            <FacebookIcon size={32} round />
+            </FacebookShareButton>
+            <TwitterShareButton url={window.location.href} className="button is-light is-medium tag is-light ml-3">
+            <TwitterIcon size={32} round />
+            </TwitterShareButton>
+            <PinterestShareButton url={window.location.href} className="button is-light is-medium tag is-light ml-3">
+            <PinterestIcon size={32} round />
+            </PinterestShareButton>
+     </div> : null}
         {thumb && thumb !== "" ? <>
             <div className="columns mb-0 pb-0">
                 <div className="column mb-0 pb-0">

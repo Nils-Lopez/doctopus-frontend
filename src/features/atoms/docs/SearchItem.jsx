@@ -27,16 +27,15 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
                     setDisplay(item.doc)
                 }
             }}>
-            {!relTypes ? <div className="is-flex is-justify-content-end mt-0 mb-0">
-                    <span className="tag is-white is-medium pb-5 pr-0 has-text-info">
+            <div className="is-flex is-justify-content-end mt-0 mb-0">
+            {/* <span className="tag is-white is-medium has-text-info">
+                        {getContent(relTypes.title, i18n.language)}
+                    </span> */}
+                    <span className="tag has-background-transparent is-medium pb-5 pr-0 has-text-info">
                         {item.doc && item.doc.types && item.doc.types[0] && getContent(item.doc.types[0].title, i18n.language) !== "Error" ? getContent(item.doc.types[0].title, i18n.language) : t('document')}
                     </span>
-                </div> : <div className="is-flex is-justify-content-space-between mt-0 mb-0">
-                    <span className="tag is-white is-medium has-text-info">
-                        {getContent(relTypes.title, i18n.language)}
-                    </span>
-                  
-                </div>}
+                    {relTypes && relTypes.title && relTypes.title[0] && getContent(relTypes.title, i18n.language) !== "Error" ? <span className="has-text-muted has-text-grey tag-is-absolute"><small>{getContent(relTypes.title, i18n.language)}</small></span> : null}
+                </div>
                 {handleDelete ? <i className="has-text-danger ml-3 pointer" onClick={(e) => {
                 handleDelete(e, item)
               }}><FontAwesomeIcon icon={faCircleXmark} /></i> : null}

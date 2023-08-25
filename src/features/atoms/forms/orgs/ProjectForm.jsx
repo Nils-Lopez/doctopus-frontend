@@ -3,11 +3,13 @@ import React, { useState, useEffect } from "react"
 import {useProjects} from "../../../../utils/hooks/entities/Projects"
 
 import RoleForm from "../RoleForm"
-import OrganisationParentForm from "../docs/OrganisationParentForm"
-import ActorForm from "./ActorForm"
+import SearchForm from "../SearchForm"
+
 
 import {useTranslation} from "react-i18next"
 import {useNavigate} from "react-router-dom"
+import {usePeople} from "../../../../utils/hooks/People"
+import {useEntities} from "../../../../utils/hooks/Entities"
 
 const ProjectForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) => {
     
@@ -146,44 +148,58 @@ const ProjectForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) 
     
       }
 
+      const {
+        searchEntities, 
+        responseSearchEntities
+      } = useEntities()
+    
+      const {
+        searchPeople, 
+        responseSearchPeople
+      } = usePeople()
+
+      console.log(dataUpdate)
+
     return loading ? <div className="loader">
   <div className="inner one"></div>
   <div className="inner two"></div>
   <div className="inner three"></div>
 </div> : <>
-        <div className="tabs">
-            <ul>
-                <li onClick={() => setIdLang("fr")} className={idLang === "fr" ? "is-active" : ""}><a href="#" onClick={(e) => e.preventDefault()}>Français</a></li>
-                <li onClick={() => setIdLang("en")} className={idLang === "en" ? "is-active" : ""}><a href="#" onClick={(e) => e.preventDefault()}>English</a></li>
-            </ul>
-        </div>
+        
         <div className="is-flex is-justify-content-end">{dataUpdate ?
       <button className="button is-danger is-small mt-3" onClick={handleDeleteProj}>
         {confirmDelete ? t('confirm') : t('delete')}
       </button>
    : null}</div>
         <div className="field">
-            <label className="label">
+            <label className="label has-text-left">
                 {t('title')}
             </label>
             <input type="text" className="input" value={titleValue} onChange={handleTitleChange}/>
         </div>
         <div className="field" id="docDesc">
-            <label className="label title is-5">
+            <label className="label has-text-left">
             {t('description')}
             </label>
-            <textarea className="textarea" value={idLang === "fr" ? descFrValue : descEnValue} onChange={handleDescChange}></textarea>
+            <textarea className="textarea" value={i18n.language === "fr" ? descFrValue : descEnValue} onChange={handleDescChange}></textarea>
         </div>
         <div className="field">
-            <label className="label">
+            <label className="label has-text-left">
             {t('birthdate')}
             </label>
-            <input type="date" className="input" value={dateValue} onChange={handleDateChange} />
+            <input type="date" className="input is-active" value={dateValue} onChange={handleDateChange}/>
         </div>
         <RoleForm scope="parents" location="project-form" selectedRoles={selectedRoles} selectRole={selectRole} lang={idLang} />
-        <ActorForm selectedPeople={selectedActors} selectPerson={selectActor} lang={idLang} />
-        <OrganisationParentForm selectedOrg={selectedOrgs} selectOrg={selectOrg} location="project-form" lang={idLang} client={client} setAlert={setAlert} />
-        <button className="button is-primary is-large" onClick={handleSubmit}>{t('create')}</button>
+        <label className="label has-text-left mb--1">
+            {t('actors')}
+            </label>
+        <SearchForm selectedItems={selectedActors} selectItem={selectActor} searchItems={searchPeople} responseSearchItems={responseSearchPeople} mainField={"name"}/>
+        <label className="label has-text-left mb--1">
+            {t('Organizations')}
+            </label>
+        <SearchForm selectedItems={selectedOrgs} selectItem={selectOrg} searchItems={searchEntities} responseSearchItems={responseSearchEntities} mainField={"name"}/>
+
+        <button className="button is-primary is-medium is-radiusless  " onClick={handleSubmit}>{t('create')}</button>
     </>
 }
 
