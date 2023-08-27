@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGlobe, faRotateLeft } from '@fortawesome/free-solid-svg-icons'
 import { faChevronDown, faChevronUp,  faCopy, faCheck, faCircleXmark, faShareAlt } from '@fortawesome/free-solid-svg-icons'
 import { TwitterShareButton, TwitterIcon, PinterestShareButton, PinterestIcon, FacebookShareButton, FacebookIcon } from 'react-share';
-
+import { MobilePDFReader } from 'react-read-pdf';
 const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchParent, handleSearchDoc, handleBack}) => {
     const {
         title,
@@ -39,6 +39,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
 
     const handleDisplayFile = (e) => {
         e.preventDefault()
+        
         setDisplayFile(!displayFile)
       }
 
@@ -58,6 +59,11 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
             }
 		}
 	}
+
+    const showPdf = (url) => {
+        window.open(url, '_blank', 'noreferrer')
+        setDisplayFile(false)
+    }
 
     useEffect(() => {
        if (responseUpdateUser && responseUpdateUser.success && responseUpdateUser.data) {
@@ -268,7 +274,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                   {(( doc) && ((!doc.restrictedContent || doc.restrictedContent === "all") || (client && client.user && client.user.type !== "visitor"))) ?
   <>{displayFile && <div className="mt-3 h-100">
       {
-        supp.pdf.split('.')[supp.pdf.split('.').length - 1].toLowerCase() === "pdf" ? <iframe src={supp.pdf} width="100%" height="800px" /> : 
+        supp.pdf.split('.')[supp.pdf.split('.').length - 1].toLowerCase() === "pdf" ? showPdf(supp.pdf)  : 
         ["png" , "jpg" , "jpeg" , "gif" , "ico" , "svg"].includes(supp.pdf.split('.')[supp.pdf.split('.').length - 1].toLowerCase()) ? <img src={supp.pdf} alt="file" className="file-img"/> :
         ["mp4", "avi", "mov", "wmv", "flv", "mkv", "webm"].includes(supp.pdf.split('.')[supp.pdf.split('.').length - 1].toLowerCase()) ? <video src={supp.pdf}  className="file-video" controls/> : 
         ["wav", "mp3", "flac", "m4a"].includes(supp.pdf.split('.')[supp.pdf.split('.').length - 1].toLowerCase()) ? <audio src={supp.pdf} controls/> : null
