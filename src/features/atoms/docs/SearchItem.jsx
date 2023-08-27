@@ -18,7 +18,8 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
     }
     const { t, i18n } = useTranslation() 
 
-    return <div className={"column is-one-fifth"} >
+
+        return <div className={"column is-one-fifth"} >
             <div className={"box results-col " +colClasses} onClick={() => {
                    
                 if (handleSearchDoc !== "false") {
@@ -141,6 +142,7 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
         
             </div>
         </div>
+    
 }
 
 const getContent = (value, lang = "fr") => {

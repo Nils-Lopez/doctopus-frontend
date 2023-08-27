@@ -42,6 +42,7 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
         activities, 
         actors, 
         projects, 
+        entities,
         productionIds, 
         prodIds, 
         createdDocs,
@@ -78,8 +79,7 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
     const [docs, setDocs] = useState([])
     
     useEffect(() => {
-     if (dataUpdate && dataUpdate.success) {
-        console.log("update: ", dataUpdate)
+     if (dataUpdate && dataUpdate.success && dataUpdate._id) {
       handleSearchParent(dataUpdate)
       setDataUpdate(false)
      }
@@ -360,12 +360,22 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
                 
             }) : null}
          </div>     
+         {(actors && actors[0]) || (entities && entities[0]) ? <>
+            <hr />
+
+            <h3 className="subtitle has-text-grey has-text-left is-5 mb-1">{t('parents')}</h3>
+         </> : null}
         <div className="columns is-multiline is-flex is-justify-content-start">
             {actors && actors[0] ? actors.map((actor) => {
                 return <Fragment key={JSON.stringify(actor)}>
-                    <SearchItemParent item={actor} handleSearchParent={handleSearchParent} relTypes={actor.role}/>
+                    <SearchItemParent item={{person: actor}} handleSearchParent={handleSearchParent} relTypes={actor.role}/>
                 </Fragment>   
             }) : null}
+            {entities && entities[0] ? entities.map((entity) =>
+                <Fragment key={JSON.stringify(entity)}>
+                    <SearchItemParent item={{entity: entity}} handleSearchParent={handleSearchParent}/>
+                </Fragment>
+            ) : null}
          </div>     
          <div className="columns is-multiline is-flex is-justify-content-start">
             {projects && projects[0] ? projects.map((project) => {

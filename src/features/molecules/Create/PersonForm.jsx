@@ -5,6 +5,7 @@ import {usePeople} from "../../../utils/hooks/People"
 import RoleForm from "../../atoms/forms/RoleForm"
 import ProjectParentForm from "../../atoms/forms/docs/ProjectParentForm"
 import OrganisationParentForm from "../../atoms/forms/docs/OrganisationParentForm"
+import MergeForm from "../../atoms/forms/MergeForm"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
@@ -43,6 +44,10 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate, dr
     updatePerson, 
     responseUpdatePerson,
     deletePerson, 
+    searchPeople,
+    responseSearchPeople,
+    mergePeople,
+    responseMergePeople,
     responseDeletePerson,
     findPersonBySlug, 
     responseFindPersonBySlug
@@ -179,7 +184,7 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate, dr
         birthDate: birthDateValue,
         deathDate: deathDateValue,
         city: cityValue,
-        country: (dataUpdate && dataUpdate.country&& dataUpdate.country.labels && dataUpdate.country.labels[0] && countryValue !== dataUpdate.country.labels[0].content) || (!dataUpdate || dataUpdate && !dataUpdate.country || dataUpdate.country && !dataUpdate.country.labels || dataUpdate.country && dataUpdate.country.labels && !dataUpdate.country.labels[0]) ? {labels: [{ lang: "en", content: countryValue }], code: countryValue.charAt(2)} : dataUpdate.country,
+        country: (dataUpdate && dataUpdate.country&& dataUpdate.country.labels && dataUpdate.country.labels[0] && countryValue !== dataUpdate.country.labels[0].content) || (!dataUpdate || dataUpdate && !dataUpdate.country || dataUpdate.country && !dataUpdate.country.labels || dataUpdate.country && dataUpdate.country.labels && !dataUpdate.country.labels[0]) ? {labels: [{ lang: "en", content: countryValue }], code: countryValue} : dataUpdate.country,
         firstName: firstNameValue,
         lastName: lastNameValue,
         website: urlValue,
@@ -224,6 +229,18 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate, dr
       setLoading(false)
     }
   }, [responseUpdatePerson])
+
+  useEffect(() => {
+    console.log(responseMergePeople)
+    if (responseMergePeople && responseMergePeople.success){
+      setAlert({ type: "success", message: { en: "Person has been successfully merge.", fr: "La personne a été fusionné avec succès" } })
+      setLoading(false)
+      setDataUpdate({...responseMergePeople.data, success: true})
+    } else if (responseMergePeople && !responseMergePeople.success) {
+      setAlert({ type: "error", message: { en: "An error occured while merging person.", fr: "Un problème est survenu lors de la fusion d'une personne"}})
+      setLoading(false)
+    }
+  }, [responseMergePeople])
   
   const [confirmDelete, setConfirmDelete] = useState(false)
   let navigate = useNavigate()
@@ -278,7 +295,7 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate, dr
       </>
    : null}</div>
    {merge ? <>
-      
+      <MergeForm originItem={dataUpdate} searchItem={searchPeople} responseSearchItem={responseSearchPeople} mergeItem={mergePeople}/>
    </> : <>
    <div className="field">
       <label className="label has-text-left">
@@ -358,7 +375,6 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate, dr
         <input type="text" value={urlValue} onChange={handleUrlChange} className="input"/>
       </div>
       
-    <RoleForm scope="parents" location="org-form" selectedRoles={selectedRoles} selectRole={selectRole} lang={i18n.language} />
     <label className="label has-text-left">
         {t('projects')}
       </label>

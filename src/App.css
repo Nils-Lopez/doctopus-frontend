@@ -44,14 +44,14 @@ body {
   }
 }
 .thumb-img {
-  height: 30%;
+  height: 600px;
   position: absolute;
   right: 1.5%;
   border-radius: 1.5%;
 }
 @media (max-width: 950px) {
   .thumb-img {
-    height: 25%;
+    height: 500px;
     position: absolute;
   }
 }

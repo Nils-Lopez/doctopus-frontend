@@ -31,7 +31,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
     const [dataUpdate, setDataUpdate] = useState(false)
     
     useEffect(() => {
-      if (dataUpdate && dataUpdate.success) {
+      if (dataUpdate && dataUpdate.success && dataUpdate._id) {
         handleSearchDoc(dataUpdate._id)
         setDataUpdate(false)
       }
@@ -224,11 +224,11 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                 {description && description[0] ? <p className="  mt-1 mb-1 pb-0 has-text-left">{getContent(description, i18n.language)}</p> : null}
                 
 </>}
-        {supports[0] && supports[0].url && supports[0].url.includes(('vimeo')) ?
+{((doc) && ((!doc.restrictedContent || doc.restrictedContent === "all") || (client && client.user && client.user.type !== "visitor"))) ? <> {supports[0] && supports[0].url && supports[0].url.includes(('vimeo')) ?
                         <div className="is-flex is-justify-content-center ">
                             <iframe src={supports[0].url} width="740" height="460" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
                         </div>
-                    : null}
+                    : null} </> : null}
 
 
                         
@@ -242,7 +242,8 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                     {supp.accessibility && supp.accessibility !== "" ?  <p className="has-text-left mt-1  mb-0 pt-0">{supp.accessibility}</p> : null}
                     {supp.url && supp.url !== "" && !supp.url.includes('vimeo') ?  <p className="has-text-left mt-1  mb-0 pt-0"><FontAwesomeIcon icon={faGlobe} className="has-text-primary mr-1 pt-1"/> <a href={supp.url}>{supp.url.replaceAll('//', "$4:").split('/')[0].replaceAll('$4:', "//") }</a>
                     </p> : null}
-                    {supp.pdf && supp.pdf !== "" ? <div className="is-flex is-justify-content-start">
+                    {(( doc) && ((!doc.restrictedContent || doc.restrictedContent === "all") || (client && client.user && client.user.type !== "visitor"))) ?
+ <>{supp.pdf && supp.pdf !== "" ? <div className="is-flex is-justify-content-start">
                     <div className="file has-name is-primary">
   <label className="file-label">
     <span className="file-cta">
@@ -255,7 +256,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
     </span> 
     </label>
     </div>
-                    </div> : null}
+                    </div> : null} </> : null}
                     {supp.exemplaries && supp.exemplaries[0] ? <p className="has-text-left mb-0 mt-2 has-text-grey">{t('copies')}: </p>: null}
                     {supp.exemplaries && supp.exemplaries[0] ? supp.exemplaries.map((ex) => {
                         return <Fragment key={JSON.stringify(ex)}>
@@ -264,14 +265,15 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                         </Fragment>
                     }) : null}
                   
-                       {displayFile && <div className="mt-3 h-100">
+                  {(( doc) && ((!doc.restrictedContent || doc.restrictedContent === "all") || (client && client.user && client.user.type !== "visitor"))) ?
+  <>{displayFile && <div className="mt-3 h-100">
       {
-        supp.pdf.split('.')[supp.pdf.split('.').length - 1].toLowerCase() === "pdf" ? <embed src={supp.pdf} width="100%" height="800px" /> : 
+        supp.pdf.split('.')[supp.pdf.split('.').length - 1].toLowerCase() === "pdf" ? <iframe src={supp.pdf} width="100%" height="800px" /> : 
         ["png" , "jpg" , "jpeg" , "gif" , "ico" , "svg"].includes(supp.pdf.split('.')[supp.pdf.split('.').length - 1].toLowerCase()) ? <img src={supp.pdf} alt="file" className="file-img"/> :
         ["mp4", "avi", "mov", "wmv", "flv", "mkv", "webm"].includes(supp.pdf.split('.')[supp.pdf.split('.').length - 1].toLowerCase()) ? <video src={supp.pdf}  className="file-video" controls/> : 
         ["wav", "mp3", "flac", "m4a"].includes(supp.pdf.split('.')[supp.pdf.split('.').length - 1].toLowerCase()) ? <audio src={supp.pdf} controls/> : null
       }
-      </div>}
+      </div>}</> : null}
 
                 </Fragment>
             })}

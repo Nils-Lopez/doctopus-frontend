@@ -234,7 +234,8 @@ const HomePage = ({client, setClient, setAlert, watchlist, history}) => {
         </form>
       </div>    
       <div className="landing-content pl-3 pr-3">
-          {empty ? <>{t('no-match')}</> : <>
+          {empty ?  <h1 className="title is-4 has-text-white has-text-shadow mb-0 mt-6 pt-6">{t('no-match')}</h1>
+ : <>
             {loadingSearch ? <div className="loader">
   <div className="inner one"></div>
   <div className="inner two"></div>

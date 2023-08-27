@@ -8,7 +8,7 @@ import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 
 import DocSearchItem from "../docs/SearchItem.jsx"
 
-const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDelete, parent, i, handleSearchScapinParent}) => {
+const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDelete, parent, i, handleSearchScapinParent, width}) => {
     const index = i - ((i/4).toString()[0] * 4)
     let colClasses = i || index === 0 ? " smooth-appear" : ""
     colClasses += i && index === 0 ? "" : index === 4 ? " sm5" : index === 3 ? " sm4" : index === 2 ? " sm3" : index === 1 ? " sm2" : ""
@@ -67,7 +67,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
             </div>
         </div>
     } else if (item.project && parent !== "project") {
-        return <div className="column is-one-quarter-desktop is-half-tablet" >
+        return <div className={width !== "full" ? "column is-one-quarter-desktop is-half-tablet" : "column"} >
             <div className={"box results-col "+ colClasses} onClick={() => {
                 if (!handleDelete) handleSearchParent(item.project)
             }}>
@@ -94,7 +94,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
             </div>
         </div>
     } else if (item.person && parent !== "person") {
-        return <div className="column is-one-quarter-desktop is-half-tablet">
+        return <div className={width !== "full" ? "column is-one-quarter-desktop is-half-tablet" : "column"}>
             <div className={"box results-col " +colClasses} onClick={() => {
                 if (!handleDelete) handleSearchParent(item.person)
             }}>

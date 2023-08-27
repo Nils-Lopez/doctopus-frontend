@@ -11,11 +11,11 @@ import {useDocs} from "../../../utils/hooks/docs/Docs"
 import {useDocTemplates} from "../../../utils/hooks/templates/DocTemplates"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleXmark, faMagnifyingGlass, faCameraRetro, faCirclePlus} from '@fortawesome/free-solid-svg-icons'
+import { faCircleXmark, faMagnifyingGlass, faCirclePlus} from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom"
 import { useIsbns } from '../../../utils/hooks/Isbn';
-import {useUsers} from "../../../utils/hooks/Users.js"
+import { useUsers } from "../../../utils/hooks/Users.js"
 
 
 const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, dataUpdate, setDataUpdate}) => {
@@ -28,7 +28,6 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
   const [slugValue, setSlugValue] = useState("")
   const [descEnValue, setDescEnValue] = useState("")
   const [descFrValue, setDescFrValue] = useState("")
-  const [idLang, setIdLang] = useState("fr")
   const [langEnValue, setLangEnValue] = useState("")
   const [langFrValue, setLangFrValue] = useState("")
   const [selectedLangs, selectLang] = useState([])
@@ -162,11 +161,6 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
       }
     }
 
-  const handleSlugChange = (e) => {
-    e.preventDefault()
-    setSlugValue(e.target.value)
-  }
-
 
 
   const handleCopyrightsChange = (e) => {
@@ -230,6 +224,7 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
         duration: durationValue,
         thumb: thumbValue,
         volume: volumeValue,
+        restrictedContent: restrictedContent,
         number: numberValue,
         template: templateModel,
       },
@@ -407,6 +402,7 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
       setPagesValue(dataUpdate.pages)
       setDurationValue(dataUpdate.duration)
       setThumbValue(dataUpdate.thumb)
+      setRestrictedContent(dataUpdate.restrictedContent)
       setVolumeValue(dataUpdate.volume)
       setNumberValue(dataUpdate.number)
       selectType(dataUpdate.types)
@@ -504,7 +500,14 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
 
   const [scanner, setScanner] = useState(false)
   const [draft, setDraft] = useState(false)
+  const [restrictedContent, setRestrictedContent] = useState("all")
 
+  const handleRestrictedContent = (e) => {
+    e.preventDefault()
+    setRestrictedContent(e.target.value)
+  }
+
+  
 
   return loading || isbnLoading ? <>
    <div className="loader">
@@ -718,6 +721,15 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
         <h3 className="title is-4">{t('supports')}</h3>
       </button>
     </div>
+   {showSupportForm &&  <div className="field">
+            <label className="label has-text-left">{t('restricted-access')}</label>
+            <div className="select is-flex is-justify-content-start is-fullwidth">
+             <select value={restrictedContent} onChange={handleRestrictedContent}>  
+                <option value="all">{t('all')}</option>
+                <option value="onsite">{t('onsite')}</option>
+              </select>
+            </div>
+          </div>}
     {showSupportForm ? <SupportForm pendingSupports={pendingSupports} setPendingSupports={setPendingSupports} selectedRoles={selectedRoles} selectRole={selectRole} pendingExemplaries={pendingExemplaries} setPendingExemplaries={setPendingExemplaries} template={template} dataUpdate={dataUpdate}/> : null}
     <hr/>
     <div className="is-flex is-justify-content-start">

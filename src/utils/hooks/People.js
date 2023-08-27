@@ -19,6 +19,8 @@ function reducer (state, action) {
             return { ...state, responseSearch: action.payload }  
         case 'FindByScapin':
             return { ...state, responseFindById: action.payload }      
+        case 'Merge':
+            return { ...state, responseMerge: action.payload }      
         default:
             throw new Error ('Action inconnue' + action.type)
     }
@@ -33,7 +35,8 @@ const usePeople = () => {
         responseCreatePerson: null,
         responseDeletePerson: null,
         responseFindAllPeople: null,
-        responseSearchPeople: null
+        responseSearchPeople: null,
+        responseMerge: null
     })
 
     return {
@@ -44,6 +47,15 @@ const usePeople = () => {
         responseCreatePerson: state.responseCreate,
         responseFindAllPeople: state.responseFindAllPeople,
         responseSearchPeople: state.responseSearch,
+        responseMergePeople: state.responseMerge,
+        mergePeople: async function (data) {
+            const people = await apiFetch('/people/merge', {
+                method: 'POST',
+                body: data
+            })
+            console.log(people)
+            dispatch({type: 'Merge', payload: people})
+        },
         searchPeople: async function (query) {
             const people = await apiFetch('/people/search', {
                 method: 'POST',
