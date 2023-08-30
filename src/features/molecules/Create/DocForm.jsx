@@ -245,11 +245,9 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
                       client.user.drafts.map((watch) => {
                           if (watch._id !== dataUpdate._id) {
                               newList.push({_id: watch._id})
-                          }
-                      })
-                      updateUser({drafts: newList}, client.user._id)
-                
-        
+          }
+        })
+        updateUser({drafts: newList}, client.user._id)
       }
      await updateDoc(reqData, dataUpdate._id)
     }
@@ -635,14 +633,16 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
           </label>
           <input type="text" className="input" value={titleValue} onChange={handleTitleChange}/>
         </div>}
-    {template && template.description ? <div className="field" id="docDesc">
+    {template && template.description ? <div className="field mt--1" id="docDesc">
       <label className="label has-text-left">
       {t('description')}
       </label>
       <textarea className="textarea" value={i18n.language === "fr" ? descFrValue : descEnValue} onChange={handleDescChange}></textarea>
       </div> : null}
      
-      
+      <label className="label has-text-left mb--1">
+      {t('types')}
+      </label>
       <RoleForm location="support-form-doc" scope="docs" lang={i18n.language} selectedRoles={selectedTypes} selectRole={selectType}/>
       {/* {template && template.tag ? <DocTagsForm selectedTags={selectedTags} selectTag={selectTag} scope="docs" lang={i18n.language} /> : null} */}
       {template && template.tag ? <SearchTagsForm selectedTags={selectedTags} selectTag={selectTag} /> : null}

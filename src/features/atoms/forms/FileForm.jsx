@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleCheck, faChevronDown, faChevronUp, faUpload, faTrash } from '@fortawesome/free-solid-svg-icons'
 
 import {useTranslation} from "react-i18next"
+import imageCompression from 'browser-image-compression';
 
 
 const FileUpload = ({setFile, pdf}) => {
@@ -31,19 +32,29 @@ const FileUpload = ({setFile, pdf}) => {
     setFileSelected(event.target.files[0]);
   };
 
-  const onFileUpload = async () => {
+  const onFileUpload = async (compress = false) => {
     // prepare UI
     setUploading(true);
+    
+    const options = compress ? {
+      maxSizeMB: 0.005,
+      maxWidthOrHeight: 250
+    } : {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1920
+    }
+
+    console.log("opt: ", options)
+
+    const compressedFile = fileSelected.name.toLowerCase().includes('jpg') || fileSelected.name.toLowerCase().includes('jpg') ? await imageCompression(fileSelected, options) : fileSelected;
 
     // *** UPLOAD TO AZURE STORAGE ***
-    const blobsInContainer = await uploadFileToBlob(fileSelected);
+    const blobsInContainer = await uploadFileToBlob(compressedFile);
 
     // prepare UI for results
     blobsInContainer.map((blob) => {
-      console.log('blob : ', blob, fileSelected.name, blob.includes(fileSelected.name))
       if (blob.includes(fileSelected.name)) {
         setFileUrl(blob)
-        console.log("url:" , fileUrl)
       }
     })
     setBlobList(blobsInContainer);
@@ -72,8 +83,9 @@ const FileUpload = ({setFile, pdf}) => {
   // display form
   const DisplayForm = () => (
     <div className="mb-3">
-      
+
       <div className="file has-name is-primary">
+
   <label className="file-label">
     <input className="file-input" type="file" name="resume" onChange={onFileChange} key={inputKey || ''}/>
     <span className="file-cta">
@@ -89,9 +101,14 @@ const FileUpload = ({setFile, pdf}) => {
     </span> : null}
     
   </label>
-  {fileSelected ? <button type="submit" className="button is-primary ml-3 is-rounded" onClick={onFileUpload}>
+  {fileSelected ? <button type="submit" className="button is-primary ml-3 is-rounded" onClick={() => onFileUpload(false)}>
   <FontAwesomeIcon icon={faCircleCheck} className="is-primary"/>
       </button> : null}
+      {fileSelected && (fileSelected.name.toLowerCase().includes('jpg') || fileSelected.name.toLowerCase().includes('png')) ? <button type="submit" className="button is-light has-text-primary ml-3 is-rounded" onClick={() => onFileUpload(true)}>
+  <FontAwesomeIcon icon={faCircleCheck} className="is-info mr-2"/>  {t('compressed')}
+      </button> : null}
+
+      
 </div>
 
     </div>
