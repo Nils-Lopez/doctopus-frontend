@@ -85,6 +85,8 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
      }
     }, [dataUpdate])
 
+    console.log('childs: ', roles)
+
     useEffect(() => {
         if ((productions && productions[0]) || (createdDocs && createdDocs[0])) {
             if (!docs[0]) {

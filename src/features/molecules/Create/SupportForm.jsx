@@ -166,6 +166,8 @@ const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selec
        <label className="label has-text-left">{t('description')}</label>
       {i18n.language === "en" ? <input type="text" className="input" value={descEnValue} onChange={handleDescEnChange}/> : <input type="text" className="input" value={descFrValue} onChange={handleDescFrChange}/>}
     </div>
+    <label className="label has-text-left mb--1">{t('types')}</label>
+
     {template && template.support_role ? <RoleForm roles={roles} scope="docs" location="support-form-doc" selectedRoles={selectedRoles} selectRole={selectRole} defaults={template.support_role_defaults} lang={i18n.language} /> : null}
     
 

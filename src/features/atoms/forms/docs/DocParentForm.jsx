@@ -31,7 +31,7 @@ const DocParentForm = ({selectedDoc, selectDoc, location, template, lang, hideRo
     }
   }, [template, docValue])
   
-  
+  console.log(selectedDoc)
   const handleDeleteDoc = (e, doc) => {
     e.preventDefault()
     const filtered = selectedDoc.filter((r) => {

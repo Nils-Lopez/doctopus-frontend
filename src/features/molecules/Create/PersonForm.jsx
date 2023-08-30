@@ -160,6 +160,8 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate, dr
           setCountryValue(label.content)
         })
       })
+      setBirthDateValue(dataUpdate.birthDate)
+      setDeathDateValue(dataUpdate.deathDate)
       console.log('country : ', dataUpdate.country)
       setCityValue(dataUpdate.city)
       dataUpdate.activities.map((a) => {
@@ -329,7 +331,7 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate, dr
         </div>
         {selectedLangs.map((lang) => {
         return <Fragment key={lang.code}>
-          <span className="tag is-success is-medium mr-1 mt-2">{getContent(lang.labels, i18n.language)}</span>
+          <span className="tag is-info is-medium mr-1 mt-2">{getContent(lang.labels, i18n.language)}</span>
           <span className="tag is-danger is-medium mr-2 button mt-2" onClick={(e) => handleDeleteLang(e, lang)}><FontAwesomeIcon icon={faTrash}/></span>
         </Fragment>
         })}

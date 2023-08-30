@@ -1,16 +1,18 @@
 import React, {Fragment, useState, useEffect} from "react";
 import {useTranslation} from "react-i18next"
 import BoxItemParent from "../parents/SearchItem.jsx"
+import ShowParent from "../parents/Show.jsx"
 
 import {useUsers} from "../../../utils/hooks/Users.js"
 
 import DocForm from "../../molecules/Create/DocForm"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGlobe, faRotateLeft } from '@fortawesome/free-solid-svg-icons'
-import { faChevronDown, faChevronUp,  faCopy, faCheck, faCircleXmark, faShareAlt } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faChevronUp,  faCopy, faCheck, faCircleXmark, faShareAlt, faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 import { TwitterShareButton, TwitterIcon, PinterestShareButton, PinterestIcon, FacebookShareButton, FacebookIcon } from 'react-share';
-import { MobilePDFReader } from 'react-read-pdf';
-const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchParent, handleSearchDoc, handleBack}) => {
+import {useProds} from "../../../utils/hooks/Prods"
+
+const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchParent, handleSearchDoc, handleBack, handleSearchScapinID}) => {
     const {
         title,
         description,
@@ -23,6 +25,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
     childs
       } = doc
 
+      console.log(doc)
 
       const [addingWatchlist, setAddingWatchlist] = useState(false)
 	const {updateUser, responseUpdateUser} = useUsers()
@@ -112,7 +115,61 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
 
     const [shareBtn, setShareBtn] = useState(false)
 
-    return dataUpdate && !dataUpdate.success ? <>
+    const [showScapinParent, setShowScapinParent] = useState(false)
+    const {findProdByIds, responseFindProdByIds} = useProds()
+
+    const [productionsScapin, setProductions] = useState(false)
+    const [prodLoading, setProdLoading] = useState(false)
+
+    const handleSearchScapinParent = (item, type) => {
+        if (!type){
+            console.log('eh jsuis la : ', {...item.prod,scapin: true, parents: item.parents})
+        if (!showScapinParent && item) setShowScapinParent({...item.prod,scapin: true, parents: item.parents})
+        else setShowScapinParent(false)
+        } else {
+            handleSearchScapinID(item)
+        }
+    }
+
+    useEffect(() => {
+        if (responseFindProdByIds && prodLoading) {
+            setProductions(responseFindProdByIds)
+            setProdLoading(false)
+        }
+    }, [responseFindProdByIds])
+
+    const [productionsPage, setProductionsPage] = useState(1)
+
+    useEffect(() => {
+        const prodIds = []
+        parents?.map((p) => {
+            if (p.productionId && p.productionId.length > 1) {
+                prodIds.push(p.productionId)
+            }
+        })
+        if (prodIds && prodIds[0] && !prodLoading && !productionsScapin[0]) {
+            setProdLoading(true)
+            findProdByIds(prodIds)
+        }
+    }, [parents])
+
+    const handleNextPage = (list, currentPage, setNewPage, next, rowSize) => {
+        if (next) {
+            if (list.length > (currentPage*rowSize)) {
+                setNewPage(currentPage+1)
+            }
+        } else {
+            if (productionsPage !== 1) {
+                let newPage = currentPage - 1
+                setNewPage(newPage)
+            }
+        }
+    }
+
+
+    return showScapinParent ? <>
+        <ShowParent parent={showScapinParent} client={client} setAlert={setAlert} handleSearchParent={handleSearchScapinParent} handleSearchScapinID={handleSearchScapinID} handleSearchDoc={handleSearchDoc} handleBack={handleSearchScapinParent}/>
+    </> : dataUpdate && !dataUpdate.success ? <>
      <DocForm client={client} setClient={setClient} setAlert={setAlert} dataUpdate={dataUpdate} setDataUpdate={setDataUpdate}/>
     </> : <>
              <div className="is-flex is-justify-content-space-between mb-5">
@@ -195,7 +252,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                 {doc.eanIsbn && doc.eanIsbn !== "" ? 
                 <p className="has-text-left mt-1  mb-0 pt-0">EAN/ISBN: {doc.eanIsbn} </p>
                                 : null}        
-                                {doc.pages && doc.pages !== "" ? <p className="has-text-left mt-1  mb-0 pt-0">{!(doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2) ? "Pages : " : null} {doc.pages} {doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2 ? "pages" : null}</p> : doc.volume && doc.volume !== "" ? 
+                                {doc.pages && doc.pages !== "" ? <p className="has-text-left mt-1  mb-0 pt-0">{((!(doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2)) || doc.pages.includes('-')) ? "Pages : " : null} {doc.pages} {!(doc.pages.includes('-')) && doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2 ? "pages" : null}</p> : doc.volume && doc.volume !== "" ? 
                                 <p className="has-text-left mt-1  mb-0 pt-0">{t('volume')} {doc.volume}</p>
                                 : doc.number && doc.number !== "" ? 
                                 <p className="has-text-left mt-1  mb-0 pt-0">{t('number')} {doc.number}</p>
@@ -219,7 +276,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                 {doc.eanIsbn && doc.eanIsbn !== "" ? 
                 <p className="has-text-left mt-1  mb-0 pt-0">EAN/ISBN: {doc.eanIsbn} </p>
                                 : null}        
-                                {doc.pages && doc.pages !== "" ? <p className="has-text-left mt-1  mb-0 pt-0">{!(doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2) ? "Pages : " : null} {doc.pages} {doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2 ? "pages" : null}</p> : doc.volume && doc.volume !== "" ? 
+                                {doc.pages && doc.pages !== "" ? <p className="has-text-left mt-1  mb-0 pt-0">{!(doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2) || doc.pages.includes('-') ? "Pages : " : null} {doc.pages} {doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2 && !doc.pages.includes('-') ? "pages" : null}</p> : doc.volume && doc.volume !== "" ? 
                                 <p className="has-text-left mt-1  mb-0 pt-0">{t('volume')} {doc.volume}</p>
                                 : doc.number && doc.number !== "" ? 
                                 <p className="has-text-left mt-1  mb-0 pt-0">{t('number')} {doc.number}</p>
@@ -298,6 +355,30 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                 }
             })}
         </> : null}
+        </div>
+        {productionsScapin && productionsScapin[0] ? <>
+            <hr />
+
+        <div className="is-flex is-justify-content-space-between">
+        <h3 className="subtitle has-text-grey has-text-left is-5 mb-1">{t('productions')}</h3>
+
+        <div className="mt--1">
+        {productionsPage !== 1 ? <button className="button is-white" onClick={() => setProductionsPage(productionsPage - 1)}><FontAwesomeIcon icon={faAngleLeft} className=" is-size-3 has-text-grey"/></button> :null}
+
+                {productionsScapin.length > (8*productionsPage) ? <button className="button is-white" onClick={() => handleNextPage(productionsScapin, productionsPage, setProductionsPage, true, 8)}><FontAwesomeIcon icon={faAngleRight} className=" is-size-3 has-text-grey"/></button> :null}
+            </div>
+        </div>
+        </> : null}
+        <div className="columns is-multiline mb-6">
+        {productionsScapin && productionsScapin[0] ? productionsScapin.map((prodScapin, i) => {
+            if ((productionsPage === 1 && i < 8) || (i > (((productionsPage - 1)*8)-1)) && (i < (((productionsPage )*8)))) {
+
+                return <Fragment key={JSON.stringify(prodScapin)}>
+                <BoxItemParent item={prodScapin.item} handleSearchScapinParent={handleSearchScapinParent} parent="production" i={i}/>
+            </Fragment>
+            }
+        }): null}
+        
         </div>
         {includeParentType("project", parents) ? <>
         <h3 className="subtitle has-text-grey has-text-left is-5">Projects</h3>

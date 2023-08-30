@@ -72,38 +72,9 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
     }, [displayDoc])
 
     const handleBack = () => {
-        if (watchlist || history) {
-          setGoHome(true)
-          navigate('/')
-          setNavHistory(['/'])
-          setResult({})
-        } else if (displayDoc || displayParent || searchTags) {
-          console.log('result: ', result)
-          setDisplayDoc(false)
-          setDisplayParent(false)
-          setDisplayTag(false)
-          setSearchTags(false)
-          const newNavHistory = navHistory.splice(0, navHistory.length-2)
-           setNavHistory(newNavHistory)
-          navigate(newNavHistory[newNavHistory.length - 1] ? newNavHistory[newNavHistory.length - 1] : '/')
-
-        } else if (page === 1) {
-          const newNavHistory = navHistory.splice(0, navHistory.length-1)
-          if (newNavHistory[newNavHistory.length - 1] && newNavHistory[newNavHistory.length - 1].includes('/search/')) {
-            setNavHistory(newNavHistory)
-
-            navigate(newNavHistory[newNavHistory.length - 1] ? newNavHistory[newNavHistory.length - 1] : '/')
-            handleSearch(newNavHistory[newNavHistory.length - 1].split('/search/')[1].replaceAll('/', '').replaceAll('-', ' '))
-          } else {
-            navigate('/')
-            setNavHistory(['/'])
-            setResult({})
-
-          }
-        } else  {
-           
-            setPage(page - 1)
-        }
+      navigate('/')
+      setNavHistory(['/'])
+      setResult({})
     }
 
     const {
@@ -284,7 +255,7 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
         </> : displayParent && !showParentDoc ? <> 
             <ShowParent parent={displayParent} setAlert={setAlert} client={client} handleSearchParent={handleSearchParent} handleBack={handleBack} handleSearchDoc={handleSearchDoc} handleSearchScapinID={handleSearchScapinParent}/>
         </> : displayDoc ? <>
-            <ShowDoc doc={displayDoc} setClient={setClient} setAlert={setAlert} client={client} handleBack={handleBack} handleSearchTag={handleSearchTag} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>
+            <ShowDoc doc={displayDoc} setClient={setClient} setAlert={setAlert} client={client} handleBack={handleBack} handleSearchTag={handleSearchTag} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc} handleSearchScapinID={handleSearchScapinParent}/>
         </> : <>
         {tags && tags[0] ? <>
         <h3 className="subtitle has-text-right is-5 has-text-grey mt-0 pt-0 mb-4">{t('tags')}</h3>

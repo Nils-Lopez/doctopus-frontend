@@ -67,15 +67,16 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
             </div>
         </div>
     } else if (item.project && parent !== "project") {
+        console.log(item.project)
         return <div className={width !== "full" ? "column is-one-quarter-desktop is-half-tablet" : "column"} >
             <div className={"box results-col "+ colClasses} onClick={() => {
                 if (!handleDelete) handleSearchParent(item.project)
             }}>
             <div className="is-flex is-justify-content-end mb-0 mt-0">
                     {!relTypes ? <>
-                        {item.roles && item.roles[0] ? <>
+                        {item.project.roles && item.project.roles[0] ? <>
                         <span className="tag is-white is-medium pb-5 pr-0 has-text-info">
-                        {getContent(item.roles[0].title, i18n.language)}
+                        {getContent(item.project.roles[0].title, i18n.language)}
                     </span>
                     </> : <span className="tag is-white is-medium pb-5 pr-0 has-text-info">
                             {t('project')}

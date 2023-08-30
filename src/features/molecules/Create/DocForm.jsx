@@ -206,7 +206,7 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
 	const {updateUser} = useUsers()
 
 
-  const handleDocSubmit = async (e) => {
+  const handleDocSubmit = async (e, isDraft) => {
     e.preventDefault()
     setLoading(true)
     const reqData = {
@@ -234,7 +234,7 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
       parents: [...selectedProds, ...selectedOrg, ...selectedPeople, ...selectedProjects, ...selectedDoc],
       brotherhood: selectedBrotherHood
     }
-    if (draft) reqData.doc.draft = true
+    if (draft || isDraft) reqData.doc.draft = true
     else reqData.doc.draft = false
     if (!dataUpdate) {
      await createDoc(reqData)
@@ -646,7 +646,7 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
       <RoleForm location="support-form-doc" scope="docs" lang={i18n.language} selectedRoles={selectedTypes} selectRole={selectType}/>
       {/* {template && template.tag ? <DocTagsForm selectedTags={selectedTags} selectTag={selectTag} scope="docs" lang={i18n.language} /> : null} */}
       {template && template.tag ? <SearchTagsForm selectedTags={selectedTags} selectTag={selectTag} /> : null}
-      {template && template.copyright ? <div className="field mt-2">
+      {template && template.copyrights ? <div className="field mt-2">
         <label className="label has-text-left">
         {t('copyrights')}
         </label>
@@ -745,7 +745,7 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
       <div className="is-fullwidth is-flex is-justify-content-end">
       <button className="button is-white-ter is-radiusless mr-3"  onClick={(e) => {
         setDraft(true)
-       handleDocSubmit(e)
+       handleDocSubmit(e, true)
       }}>
         
         {t('Save as draft')}
