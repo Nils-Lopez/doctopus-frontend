@@ -42,11 +42,11 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
     e.preventDefault()
     if (i18n.language === "en") {
       setRoleEnValue(e.target.value)
-      setRoleSlug(roleEnValue.replaceAll(" ", "-").toLowerCase())
+      setRoleSlug(e.target.value.replaceAll(" ", "-").toLowerCase())
   
     } else {
       setRoleFrValue(e.target.value)
-      setRoleSlug(roleFrValue.replaceAll(" ", "-").toLowerCase())
+      setRoleSlug(e.target.value.replaceAll(" ", "-").toLowerCase())
      
     }
     if (e.target.value.length >= 3) {
