@@ -304,6 +304,13 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
         setTemplateModel(template)
       }
     })
+    selectPerson([])
+    selectOrg([])
+    selectProject([])
+    selectDoc([])
+    selectType([])
+    selectTag([])
+    selectLang([])
 
   }
   
@@ -318,6 +325,11 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
     if (e.target.value === "None") {
       setSubTemplate(false)
     }
+    selectPerson([])
+    selectOrg([])
+    selectProject([])
+    selectDoc([])
+    selectTag([])
   }
 
   const {

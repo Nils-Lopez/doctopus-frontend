@@ -31,12 +31,16 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
       })
     }
 
-    if (template && template.parent_project_defaults[0]) {
-      template.parent_project_defaults.map((project) => {
-        if (!selectedProj.includes(project)) {
-          selectProj([...selectedProj, project])
+   
+    if (template && template.parent_project_defaults[0] && selectedProj.length === 0) {
+      const newParents = []
+      console.log("parents project: ", template.parent_project_defaults)
+      template.parent_project_defaults.map((person) => {
+        if (!selectedProj.includes(person)) {
+          newParents.push(person)
         }
       })
+      selectProj(newParents)
     }
   }, [template, projectValue])
 

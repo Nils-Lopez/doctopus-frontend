@@ -24,12 +24,14 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
 
 
   useEffect(() => {
-    if (template && template.parent_person_defaults[0]) {
+    if (template && template.parent_person_defaults[0] && selectedPeople.length === 0) {
+      const newParents = []
       template.parent_person_defaults.map((person) => {
         if (!selectedPeople.includes(person)) {
-          selectPerson([... selectedPeople, person])
+          newParents.push(person)
         }
       })
+      selectPerson(newParents)
     }
 
     if (personValue === "" && template && template.parent_role_defaults[0]) {

@@ -13,7 +13,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
     let colClasses = i || index === 0 ? " smooth-appear" : ""
     colClasses += i && index === 0 ? "" : index === 4 ? " sm5" : index === 3 ? " sm4" : index === 2 ? " sm3" : index === 1 ? " sm2" : ""
     
-    // console.log('item: ', item)
+    console.log('item: ', item)
 
     const { t, i18n } = useTranslation() 
     if (parent !== "production" && item.scapin) {
@@ -67,20 +67,19 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
             </div>
         </div>
     } else if (item.project && parent !== "project") {
-        console.log(item.project)
         return <div className={width !== "full" ? "column is-one-quarter-desktop is-half-tablet" : "column"} >
             <div className={"box results-col "+ colClasses} onClick={() => {
                 if (!handleDelete) handleSearchParent(item.project)
             }}>
             <div className="is-flex is-justify-content-end mb-0 mt-0">
                     {!relTypes ? <>
-                        {item.project.roles && item.project.roles[0] ? <>
+                        {item.roles && item.roles[0] ? <>
                         <span className="tag is-white is-medium pb-5 pr-0 has-text-info">
-                        {getContent(item.project.roles[0].title, i18n.language)}
+                        {getContent(item.roles[0].title, i18n.language)}
                     </span>
-                    </> : <span className="tag is-white is-medium pb-5 pr-0 has-text-info">
-                            {t('project')}
-                        </span>}
+                    </> :<span className="tag is-white is-medium pb-5 pr-0 has-text-info">
+                        {t('project')} 
+                    </span>}
                     </> : <span className="tag has-text-info">
                         {getContent(relTypes.title, i18n.language)}
                     </span>}
