@@ -159,9 +159,10 @@ console.log('org: ', orgForm)
   </> : null}
  <div className="columns is-multiline">
  {selectedOrg && selectedOrg[0] ? selectedOrg.map((org) => {
+        const widthProp = location && location.includes("template") ? "full": ""
         if (org.entity && org.entity.name) {
           return <Fragment key={org.entity.name + "selected"}>
-                                     <ParentSearchItem item={org} handleDelete={handleDeleteOrg}/>
+                                     <ParentSearchItem item={org} handleDelete={handleDeleteOrg} width={widthProp}/>
 
           </Fragment>
         }

@@ -10,6 +10,10 @@ body {
   overflow-y: hidden;
 }
 
+html {
+  overflow-y: hidden !important;
+}
+
 .content
 {
 

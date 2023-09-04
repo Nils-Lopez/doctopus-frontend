@@ -138,8 +138,10 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
       <div className="columns is-multiline">
       {selectedPeople && selectedPeople[0] ? selectedPeople.map((person) => {
         if (person.person && person.person.name) {
+          const widthProp = location && location.includes("template") ? "full": ""
+
           return <Fragment key={person.person.name + "selected"}>
-                                     <ParentSearchItem item={person} handleDelete={handleDeletePerson}/>
+                                     <ParentSearchItem item={person} handleDelete={handleDeletePerson} width={widthProp}/>
 
           </Fragment>
         }

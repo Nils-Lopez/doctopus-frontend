@@ -299,7 +299,7 @@ const Landing = ({popularDocs, setDisplayDoc, setResult, t, client}) => {
             </div>
         </div>
         </div>
-        {client && client.user && client.user.drafts && client.user.drafts[0] && client.type !== "visitor" ? <>
+        {client && client.user && client.user.drafts && client.user.drafts[0] && client.user.drafts[0].title && client.type !== "visitor" ? <>
           <h1 className="title is-4 has-text-white has-text-shadow mb-0 pb-0 mt-0 pt-0">{t('drafts')} :</h1>
           <div className="columns is-multiline pb-3 mb-4 mt-0 pt-0">
             {client.user.drafts.map((item, index) => {

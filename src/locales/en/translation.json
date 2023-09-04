@@ -6,6 +6,7 @@
     "history": "History",
     "settings": "Settings",
     "help": "Help",
+    "date-text": "Text date",
     "logout": "Logout",
     "create": "Save",
     "no-match": "No match were found with your query, try something else ...",

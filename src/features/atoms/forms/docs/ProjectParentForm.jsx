@@ -84,8 +84,10 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
      <div className="columns is-multiline">
      {selectedProj?.map((proj) => {
         if (proj && proj.project && proj.project.title) {
+          const widthProp = location && location.includes("template") ? "full": ""
+
           return <Fragment key={proj.project.slug}>
-                                  <ParentSearchItem item={proj} handleDelete={handleDeleteProj}/>
+                                  <ParentSearchItem item={proj} handleDelete={handleDeleteProj} width={widthProp}/>
 
              </Fragment>
         }
