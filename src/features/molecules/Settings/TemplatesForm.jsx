@@ -278,6 +278,7 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
         tag_defaults: selectedTags
       }
       if (editTemplate) {
+        if (reqData.template.schema_parent) reqData.template.schema_parent = {_id: reqData.template.schema_parent._id}
         console.log("data: ", reqData.template)
         updateDocTemplate(reqData, editTemplate)
         setLoadingUpdateDocTemplate(true)

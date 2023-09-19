@@ -62,7 +62,7 @@ const useProds = () => {
                 }).then(function(response) {
                     return response.json();
                   })
-
+                
                 const productor = await fetch("https://api.aml-cfwb.be/scapin/spectacle.svc/anon/getproduction/" + id, {
                     method: 'GET',
                     headers: {
