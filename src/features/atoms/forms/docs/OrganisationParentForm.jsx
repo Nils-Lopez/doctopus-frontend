@@ -21,12 +21,15 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
 
 console.log('org: ', orgForm)
   useEffect(() => {
-    if (organisationValue === "" && template && template.parent_entity_defaults && template.parent_entity_defaults[0]) {
-      template.parent_entity_defaults.map((org) => {
-        if (!selectedOrg.includes(org)) {
-          selectOrg([... selectedOrg, org])
+   
+    if (template && template.parent_entity_defaults && template.parent_entity_defaults[0] && selectedOrg.length === 0) {
+      const newParents = []
+      template.parent_entity_defaults.map((person) => {
+        if (!selectedOrg.includes(person)) {
+          newParents.push(person)
         }
       })
+      selectOrg(newParents)
     }
 
     if (organisationValue === "" && template && template.parent_role_defaults && template.parent_role_defaults[0]) {
@@ -156,9 +159,10 @@ console.log('org: ', orgForm)
   </> : null}
  <div className="columns is-multiline">
  {selectedOrg && selectedOrg[0] ? selectedOrg.map((org) => {
+        const widthProp = location && location.includes("template") ? "full": ""
         if (org.entity && org.entity.name) {
           return <Fragment key={org.entity.name + "selected"}>
-                                     <ParentSearchItem item={org} handleDelete={handleDeleteOrg}/>
+                                     <ParentSearchItem item={org} handleDelete={handleDeleteOrg} width={widthProp}/>
 
           </Fragment>
         }

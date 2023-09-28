@@ -1,15 +1,18 @@
 import React, { useState, useEffect, Fragment } from "react";
 
-  import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMagnifyingGlass, faCircleXmark } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMagnifyingGlass, faCircleXmark, faChevronCircleDown, faChevronCircleUp } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from 'react-i18next';
 import Slider from '@mui/material/Slider';
 
-const SearchBar = ({searchValue, setSearchValue, filtersData, setFiltersValue}) => {
+import Select from "react-select"
+import SelectForm from "./forms/SelectForm";
+
+const SearchBar = ({searchValue, setSearchValue, filtersData, setFiltersValue, applicationSettings}) => {
     const [tagDropdown, setTagDropdown] = useState(false)
     const [extraDropdown, setExtraDropdown] = useState(false)
     const { t, i18n } = useTranslation()
-  const [selectedTypes, selectTypes] = useState([])
+    const [selectedTypes, selectTypes] = useState([])
 
     // const [tags, setTags] = useState([])
 
@@ -17,33 +20,6 @@ const SearchBar = ({searchValue, setSearchValue, filtersData, setFiltersValue}) 
       e.preventDefault()
       setSearchValue(e.target.value)
     }
-    
-    // const getContent = (value, lang) => {
-    //   if (value) {
-    //     return value.filter(obj => obj.lang === lang)[0] ? value.filter(obj => obj.lang === lang)[0].content : value.filter(obj => obj.lang === "en")[0] ? value.filter(obj => obj.lang === "en")[0].content : value.filter(obj => obj.lang === "fr")[0].content
-    //   } else {
-    //     return "Error"
-    //   }
-    // }
-  
-    // const {
-    //   findAllTags, 
-    //   responseFindAllTags
-    // } = useTags()
-  
-    // if (!tags[0] && !tagsLoading) {
-    //   findAllTags()
-    //   setTagsLoading(true)
-    // }
-      
-    // useEffect(() => {
-    //   if (responseFindAllTags && responseFindAllTags.success) {
-    //     setTags(responseFindAllTags.data)
-    //     setTagsLoading(false)
-    //   }
-    // }, [responseFindAllTags])
-    
-    // console.log('tags : ', tags)
 
     const oldest = 1948
     const newest = 2023
@@ -67,15 +43,14 @@ const SearchBar = ({searchValue, setSearchValue, filtersData, setFiltersValue}) 
 
     const [typeValue, setTypeValue] = useState("none")
 
-    const handleChooseType = (e) => {
-      e.preventDefault()
-      // setTypeValue(e.target.value)
+    const handleChooseType = (value) => {
+      setTypeValue(value)
+      console.log('val: ', value)
       filtersData.types.map((type) => {
-        if (type.slug === e.target.value) {
+        if (type.slug === value.value) {
           selectTypes([...selectedTypes, type])
         }
       })
-      setTagDropdown(false)
     }
 
     const handleDeleteType = (e, role) => {
@@ -101,51 +76,51 @@ const SearchBar = ({searchValue, setSearchValue, filtersData, setFiltersValue}) 
     }, [selectedTypes, value])
 
     return <>
-    
       <div className='container landing-container is-flex is-justify-content-center  w-100'>
-        
+     
   <div className='columns is-mobile box search-box '>
     <div className='column is-three-quarters is-paddingless'>
       <div className='search-block' id="searchBlock">
         <label className='search-label label'>
           <span>{t('what')}</span>
         </label>
-        <input className='search-input home-input is-family-monospace' placeholder='Title, author, tags ...' type='/search' value={searchValue} onChange={handleSearchChange} />
+        <input className='search-input home-input is-family-monospace' placeholder={t('title') + ", " + t('author') + ", " + t('tags') + "..."} type='/search' value={searchValue} onChange={handleSearchChange} />
+      </div>
+      <div className="column">
+        
       </div>
     </div>
-    <button type="submit" className="button has-background-transparent no-desktop is-borderless mt-1 pl-1 ml-auto mr-auto is-flex is-justify-content-center pl-3 mt-2 " onClick={(e) => {
-      if (searchValue.length === 0) {
-        e.preventDefault()
-      }
-    }}>    <span className="has-text-primary pointer ml-auto mr-auto title is-4  mt-2 ml-3"><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/></span>
-</button>
-    <div className='column options-searchbar is-paddingless desktop-only'>
+   
+    <div className='column options-searchbar is-paddingless desktop-only' onMouseEnter={() => setTagDropdown(true)} onMouseLeave={() => setTagDropdown(false)}>
       <div className='price-block'>
         <label className='price-label label'>
           <span>{t('Filters')}</span>
         </label>
         <a className='button' onClick={() => setTagDropdown(!tagDropdown)} href='#' title='Rent Range'>
-          <span className="has-text-grey has-text-muted is-family-monospace pb-3 filters-label">{t('type')}, {t('date')}...</span>
+          <span className="has-text-lightgrey has-text-muted  has-text-left  pb-3 filters-label">{tagDropdown ? <FontAwesomeIcon icon={faChevronCircleUp}/> : <FontAwesomeIcon icon={faChevronCircleDown}/>}&nbsp;Date, types &nbsp;</span>
         </a>
         {tagDropdown ? <div className={"dropdown-container is-open is-rounded"} >
-          <div className="dropdown p-2 pt-4 pb-4">
+          <div className="dropdown p-2 pt-4 pb-4 is-rounded">
           <div className="field mb-5">
-                   <div className="control"> 
-                    <label htmlFor="type" className="label">{t('types')}</label>
-                  
-                    <select id="tags" className="input select" onChange={handleChooseType} value={typeValue}>
-                      <option value="none">All</option>
-                    {filtersData && filtersData.types && filtersData.types.map((tag, index) => {
-                      if (!selectedTypes.includes(tag)) {
-                        return <option key={index} value={tag.slug}>{getContent(tag.title, i18n.language)}</option>
-                      }
-                    })}
-                  </select>
+                  <div className="control"> 
+                    <label htmlFor="type" className="label has-text-left">{t('types')}</label>
+                    {filtersData && filtersData.types ? <SelectForm
+                      selected={typeValue}
+                      select={handleChooseType}
+                      options={filtersData.types.map((type) => {
+                        return {
+                          value: type.slug,
+                          label: getContent(type.title, i18n.language)
+                        }
+                      })}
+                      applicationSettings={applicationSettings}
+                    /> : null}
+
                   </div>
                   </div>
           <div className="field mr-3 ml-3">
             <div className="control">
-              <label className="label">{t('published-btwn')}</label>
+              <label className="label has-text-left">{t('published-btwn')}</label>
                 <Slider
                   getAriaLabel={() => 'Temperature range'}
                   value={value}
@@ -171,7 +146,7 @@ const SearchBar = ({searchValue, setSearchValue, filtersData, setFiltersValue}) 
         </div>
         
       </div>
-      <div className="is-flex is-justify-content-start selected-types-search ml-5 pl-3">
+      <div className="search-box is-flex is-justify-content-center selected-types-search  mb-2">
       {selectedTypes ? selectedTypes.map((role) => {
         return <Fragment key={role.slug}>
           <span className="tag is-primary mb-1 is-medium mr-1">{getContent(role.title, i18n.language)}        <i className="has-text-light ml-3 pointer" onClick={(e) => {

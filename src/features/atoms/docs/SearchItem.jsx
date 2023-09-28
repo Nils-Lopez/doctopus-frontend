@@ -18,27 +18,29 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
     }
     const { t, i18n } = useTranslation() 
 
-    return <div className={"column is-one-fifth"} >
+
+        return <div className={"column is-one-fifth"} >
             <div className={"box results-col " +colClasses} onClick={() => {
-                   
+                
                 if (handleSearchDoc !== "false") {
                     handleSearchDoc(item.doc)
                 } else if (setDisplay !== undefined) {
                     setDisplay(item.doc)
                 }
             }}>
-            <div className="is-flex is-justify-content-end mt-0 mb-0">
-            {/* <span className="tag is-white is-medium has-text-info">
-                        {getContent(relTypes.title, i18n.language)}
-                    </span> */}
-                    <span className="tag has-background-transparent is-medium pb-5 pr-0 has-text-info">
-                        {item.doc && item.doc.types && item.doc.types[0] && getContent(item.doc.types[0].title, i18n.language) !== "Error" ? getContent(item.doc.types[0].title, i18n.language) : t('document')}
-                    </span>
-                    {relTypes && relTypes.title && relTypes.title[0] && getContent(relTypes.title, i18n.language) !== "Error" ? <span className="has-text-muted has-text-grey tag-is-absolute"><small>{getContent(relTypes.title, i18n.language)}</small></span> : null}
-                </div>
-                {handleDelete ? <i className="has-text-danger ml-3 pointer" onClick={(e) => {
+            <div className="is-flex is-justify-content-start">
+            {handleDelete ? <i className="has-text-danger mt--1 pl-1 ml--1  pointer" onClick={(e) => {
                 handleDelete(e, item)
               }}><FontAwesomeIcon icon={faCircleXmark} /></i> : null}
+            </div>
+            <div className="is-flex is-justify-content-end mt-0 mb-0">
+                
+                    {relTypes && relTypes.title && relTypes.title[0] && getContent(relTypes.title, i18n.language) !== "Error" ? <span className="has-text-muted has-text-grey tag-is-absolute"><small>{getContent(relTypes.title, i18n.language)}</small></span> : null}
+                    <span className="tag has-background-transparent is-medium pb-5 pr-0 has-text-info has-text-right mr-0 pr-0  is-txt-multiline">
+                        {item.doc && item.doc.types && item.doc.types[0] && getContent(item.doc.types[0].title, i18n.language) !== "Error" ? getContent(item.doc.types[0].title, i18n.language).length > 14 ? <>{ getContent(item.doc.types[0].title, i18n.language).split(' ')[0]} { getContent(item.doc.types[0].title, i18n.language).replaceAll(getContent(item.doc.types[0].title, i18n.language).split(' ')[0], "")}</> : getContent(item.doc.types[0].title)  : t('document')}
+                    </span>
+                </div>
+               
                           {item.doc && item.doc.thumb && item.doc.thumb !== "" ? <img src={item.doc.thumb} alt="file" className="thumb-search-item" /> : null}
 
             <h3 className="subtitle is-6 mb-1 mt-1">{item.doc && item.doc.title}</h3>
@@ -127,7 +129,7 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
                             } else if (i < 2) {
                                 let title = item.doc.tags[i + 1] ? getContent(item.doc.tags[i + 1].title, i18n.language) : ""
 
-                                if (title !== "Error") {
+                                if (title !== "Error" && title !== "") {
                                     return <Fragment key={JSON.stringify(tag)}>
                                 <span className="tag is-info is-small mb-2 " >{title && title.length >= 10 ? title.slice(0, 10) + ".." : title}</span>
                                
@@ -141,6 +143,7 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
         
             </div>
         </div>
+    
 }
 
 const getContent = (value, lang = "fr") => {

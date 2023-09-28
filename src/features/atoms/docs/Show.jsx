@@ -1,16 +1,18 @@
 import React, {Fragment, useState, useEffect} from "react";
 import {useTranslation} from "react-i18next"
 import BoxItemParent from "../parents/SearchItem.jsx"
+import ShowParent from "../parents/Show.jsx"
 
 import {useUsers} from "../../../utils/hooks/Users.js"
 
 import DocForm from "../../molecules/Create/DocForm"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGlobe, faRotateLeft } from '@fortawesome/free-solid-svg-icons'
-import { faChevronDown, faChevronUp,  faCopy, faCheck, faCircleXmark, faShareAlt } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faChevronUp,  faCopy, faCheck, faCircleXmark, faShareAlt, faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 import { TwitterShareButton, TwitterIcon, PinterestShareButton, PinterestIcon, FacebookShareButton, FacebookIcon } from 'react-share';
+import {useProds} from "../../../utils/hooks/Prods"
 
-const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchParent, handleSearchDoc, handleBack}) => {
+const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchParent, handleSearchDoc, handleBack, handleSearchScapinID}) => {
     const {
         title,
         description,
@@ -23,6 +25,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
     childs
       } = doc
 
+      console.log(doc)
 
       const [addingWatchlist, setAddingWatchlist] = useState(false)
 	const {updateUser, responseUpdateUser} = useUsers()
@@ -31,7 +34,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
     const [dataUpdate, setDataUpdate] = useState(false)
     
     useEffect(() => {
-      if (dataUpdate && dataUpdate.success) {
+      if (dataUpdate && dataUpdate.success && dataUpdate._id) {
         handleSearchDoc(dataUpdate._id)
         setDataUpdate(false)
       }
@@ -39,6 +42,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
 
     const handleDisplayFile = (e) => {
         e.preventDefault()
+        
         setDisplayFile(!displayFile)
       }
 
@@ -58,6 +62,11 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
             }
 		}
 	}
+
+    const showPdf = (url) => {
+        window.open(url, '_blank', 'noreferrer')
+        setDisplayFile(false)
+    }
 
     useEffect(() => {
        if (responseUpdateUser && responseUpdateUser.success && responseUpdateUser.data) {
@@ -106,7 +115,61 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
 
     const [shareBtn, setShareBtn] = useState(false)
 
-    return dataUpdate && !dataUpdate.success ? <>
+    const [showScapinParent, setShowScapinParent] = useState(false)
+    const {findProdByIds, responseFindProdByIds} = useProds()
+
+    const [productionsScapin, setProductions] = useState(false)
+    const [prodLoading, setProdLoading] = useState(false)
+
+    const handleSearchScapinParent = (item, type) => {
+        if (!type){
+            console.log('eh jsuis la : ', {...item.prod,scapin: true, parents: item.parents})
+        if (!showScapinParent && item) setShowScapinParent({...item.prod,scapin: true, parents: item.parents})
+        else setShowScapinParent(false)
+        } else {
+            handleSearchScapinID(item)
+        }
+    }
+
+    useEffect(() => {
+        if (responseFindProdByIds && prodLoading) {
+            setProductions(responseFindProdByIds)
+            setProdLoading(false)
+        }
+    }, [responseFindProdByIds])
+
+    const [productionsPage, setProductionsPage] = useState(1)
+
+    useEffect(() => {
+        const prodIds = []
+        parents?.map((p) => {
+            if (p.productionId && p.productionId.length > 1) {
+                prodIds.push(p.productionId)
+            }
+        })
+        if (prodIds && prodIds[0] && !prodLoading && !productionsScapin[0]) {
+            setProdLoading(true)
+            findProdByIds(prodIds)
+        }
+    }, [parents])
+
+    const handleNextPage = (list, currentPage, setNewPage, next, rowSize) => {
+        if (next) {
+            if (list.length > (currentPage*rowSize)) {
+                setNewPage(currentPage+1)
+            }
+        } else {
+            if (productionsPage !== 1) {
+                let newPage = currentPage - 1
+                setNewPage(newPage)
+            }
+        }
+    }
+
+
+    return showScapinParent ? <>
+        <ShowParent parent={showScapinParent} client={client} setAlert={setAlert} handleSearchParent={handleSearchScapinParent} handleSearchScapinID={handleSearchScapinID} handleSearchDoc={handleSearchDoc} handleBack={handleSearchScapinParent}/>
+    </> : dataUpdate && !dataUpdate.success ? <>
      <DocForm client={client} setClient={setClient} setAlert={setAlert} dataUpdate={dataUpdate} setDataUpdate={setDataUpdate}/>
     </> : <>
              <div className="is-flex is-justify-content-space-between mb-5">
@@ -189,7 +252,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                 {doc.eanIsbn && doc.eanIsbn !== "" ? 
                 <p className="has-text-left mt-1  mb-0 pt-0">EAN/ISBN: {doc.eanIsbn} </p>
                                 : null}        
-                                {doc.pages && doc.pages !== "" ? <p className="has-text-left mt-1  mb-0 pt-0">{!(doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2) ? "Pages : " : null} {doc.pages} {doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2 ? "pages" : null}</p> : doc.volume && doc.volume !== "" ? 
+                                {doc.pages && doc.pages !== "" ? <p className="has-text-left mt-1  mb-0 pt-0">{((!(doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2)) || doc.pages.includes('-')) ? "Pages : " : null} {doc.pages} {!(doc.pages.includes('-')) && doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2 ? "pages" : null}</p> : doc.volume && doc.volume !== "" ? 
                                 <p className="has-text-left mt-1  mb-0 pt-0">{t('volume')} {doc.volume}</p>
                                 : doc.number && doc.number !== "" ? 
                                 <p className="has-text-left mt-1  mb-0 pt-0">{t('number')} {doc.number}</p>
@@ -213,7 +276,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                 {doc.eanIsbn && doc.eanIsbn !== "" ? 
                 <p className="has-text-left mt-1  mb-0 pt-0">EAN/ISBN: {doc.eanIsbn} </p>
                                 : null}        
-                                {doc.pages && doc.pages !== "" ? <p className="has-text-left mt-1  mb-0 pt-0">{!(doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2) ? "Pages : " : null} {doc.pages} {doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2 ? "pages" : null}</p> : doc.volume && doc.volume !== "" ? 
+                                {doc.pages && doc.pages !== "" ? <p className="has-text-left mt-1  mb-0 pt-0">{!(doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2) || doc.pages.includes('-') ? "Pages : " : null} {doc.pages} {doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2 && !doc.pages.includes('-') ? "pages" : null}</p> : doc.volume && doc.volume !== "" ? 
                                 <p className="has-text-left mt-1  mb-0 pt-0">{t('volume')} {doc.volume}</p>
                                 : doc.number && doc.number !== "" ? 
                                 <p className="has-text-left mt-1  mb-0 pt-0">{t('number')} {doc.number}</p>
@@ -224,11 +287,11 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                 {description && description[0] ? <p className="  mt-1 mb-1 pb-0 has-text-left">{getContent(description, i18n.language)}</p> : null}
                 
 </>}
-        {supports[0] && supports[0].url && supports[0].url.includes(('vimeo')) ?
+{((doc) && ((!doc.restrictedContent || doc.restrictedContent === "all") || (client && client.user && client.user.type !== "visitor"))) ? <> {supports[0] && supports[0].url && supports[0].url.includes(('vimeo')) ?
                         <div className="is-flex is-justify-content-center ">
                             <iframe src={supports[0].url} width="740" height="460" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
                         </div>
-                    : null}
+                    : null} </> : null}
 
 
                         
@@ -242,7 +305,8 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                     {supp.accessibility && supp.accessibility !== "" ?  <p className="has-text-left mt-1  mb-0 pt-0">{supp.accessibility}</p> : null}
                     {supp.url && supp.url !== "" && !supp.url.includes('vimeo') ?  <p className="has-text-left mt-1  mb-0 pt-0"><FontAwesomeIcon icon={faGlobe} className="has-text-primary mr-1 pt-1"/> <a href={supp.url}>{supp.url.replaceAll('//', "$4:").split('/')[0].replaceAll('$4:', "//") }</a>
                     </p> : null}
-                    {supp.pdf && supp.pdf !== "" ? <div className="is-flex is-justify-content-start">
+                    {(( doc) && ((!doc.restrictedContent || doc.restrictedContent === "all") || (client && client.user && client.user.type !== "visitor"))) ?
+ <>{supp.pdf && supp.pdf !== "" ? <div className="is-flex is-justify-content-start">
                     <div className="file has-name is-primary">
   <label className="file-label">
     <span className="file-cta">
@@ -255,7 +319,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
     </span> 
     </label>
     </div>
-                    </div> : null}
+                    </div> : null} </> : null}
                     {supp.exemplaries && supp.exemplaries[0] ? <p className="has-text-left mb-0 mt-2 has-text-grey">{t('copies')}: </p>: null}
                     {supp.exemplaries && supp.exemplaries[0] ? supp.exemplaries.map((ex) => {
                         return <Fragment key={JSON.stringify(ex)}>
@@ -264,14 +328,15 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                         </Fragment>
                     }) : null}
                   
-                       {displayFile && <div className="mt-3 h-100">
+                  {(( doc) && ((!doc.restrictedContent || doc.restrictedContent === "all") || (client && client.user && client.user.type !== "visitor"))) ?
+  <>{displayFile && <div className="mt-3 h-100">
       {
-        supp.pdf.split('.')[supp.pdf.split('.').length - 1].toLowerCase() === "pdf" ? <embed src={supp.pdf} width="100%" height="800px" /> : 
+        supp.pdf.split('.')[supp.pdf.split('.').length - 1].toLowerCase() === "pdf" ? showPdf(supp.pdf)  : 
         ["png" , "jpg" , "jpeg" , "gif" , "ico" , "svg"].includes(supp.pdf.split('.')[supp.pdf.split('.').length - 1].toLowerCase()) ? <img src={supp.pdf} alt="file" className="file-img"/> :
         ["mp4", "avi", "mov", "wmv", "flv", "mkv", "webm"].includes(supp.pdf.split('.')[supp.pdf.split('.').length - 1].toLowerCase()) ? <video src={supp.pdf}  className="file-video" controls/> : 
         ["wav", "mp3", "flac", "m4a"].includes(supp.pdf.split('.')[supp.pdf.split('.').length - 1].toLowerCase()) ? <audio src={supp.pdf} controls/> : null
       }
-      </div>}
+      </div>}</> : null}
 
                 </Fragment>
             })}
@@ -291,8 +356,32 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
             })}
         </> : null}
         </div>
+        {productionsScapin && productionsScapin[0] ? <>
+            <hr />
+
+        <div className="is-flex is-justify-content-space-between">
+        <h3 className="subtitle has-text-grey has-text-left is-5 mb-1">{t('productions')}</h3>
+
+        <div className="mt--1">
+        {productionsPage !== 1 ? <button className="button is-white" onClick={() => setProductionsPage(productionsPage - 1)}><FontAwesomeIcon icon={faAngleLeft} className=" is-size-3 has-text-grey"/></button> :null}
+
+                {productionsScapin.length > (8*productionsPage) ? <button className="button is-white" onClick={() => handleNextPage(productionsScapin, productionsPage, setProductionsPage, true, 8)}><FontAwesomeIcon icon={faAngleRight} className=" is-size-3 has-text-grey"/></button> :null}
+            </div>
+        </div>
+        </> : null}
+        <div className="columns is-multiline mb-6">
+        {productionsScapin && productionsScapin[0] ? productionsScapin.map((prodScapin, i) => {
+            if ((productionsPage === 1 && i < 8) || (i > (((productionsPage - 1)*8)-1)) && (i < (((productionsPage )*8)))) {
+
+                return <Fragment key={JSON.stringify(prodScapin)}>
+                <BoxItemParent item={prodScapin.item} handleSearchScapinParent={handleSearchScapinParent} parent="production" i={i}/>
+            </Fragment>
+            }
+        }): null}
+        
+        </div>
         {includeParentType("project", parents) ? <>
-        <h3 className="subtitle has-text-grey has-text-left is-5">Projects</h3>
+        <h3 className="subtitle has-text-grey has-text-left is-5">{t('projects')}</h3>
         <div className="columns is-multiline is-flex is-justify-content-start">
         {parents && parents ? <>
                         

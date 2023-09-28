@@ -6,7 +6,7 @@ const Alert = ({alertType, message, setAlert = false}) => {
 
     setTimeout(() => {
         setAlert(null)
-    }, 5000)
+    }, 2500)
 
     return <div className={"notification has-text-centered " + type}>
             {setAlert ? <button className="delete" onClick={() => setAlert(null)}></button> : null}

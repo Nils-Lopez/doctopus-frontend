@@ -10,6 +10,10 @@ body {
   overflow-y: hidden;
 }
 
+html {
+  overflow-y: hidden !important;
+}
+
 .content
 {
 
@@ -180,6 +184,11 @@ position: relative;
   
 }
 
+.overflow-y-auto {
+  overflow-y: auto;
+  width: 80%;
+}
+
 .langchoose {
   padding-right: 15px;
   margin-right:15px;
@@ -261,7 +270,7 @@ code {
 
 
 .options-searchbar {
-  width: 200px;
+  width: auto;
   margin-left: -200px;
   border-left: 1px solid rgba(10, 10, 10, 0.1);
 }
@@ -288,8 +297,12 @@ body {
   overflow: auto;
 }
 
+.dropdown-container {
+  border-radius: 3.5% !important;
+}
+
 .content:has(> .landing) {
-  background-image: url("./background-landing.JPG");
+  background-image: url("../background-landing.JPG");
   background-size: cover;
   min-height: 100%;
   background-repeat: no-repeat;
@@ -315,9 +328,57 @@ body {
 }
 .landing-container .search-box {
   height: 60px;
-    width: 900px;
+    width: 800px;
   position: relative;
   z-index: 1;
+}
+
+.max-40 {
+  width: 50%;
+  margin: auto;
+}
+
+.max-50 {
+  width: 50% !important;
+}
+
+.ml--2 {
+  margin-left: -100px !important; 
+}
+
+.visitordropdown {
+  z-index: 10;
+}
+
+
+.globe-chart {
+  display: flex;
+  justify-content: center;
+  margin-top: -100px !important;
+  
+}
+
+.ml--1 {
+  margin-left: -15px;
+}
+
+.is-pointer {
+  cursor: pointer;
+}
+
+
+
+.overflow-hidden {
+  overflow-x: hidden;
+}
+
+.is-fixed {
+  position: absolute;
+  width: 23%;
+}
+
+.dropdown-dashboard {
+  width:75% !important;
 }
 
 @media only screen and (max-width: 1023px) {
@@ -377,6 +438,7 @@ body {
   width: 100%;
   height: 80px;
   margin-top: -10px;
+  padding: 0;
   border-right: 2px solid rgba(10, 10, 10, 0.1);
   background: #fff;
   transition: all 0.3s ease;
@@ -552,6 +614,19 @@ body {
 .search-input::-webkit-search-cancel-button {
   appearance: none;
 }
+.search-input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+  color: #a9a9a9;
+  font-size: 24.5px;  
+}
+
+
+.is-txt-multiline {
+  display: inline-block !important;
+  height: auto !important;
+  white-space: unset !important;
+  line-height: 0.9  !important;
+}
+
 .search-input:focus {
   border-bottom: 1px solid #009688;
 }

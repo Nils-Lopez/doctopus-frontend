@@ -15,7 +15,7 @@ const Admin = () => {
 
       <div className="navbar-item">
         <Link to="/admin/settings">
-          <p className="has-text-primary"><strong>{t('settings')}</strong></p>
+          <p className="has-text-primary"><strong>{t('dashboard')}</strong></p>
          </Link>
       </div>
       <div className="navbar-item">

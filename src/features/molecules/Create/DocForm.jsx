@@ -11,14 +11,15 @@ import {useDocs} from "../../../utils/hooks/docs/Docs"
 import {useDocTemplates} from "../../../utils/hooks/templates/DocTemplates"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircleXmark, faMagnifyingGlass, faCameraRetro, faCirclePlus} from '@fortawesome/free-solid-svg-icons'
+import { faCircleXmark, faMagnifyingGlass, faCirclePlus} from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom"
 import { useIsbns } from '../../../utils/hooks/Isbn';
-import {useUsers} from "../../../utils/hooks/Users.js"
+import { useUsers } from "../../../utils/hooks/Users.js"
+import SelectForm from '../../atoms/forms/SelectForm';
 
 
-const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, dataUpdate, setDataUpdate}) => {
+const DocForm = ({client, setAlert, setClient, applicationSettings, selectedType, handleSelectType, dataUpdate, setDataUpdate}) => {
   const { t, i18n } = useTranslation();
 
   let navigate = useNavigate()
@@ -28,7 +29,6 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
   const [slugValue, setSlugValue] = useState("")
   const [descEnValue, setDescEnValue] = useState("")
   const [descFrValue, setDescFrValue] = useState("")
-  const [idLang, setIdLang] = useState("fr")
   const [langEnValue, setLangEnValue] = useState("")
   const [langFrValue, setLangFrValue] = useState("")
   const [selectedLangs, selectLang] = useState([])
@@ -162,11 +162,6 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
       }
     }
 
-  const handleSlugChange = (e) => {
-    e.preventDefault()
-    setSlugValue(e.target.value)
-  }
-
 
 
   const handleCopyrightsChange = (e) => {
@@ -212,7 +207,7 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
 	const {updateUser} = useUsers()
 
 
-  const handleDocSubmit = async (e) => {
+  const handleDocSubmit = async (e, isDraft) => {
     e.preventDefault()
     setLoading(true)
     const reqData = {
@@ -230,6 +225,7 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
         duration: durationValue,
         thumb: thumbValue,
         volume: volumeValue,
+        restrictedContent: restrictedContent,
         number: numberValue,
         template: templateModel,
       },
@@ -239,7 +235,7 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
       parents: [...selectedProds, ...selectedOrg, ...selectedPeople, ...selectedProjects, ...selectedDoc],
       brotherhood: selectedBrotherHood
     }
-    if (draft) reqData.doc.draft = true
+    if (draft || isDraft) reqData.doc.draft = true
     else reqData.doc.draft = false
     if (!dataUpdate) {
      await createDoc(reqData)
@@ -250,11 +246,9 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
                       client.user.drafts.map((watch) => {
                           if (watch._id !== dataUpdate._id) {
                               newList.push({_id: watch._id})
-                          }
-                      })
-                      updateUser({drafts: newList}, client.user._id)
-                
-        
+          }
+        })
+        updateUser({drafts: newList}, client.user._id)
       }
      await updateDoc(reqData, dataUpdate._id)
     }
@@ -304,27 +298,38 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
 
 
   const handleSelectTemplate = (e) => {
-    if (!e.auto) e.preventDefault()
-    selectTemplate(e.target.value)
+    selectTemplate(e)
+
     docTemplates.map((template) => {
-      if (template.schema_name === e.target.value) {
+      if (template.schema_name === e.value) {
         setTemplateModel(template)
       }
     })
+    selectPerson([])
+    selectOrg([])
+    selectProject([])
+    selectDoc([])
+    selectType([])
+    selectTag([])
+    selectLang([])
 
   }
   
   const handleSelectSubTemplate = (e) => {
-    e.preventDefault()
-    selectSubTemplate(e.target.value)
+    selectSubTemplate(e)
     templateModel.schema_childs.map((template) => {
-      if (template.schema_name === e.target.value) {
+      if (template.schema_name === e.value) {
         setSubTemplate(template)
       }
     })
-    if (e.target.value === "None") {
+    if (e.value === "None") {
       setSubTemplate(false)
     }
+    selectPerson([])
+    selectOrg([])
+    selectProject([])
+    selectDoc([])
+    selectTag([])
   }
 
   const {
@@ -346,7 +351,7 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
   useEffect(() => {
     docTemplates.map((template) => {
       if (client.user.defaultTemplate && client.user.defaultTemplate === template._id && selectedTemplate === "" && !dataUpdate) {
-        selectTemplate(template.schema_name)
+        selectTemplate({value: template.schema_name, label: template.schema_name})
         setTemplateModel(template)
       }
     })
@@ -393,7 +398,7 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
       setSlugValue(dataUpdate.slug)
       setTitleValue(dataUpdate.title)
       setTemplateModel(dataUpdate.template)
-      selectTemplate(dataUpdate.template.schema_name)
+      selectTemplate({value: dataUpdate.template.schema_name, label: dataUpdate.template.schema_name})
       if (dataUpdate.description && dataUpdate.description[0]) {
        setDescFrValue(getContent(dataUpdate.description, "fr"))
        setDescEnValue(getContent(dataUpdate.description, "en"))
@@ -407,6 +412,7 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
       setPagesValue(dataUpdate.pages)
       setDurationValue(dataUpdate.duration)
       setThumbValue(dataUpdate.thumb)
+      setRestrictedContent(dataUpdate.restrictedContent)
       setVolumeValue(dataUpdate.volume)
       setNumberValue(dataUpdate.number)
       selectType(dataUpdate.types)
@@ -491,7 +497,6 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
         if (autoCompletion.date.includes('-')) {
           setPubliDateValue(autoCompletion.date)
           setDateValue(autoCompletion.date.split('-')[2] + " " +  new Date(autoCompletion.date).toString().split(' ')[1] + " " + autoCompletion.date.split('-')[0])
-          console.log("date: ", new Date(autoCompletion.date))
         } else {
           setDateValue(autoCompletion.date)
         }
@@ -504,7 +509,14 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
 
   const [scanner, setScanner] = useState(false)
   const [draft, setDraft] = useState(false)
+  const [restrictedContent, setRestrictedContent] = useState("all")
 
+  const handleRestrictedContent = (e) => {
+    e.preventDefault()
+    setRestrictedContent(e.target.value)
+  }
+
+  
 
   return loading || isbnLoading ? <>
    <div className="loader">
@@ -518,32 +530,22 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
             {!dataUpdate ? <div className="column is-one-third">
               <div className="field">
             <label className="label">{t('type')}</label>
-            <div className="select">
-              <select value={selectedType} onChange={handleSelectType}>
-                <option>{t('document')}</option>
-                <option>{t('organization')}</option>
-                <option>{t('person')}</option>
-              </select>
-            </div>
+            <SelectForm applicationSettings={applicationSettings} select={handleSelectType} selected={selectedType} options={[{value: "document", label: t('document')}, {value: 'organisation', label: t('organization')}, {value: 'person', label: t('person')}]} />
+            
           </div>
             </div> : null}
             <div className="column is-one-third">
               <div className="field">
             <label className="label">{t('model')}</label>
-            <div className="select">
-             <select value={selectedTemplate} onChange={handleSelectTemplate}>
-             
-                {docTemplates.map((template) => {
-                  
-                    if (!template.schema_parent) {
-                      return <Fragment key={template.schema_slug}>
-                    <option>{template.schema_name}</option>
-                  </Fragment>
-                  
-                    }
-                })}
-              </select>
-            </div>
+            {docTemplates ?   <SelectForm applicationSettings={applicationSettings} select={handleSelectTemplate} selected={selectedTemplate} options={docTemplates.map((schema) => {
+                 if (!schema.schema_parent)  return {
+                  value: schema.schema_name,
+                  label: schema.schema_name
+                }
+                }).filter((a) =>{
+                  if (a) return a
+                })} /> : null}
+           
           </div>
               </div>
                
@@ -551,20 +553,14 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
           {template && template.schema_childs && template.schema_childs[0] && !dataUpdate ? <>
           <div className="column is-one-third">
               <div className="field">
-            <label className="label">{t('template')}</label>
-            <div className="select">
-             <select value={selectedSubTemplate} onChange={handleSelectSubTemplate}>
-             <option value="None">None</option>
-
-                {templateModel && templateModel.schema_childs && templateModel.schema_childs.map((template) => {
-                  
-                    return <Fragment key={template.schema_slug}>
-                    <option>{template.schema_name}</option>
-                  </Fragment>
-                  
-                })}
-              </select>
-            </div>
+                <label className="label">{t('template')}</label>
+                <SelectForm applicationSettings={applicationSettings} select={handleSelectSubTemplate} selected={selectedSubTemplate} options={templateModel.schema_childs.map((schema) => {
+                  return {
+                    value: schema.schema_name,
+                    label: schema.schema_name
+                  }
+                })} />
+           
           </div>
               </div>
              </> : null}
@@ -632,18 +628,20 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
           </label>
           <input type="text" className="input" value={titleValue} onChange={handleTitleChange}/>
         </div>}
-    {template && template.description ? <div className="field" id="docDesc">
+    {template && template.description ? <div className="field mt--1" id="docDesc">
       <label className="label has-text-left">
       {t('description')}
       </label>
       <textarea className="textarea" value={i18n.language === "fr" ? descFrValue : descEnValue} onChange={handleDescChange}></textarea>
       </div> : null}
      
-      
+      <label className="label has-text-left mb--1">
+      {t('types')}
+      </label>
       <RoleForm location="support-form-doc" scope="docs" lang={i18n.language} selectedRoles={selectedTypes} selectRole={selectType}/>
       {/* {template && template.tag ? <DocTagsForm selectedTags={selectedTags} selectTag={selectTag} scope="docs" lang={i18n.language} /> : null} */}
       {template && template.tag ? <SearchTagsForm selectedTags={selectedTags} selectTag={selectTag} /> : null}
-      {template && template.copyright ? <div className="field mt-2">
+      {template && template.copyrights ? <div className="field mt-2">
         <label className="label has-text-left">
         {t('copyrights')}
         </label>
@@ -718,11 +716,20 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
         <h3 className="title is-4">{t('supports')}</h3>
       </button>
     </div>
+   {showSupportForm &&  <div className="field">
+            <label className="label has-text-left">{t('restricted-access')}</label>
+            <div className="select is-flex is-justify-content-start is-fullwidth">
+             <select value={restrictedContent} onChange={handleRestrictedContent}>  
+                <option value="all">{t('all')}</option>
+                <option value="onsite">{t('onsite')}</option>
+              </select>
+            </div>
+          </div>}
     {showSupportForm ? <SupportForm pendingSupports={pendingSupports} setPendingSupports={setPendingSupports} selectedRoles={selectedRoles} selectRole={selectRole} pendingExemplaries={pendingExemplaries} setPendingExemplaries={setPendingExemplaries} template={template} dataUpdate={dataUpdate}/> : null}
     <hr/>
     <div className="is-flex is-justify-content-start">
       <button className="button is-light mb-3" onClick={handleParentsShowing}>
-        <h3 className="title is-4">{t('parents')}</h3>
+        <h3 className="title is-4">{t('relations')}</h3>
       </button>
     </div>
     {showParentForm ? <ParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} selectedProds={selectedProds} selectProd={selectProd} selectedPeople={selectedPeople} selectedDoc={selectedDoc} selectDoc={selectDoc} selectPerson={selectPerson} selectedProj={selectedProjects} selectProj={selectProject} template={template} client={client} setAlert={setAlert} autoCompletion={autoCompletion} setAutoCompletion={setAutoCompletion}/> : null}
@@ -733,7 +740,7 @@ const DocForm = ({client, setAlert, setClient, selectedType, handleSelectType, d
       <div className="is-fullwidth is-flex is-justify-content-end">
       <button className="button is-white-ter is-radiusless mr-3"  onClick={(e) => {
         setDraft(true)
-       handleDocSubmit(e)
+       handleDocSubmit(e, true)
       }}>
         
         {t('Save as draft')}

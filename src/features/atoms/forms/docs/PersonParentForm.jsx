@@ -24,12 +24,14 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
 
 
   useEffect(() => {
-    if (template && template.parent_person_defaults[0]) {
+    if (template && template.parent_person_defaults[0] && selectedPeople.length === 0) {
+      const newParents = []
       template.parent_person_defaults.map((person) => {
         if (!selectedPeople.includes(person)) {
-          selectPerson([... selectedPeople, person])
+          newParents.push(person)
         }
       })
+      selectPerson(newParents)
     }
 
     if (personValue === "" && template && template.parent_role_defaults[0]) {
@@ -136,8 +138,10 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
       <div className="columns is-multiline">
       {selectedPeople && selectedPeople[0] ? selectedPeople.map((person) => {
         if (person.person && person.person.name) {
+          const widthProp = location && location.includes("template") ? "full": ""
+
           return <Fragment key={person.person.name + "selected"}>
-                                     <ParentSearchItem item={person} handleDelete={handleDeletePerson}/>
+                                     <ParentSearchItem item={person} handleDelete={handleDeletePerson} width={widthProp}/>
 
           </Fragment>
         }

@@ -42,11 +42,11 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
     e.preventDefault()
     if (i18n.language === "en") {
       setRoleEnValue(e.target.value)
-      setRoleSlug(roleEnValue.replaceAll(" ", "-").toLowerCase())
+      setRoleSlug(e.target.value.replaceAll(" ", "-").toLowerCase())
   
     } else {
       setRoleFrValue(e.target.value)
-      setRoleSlug(roleFrValue.replaceAll(" ", "-").toLowerCase())
+      setRoleSlug(e.target.value.replaceAll(" ", "-").toLowerCase())
      
     }
     if (e.target.value.length >= 3) {
@@ -154,7 +154,7 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
   return <>
  
     <div className={!location.includes('template') ? "field mt-4" : "field"}>
-    {location !== "templates" && location !== "project-form" && !location.includes('template') && location !== "templates-parents" && location !== "templates-tags" && location !== "org-parent-doc" ? <label className="label has-text-left">{location === "support-form-doc" ? "Types" : "Roles"}</label> : null}
+    {/* {location !== "templates" && location !== "project-form" && !location.includes('template') && location !== "templates-parents" && location !== "templates-tags" && location !== "org-parent-doc" ? <label className="label has-text-left">{location === "support-form-doc" ? "Types" : "Roles"}</label> : null} */}
   {location === "project-form" ? <><label className="label has-text-left mb-0 pb-0">{t('types')}</label></> : null}
     <div className="is-flex is-justify-content-start is-fullwidth">
     {selectedRoles ? selectedRoles.map((role) => {

@@ -15,7 +15,7 @@ import PersonParentForm from "../../atoms/forms/docs/PersonParentForm"
 import ProjectParentForm from "../../atoms/forms/docs/ProjectParentForm"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faCirclePlus, faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from "react-i18next";
 import SearchTagsForm from '../../atoms/forms/docs/SearchTagsForm';
 
@@ -213,6 +213,7 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
     useEffect(() => {
       if (responseFindAllDocTemplates && responseFindAllDocTemplates.success) {
         setDocTemplates(responseFindAllDocTemplates.data)
+        setDocTemplatesLoading(false)
       }
     }, [responseFindAllDocTemplates])
   
@@ -382,11 +383,15 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
 
     
 
-    return <>
-      <div className="panel mb-6 template-form-panel">
-        <div className="panel-heading is-flex is-justify-content-space-between heading-template">
-          <p>{!parentTemplate ? t('all') : t('create-template')}</p>
-        </div>
+    return loadingCreateDocTemplate || loadingUpdateDocTemplate || docTemplatesLoading ? <>
+      <div className="loader">
+    <div className="inner one"></div>
+    <div className="inner two"></div>
+    <div className="inner three"></div>
+  </div>
+    </> : <>
+      <div className="panel mb-6 template-form-panel is-shadowless">
+       
         {docTemplates.map((template) => {
 
           if ((!parentTemplate || parentTemplate._id === template._id) && !template.schema_parent) {
@@ -500,19 +505,18 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
        </div>
        <div className="column">
 <div className="field">
-           {langValue ? <div className="columns">
-             <input type="text" placeholder="Default language" className="input" value={idLang === "en" ? langEnDefaultValue : langFrDefaultValue} onChange={handleLangDefaultChange} />
-             <button onClick={addLang} className="button is-primary mt-1 ml-2 pt-2 column">{t('add')}</button>
-             
-           </div> : <>
+           {langValue ? <div className="is-flex">
+                <input type="text" placeholder="Default language" className="input" value={i18n.language === "en" ? langEnDefaultValue : langFrDefaultValue} onChange={handleLangDefaultChange} />
+                <i className="has-text-info subtitle is-5 ml-2 mt-2  pointer" onClick={addLang}><FontAwesomeIcon icon={faCirclePlus} /></i>    
+              </div> : <>
            <input type="text" className="input" disabled/>
            </>}
-           {selectedLangs.map((lang) => {
-     return <Fragment key={lang.code}>
-       <span className="tag is-success is-medium mr-1 mt-2">{getContent(lang.labels, i18n.language)}</span>
-       <span className="tag is-danger is-medium mr-2 button mt-2" onClick={(e) => handleDeleteLang(e, lang)}><FontAwesomeIcon icon={faTrash}/></span>
-     </Fragment>
-   })}
+           
+        {selectedLangs.map((lang) => {
+        return <Fragment key={lang.code}>
+          <span className="tag is-light is-medium mr-1 mt-2">{lang.code.toUpperCase()} <i className="has-text-danger ml-3 pointer" onClick={(e) => handleDeleteLang(e, lang)}><FontAwesomeIcon icon={faCircleXmark} /></i></span>
+        </Fragment>
+      })}
        </div>
        </div>
        

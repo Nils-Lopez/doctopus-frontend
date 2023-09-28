@@ -3,7 +3,14 @@
 @import "../node_modules/bulma/sass/utilities/functions";
 @import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500&family=Libre+Bodoni&family=Roboto+Mono&display=swap');// 2. Set your own initial variables
 @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@10..48,400;10..48,500;10..48,600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap');
 $blue: #EE6636;
+@font-face {
+    font-family: "Dinot";
+    src: url("../public/DINOT.otf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+  }
 // Add pink and its invert
 $pink: #079BE9;
 $purple: #a29bfe;
@@ -16,14 +23,15 @@ $grey: #747d8c;
 $primary: $pink;
 $primary-invert: $pink-invert;
 $info: #EE6636;
+
 $danger: $red;
 $success: #00b894;
 $link: $primary;
-$family-primary: 'Bricolage Grotesque', sans-serif;
-$family-secondary: 'Libre Bodoni', serif;
-$title-family: $family-secondary;
-$family-monospace: $family-primary;
-$subtitle-family: $family-secondary;
+// $family-primary: 'Dinot', sans-serif;
+// $family-secondary: 'Libre Baskerville', serif;
+// $title-family: $family-secondary;
+// $family-monospace: $family-primary;
+// $subtitle-family: $family-secondary;
 $radius: 7px;
 
 // 6. Import the rest of Bulma

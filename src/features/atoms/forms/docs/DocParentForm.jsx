@@ -31,18 +31,21 @@ const DocParentForm = ({selectedDoc, selectDoc, location, template, lang, hideRo
     }
   }, [template, docValue])
   
-  
+  console.log(selectedDoc)
   const handleDeleteDoc = (e, doc) => {
     e.preventDefault()
     const filtered = selectedDoc.filter((r) => {
-      return r !== doc
+      if (location !== "app-dash") return r !== doc
+      else return r !== doc.parent_doc
     })
+    console.log(filtered)
     selectDoc(filtered)
     setDocs([])
   }
 
   const handleAddDoc = (doc) => {
-    selectDoc([...selectedDoc, {parent_doc: doc, roles: selectedRoles}])
+    if (location !== "app-dash") selectDoc([...selectedDoc, {parent_doc: doc, roles: selectedRoles}])
+    else selectDoc([...selectedDoc, doc])
     selectRole([])
 
     setDocValue("")
@@ -52,7 +55,7 @@ const DocParentForm = ({selectedDoc, selectDoc, location, template, lang, hideRo
 
   return <>
     {(template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="docs" location="org-parent-doc" selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
-    {(selectedRoles && selectedRoles[0]) || (template && !template.parent_role) ? 
+    {(selectedRoles && selectedRoles[0]) || (template && !template.parent_role) || (hideRoles && location === "app-dash") ? 
       <SearchForm selectedItems={selectedDoc} handleAddItem={handleAddDoc} searchItems={searchDocs} responseSearchItems={responseSearchDocs} mainField={"title"} setNoDocFound={setNoDocFound}/>
     : null}
     {noDocFound ? <p className="subtitle is-6 has-text-primary has-text-left mt-0"><small>{t('cannot-find-doc')}</small></p> : null}  
@@ -62,6 +65,12 @@ const DocParentForm = ({selectedDoc, selectDoc, location, template, lang, hideRo
           return <Fragment key={doc.parent_doc._id + "selected"}>
             
                          <ParentSearchItem item={doc} handleDelete={handleDeleteDoc}/>
+
+          </Fragment>
+        } else if (location === "app-dash") {
+          return <Fragment key={doc + "selected"}>
+            
+            <ParentSearchItem item={{parent_doc: doc}} handleDelete={handleDeleteDoc}/>
 
           </Fragment>
         }

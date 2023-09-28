@@ -17,6 +17,8 @@ function reducer (state, action) {
             return { ...state, responseDelete: action.payload }
         case 'Search':
             return { ...state, responseSearch: action.payload }  
+        case 'Merge':
+            return { ...state, responseMergeRoles: action.payload }  
         default:
             throw new Error ('Action inconnue' + action.type)
     }
@@ -31,7 +33,8 @@ const useRoles = () => {
         responseCreateRole: null,
         responseDeleteRole: null,
         responseFindAllRoles: null,
-        responseSearchRoles: null
+        responseSearchRoles: null,
+        responseMergeRoles: null
     })
 
     return {
@@ -42,6 +45,14 @@ const useRoles = () => {
         reponseCreateRole: state.responseCreate,
         responseFindAllRoles: state.responseFindAllRoles,
         responseSearchRoles: state.responseSearch,
+        responseMergeRoles: state.responseMergeRoles,
+        mergeRoles: async function (data) {
+            const tags = await apiFetch('/roles/merge', {
+                method: 'POST',
+                body: data
+            })
+            dispatch({type: 'Merge', payload: tags})
+        },
         searchRoles: async function (query) {
             const roles = await apiFetch('/roles/search', {
                 method: 'POST',

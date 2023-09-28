@@ -42,6 +42,7 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
         activities, 
         actors, 
         projects, 
+        entities,
         productionIds, 
         prodIds, 
         createdDocs,
@@ -78,12 +79,13 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
     const [docs, setDocs] = useState([])
     
     useEffect(() => {
-     if (dataUpdate && dataUpdate.success) {
-        console.log("update: ", dataUpdate)
+     if (dataUpdate && dataUpdate.success && dataUpdate._id) {
       handleSearchParent(dataUpdate)
       setDataUpdate(false)
      }
     }, [dataUpdate])
+
+    console.log('childs: ', roles)
 
     useEffect(() => {
         if ((productions && productions[0]) || (createdDocs && createdDocs[0])) {
@@ -244,14 +246,14 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
         </>}
         <div className="container mt-3">
         {country && country !== "" ? <div className="is-flex is-justify-content-start">
-                                {typeof country === "string" ?<span className="tag is-light is-small mb-2 ml-1 mr-1">{country}</span> : country.map((c) => {
+                                {typeof country === "string" ?<span className="">{country}</span> : country.map((c) => {
                                    if (c.labels[0]) {
-                                    return <Fragment key={JSON.stringify(c)}><span className="tag is-light is-small mb-2 ml-1 mr-1">{getContent(c.labels, i18n.language)}</span></Fragment>
+                                    return <Fragment key={JSON.stringify(c)}><span className="">{getContent(c.labels, i18n.language)}</span></Fragment>
                                    }
                             })}
                                 </div> : null} 
                                 { city && city !== "" ? <div className="is-flex is-justify-content-start"> 
-                                    <span className="tag is-light is-small mb-2 mr-1">{city}</span>
+                                    <span className="">{city}</span>
                                 </div> :null} 
                                 { website && website !== "" ? <div className="is-flex is-justify-content-start"> 
                                     <span className="tag is-light is-small mb-2  mr-1"><a href={website}>{website}</a></span>
@@ -260,24 +262,24 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
                                     <span className="tag is-light is-small mb-2 mr-1"><a href={url}>{url}</a></span>
                                 </div> : null}
                                 {birthDate && birthDate !== "" ? <div className="is-flex is-justify-content-start">
-                                    <span className="tag is-light is-small mb-2  mr-1">{birthDate} {deathDate && deathDate !== "" ? " - " + deathDate : null}</span>
+                                    <span className="">{t('birthdate')}: {new Date(birthDate).getDate() + "/" + (new Date(birthDate).getMonth() +1) + "/" + new Date(birthDate).getFullYear()} {deathDate && deathDate !== "" ? " - " + t('deathdate') + ": " + new Date(birthDate).getDate() + "/" + (new Date(birthDate).getMonth() +1) + "/" + new Date(birthDate).getFullYear() : null}</span>
                                 </div> : null}
                                 {startedAt && startedAt !== "" ? <div className="is-flex is-justify-content-start">
-                                    <span className="tag is-light is-small mb-2  mr-1">{startedAt} {endedAt && endedAt !== "" ? " - " + endedAt : null}</span>
+                                    <span className="">{t('birthdate')}: {new Date(startedAt).getDate() + "/" + (new Date(startedAt).getMonth() +1) + "/" + new Date(startedAt).getFullYear()} {endedAt && endedAt !== "" ? " - " + t('deathdate') + ": " + new Date(endedAt).getDate() + "/" + (new Date(endedAt).getMonth() +1) + "/" + new Date(endedAt).getFullYear() : null}</span>
                                 </div> : null}
 
                                {issn && issn !== "" ? <div className="is-flex is-justify-content-start">
-                                    <span className="tag is-light is-small mb-2  mr-1">ISSN: {issn} </span>
+                                    <span className="">ISSN: {issn} </span>
                                 </div> : null}
                                 {date && date !== "" ? <div className="is-flex is-justify-content-start">
-                                    <span className="tag is-light is-small mb-2  mr-1">{parent.scapin && t('season')} {date} </span>
+                                    <span className="">{parent.scapin && t('season')} {date} </span>
                                 </div> : null}
                                 {parent.publishedAt && parent.publishedAt !== "" ? <div className="is-flex is-justify-content-start">
                                     
-                                    <span className="tag is-light is-small mb-2  mr-1">{t('firstdate')} {parent.publishedAt} </span>
+                                    <span className="">{t('firstdate')} {new Date(parent.publishedAt).getDate() + "/" + (new Date(parent.publishedAt).getMonth() +1) + "/" + new Date(parent.publishedAt).getFullYear()} </span>
                                 </div> : null}
                                 {parent.duration && parent.duration !== "" ? <div className="is-flex is-justify-content-start">
-                                    <span className="tag is-light is-small mb-2  mr-1">{t('duration')} {parent.duration} </span>
+                                    <span className="">{t('duration')} {parent.duration} </span>
                                 </div> : null}
                               {parent.scapin ? <div className="is-flex is-justify-content-end">
                                     <a href={"https://scapin.aml-cfwb.be/recherche/details/?pid=" + parent._id} target="_blank" className="tag button is-white has-text-primary is-medium">{t('read-more-scapin')}</a>
@@ -330,7 +332,7 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
         {childs && childs[0] ? <>
             <hr />
             <div className="is-flex is-justify-content-space-between">
-        <h3 className="subtitle has-text-grey has-text-left is-5 mb-1">{t('documents')}</h3>
+        <h3 className="subtitle has-text-grey has-text-left is-5 mb-1">{t('documents')} <span className="tag is-rounded is-light ">{childs.length}</span></h3>
 
         <div className="mt--1">
         {childsPage !== 1 ? <button className="button is-white" onClick={() => setChildsPage(childsPage - 1)}><FontAwesomeIcon icon={faAngleLeft} className=" is-size-3 has-text-grey"/></button> :null}
@@ -360,12 +362,22 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
                 
             }) : null}
          </div>     
+         {(actors && actors[0]) || (entities && entities[0]) ? <>
+            <hr />
+
+            <h3 className="subtitle has-text-grey has-text-left is-5 mb-1">{t('parents')}</h3>
+         </> : null}
         <div className="columns is-multiline is-flex is-justify-content-start">
             {actors && actors[0] ? actors.map((actor) => {
                 return <Fragment key={JSON.stringify(actor)}>
-                    <SearchItemParent item={actor} handleSearchParent={handleSearchParent} relTypes={actor.role}/>
+                    <SearchItemParent item={{person: actor}} handleSearchParent={handleSearchParent} relTypes={actor.role}/>
                 </Fragment>   
             }) : null}
+            {entities && entities[0] ? entities.map((entity) =>
+                <Fragment key={JSON.stringify(entity)}>
+                    <SearchItemParent item={{entity: entity}} handleSearchParent={handleSearchParent}/>
+                </Fragment>
+            ) : null}
          </div>     
          <div className="columns is-multiline is-flex is-justify-content-start">
             {projects && projects[0] ? projects.map((project) => {

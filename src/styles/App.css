@@ -8,6 +8,16 @@
   height: 250px;
 }
 
+.line-break {
+  word-break: break-all;
+
+}
+.no-overflow {
+  width: 100%;
+  overflow-x: hidden;
+  white-space: pre-wrap;
+}
+
 .tag-search-item {
   position: absolute;
   bottom: 20px;
@@ -17,9 +27,9 @@
   justify-content: space-around;
 }
 .tag-is-absolute {
-  position: absolute;
   font-size: 14px;
-  margin-top: 5px;
+  position: absolute;
+  top: 3px;
 }
 
 .mb--1 {
@@ -44,14 +54,14 @@ body {
   }
 }
 .thumb-img {
-  height: 30%;
+  height: 350px;
   position: absolute;
   right: 1.5%;
   border-radius: 1.5%;
 }
 @media (max-width: 950px) {
   .thumb-img {
-    height: 25%;
+    height: 500px;
     position: absolute;
   }
 }

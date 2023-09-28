@@ -12,31 +12,27 @@ import {useDocTemplates} from "../../../utils/hooks/templates/DocTemplates"
 import {useBrotherhoods} from "../../../utils/hooks/docs/Brotherhoods"
 import {useProjects} from "../../../utils/hooks/entities/Projects"
 import { useTranslation } from "react-i18next";
+import SelectForm from '../../atoms/forms/SelectForm';
 
 
-const Create = ({client, setAlert, setClient}) => {
+const Create = ({client, setAlert, setClient, applicationSettings}) => {
     const {t, i18n} = useTranslation()
-    const [selectedType, selectType] = useState('Document')
+    const [selectedType, selectType] = useState({value: 'document', label: t('document')})
 
     const handleSelectType = (e) => {
-      e.preventDefault()
-      selectType(e.target.value)
+      console.log(e)
+      selectType(e)
     }
 
     return <div className="columns is-flex is-justify-content-center mt-5">
       <div className="column is-three-quarters-mobile is-two-thirds-tablet is-half-desktop is-half-widescreen mt-5">
         <div className="box">
-          {selectedType === "Document" ? null : <div className="columns">
+          {selectedType && selectedType.value === "document" ? null : <div className="columns">
             <div className="column is-one-third">
               <div className="field">
             <label className="label">{t('type')}</label>
-            <div className="select">
-              <select value={selectedType} onChange={handleSelectType}>
-                <option>{t('document')}</option>
-                <option>{t('organization')}</option>
-                <option>{t('person')}</option>
-              </select>
-            </div>
+            <SelectForm select={handleSelectType} selected={selectedType} applicationSettings={applicationSettings} options={[{value: "document", label: t('document')}, {value: 'organisation', label: t('organization')}, {value: 'person', label: t('person')}]} />
+          
           </div>
             </div>
             
@@ -44,13 +40,13 @@ const Create = ({client, setAlert, setClient}) => {
           </div>}
           
           <div className="form">
-            {selectedType === "Document" ? 
-              <DocForm client={client} setClient={setClient} setAlert={setAlert} handleSelectType={handleSelectType} selectedType={selectedType}/>
-            : selectedType === "Organisation" || selectedType === "Organization" ? 
+            {selectedType && selectedType.value ? <> {selectedType.value === "document" ? 
+              <DocForm client={client} setClient={setClient} applicationSettings={applicationSettings} setAlert={setAlert} handleSelectType={handleSelectType} selectedType={selectedType}/>
+            : selectedType.value === "organisation" ? 
               <OrganisationForm client={client} setAlert={setAlert} />
             :
                 <PersonForm client={client} setAlert={setAlert} />
-            }
+            }</> : null}
           </div>
         </div>
       </div>

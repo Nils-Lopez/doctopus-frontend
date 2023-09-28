@@ -8,6 +8,7 @@ import ActorForm from "../../atoms/forms/orgs/ActorForm"
 import ProjectParentForm from "../../atoms/forms/docs/ProjectParentForm"
 import DocTagsForm from "../../atoms/forms/docs/DocTagsForm"
 import { useTranslation } from "react-i18next";
+import MergeForm from "../../atoms/forms/MergeForm"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
@@ -40,6 +41,10 @@ const OrganisationForm = ({client, setAlert, setCreated, dataUpdate, setDataUpda
     updateEntity, 
     responseUpdateEntity,
     deleteEntity, 
+    mergeEntities,
+    responseMergeEntities,
+    searchEntities, 
+    responseSearchEntities,
     responseDeleteEntity,
     findEntityBySlug, 
     responseFindEntityBySlug
@@ -54,7 +59,7 @@ const OrganisationForm = ({client, setAlert, setCreated, dataUpdate, setDataUpda
   
   const handleDescChange = (e) => {
     e.preventDefault()
-    if (idLang === "en") {
+    if (i18n.language === "en") {
       setDescEnValue(e.target.value)
     } else {
       setDescFrValue(e.target.value)
@@ -78,7 +83,7 @@ const OrganisationForm = ({client, setAlert, setCreated, dataUpdate, setDataUpda
 
   const handleLangChange = (e) => {
     e.preventDefault()
-      if (idLang === "en") {
+      if (i18n.language === "en") {
         setLangEnValue(e.target.value)
       } else {
         setLangFrValue(e.target.value)
@@ -185,7 +190,18 @@ const OrganisationForm = ({client, setAlert, setCreated, dataUpdate, setDataUpda
       setLoading(false)
     }
   }, [responseUpdateEntity])
-  
+
+  useEffect(() => {
+    if (responseMergeEntities && responseMergeEntities.success) {
+      setAlert({ type: "success", message: { en: "Organisation has been successfully merged.", fr: "L'organisation a été fusionné avec succès" } })
+      setLoading(false)
+       setDataUpdate({success:true})
+    } else if (responseMergeEntities && !responseMergeEntities.success) {
+      setAlert({ type: "error", message: { en: "An error occured while merging organisation.", fr: "Une erreure est survenue lors de la fusion de l'organisation"}})
+      setLoading(false)
+    }
+  }, [responseMergeEntities])
+
   const { t, i18n } = useTranslation();
 
   const [confirmDelete, setConfirmDelete] = useState(false)
@@ -210,24 +226,35 @@ const OrganisationForm = ({client, setAlert, setCreated, dataUpdate, setDataUpda
       setNameValue(draftOrg.name)
     }
   }, [draftOrg])
+  const [merge, setMerge] = useState(false)
 
+    const handleMergeOrg = (e) => {
+      e.preventDefault()
+      setMerge(!merge)
+    }
   return loading ? <div className="loader">
   <div className="inner one"></div>
   <div className="inner two"></div>
   <div className="inner three"></div>
 </div>  : <div>
-    <div className="tabs">
-        <ul>
-          <li onClick={() => setIdLang("fr")} className={idLang === "fr" ? "is-active" : ""}><a href="#" onClick={(e) => e.preventDefault()}>Français</a></li>
-          <li onClick={() => setIdLang("en")} className={idLang === "en" ? "is-active" : ""}><a href="#" onClick={(e) => e.preventDefault()}>English</a></li>
-        </ul>
-      </div>
+
       <div className="is-flex is-justify-content-end">{dataUpdate ?
-      <button className="button is-danger is-small mt-3" onClick={handleDeleteOrg}>
+      <>
+        <button className="button is-primary is-small mt-3 ml-3" onClick={handleMergeOrg}>
+          {!merge ? t('merge') : t('cancel')}
+        </button>
+        <button className="button is-danger is-small mt-3 ml-3" onClick={handleDeleteOrg}>
         {confirmDelete ? t('confirm') : t('delete')}
       </button>
+      </>
+      
    : null}</div>
-    <div className="field">
+   {merge ? <>
+    <MergeForm originItem={dataUpdate} searchItem={searchEntities} responseSearchItem={responseSearchEntities} mergeItem={mergeEntities} />
+
+   </> : <>
+   
+   <div className="field">
       <label className="label has-text-left">
         {t('name')}
       </label>
@@ -237,7 +264,7 @@ const OrganisationForm = ({client, setAlert, setCreated, dataUpdate, setDataUpda
       <label className="label has-text-left">
         {t('description')}
       </label>
-      <textarea value={idLang === "en" ? descEnValue : descFrValue} onChange={handleDescChange} className="textarea"></textarea>
+      <textarea value={i18n.language === "en" ? descEnValue : descFrValue} onChange={handleDescChange} className="textarea"></textarea>
     </div>
     <div className="field" id="docLang">
       <label className="label has-text-left">
@@ -245,13 +272,13 @@ const OrganisationForm = ({client, setAlert, setCreated, dataUpdate, setDataUpda
       </label>
       
       <div className="is-flex">
-                <input type="text" placeholder="Default language" className="input" value={idLang === "en" ? langEnValue : langFrValue} onChange={handleLangChange} />
+                <input type="text" placeholder="Default language" className="input" value={i18n.language === "en" ? langEnValue : langFrValue} onChange={handleLangChange} />
                 <button onClick={addLang} className="button is-small is-primary mt-1 ml-2">{t('add')}</button>
                 
         </div>
         {selectedLangs.map((lang) => {
         return <Fragment key={lang.code}>
-          <span className="tag is-success is-medium mr-1 mt-2">{getContent(lang.labels, idLang)}</span>
+          <span className="tag is-success is-medium mr-1 mt-2">{getContent(lang.labels, i18n.language)}</span>
           <span className="tag is-danger is-medium mr-2 button mt-2" onClick={(e) => handleDeleteLang(e, lang)}><FontAwesomeIcon icon={faTrash}/></span>
         </Fragment>
         })}
@@ -276,18 +303,20 @@ const OrganisationForm = ({client, setAlert, setCreated, dataUpdate, setDataUpda
         <input type="text" value={countryValue} onChange={handleCountryChange} className="input"/>
       </div>
       </div>
-    <RoleForm scope="parents" location="org-form" selectedRoles={selectedRoles} selectRole={selectRole} lang={idLang} />
-    <ActorForm selectedPeople={selectedActors} selectPerson={selectActor} lang={idLang} client={client} setAlert={setAlert}/>
+    <RoleForm scope="parents" location="org-form" selectedRoles={selectedRoles} selectRole={selectRole} lang={i18n.language} />
+    <ActorForm selectedPeople={selectedActors} selectPerson={selectActor} lang={i18n.language} client={client} setAlert={setAlert}/>
     <label className="label has-text-left mb-0 pb-0 mt-5">
           {t('projects')}
         </label>
-    <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj} lang={idLang} location="org-form"/>
+    <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj} lang={i18n.language} location="org-form"/>
      <footer className="card-footer mt-3 pt-4 is-flex is-justify-content-center">
       <button className="button is-primary is-medium" onClick={handleFormSubmit}>
         {t('create')}
       </button>
     </footer>
-  </div>
+  
+   </>}
+    </div>
 }
 
 export default OrganisationForm

@@ -19,8 +19,9 @@ import {useProjects} from "../../utils/hooks/Projects.js"
 import {useEntities} from "../../utils/hooks/Entities.js"
 import {usePeople} from "../../utils/hooks/People.js"
 import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useApplication } from "../../utils/hooks/Application"
 
-const HomePage = ({client, setClient, setAlert, watchlist, history}) => {
+const HomePage = ({client, setClient, setAlert, watchlist, history, applicationSettings}) => {
   const { t, i18n } = useTranslation();
 
   const [searchValue, setSearchValue] = useState("")
@@ -162,6 +163,10 @@ const HomePage = ({client, setClient, setAlert, watchlist, history}) => {
 		updateUser
 	} = useUsers()
 
+  const {
+    registerVisitor
+  } = useApplication()
+
   useEffect(() => {
     if ((loadingSearch && loadingSearch !== responseSearch)){
       if (responseSearch && responseSearch.success && responseSearch.data && (responseSearch.data.items[0] || responseSearch.data.docs[0] || responseSearch.data.tags[0])) {
@@ -191,11 +196,14 @@ const HomePage = ({client, setClient, setAlert, watchlist, history}) => {
     }
   }, [result])
   
-  if (!popularDocs) {
-    findPopularDocs()
-    setPopularDocs(true)
-    setLoadingSearch(true)
-  }
+  useEffect(() => {
+    if (!popularDocs) {
+      findPopularDocs()
+      setPopularDocs(true)
+      registerVisitor()
+      setLoadingSearch(true)
+    }
+  }, [])
 
   useEffect(() => {
     if (responseFindPopularDocs && responseFindPopularDocs.success && responseFindPopularDocs.data) {
@@ -224,22 +232,35 @@ const HomePage = ({client, setClient, setAlert, watchlist, history}) => {
       setEmpty(false)
     }
 
+    const [bgImage, setBgImage] = useState()
+
+    useEffect(() => {
+      const root = document.documentElement;
+      const bgUrls = ['https://imagesdoctopus.blob.core.windows.net/contredanse/Lara%20Barsaq%20-%20Fruit%20Tree%C2%A9Stanislav%20Dobak.jpg', 'https://imagesdoctopus.blob.core.windows.net/contredanse/TheGoldbergVariations_(c)Kat_ja%20Illner_20221013-163700.jpg']
+      console.log("yo bro: ", Math.floor(Math.random()*bgUrls.length))
+
+      root.style.setProperty("--bg-image", 'url("' + bgUrls[Math.floor(Math.random()*bgUrls.length)] + '")');
+      
+    }, [])
+
 
     const className = (!result || !result.docs || !result.docs[0]) && (!result || !result.items || !result.items[0]) && (!result || !result.tags || !result.tags[0]) && !displayDoc && !displayParent && !displayTag ? "landing" : "search"
   return <>
     <div className={className}>
       <div className="is-flex is-justify-content-center mb-6 mt-6 w-100">
        <form className="field w-100" onSubmit={submitSearch}>
-          <SearchBar searchValue={searchValue} setSearchValue={setSearchValue} filtersData={filtersData} setFiltersValue={setFiltersValue}/>
+          <SearchBar searchValue={searchValue} applicationSettings={applicationSettings} setSearchValue={setSearchValue} filtersData={filtersData} setFiltersValue={setFiltersValue}/>
         </form>
       </div>    
       <div className="landing-content pl-3 pr-3">
-          {empty ? <>{t('no-match')}</> : <>
+          {empty ?  <h1 className="title is-4 has-text-white has-text-shadow mb-0 mt-6 pt-6">{t('no-match')}</h1>
+ : <>
             {loadingSearch ? <div className="loader">
   <div className="inner one"></div>
   <div className="inner two"></div>
   <div className="inner three"></div>
-</div> : (!result || !result.docs ||  !result.docs[0]) && (!result || !result.items || !result.items[0]) && (!result || !result.tags || !result.tags[0]) && !displayDoc && !displayParent && !displayTag ? <Landing popularDocs={popularDocs} setDisplayDoc={setDisplayDoc} setResult={setResult} t={t} client={client}/> : <SearchResult result={result} client={client} setClient={setClient} setAlert={setAlert} page={page} setPage={setPage} loadingSearch={loadingSearch} setResult={setResult} displayDoc={displayDoc} setDisplayDoc={setDisplayDoc} displayParent={displayParent} setDisplayParent={setDisplayParent} setLoading={setLoadingSearch} watchlist={watchlist} history={history} handleSearch={handleSearch} displayTag={displayTag} navHistory={navHistory} setNavHistory={setNavHistory} setDisplayTag={setDisplayTag}/>}
+</div> : (!result || !result.docs ||  !result.docs[0]) && (!result || !result.items || !result.items[0]) && (!result || !result.tags || !result.tags[0]) && !displayDoc && !displayParent && !displayTag ? 
+  <Landing popularDocs={popularDocs} setDisplayDoc={setDisplayDoc} i18n={i18n} setResult={setResult} t={t} client={client} applicationSettings={applicationSettings}/> : <SearchResult result={result} client={client} setClient={setClient} applicationSettings={applicationSettings} setAlert={setAlert} page={page} setPage={setPage} loadingSearch={loadingSearch} setResult={setResult} displayDoc={displayDoc} setDisplayDoc={setDisplayDoc} displayParent={displayParent} setDisplayParent={setDisplayParent} setLoading={setLoadingSearch} watchlist={watchlist} history={history} handleSearch={handleSearch} displayTag={displayTag} navHistory={navHistory} setNavHistory={setNavHistory} setDisplayTag={setDisplayTag}/>}
           </>}
           
       </div>
@@ -248,6 +269,13 @@ const HomePage = ({client, setClient, setAlert, watchlist, history}) => {
   </>
 }
 
+const getContent = (value, lang) => {
+  if (value) {
+    return value.filter(obj => obj.lang === lang)[0] ? value.filter(obj => obj.lang === lang)[0].content : value.filter(obj => obj.lang === "en")[0] ? value.filter(obj => obj.lang === "en")[0].content : value.filter(obj => obj.lang === "fr")[0].content
+  } else {
+    return "Error"
+  }
+}
 
 const Counter = ({ number }) => {
   return (
@@ -255,21 +283,21 @@ const Counter = ({ number }) => {
   );
 }
 
-const Landing = ({popularDocs, setDisplayDoc, setResult, t, client}) => {
+const Landing = ({popularDocs, setDisplayDoc, setResult, t, i18n, client, applicationSettings}) => {
 
   const setDisplay = (item) => {
     setResult({docs: [item]})
     setDisplayDoc(item)
   }
 
-  
+  console.log(applicationSettings)
 
   return <>
   
  
       <div className="container recents-container mt-6 mb-0 pb-0 pl-2 pr-4">
         <div className="metrics">
-        <h1 className="title is-4 has-text-white has-text-shadow mb-0">{t('find-in-doctopus')}</h1>
+        <h1 className="title is-4 has-text-white has-text-shadow mb-0">{applicationSettings && applicationSettings.homePageSubtitles && applicationSettings.homePageSubtitles[0] ? getContent(applicationSettings.homePageSubtitles[0].subtitle, i18n.language) : null}</h1>
         <div className="columns is-multiline pb-0 mb-0 mt-1 is-mobile">
             <div className="column results-col-unclickable  is-one-fifth-desktop is-one-third-tablet is-half-mobile">
               <div className="box pt-5 smooth-appear">
@@ -298,7 +326,7 @@ const Landing = ({popularDocs, setDisplayDoc, setResult, t, client}) => {
             </div>
         </div>
         </div>
-        {client && client.user && client.user.drafts && client.user.drafts[0] && client.type !== "visitor" ? <>
+        {client && client.user && client.user.drafts && client.user.drafts[0] && client.user.drafts[0].title && client.type !== "visitor" ? <>
           <h1 className="title is-4 has-text-white has-text-shadow mb-0 pb-0 mt-0 pt-0">{t('drafts')} :</h1>
           <div className="columns is-multiline pb-3 mb-4 mt-0 pt-0">
             {client.user.drafts.map((item, index) => {
@@ -312,7 +340,7 @@ const Landing = ({popularDocs, setDisplayDoc, setResult, t, client}) => {
         </div>
         </>: null}
 
-        <h1 className="title is-4 has-text-white has-text-shadow mb-0 pb-0 mt-0 pt-0">{t('new-docs')} :</h1>
+        <h1 className="title is-4 has-text-white has-text-shadow mb-0 pb-0 mt-3 pt-0">{applicationSettings && applicationSettings.homePageSubtitles && applicationSettings.homePageSubtitles[1] ? getContent(applicationSettings.homePageSubtitles[1].subtitle, i18n.language) : null} :</h1>
 
         <div className="columns is-multiline pb-3 mb-0 mt-0 pt-0">
         {popularDocs[0] && popularDocs.map((item, index) => {

@@ -17,6 +17,8 @@ function reducer (state, action) {
             return { ...state, responseFindAllEntities: action.payload }
         case 'Search':
             return { ...state, responseSearch: action.payload }  
+        case 'Merge':
+            return { ...state, responseMerge: action.payload }
         default:
             throw new Error ('Action inconnue' + action.type)
     }
@@ -31,7 +33,8 @@ const useEntities = () => {
         responseCreateEntity: null,
         responseDeleteEntity: null,
         responseFindAllEntities: null,
-        responseSearchEntities: null
+        responseSearchEntities: null,
+        responseMergeEntities: null
     })
 
     return {
@@ -42,6 +45,15 @@ const useEntities = () => {
         responseCreateEntity: state.responseCreate,
         responseFindAllEntities: state.responseFindAllEntities,
         responseSearchEntities: state.responseSearch,
+        responseMergeEntities: state.responseMerge,
+        mergeEntities: async function (data) {
+            const entities = await apiFetch('/entities/merge', {
+                method: 'POST',
+                body: data
+            })
+            console.log(entities)
+            dispatch({type: 'Merge', payload: entities})
+        },
         searchEntities: async function (query) {
             const orgs = await apiFetch('/entities/search', {
                 method: 'POST',
