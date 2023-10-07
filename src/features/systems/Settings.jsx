@@ -85,11 +85,11 @@ const Settings = ({client, setClient, setAlert, applicationSettings, setApplicat
     <FontAwesomeIcon icon={faFile}/>    </span>
     {t('models')}
   </a>
-  <a className={classNames('application')}  onClick={() => setPage("application")}>
+  {(client && client.user && client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? <a className={classNames('application')}  onClick={() => setPage("application")}>
     <span className="panel-icon">
     <FontAwesomeIcon icon={faGears}/>    </span>
     {t('application')}
-  </a>
+  </a> : null}
  
                     </div>
               <div className="box pt-3 pb-2">
@@ -123,7 +123,7 @@ const Settings = ({client, setClient, setAlert, applicationSettings, setApplicat
                   page === "visitors" ? <>
                     <VisitorsDash/>
                   </> : 
-                  page === "application" ? <>
+                  page === "application" && (client && client.user && client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? <>
                     <ApplicationDash applicationSettings={applicationSettings} setApplicationSettings={setApplicationSettings}/>
                   </> :
                   page === "roles" ? <>

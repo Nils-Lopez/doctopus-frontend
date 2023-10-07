@@ -49,7 +49,7 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
       setRoleSlug(e.target.value.replaceAll(" ", "-").toLowerCase())
      
     }
-    if (e.target.value.length >= 3) {
+    if (e.target.value.length >= 2) {
       searchRoleValue(e)
     } else if (e.target.value.length === 0) {
       setRoles([])
@@ -112,7 +112,7 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
 
   const searchRoleValue = (e) => {
     if (e) e.preventDefault()
-    if (e.target.value.length >= 3) {
+    if (e.target.value.length >= 2) {
       setRolesLoading(true)
       searchRoles(e.target.value)
     } 
@@ -150,7 +150,7 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
     }
   }, [selectedRoles])
 
-  let inputClasses = (!isRoleExisting() && (roleEnValue.length >= 3 || roleFrValue.length >= 3 )) ? "control has-icons-left min-90" : "control has-icons-left min-100"
+  let inputClasses = (!isRoleExisting() && (roleEnValue.length >= 2 || roleFrValue.length >= 2 )) ? "control has-icons-left min-90" : "control has-icons-left min-100"
   return <>
  
     <div className={!location.includes('template') ? "field mt-4" : "field"}>
@@ -186,7 +186,7 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
     </span>
  
     </div>      
-    {!isRoleExisting() && (roleEnValue.length >= 3 || roleFrValue.length >= 3 ) ?   <i className=" ml-3 mt-1 pt-1 has-text-info title is-5 pointer" onClick={(e) => {
+    {!isRoleExisting() && (roleEnValue.length >= 2 || roleFrValue.length >= 2 ) ?   <i className=" ml-3 mt-1 pt-1 has-text-info title is-5 pointer" onClick={(e) => {
               handleCreateRole(e)
               }}><FontAwesomeIcon icon={faCirclePlus} /></i> : null}
               

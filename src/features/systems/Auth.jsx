@@ -12,12 +12,13 @@ import {useUsers} from '../../utils/hooks/Users'
   import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from "react-i18next";
-import {Link} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 
-const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAlert}) => {
+const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAlert, signUpModal, setSignUpModal}) => {
     const { t, i18n } = useTranslation();
 
-    const [signUpModal, setSignUpModal] = useState(false)
+    const navigate = useNavigate()
+
     const [logInModal, setLogInModal] = useState(false)
 
     const [loadingSignUp, setLoadingSignUp] = useState(false)
@@ -111,6 +112,7 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
             delete_cookie(cookieKey)
             setClient(null)
             setLoadingLogout(true)
+            navigate('/')
         }
     }
 
@@ -171,9 +173,9 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
                                         <Link to="/watchlist" className="dropdown-item pl-6">
         {t('watchlist')}
                                             </Link>
-                                            <Link to="/history" className="dropdown-item  pl-6">
+                                            {/* <Link to="/history" className="dropdown-item  pl-6">
         {t('history')}
-      </Link>
+      </Link> */}
 
       {/* <a className="dropdown-item  pl-6">
         {t('settings')}

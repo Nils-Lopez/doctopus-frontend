@@ -46,8 +46,8 @@ const useDocs = () => {
         responseCreateDoc: state.responseCreate,
         responseFindAllDocs: state.responseFindAll,
         responseSearchDocs: state.responseSearch,
-        findPopularDocs: async function () {
-            const docs = await apiFetch('/docs/popular', { method: 'GET' })
+        findPopularDocs: async function (type) {
+            const docs = await apiFetch('/docs/popular/' + type, { method: 'GET' })
             dispatch({type: 'FindPopular', payload: docs})
         },
         searchDocs: async function (query) {

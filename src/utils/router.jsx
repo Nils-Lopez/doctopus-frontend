@@ -28,6 +28,7 @@ const Router = ({applicationSettings, setApplicationSettings}) => {
     const [loadingClient, setLoadingClient] = useState(false)
     const [alert, setAlert] = useState(false) 
     const { t, i18n } = useTranslation();
+    const [signUpModal, setSignUpModal] = useState(false)
 
     const cookieKey = "VISITOR_COOKIE_TOKEN"
 
@@ -60,7 +61,7 @@ const Router = ({applicationSettings, setApplicationSettings}) => {
 
     return <div className="app-ctn">
         <BrowserRouter>
-        <Navbar bake_cookie={bake_cookie} read_cookie={read_cookie} delete_cookie={delete_cookie} client={client} setClient={setClient} setAlert={setAlert} applicationSettings={applicationSettings}/>
+        <Navbar bake_cookie={bake_cookie} read_cookie={read_cookie} delete_cookie={delete_cookie} client={client} setClient={setClient} setAlert={setAlert} applicationSettings={applicationSettings} signUpModal={signUpModal} setSignUpModal={setSignUpModal}/>
             <div className="page-content">
                  {alert ? <>
             <div className="columns is-flex is-justify-content-end mt-6 appAlert">
@@ -85,7 +86,7 @@ const Router = ({applicationSettings, setApplicationSettings}) => {
                 <Route path=":project_slug" element={<HomePage client={client} setClient={setClient} watchlist={false} setAlert={setAlert} applicationSettings={applicationSettings}/>}/>
               </Route>  
               <Route path="/document">
-                <Route path=":doc_slug" element={<HomePage client={client} setClient={setClient} watchlist={false} setAlert={setAlert} applicationSettings={applicationSettings}/>}/>
+                <Route path=":doc_slug" element={<HomePage client={client} setClient={setClient} watchlist={false} setAlert={setAlert} applicationSettings={applicationSettings} setSignUpModal={setSignUpModal}/>}/>
               </Route>
               <Route path="/entity">
                 <Route path=":entity_slug" element={<HomePage client={client} setClient={setClient} watchlist={false} setAlert={setAlert} applicationSettings={applicationSettings}/>}/>

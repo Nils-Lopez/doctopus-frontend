@@ -4,7 +4,7 @@ import Select from "react-select"
 
 const SelectForm = ({options, selected, select, applicationSettings}) => {
     
-    const primary = applicationSettings && applicationSettings.global && applicationSettings.global.primary ? applicationSettings.global.primary : "red"
+    const primary = applicationSettings && applicationSettings.global && applicationSettings.global.primary ? applicationSettings.global.primary : "blue"
     
     return <>
     {options ? <Select

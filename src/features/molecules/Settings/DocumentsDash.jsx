@@ -100,7 +100,10 @@ const DocumentsDash = ({}) => {
             if (chartTypes[chartType] === "types") {
                 let labels = responseDocsChart.data.labels
                 const counter = responseDocsChart.data.counter
-                labels = labels.map((l) => getContent(l, i18n.language))
+                labels = labels.map((l) => {
+                    return l.filter(obj => obj.lang === i18n.language)[0].content
+            
+                })
                 setData({
                     labels,
                     datasets: [

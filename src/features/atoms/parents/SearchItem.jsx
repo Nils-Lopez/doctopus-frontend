@@ -13,7 +13,6 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
     let colClasses = i || index === 0 ? " smooth-appear" : ""
     colClasses += i && index === 0 ? "" : index === 4 ? " sm5" : index === 3 ? " sm4" : index === 2 ? " sm3" : index === 1 ? " sm2" : ""
     
-    console.log('item: ', width)
 
     const { t, i18n } = useTranslation() 
     if (parent !== "production" && item.scapin) {

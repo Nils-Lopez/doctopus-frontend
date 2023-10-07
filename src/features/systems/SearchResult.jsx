@@ -20,7 +20,7 @@ import {useDocs} from "../../utils/hooks/docs/Docs"
 
 import { useTranslation } from "react-i18next";
 
-const SearchResult = ({result, client, setAlert, setClient, page, setPage, handleSearch, loadingSearch, setResult, displayDoc, setDisplayDoc, setDisplayParent, displayParent, watchlist, history, displayTag, navHistory, setNavHistory, setDisplayTag}) => {
+const SearchResult = ({result, client, setAlert, setClient, page, setPage, handleSearch, loadingSearch, setResult, displayDoc, setDisplayDoc, setDisplayParent, displayParent, watchlist, history, displayTag, navHistory, setNavHistory, setDisplayTag, setSignUpModal}) => {
 
     const [dataList, setDataList] = useState([])
     const [tags, setTags] = useState([])
@@ -31,6 +31,7 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
     const [showParentDoc, setShowParentDoc] = useState(false)
     const [showDocParent, setShowDocParent] = useState(false)
     const [goHome, setGoHome] = useState(false)
+
 
     const { t, i18n } = useTranslation();
 
@@ -72,10 +73,30 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
     }, [displayDoc])
 
     const handleBack = () => {
-      navigate('/')
-      setNavHistory(['/'])
+      if (navHistory.length > 1) {
+        if (navHistory[navHistory.length -2].query) {
+          handleSearch(navHistory[navHistory.length -2])
+        } else {
+          navigate(navHistory[navHistory.length -2])
+          console.log(navHistory[navHistory.length -2])
+        }
+
+        const filtered = []
+        navHistory.map((n, i) => {
+          if (i !== navHistory.length - 1 && i !== navHistory.length - 2) filtered.push(n)
+        })
+        setNavHistory(filtered)
+      } else {
+        navigate('/')
+        
+      }
       setResult({})
+      setDisplayParent(false)
+        setDisplayTag(false)
+        setDisplayDoc(false)
     }
+
+    console.log(navHistory)
 
     const {
         findDocByTag,
@@ -162,7 +183,6 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
           setLoading(false)
         }  
       }
-      console.log('resperson', responseFindEntityById)
 
     }, [responseFindEntityById])
     
@@ -175,7 +195,6 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
           setLoading(false)
         }  
       }
-      console.log('resperson', responseFindPersonById)
     }, [responseFindPersonById])
     
       
@@ -194,7 +213,6 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
 
     const handleSearchScapinParent = (doc) => {
       if (doc) {
-        console.log('eh jsuis ici aussi, ', doc)
         if (doc.person) {
           findPersonByScapin(doc._id)
         } else if (doc.entity) {
@@ -243,19 +261,21 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
     <div className="inner two"></div>
     <div className="inner three"></div>
   </div> : <>
-    <div className="container pb-6 overflow-auto">
+    <div className="container pb-6 overflow-auto pl-2">
         {!(client && client.user && watchlist) && !(displayParent && !showParentDoc) && !(displayDoc) && !history && !searchTags.docs ? <div className="is-flex is-justify-content-start mt-0 mb-0 pb-0 pt-0" id="backBtn">
             <button className="button is-light" onClick={handleBack}>
                 <FontAwesomeIcon icon={faRotateLeft} size="lg"/>
                 <strong>&nbsp;{t('back')}</strong>
             </button>
+            {result.docs && result.items ? <span className="tag is-primary mt-1 ml-2 is-medium">{result.docs.length + result.items.length} {t('results')}</span> : null}
         </div> : null}
+        
         {client && client.user && watchlist ? <><Watchlist docs={client.user.watchList} handleBack={handleBack} setDisplayDoc={handleSearchDoc} setHideWatchlist={setGoHome}/></> : history ? <><History client={client} handleSearch={handleSearch} setHideHistory={setGoHome} handleBack={handleBack}/></> : searchTags.docs ? <>
             <ShowTag docs={searchTags.docs} tag={searchTags.tag} client={client} setAlert={setAlert} handleBack={handleBack} setDisplayDoc={setDisplayDoc} handleSearchTag={setSearchTags}/>
         </> : displayParent && !showParentDoc ? <> 
             <ShowParent parent={displayParent} setAlert={setAlert} client={client} handleSearchParent={handleSearchParent} handleBack={handleBack} handleSearchDoc={handleSearchDoc} handleSearchScapinID={handleSearchScapinParent}/>
         </> : displayDoc ? <>
-            <ShowDoc doc={displayDoc} setClient={setClient} setAlert={setAlert} client={client} handleBack={handleBack} handleSearchTag={handleSearchTag} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc} handleSearchScapinID={handleSearchScapinParent}/>
+            <ShowDoc doc={displayDoc} setClient={setClient} setAlert={setAlert} client={client} handleBack={handleBack} handleSearchTag={handleSearchTag} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc} handleSearchScapinID={handleSearchScapinParent} setSignUpModal={setSignUpModal}/>
         </> : <>
         {tags && tags[0] ? <>
         <h3 className="subtitle has-text-right is-5 has-text-grey mt-0 pt-0 ml-0 mb-4">{t('tags')}</h3>

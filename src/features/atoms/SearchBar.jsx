@@ -8,6 +8,8 @@ import Slider from '@mui/material/Slider';
 import Select from "react-select"
 import SelectForm from "./forms/SelectForm";
 
+import magnifyingIcon from '../../styles/magnifying-glass.svg'
+
 const SearchBar = ({searchValue, setSearchValue, filtersData, setFiltersValue, applicationSettings}) => {
     const [tagDropdown, setTagDropdown] = useState(false)
     const [extraDropdown, setExtraDropdown] = useState(false)
@@ -79,10 +81,10 @@ const SearchBar = ({searchValue, setSearchValue, filtersData, setFiltersValue, a
       <div className='container landing-container is-flex is-justify-content-center  w-100'>
      
   <div className='columns is-mobile box search-box '>
-    <div className='column is-three-quarters is-paddingless'>
+    <div className='column is-10 is-paddingless'>
       <div className='search-block' id="searchBlock">
         <label className='search-label label'>
-          <span>{t('what')}</span>
+          <span>{t('what-are-you-looking-for')}</span>
         </label>
         <input className='search-input home-input is-family-monospace' placeholder={t('title') + ", " + t('author') + ", " + t('tags') + "..."} type='/search' value={searchValue} onChange={handleSearchChange} />
       </div>
@@ -91,7 +93,7 @@ const SearchBar = ({searchValue, setSearchValue, filtersData, setFiltersValue, a
       </div>
     </div>
    
-    <div className='column options-searchbar is-paddingless desktop-only' onMouseEnter={() => setTagDropdown(true)} onMouseLeave={() => setTagDropdown(false)}>
+    {/* <div className='column options-searchbar is-paddingless desktop-only' onMouseEnter={() => setTagDropdown(true)} onMouseLeave={() => setTagDropdown(false)}>
       <div className='price-block'>
         <label className='price-label label'>
           <span>{t('Filters')}</span>
@@ -138,11 +140,12 @@ const SearchBar = ({searchValue, setSearchValue, filtersData, setFiltersValue, a
           </div>
         </div> :  null}
       </div>
-    </div>
+    </div> */}
     <div className='column is-paddingless desktop-only'>
         {searchValue.length > 0 ? <button className='button is-primary is-large search-button' type="submit"><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/> &nbsp; <strong>{t('search')}</strong></button> :
         <button className='button is-primary is-large search-button' onClick={(e) => e.preventDefault()}><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/> &nbsp; <strong>{t('search')}</strong></button>}
     </div>
+        {searchValue.length > 0 ?<button className=" title has-text-primary is-4 mt-1 ml-1 nodesk-only has-background-transparent border-0"><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/></button> : <button className=" title has-text-primary is-4 mt-1 ml-1 pointer is-mobile has-background-transparent nodesk-only border-0" onClick={e => e.preventDefault()}><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/></button>}
         </div>
         
       </div>

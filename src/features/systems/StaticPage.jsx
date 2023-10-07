@@ -35,18 +35,24 @@ const paragraph = ({content, i18n}) => {
     const words = string.split(' ')
     const text = []
     words.map((word) => {
-        if (word.includes('mailto:')) text.push(<><a href={word}>{word.replaceAll('mailto:', '')}</a></>)
+        if (word.includes('mailto:')) {
+            text.push(<br/>)
+            text.push(<><a href={word}>{word.replaceAll('mailto:', '')}</a></>)
+        }
         else if (word === "<br/>") text.push(<br/>)
-        else if (word.includes('https://') || word.includes('www.')) text.push(<a href={word}>{word}</a>)
+        else if (word.includes('https://') || word.includes('www.')) {
+            text.push(<br/>)
+            text.push(<a href={word}>{word}</a>)
+        }
         else text.push(word)
     })
-    return <>
+    return <div className='mt-4 p-3'>
         {string.includes('mailto:') || string.includes('<br/>') || string.includes('https://') || string.includes('www.') ? <>
             {text.map((word) => <Fragment key={word}>
                 {word}&nbsp;
             </Fragment>)}
         </> : <p>{string}</p>}
-    </>
+    </div>
 }
 
 const title = ({content, i18n}) => {

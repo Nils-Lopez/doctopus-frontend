@@ -415,12 +415,14 @@ const DocForm = ({client, setAlert, setClient, applicationSettings, selectedType
       setRestrictedContent(dataUpdate.restrictedContent)
       setVolumeValue(dataUpdate.volume)
       setNumberValue(dataUpdate.number)
+      selectProd()
       selectType(dataUpdate.types)
       selectTag(dataUpdate.tags)
       const orgs = []
       const people = []
       const projects = []
       const pDocs = []
+      const prods = []
       dataUpdate.parents.map((p) => {
        if (p.project) {
         projects.push(p)
@@ -428,14 +430,17 @@ const DocForm = ({client, setAlert, setClient, applicationSettings, selectedType
         people.push(p)        
        } else if (p.entity) {
         orgs.push(p)
-       } else {
+       } else if (p.parent_doc) {
         pDocs.push(p)
+       } else {
+        prods.push(p)
        }
       })
       selectProject(projects)
       selectDoc(pDocs)
       selectPerson(people)
       selectOrg(orgs)
+      selectProd(prods)
       if (dataUpdate.template) {
        setFullTemplate(dataUpdate.template)
       }

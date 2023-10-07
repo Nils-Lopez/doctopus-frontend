@@ -20,8 +20,9 @@ import {useEntities} from "../../utils/hooks/Entities.js"
 import {usePeople} from "../../utils/hooks/People.js"
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useApplication } from "../../utils/hooks/Application"
+import { init } from "i18next"
 
-const HomePage = ({client, setClient, setAlert, watchlist, history, applicationSettings}) => {
+const HomePage = ({client, setClient, setAlert, watchlist, history, applicationSettings, setSignUpModal}) => {
   const { t, i18n } = useTranslation();
 
   const [searchValue, setSearchValue] = useState("")
@@ -41,7 +42,7 @@ const HomePage = ({client, setClient, setAlert, watchlist, history, applicationS
  
 
   useEffect(() => {
-    if (location.pathname) {
+    if (location.pathname && (location.pathname !== "/" || navHistory.length === 0) && location.pathname !== navHistory[navHistory.length-1] && location.pathname !== navHistory[navHistory.length-2]) {
       if (navHistory.indexOf(location.pathname) !== navHistory.length - 1) {
         const navHistoryFiltered = [...navHistory].filter(e => e !== location.pathname)
         setNavHistory([...navHistoryFiltered, location.pathname])
@@ -76,6 +77,7 @@ const HomePage = ({client, setClient, setAlert, watchlist, history, applicationS
     if (!loadingSearch) {
         setLoadingSearch(responseSearch ? responseSearch: true)
       search({query: searchValue, filters: filtersValue})
+      setNavHistory([...navHistory, {query: searchValue, filters: filtersValue}])
       if (client && client.user) {
         updateUser({history:  [...client.user.history, {query: searchValue}]}, client.user._id)
       }
@@ -174,16 +176,13 @@ const HomePage = ({client, setClient, setAlert, watchlist, history, applicationS
         setPage(1)
         setEmpty(false)
 
-        console.log('ici1', result)
       } else if (responseSearch && !responseSearch.success) {
         setLoadingSearch(false)
-        console.log('ici2')
         setEmpty(false)
 
         setAlert({type: "error", message: {en: t('error'), fr: t('error')}})
       } else if (responseSearch && responseSearch.data && !responseSearch.data[0]) {
         setLoadingSearch(false)
-        console.log('ici3')
         setEmpty(true)
       } 
     }
@@ -192,13 +191,12 @@ const HomePage = ({client, setClient, setAlert, watchlist, history, applicationS
   useEffect(() => {
     if (result === responseSearch.data && loadingSearch) {
       setLoadingSearch(false)
-      console.log('stop loading')
     }
   }, [result])
   
   useEffect(() => {
     if (!popularDocs) {
-      findPopularDocs()
+      findPopularDocs("book")
       setPopularDocs(true)
       registerVisitor()
       setLoadingSearch(true)
@@ -210,6 +208,7 @@ const HomePage = ({client, setClient, setAlert, watchlist, history, applicationS
       setPopularDocs(responseFindPopularDocs.data)
       setFiltersData(responseFindPopularDocs.appData)
       setLoadingSearch(false)
+      setLoadingLastDocs(false)
     }
   }, [responseFindPopularDocs])
 
@@ -223,28 +222,46 @@ const HomePage = ({client, setClient, setAlert, watchlist, history, applicationS
     }
 
     const handleSearch = async (value) => {
-      console.log('eh jzsuis la', value)
-      setSearchValue(value)
-      search({query: searchValue, filters: filtersValue})
+      if (!value.query) {
+        setSearchValue(value)
+        search({query: searchValue, filters: filtersValue})
+        setNavHistory([...navHistory, {query: searchValue, filters: filtersValue}])
+      } else {
+        setSearchValue(value.query)
+        setFiltersValue(value.filters)
+        search({query: value.query, filters: value.filters})
+      }
       setLoadingSearch(true)
       setDisplayDoc(false)
       setDisplayParent(false)
       setEmpty(false)
     }
 
-    const [bgImage, setBgImage] = useState()
 
     useEffect(() => {
       const root = document.documentElement;
       const bgUrls = ['https://imagesdoctopus.blob.core.windows.net/contredanse/Lara%20Barsaq%20-%20Fruit%20Tree%C2%A9Stanislav%20Dobak.jpg', 'https://imagesdoctopus.blob.core.windows.net/contredanse/TheGoldbergVariations_(c)Kat_ja%20Illner_20221013-163700.jpg']
-      console.log("yo bro: ", Math.floor(Math.random()*bgUrls.length))
 
       root.style.setProperty("--bg-image", 'url("' + bgUrls[Math.floor(Math.random()*bgUrls.length)] + '")');
       
     }, [])
 
+    const handleFindLastDocs = (type) => {
+      findPopularDocs(type)
+      setPopularDocs(true)
+      setLoadingLastDocs(true)
+    }
 
-    const className = (!result || !result.docs || !result.docs[0]) && (!result || !result.items || !result.items[0]) && (!result || !result.tags || !result.tags[0]) && !displayDoc && !displayParent && !displayTag ? "landing" : "search"
+    const [loadingLastDocs, setLoadingLastDocs] = useState(false)
+    const [lastDocType, setLastDocType] = useState("book")
+    const [initialDoc, setInitialDoc] = useState(true)
+
+    useEffect(() => {
+      if (lastDocType && !initialDoc) {
+        handleFindLastDocs(lastDocType)
+      }
+    }, [lastDocType])
+    const className = (!result || !result.docs || !result.docs[0]|| !window.location.href.includes('watchlist') && client && client.user && result.docs === client.user.watchList) && (!result || !result.items || !result.items[0]) && (!result || !result.tags || !result.tags[0]) && !displayDoc && !displayParent && !displayTag ? "landing" : "search"
   return <>
     <div className={className}>
       <div className="is-flex is-justify-content-center mb-6 mt-6 w-100">
@@ -259,8 +276,8 @@ const HomePage = ({client, setClient, setAlert, watchlist, history, applicationS
   <div className="inner one"></div>
   <div className="inner two"></div>
   <div className="inner three"></div>
-</div> : (!result || !result.docs ||  !result.docs[0]) && (!result || !result.items || !result.items[0]) && (!result || !result.tags || !result.tags[0]) && !displayDoc && !displayParent && !displayTag ? 
-  <Landing popularDocs={popularDocs} setDisplayDoc={setDisplayDoc} i18n={i18n} setResult={setResult} t={t} client={client} applicationSettings={applicationSettings}/> : <SearchResult result={result} client={client} setClient={setClient} applicationSettings={applicationSettings} setAlert={setAlert} page={page} setPage={setPage} loadingSearch={loadingSearch} setResult={setResult} displayDoc={displayDoc} setDisplayDoc={setDisplayDoc} displayParent={displayParent} setDisplayParent={setDisplayParent} setLoading={setLoadingSearch} watchlist={watchlist} history={history} handleSearch={handleSearch} displayTag={displayTag} navHistory={navHistory} setNavHistory={setNavHistory} setDisplayTag={setDisplayTag}/>}
+</div> : (!result || !result.docs ||  !result.docs[0] || !window.location.href.includes('watchlist') && client && client.user && result.docs === client.user.watchList) && (!result || !result.items || !result.items[0]) && (!result || !result.tags || !result.tags[0]) && !displayDoc && !displayParent && !displayTag ? 
+  <Landing popularDocs={popularDocs} loadingLastDocs={loadingLastDocs} setInitialDoc={setInitialDoc} lastDocType={lastDocType} setLastDocType={setLastDocType}setDisplayDoc={setDisplayDoc} i18n={i18n} setResult={setResult} t={t} client={client} applicationSettings={applicationSettings}/> : <SearchResult result={result} client={client} setClient={setClient} applicationSettings={applicationSettings} setAlert={setAlert} page={page} setPage={setPage} loadingSearch={loadingSearch} setResult={setResult} displayDoc={displayDoc} setDisplayDoc={setDisplayDoc} displayParent={displayParent} setDisplayParent={setDisplayParent} setLoading={setLoadingSearch} watchlist={watchlist} history={history} handleSearch={handleSearch} displayTag={displayTag} navHistory={navHistory} setNavHistory={setNavHistory} setDisplayTag={setDisplayTag} setSignUpModal={setSignUpModal}/>}
           </>}
           
       </div>
@@ -283,14 +300,17 @@ const Counter = ({ number }) => {
   );
 }
 
-const Landing = ({popularDocs, setDisplayDoc, setResult, t, i18n, client, applicationSettings}) => {
+const Landing = ({popularDocs, setDisplayDoc, setResult, loadingLastDocs, setInitialDoc, lastDocType, setLastDocType,  t, i18n, client, applicationSettings}) => {
 
   const setDisplay = (item) => {
     setResult({docs: [item]})
     setDisplayDoc(item)
   }
 
-  console.log(applicationSettings)
+
+
+
+
 
   return <>
   
@@ -299,30 +319,97 @@ const Landing = ({popularDocs, setDisplayDoc, setResult, t, i18n, client, applic
         <div className="metrics">
         <h1 className="title is-4 has-text-white has-text-shadow mb-0">{applicationSettings && applicationSettings.homePageSubtitles && applicationSettings.homePageSubtitles[0] ? getContent(applicationSettings.homePageSubtitles[0].subtitle, i18n.language) : null}</h1>
         <div className="columns is-multiline pb-0 mb-0 mt-1 is-mobile">
-            <div className="column results-col-unclickable  is-one-fifth-desktop is-one-third-tablet is-half-mobile">
-              <div className="box pt-5 smooth-appear">
-                <h1 className="title is-5 mt-2"><strong className="title is-2"><Counter number={2157}/></strong> <br />{t('books')}</h1>
-              </div>
+            <div className="column results-col  is-one-fifth-desktop is-one-third-tablet is-half-mobile">
+              {lastDocType === "book" ? <>
+                <div className="box pt-5 smooth-appear has-background-primary " onClick={() => {
+
+                }}>
+                  <h1 className="title is-5 mt-2 has-text-white"><strong className="title is-2"><Counter number={2157}/></strong> <br />{t('books')}</h1>
+                </div>
+              </>: <>
+              
+                <div className="box pt-5 smooth-appear  " onClick={() => {
+                  setLastDocType("book")
+                }}>
+                  <h1 className="title is-5 mt-2 "><strong className="title is-2"><Counter number={2157}/></strong> <br />{t('books')}</h1>
+                </div>
+              </>}
             </div>
-            <div className="column results-col-unclickable is-one-fifth-desktop is-one-third-tablet is-half-mobile">
-              <div className="box pt-5 smooth-appear sm2">
-                <h1 className="title is-5 mt-2"><strong className="title is-2"><Counter number={351}/></strong> <br />{t('periodical')}</h1>
-              </div>
+            <div className="column results-col is-one-fifth-desktop is-one-third-tablet is-half-mobile">
+              {lastDocType === "periodical" ? <>
+                  <div className="box pt-5 smooth-appear has-background-primary " onClick={() => {
+
+                  }}>
+                    <h1 className="title is-5 mt-2 has-text-white"><strong className="title is-2"><Counter number={351}/></strong> <br />{t('periodical')}</h1>
+                  </div>
+                </>: <>
+                
+                  <div className="box pt-5 smooth-appear  " onClick={() => {
+                    setLastDocType("periodical")
+                    setInitialDoc(false)
+
+                  }}>
+                    <h1 className="title is-5 mt-2 "><strong className="title is-2"><Counter number={351}/></strong> <br />{t('periodical')}</h1>
+                  </div>
+                </>}
+            
             </div>
-            <div className="column results-col-unclickable is-one-fifth-desktop is-one-third-tablet is-half-mobile">
-              <div className="box pt-5 smooth-appear sm3">
-                <h1 className="title is-5 mt-2"><strong className="title is-2"><Counter number={17377}/></strong> <br />{t('articles')}</h1>
-              </div>
+            <div className="column results-col is-one-fifth-desktop is-one-third-tablet is-half-mobile">
+            {lastDocType === "articles" ? <>
+                  <div className="box pt-5 smooth-appear has-background-primary " onClick={() => {
+
+                  }}>
+                    <h1 className="title is-5 mt-2 has-text-white"><strong className="title is-2"><Counter number={17377}/></strong> <br />{t('articles')}</h1>
+                  </div>
+                </>: <>
+                
+                  <div className="box pt-5 smooth-appear  " onClick={() => {
+                    setLastDocType("articles")
+                    setInitialDoc(false)
+
+                  }}>
+                    <h1 className="title is-5 mt-2 "><strong className="title is-2"><Counter number={17377}/></strong> <br />{t('articles')}</h1>
+                  </div>
+                </>}
+        
             </div>
-            <div className="column results-col-unclickable is-one-fifth-desktop is-one-third-tablet ml-auto mr-auto tablet-centered-item is-half-mobile">
-              <div className="box pt-5 smooth-appear sm4">
-                <h1 className="title is-5 mt-2"><strong className="title is-2"><Counter number={2554}/></strong> <br />{t('videos')}</h1>
-              </div>
+            <div className="column results-col is-one-fifth-desktop is-one-third-tablet ml-auto mr-auto tablet-centered-item is-half-mobile">
+            {lastDocType === "videos" ? <>
+                  <div className="box pt-5 smooth-appear has-background-primary " onClick={() => {
+
+                  }}>
+                    <h1 className="title is-5 mt-2 has-text-white"><strong className="title is-2"><Counter number={2554}/></strong> <br />{t('videos')}</h1>
+                  </div>
+                </>: <>
+                
+                  <div className="box pt-5 smooth-appear  " onClick={() => {
+                    setLastDocType("videos")
+                    setInitialDoc(false)
+
+                  }}>
+                    <h1 className="title is-5 mt-2 "><strong className="title is-2"><Counter number={2554}/></strong> <br />{t('videos')}</h1>
+                  </div>
+                </>}
+           
             </div>
-            <div className="column results-col-unclickable is-half-mobile  is-one-fifth-desktop is-one-third-tablet tablet-centered-item ml-auto mr-auto mt-1">
-              <div className="box pt-5 smooth-appear sm5">
-                <h1 className="title is-5 mt-2"><strong className="title is-2"><Counter number={472}/></strong> <br />{t('photos')}</h1>
-              </div>
+            <div className="column results-col is-half-mobile  is-one-fifth-desktop is-one-third-tablet tablet-centered-item ml-auto mr-auto mt-1">
+                {lastDocType === "photos" ? <>
+                  <div className="box pt-5 smooth-appear has-background-primary " onClick={() => {
+
+                  }}>
+                    <h1 className="title is-5 mt-2 has-text-white"><strong className="title is-2"><Counter number={5396}/></strong> <br />{t('photos')}</h1>
+                  </div>
+                </>: <>
+                
+                  <div className="box pt-5 smooth-appear  " onClick={() => {
+                    setLastDocType("photos")
+                    setInitialDoc(false)
+
+                  }}>
+                    <h1 className="title is-5 mt-2 "><strong className="title is-2"><Counter number={5396}/></strong> <br />{t('photos')}</h1>
+                  </div>
+                </>}
+           
             </div>
         </div>
         </div>
@@ -340,17 +427,25 @@ const Landing = ({popularDocs, setDisplayDoc, setResult, t, i18n, client, applic
         </div>
         </>: null}
 
+        {loadingLastDocs ? <div className="loader mt-4 pt-4">
+          <div className="inner one"></div>
+          <div className="inner two"></div>
+          <div className="inner three"></div>
+        </div> : <>
+
         <h1 className="title is-4 has-text-white has-text-shadow mb-0 pb-0 mt-3 pt-0">{applicationSettings && applicationSettings.homePageSubtitles && applicationSettings.homePageSubtitles[1] ? getContent(applicationSettings.homePageSubtitles[1].subtitle, i18n.language) : null} :</h1>
 
-        <div className="columns is-multiline pb-3 mb-0 mt-0 pt-0">
-        {popularDocs[0] && popularDocs.map((item, index) => {
+<div className="columns is-multiline pb-3 mb-0 mt--1 pt-0">
+{popularDocs[0] && popularDocs.map((item, index) => {
 
 return <Fragment key={JSON.stringify(item)}>
-                        <SearchItem item={{doc: item}} setDisplay={setDisplayDoc} i={index}/>
-                    </Fragment>
-          
-        })}
-      </div>
+                <SearchItem item={{doc: item}} setDisplay={setDisplayDoc} i={index}/>
+            </Fragment>
+  
+})}
+</div>
+        </>}
+        
       </div>
 
   

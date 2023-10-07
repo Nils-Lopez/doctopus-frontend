@@ -1,4 +1,4 @@
-import React, {Fragment} from "react";
+import React, {Fragment, useState} from "react";
 import {useTranslation} from "react-i18next"
 
 
@@ -18,7 +18,7 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
     }
     const { t, i18n } = useTranslation() 
 
-
+    const [displayThumb, setDisplayThumb] = useState(true)
         return <div className={"column is-one-fifth"} >
             <div className={"box results-col " +colClasses} onClick={() => {
                 
@@ -41,8 +41,9 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
                     </span>
                 </div>
                
-                          {item.doc && item.doc.thumb && item.doc.thumb !== "" ? <img src={item.doc.thumb} alt="file" className="thumb-search-item" /> : null}
-
+                          {displayThumb && item.doc && item.doc.thumb && item.doc.thumb !== "" ? <div className="column mb-0 pb-0">
+                    <img onError={() => setDisplayThumb(false)} src={item.doc.thumb} alt="file" className="thumb-search-item"/> 
+                </div> : null}
             <h3 className="subtitle is-6 mb-1 mt-1">{item.doc && item.doc.title}</h3>
             <h3 className="subtitle is-6 mb-1 mt-1 has-text-grey mt-3"><small>{item.doc && item.doc.date}</small></h3>
                 {/* <p>{item.doc.description && item.doc.description[0] ? getContent(item.doc.description, i18n.language).substring(0,20) + "..." : null}</p>
@@ -81,12 +82,7 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
                 {watchlist && item.doc.supports ? <div className="mt-3">
                     {item.doc.supports.map((supp) => {
                 return <Fragment key={JSON.stringify(supp)}>
-                    {supp.url && supp.url !== "" ? <>
-                        <span className="tag is-light is-medium  mb-2  ml-1 mr-1">URL: <a href={supp.url}>{supp.url}</a></span>
-                    </> : null}
-                    {supp.pdf && supp.pdf !== "" ? <>
-                        <span className="tag is-light is-medium  mb-2  ml-1 mr-1">{supp.pdf} {t("PDF")}</span>
-                    </> : null}
+                    
                     {supp.format && supp.format !== "" ? <>
                         <span className="tag is-light is-medium  mb-2  ml-1 mr-1">{supp.format}</span>
                     </> : null}
@@ -114,7 +110,7 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
             })}
                 </div> : null}
 
-                {item.doc && item.doc.tags && item.doc.tags[0] ? <>
+                {!watchlist && item.doc && item.doc.tags && item.doc.tags[0] ? <>
                     <hr />
          
                     <div className="columns is-multiline tag-search-item is-flex is-justify-content-space-around ">

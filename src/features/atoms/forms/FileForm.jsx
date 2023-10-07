@@ -29,7 +29,11 @@ const FileUpload = ({setFile, pdf}) => {
 
   const onFileChange = (event) => {
     // capture file into state
-    setFileSelected(event.target.files[0]);
+    
+    let file =  new File(event.target.files, event.target.files[0].name.replaceAll('.', Math.floor(Math.random() * 100000) +"."))
+    console.log(file)
+    //file.name = file.name.replaceAll('.', Math.floor(Math.random() * 100000) +".")
+    setFileSelected(file);
   };
 
   const onFileUpload = async (compress = false) => {

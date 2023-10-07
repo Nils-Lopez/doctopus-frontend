@@ -85,13 +85,10 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
      }
     }, [dataUpdate])
 
-    console.log('childs: ', roles)
 
     useEffect(() => {
         if ((productions && productions[0]) || (createdDocs && createdDocs[0])) {
             if (!docs[0]) {
-                console.log("prods :", productions)
-                console.log('createdDocs: ', createdDocs)
                 const newDocs = []
                 if (productions) {
                     productions.map((prod) => {
@@ -110,7 +107,6 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
                         if (!newDocs.includes(doc)) newDocs.push(doc)
                     })
                 }
-                console.log('new: ', newDocs)
                 const finalDocs = newDocs.filter(function(item, pos) {
                     return newDocs.indexOf(item) == pos;
                 })
@@ -136,7 +132,6 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
     
     const handleSearchScapinParent = (item, type) => {
         if (!type){
-            console.log('eh jsuis la : ', {...item.prod,scapin: true, parents: item.parents})
         if (!showScapinParent && item) setShowScapinParent({...item.prod,scapin: true, parents: item.parents})
         else setShowScapinParent(false)
         } else {

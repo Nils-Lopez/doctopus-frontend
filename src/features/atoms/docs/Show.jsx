@@ -12,7 +12,7 @@ import { faChevronDown, faChevronUp,  faCopy, faCheck, faCircleXmark, faShareAlt
 import { TwitterShareButton, TwitterIcon, PinterestShareButton, PinterestIcon, FacebookShareButton, FacebookIcon } from 'react-share';
 import {useProds} from "../../../utils/hooks/Prods"
 
-const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchParent, handleSearchDoc, handleBack, handleSearchScapinID}) => {
+const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchParent, handleSearchDoc, handleBack, handleSearchScapinID, setSignUpModal}) => {
     const {
         title,
         description,
@@ -21,11 +21,11 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
         types,
         supports,
         parents,
-    tags,
-    childs
+        tags,
+        childs,
+        child_docs
       } = doc
 
-      console.log(doc)
 
       const [addingWatchlist, setAddingWatchlist] = useState(false)
 	const {updateUser, responseUpdateUser} = useUsers()
@@ -123,13 +123,13 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
 
     const handleSearchScapinParent = (item, type) => {
         if (!type){
-            console.log('eh jsuis la : ', {...item.prod,scapin: true, parents: item.parents})
         if (!showScapinParent && item) setShowScapinParent({...item.prod,scapin: true, parents: item.parents})
         else setShowScapinParent(false)
         } else {
             handleSearchScapinID(item)
         }
     }
+
 
     useEffect(() => {
         if (responseFindProdByIds && prodLoading) {
@@ -166,6 +166,9 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
         }
     }
 
+    const [displayThumb, setDisplayThumb] = useState(true)
+    const [displayVideo, setDisplayVideo] = useState(false)
+
 
     return showScapinParent ? <>
         <ShowParent parent={showScapinParent} client={client} setAlert={setAlert} handleSearchParent={handleSearchScapinParent} handleSearchScapinID={handleSearchScapinID} handleSearchDoc={handleSearchDoc} handleBack={handleSearchScapinParent}/>
@@ -199,7 +202,10 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
 				handleUpdateUser()
                 setAddingWatchlist(true)
 			}}>{t('Add to watchlist')}</button> : 		<button className="button is-primary  mb-2 ml-3 is-medium tag disabled is-disabled" disabled>{t('Loading...')}</button>
-		 : null}
+		 : <button className="button is-primary  mb-2 ml-3 is-medium tag" onClick={(e) => {
+            e.preventDefault()
+            setSignUpModal(true)
+        }}>{t('Add to watchlist')}</button>}
      
                 {client && client.user && (client.user.type === "admin" || client.user.type === "moderator" || client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? 
               <button className="button is-primary ml-3  is-medium tag" onClick={() => setDataUpdate(doc)}>
@@ -245,6 +251,21 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
             <div className="columns mb-0 pb-0">
                 <div className="column mb-0 pb-0">
                 <h1 className="mt-2 title is-1 has-text-left">{title}</h1>
+                {((doc) && ((!doc.restrictedContent || doc.restrictedContent === "all") || (client && client.user && client.user.type !== "visitor"))) ? <> {supports[0] && supports[0].url && supports[0].url.includes(('vimeo')) ?
+                        <>
+                        <div className="is-flex is-justify-content-start mt-0 mb-2">
+                    <div className="button has-name is-primary">
+  
+                    <span className="file-label" onClick={() => setDisplayVideo(!displayVideo)}>
+                    {!displayVideo ? <>{t('show-video')}<FontAwesomeIcon icon={faChevronDown} className="is-primary mt-1 ml-2"/></> : <>{t('hide-video')} <FontAwesomeIcon icon={faChevronUp} className="is-primary mt-1 ml-2"/></>}
+                    </span>
+                     </div></div>
+                            {displayVideo ? <div className="is-flex is-justify-content-center ">
+                            <iframe src={supports[0].url} width="740" height="460" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+                        </div> : null}
+                        
+                        </>
+                    : null} </> : null}
                 {languages && languages[0] ? <p className="has-text-left mb-1">{t('language')}: {languages[0].code.toUpperCase()}</p> : null}
                 {doc.date && doc.date !== "" ? 
                                     <p className="has-text-left mt-0  mb-0 pt-0">{t('publication date')}: {doc.date} </p>
@@ -258,17 +279,32 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                                 <p className="has-text-left mt-1  mb-0 pt-0">{t('number')} {doc.number}</p>
                                  : null}  
                                {doc.issn && doc.issn !== "" ?  <p className="has-text-left mt-1  mb-0 pt-0">ISSN: {doc.issn} </p> : null}
-                                {doc.duration && doc.duration !== "" ?  <p className="has-text-left mt-1  mb-0 pt-0">{doc.duration} </p> : null}
+                                {doc.duration && doc.duration !== "" ?  <p className="has-text-left mt-1  mb-0 pt-0">{t('duration')}: {doc.duration} </p> : null}
                                 {doc.additionalCopyrights && doc.additionalCopyrights !== "" ?  <p className="has-text-left mt-1  mb-0 pt-0">{t('credits')}: {doc.additionalCopyrights} </p> : null}    
-                {description && description[0] ? <p className="  mt-1 mb-0 pb-0 has-text-left">{getContent(description, i18n.language)}</p> : null}
+                    {description && description[0] ? <p className="  mt-1 mb-0 pb-0 has-text-left">{getContent(description, i18n.language)}</p> : null}
                 
                 </div>
-                <div className="column mb-0 pb-0">
-                    <img src={thumb} alt="file" className="thumb-img"/> 
-                </div>
+                {displayThumb ? <div className="column mb-0 pb-0">
+                    <img onError={() => setDisplayThumb(false)} src={thumb} alt="file" className="thumb-img"/> 
+                </div> : null}
             </div>
         </> : <>
         <h1 className="mt-2 title is-1 has-text-left">{title}</h1>
+        {((doc) && ((!doc.restrictedContent || doc.restrictedContent === "all") || (client && client.user && client.user.type !== "visitor"))) ? <> {supports[0] && supports[0].url && supports[0].url.includes(('vimeo')) ?
+                        <>
+                        <div className="is-flex is-justify-content-start mt-2">
+                    <div className="button has-name is-primary">
+
+                    <span className="file-label" onClick={() => setDisplayVideo(!displayVideo)}>
+                    {!displayVideo ? <>{t('show-video')}<FontAwesomeIcon icon={faChevronDown} className="is-primary mt-1 ml-2"/></> : <>{t('hide-video')} <FontAwesomeIcon icon={faChevronUp} className="is-primary mt-1 ml-2"/></>}
+                    </span>
+    </div></div>
+                            {displayVideo ? <div className="is-flex is-justify-content-center ">
+                            <iframe src={supports[0].url} width="740" height="460" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+                        </div> : null}
+                        
+                        </>
+                    : null} </> : null}
                 {languages && languages[0] ? <p className="has-text-left mb-1">{t('language')}: {getContent(languages[0].labels, i18n.language)}</p> : null}
                 {doc.date && doc.date !== "" ? 
                                     <p className="has-text-left mt-0  mb-0 pt-0">{t('publication date')}: {doc.date} </p>
@@ -282,18 +318,14 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                                 <p className="has-text-left mt-1  mb-0 pt-0">{t('number')} {doc.number}</p>
                                  : null}  
                                {doc.issn && doc.issn !== "" ?  <p className="has-text-left mt-1  mb-0 pt-0">ISSN: {doc.issn} </p> : null}
-                                {doc.duration && doc.duration !== "" ?  <p className="has-text-left mt-1  mb-0 pt-0">{doc.duration} </p> : null}
+                                {doc.duration && doc.duration !== "" ?  <p className="has-text-left mt-1  mb-0 pt-0">{t('duration')}: {doc.duration} </p> : null}
                                 {doc.additionalCopyrights && doc.additionalCopyrights !== "" ?  <p className="has-text-left mt-1  mb-0 pt-0">{t('credits')}: {doc.additionalCopyrights} </p> : null}    
                 {description && description[0] ? <p className="  mt-1 mb-1 pb-0 has-text-left">{getContent(description, i18n.language)}</p> : null}
                 
 </>}
-{((doc) && ((!doc.restrictedContent || doc.restrictedContent === "all") || (client && client.user && client.user.type !== "visitor"))) ? <> {supports[0] && supports[0].url && supports[0].url.includes(('vimeo')) ?
-                        <div className="is-flex is-justify-content-center ">
-                            <iframe src={supports[0].url} width="740" height="460" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
-                        </div>
-                    : null} </> : null}
 
 
+            
                         
         {supports && supports[0] ? <>
             {supports.map((supp) => {
@@ -440,13 +472,19 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                         })}
                     </> : null}
         </div></> : null}
-        {childs && childs[0] ? <>
+        {(childs && childs[0]) || (child_docs && child_docs[0])? <>
         <hr />
         <h3 className="subtitle has-text-grey has-text-left is-5">{types && types[0] && types[0]._id === "6404c457e377d276c2dcac8a" ? t('Articles') : t('document')}</h3>
         <div className="columns is-multiline is-flex is-justify-content-start">
                         
                         {childs.map((parent) => {
-                            console.log(parent.roles[0])
+                            if (parent.doc) {
+                                return <Fragment key={JSON.stringify(parent)}>    
+                                <BoxItemParent item={parent} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc} parent="parent_doc" />
+                            </Fragment>
+                            }
+                        })}
+                        {child_docs.map((parent) => {
                             if (parent.doc) {
                                 return <Fragment key={JSON.stringify(parent)}>    
                                 <BoxItemParent item={parent} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc} parent="parent_doc" />

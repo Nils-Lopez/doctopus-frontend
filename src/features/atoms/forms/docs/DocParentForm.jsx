@@ -31,14 +31,12 @@ const DocParentForm = ({selectedDoc, selectDoc, location, template, lang, hideRo
     }
   }, [template, docValue])
   
-  console.log(selectedDoc)
   const handleDeleteDoc = (e, doc) => {
     e.preventDefault()
     const filtered = selectedDoc.filter((r) => {
       if (location !== "app-dash") return r !== doc
       else return r !== doc.parent_doc
     })
-    console.log(filtered)
     selectDoc(filtered)
     setDocs([])
   }

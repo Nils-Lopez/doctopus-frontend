@@ -307,7 +307,6 @@ body {
   min-height: 100%;
   background-repeat: no-repeat;
   background-position: center;
-  background-attachment: fixed;
   padding-bottom: 100px;
 }
 .image404 {
@@ -329,6 +328,7 @@ body {
 .landing-container .search-box {
   height: 60px;
     width: 800px;
+    margin-left: -8.5%;
   position: relative;
   z-index: 1;
 }

@@ -5,7 +5,8 @@
 }
 
 .thumb-search-item {
-  height: 250px;
+  max-height: 250px;
+  border-radius:1.5%;
 }
 
 .line-break {
@@ -55,14 +56,15 @@ body {
 }
 .thumb-img {
   height: 350px;
-  position: absolute;
-  right: 1.5%;
+  position: relative;
+  float: right;
+  right: 2.5%;
   border-radius: 1.5%;
 }
 @media (max-width: 950px) {
   .thumb-img {
     height: 500px;
-    position: absolute;
+    position: relative;
   }
 }
 @media (max-width: 768px) {
@@ -130,6 +132,8 @@ body {
 @media (max-width: 410px) {
   .title.is-4.title-nav {
     font-size: 1.1rem !important;
+    overflow-wrap: break-word;
+    max-width: 60%;
   }
   .tagline {
     display: none;

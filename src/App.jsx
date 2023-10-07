@@ -72,7 +72,6 @@ function App() {
 
   useEffect(() => {
     if (responseGetApplication && responseGetApplication.success && responseGetApplication.data !== applicationSettings) {
-      console.log(responseGetApplication)
       setApplicationSettings(responseGetApplication.data)
     }
   }, [responseGetApplication])

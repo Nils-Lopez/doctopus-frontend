@@ -78,9 +78,10 @@ const Show = ({client, docs, tag, setDisplayDoc, handleSearchTag, handleBack, se
             </div>
         {!updateTag ? <>
               
-        <h3 className="subtitle  is-4 has-text-grey mt-0 pt-0 mb-1"><small>{t('tag')}:</small></h3>
+        <h3 className="subtitle  is-4 has-text-grey mt-0 pt-0 mb-1"><small>{t('tag')} :</small></h3>
         <h3 className="subtitle is-2 has-text-grey mt-0 pt-0 mb-6"><strong className="has-text-primary">{getContent(tag.title, i18n.language)}</strong></h3>
-          <div className="is-flex is-justify-content-end">
+          <div className="is-flex is-justify-content-space-between">
+          <span className="tag is-primary is-medium is-rounded">{docs.length} {t('results')}</span>
           <div className="mt--1 mb-3">
         {childsPage !== 1 ? <button className="button is-white" onClick={() => setChildsPage(childsPage - 1)}><FontAwesomeIcon icon={faAngleLeft} className=" is-size-3 has-text-grey"/></button> :null}
 

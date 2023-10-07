@@ -9,7 +9,7 @@ import { faGear } from '@fortawesome/free-solid-svg-icons'
 import logoOrange from "../../logo-cyan.png"
 import { useTranslation } from "react-i18next";
 
-const Navbar = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAlert, applicationSettings}) => {
+const Navbar = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAlert, applicationSettings, signUpModal, setSignUpModal}) => {
 
     const [hamburger, setHamburger] = useState(false)
     const { t, i18n } = useTranslation();
@@ -21,6 +21,8 @@ const Navbar = ({bake_cookie, read_cookie, delete_cookie, client, setClient, set
           return "Error"
         }
     }
+
+    
 
     return <>
         <nav className="navbar has-shadow pt-0 pb-0 is-fixed-top" role="navigation" aria-label="main navigation">
@@ -67,7 +69,7 @@ const Navbar = ({bake_cookie, read_cookie, delete_cookie, client, setClient, set
                 
 
                
-                <Auth bake_cookie={bake_cookie} read_cookie={read_cookie} delete_cookie={delete_cookie} client={client} setClient={setClient} setAlert={setAlert} />
+                <Auth bake_cookie={bake_cookie} read_cookie={read_cookie} delete_cookie={delete_cookie} client={client} setClient={setClient} setAlert={setAlert} signUpModal={signUpModal} setSignUpModal={setSignUpModal}/>
                 
                 
                 
