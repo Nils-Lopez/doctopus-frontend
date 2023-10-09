@@ -8,12 +8,18 @@ import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 
 import DocSearchItem from "../docs/SearchItem.jsx"
 
+const getContent = (value, lang = "en") => {
+    if (value) {
+      return value.filter(obj => obj.lang === lang)[0] ? value.filter(obj => obj.lang === lang)[0].content : value.filter(obj => obj.lang === "en")[0] ? value.filter(obj => obj.lang === "en")[0].content : value.filter(obj => obj.lang === "fr")[0].content
+    } else {
+      return "Error"
+    }
+}
+
 const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDelete, parent, i, handleSearchScapinParent, width}) => {
     const index = i - ((i/4).toString()[0] * 4)
     let colClasses = i || index === 0 ? " smooth-appear" : ""
     colClasses += i && index === 0 ? "" : index === 4 ? " sm5" : index === 3 ? " sm4" : index === 2 ? " sm3" : index === 1 ? " sm2" : ""
-    
-
     const { t, i18n } = useTranslation() 
     if (parent !== "production" && item.scapin) {
         return <div className="column is-one-quarter-desktop is-half-tablet">
@@ -44,6 +50,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
                         <div>
                         {item.roles.map((tag, i) => {
                             let title = getContent(tag.title, i18n.language)
+                            console.log("test: ", title)
                             if (i < 2 && title !== "Error" && title !== "") {
                                 return <Fragment key={JSON.stringify(tag)}>
                                 <span className="tag is-info is-small mb-2 " >{title}</span>
@@ -70,7 +77,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
             }}>
             <div className="is-flex is-justify-content-end mb-0 mt-0">
                     {!relTypes ? <>
-                        {item.project.roles && item.project.roles[0] ? <>
+                        {item.project.roles && item.project.roles[0]  && item.project.roles[0].title ? <>
                         <span className="tag is-white is-medium pb-5 pr-0 has-text-info">
                         {getContent(item.project.roles[0].title, i18n.language)}
                     </span>
@@ -172,12 +179,5 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
     
 }
 
-const getContent = (value, lang = "en") => {
-    if (value) {
-      return value.filter(obj => obj.lang === lang)[0] ? value.filter(obj => obj.lang === lang)[0].content : value.filter(obj => obj.lang === "en")[0] ? value.filter(obj => obj.lang === "en")[0].content : value.filter(obj => obj.lang === "fr")[0].content
-    } else {
-      return "Error"
-    }
-}
 
 export default BoxItem

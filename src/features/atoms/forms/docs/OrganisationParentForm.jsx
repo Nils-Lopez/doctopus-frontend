@@ -26,6 +26,8 @@ console.log('org: ', orgForm)
       const newParents = []
       template.parent_entity_defaults.map((person) => {
         if (!selectedOrg.includes(person)) {
+          delete person._id
+
           newParents.push(person)
         }
       })
@@ -35,6 +37,7 @@ console.log('org: ', orgForm)
     if (organisationValue === "" && template && template.parent_role_defaults && template.parent_role_defaults[0]) {
       template.parent_role_defaults.map((role) => {
         if (!selectedRoles.includes(role)) {
+          
           selectRole([... selectedRoles, role])
         }
       })

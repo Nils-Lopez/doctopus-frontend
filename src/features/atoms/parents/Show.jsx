@@ -1,19 +1,21 @@
 import React, {Fragment, useState, useEffect} from "react";
 import {useTranslation} from "react-i18next"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRotateLeft, faAngleRight, faAngleLeft, faCopy, faCheck, faCircleXmark, faShareAlt } from '@fortawesome/free-solid-svg-icons'
+import { faRotateLeft, faAngleRight, faAngleLeft, faCopy, faCheck, faCircleXmark, faShareAlt, faPlusCircle, faPlus, faArrowDownAZ, faEyeSlash, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
 
 import SearchItemParent from "./SearchItem"
 import SearchItemDoc from "../docs/SearchItem"
 
+import SelectForm from "../forms/SelectForm"
 import PersonForm from "../../molecules/Create/PersonForm"
 import OrganisationForm from "../../molecules/Create/OrganisationForm"
 import ProjectForm from "../forms/orgs/ProjectForm"
+import Slider from '@mui/material/Slider';
 
 import {useProds} from "../../../utils/hooks/Prods"
 import { TwitterShareButton, TwitterIcon, PinterestShareButton, PinterestIcon, FacebookShareButton, FacebookIcon } from 'react-share';
 
-const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, handleSearchScapinID, handleBack}) => {
+const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, handleSearchScapinID, handleBack, applicationSettings}) => {
     
     const [dataUpdate, setDataUpdate] = useState(false)
 
@@ -168,6 +170,67 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
 
     const [shareBtn, setShareBtn] = useState(false)
 
+    const [filterBtn, setFilterBtn] = useState(false)
+    const [filters, setFilters] = useState({value: "all", label: t('all')})
+
+    const [filtersOptions, setFiltersOptions] = useState([])
+    const [searchInput, setSearchInput] = useState("")
+
+    useEffect(() => {
+        if (childs && childs[0] && !filtersOptions[0]) {
+            const newOptions = [{value: "all", label: t('all')}]
+
+            childs.map((child) => {
+                if (child.doc && child.doc.types && child.doc.types[0] && child.doc.types[0].title && getContent(child.doc.types[0].title, i18n.language) !== "Error" ) {
+                    const newOption = {
+                        value: child.doc.types[0]._id,
+                        label: getContent(child.doc.types[0].title, i18n.language)
+                    }
+                    let unique = true
+                    newOptions.map((opt) => {
+                        if (opt.value === newOption.value) unique = false
+                    })
+                    if (unique) {
+                        console.log(newOptions, newOption)
+                        newOptions.push(newOption)
+                    }
+                    
+                }
+            })
+            setFiltersOptions([...new Set(newOptions)])
+        }
+    }, [childs])
+
+    const [filteredList, setFilteredList] = useState(childs)
+
+
+    useEffect(() => {
+        let newFilteredList = []
+        if (filters && filters.value !== "all") {
+            childs.map((child) => {
+                if (child.doc && child.doc.types && child.doc.types[0] && child.doc.types[0]._id && filters && filters.value) {
+                    if (child.doc.types[0]._id === filters.value) {
+                        newFilteredList.push(child)
+                    }
+                }
+            })
+            setFilteredList(newFilteredList)
+            setChildsPage(1)
+        } else newFilteredList = childs
+        if (searchInput.length > 1) {
+            const matchingList = []
+            newFilteredList.map((child) => {
+                if (child.doc && child.doc.title && child.doc.title !== "" && child.doc.title.toLowerCase().replace(/[^\w ]/, "").includes(searchInput.toLowerCase().replace(/[^\w ]/, ""))) {
+                    matchingList.push(child)
+                }
+            })
+            setFilteredList(matchingList)
+        }
+        if (!filterBtn || filters.value === "all") setFilteredList(childs)
+
+    }, [filters, searchInput, filterBtn]);
+    
+
     return showScapinParent ? <>
         <Show parent={showScapinParent} client={client} setAlert={setAlert} handleSearchParent={handleSearchScapinParent} handleSearchScapinID={handleSearchScapinID} handleSearchDoc={handleSearchDoc} handleBack={handleSearchScapinParent}/>
     </> : dataUpdate && !dataUpdate.success ? <>
@@ -211,7 +274,7 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
                 
             })}
         </> : <span className="tag is-medium has-text-info has-background-transparent mr-1 ml-1 mb-0">
-                        {parent.projects ? t('organization') : parent.entities ? t('project') : t('person')}
+                        {parent.scapin ? t('production'): parent.projects ? t('organization') : parent.entities ? t('project') : t('person')}
                     </span>}
         </div>
      </div>
@@ -326,18 +389,41 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
         </div>
         {childs && childs[0] ? <>
             <hr />
-            <div className="is-flex is-justify-content-space-between">
-        <h3 className="subtitle has-text-grey has-text-left is-5 mb-1">{t('documents')} <span className="tag is-rounded is-light ">{childs.length}</span></h3>
+            <div className="is-flex is-justify-content-space-between" >
+            <div className="is-flex is-justify-content-center pb-1" >
+                <h3 className="subtitle has-text-grey has-text-left is-5 mb-1">{t('documents')} <span className="tag is-rounded is-light ">{childs.length}</span></h3>
+                
+                {childs && childs.length > 5 ? <button className="button is-primary has-background-transparent is-small is-rounded     ml-3 " onClick={() => setFilterBtn(!filterBtn)}><strong><FontAwesomeIcon icon={filterBtn ? faEyeSlash : faArrowDownAZ}/> {filterBtn ? null : <>&nbsp;&nbsp;{t('filters')}</>}  </strong></button> : null}
+                {filterBtn ? <>
+                    <div className="ml-1">    
+                        <SelectForm selected={filters} select={setFilters} options={filtersOptions} applicationSettings={applicationSettings} mode="filters"/>
+                    </div>
+                    <div className="field pb-0 mb-0">
+                <div className="control has-icons-left ml-1 " style={{minWidth: "200px"}}>
+                   
+                   <input type="text" className="input is-rounded is-small py-3 " value={searchInput} onChange={e => {
+                        e.preventDefault();
+                        setSearchInput(e.target.value);
+                   }}/>
+                   <span className="icon is-left ">
+                       <FontAwesomeIcon icon={faMagnifyingGlass} />
+                   </span>
+               </div>
+                </div>
+                    
+                </> : null}
+                
+            </div>
 
         <div className="mt--1">
         {childsPage !== 1 ? <button className="button is-white" onClick={() => setChildsPage(childsPage - 1)}><FontAwesomeIcon icon={faAngleLeft} className=" is-size-3 has-text-grey"/></button> :null}
 
-                {childs.length > (15*childsPage) ? <button className="button is-white" onClick={() => handleNextPage(childs, childsPage, setChildsPage, true, 15)}><FontAwesomeIcon icon={faAngleRight} className=" is-size-3 has-text-grey"/></button> :null}
+                {filteredList.length > (15*childsPage) ? <button className="button is-white" onClick={() => handleNextPage(filteredList, childsPage, setChildsPage, true, 15)}><FontAwesomeIcon icon={faAngleRight} className=" is-size-3 has-text-grey"/></button> :null}
             </div>
         </div>     
         </> : null}
         <div className="columns is-multiline is-flex is-justify-content-start">
-            {childs && childs[0] ? childs.map((child, i) => {
+            {filteredList && filteredList[0] ? filteredList.map((child, i) => {
             if ((childsPage === 1 && i < 15) || (i > (((childsPage - 1)*15)-1)) && (i < (((childsPage)*15)))) {
                 let parentType = undefined
                 if (child.person  && parent._id === child.person._id) parentType = "person"

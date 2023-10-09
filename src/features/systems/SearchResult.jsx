@@ -20,7 +20,7 @@ import {useDocs} from "../../utils/hooks/docs/Docs"
 
 import { useTranslation } from "react-i18next";
 
-const SearchResult = ({result, client, setAlert, setClient, page, setPage, handleSearch, loadingSearch, setResult, displayDoc, setDisplayDoc, setDisplayParent, displayParent, watchlist, history, displayTag, navHistory, setNavHistory, setDisplayTag, setSignUpModal}) => {
+const SearchResult = ({result, client, setAlert, setClient, page, setPage, handleSearch, loadingSearch, setResult, displayDoc, setDisplayDoc, setDisplayParent, displayParent, watchlist, history, displayTag, navHistory, setNavHistory, setDisplayTag, setSignUpModal, applicationSettings}) => {
 
     const [dataList, setDataList] = useState([])
     const [tags, setTags] = useState([])
@@ -78,7 +78,6 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
           handleSearch(navHistory[navHistory.length -2])
         } else {
           navigate(navHistory[navHistory.length -2])
-          console.log(navHistory[navHistory.length -2])
         }
 
         const filtered = []
@@ -96,7 +95,6 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
         setDisplayDoc(false)
     }
 
-    console.log(navHistory)
 
     const {
         findDocByTag,
@@ -273,7 +271,7 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
         {client && client.user && watchlist ? <><Watchlist docs={client.user.watchList} handleBack={handleBack} setDisplayDoc={handleSearchDoc} setHideWatchlist={setGoHome}/></> : history ? <><History client={client} handleSearch={handleSearch} setHideHistory={setGoHome} handleBack={handleBack}/></> : searchTags.docs ? <>
             <ShowTag docs={searchTags.docs} tag={searchTags.tag} client={client} setAlert={setAlert} handleBack={handleBack} setDisplayDoc={setDisplayDoc} handleSearchTag={setSearchTags}/>
         </> : displayParent && !showParentDoc ? <> 
-            <ShowParent parent={displayParent} setAlert={setAlert} client={client} handleSearchParent={handleSearchParent} handleBack={handleBack} handleSearchDoc={handleSearchDoc} handleSearchScapinID={handleSearchScapinParent}/>
+            <ShowParent parent={displayParent} applicationSettings={applicationSettings} setAlert={setAlert} client={client} handleSearchParent={handleSearchParent} handleBack={handleBack} handleSearchDoc={handleSearchDoc} handleSearchScapinID={handleSearchScapinParent}/>
         </> : displayDoc ? <>
             <ShowDoc doc={displayDoc} setClient={setClient} setAlert={setAlert} client={client} handleBack={handleBack} handleSearchTag={handleSearchTag} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc} handleSearchScapinID={handleSearchScapinParent} setSignUpModal={setSignUpModal}/>
         </> : <>

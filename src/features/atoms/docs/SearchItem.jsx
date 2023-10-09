@@ -18,6 +18,7 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
     }
     const { t, i18n } = useTranslation() 
 
+
     const [displayThumb, setDisplayThumb] = useState(true)
         return <div className={"column is-one-fifth"} >
             <div className={"box results-col " +colClasses} onClick={() => {
@@ -37,7 +38,7 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
                 
                     {relTypes && relTypes.title && relTypes.title[0] && getContent(relTypes.title, i18n.language) !== "Error" ? <span className="has-text-muted has-text-grey tag-is-absolute"><small>{getContent(relTypes.title, i18n.language)}</small></span> : null}
                     <span className="tag has-background-transparent is-medium pb-5 pr-0 has-text-info has-text-right mr-0 pr-0  is-txt-multiline">
-                        {item.doc && item.doc.types && item.doc.types[0] && getContent(item.doc.types[0].title, i18n.language) !== "Error" ? getContent(item.doc.types[0].title, i18n.language).length > 14 ? <>{ getContent(item.doc.types[0].title, i18n.language).split(' ')[0]} { getContent(item.doc.types[0].title, i18n.language).replaceAll(getContent(item.doc.types[0].title, i18n.language).split(' ')[0], "")}</> : getContent(item.doc.types[0].title)  : t('document')}
+                        {item.doc && item.doc.types && item.doc.types[0] && getContent(item.doc.types[0].title, i18n.language) !== "Error" ? getContent(item.doc.types[0].title, i18n.language).length > 14 ? <>{ getContent(item.doc.types[0].title, i18n.language).split(' ')[0]} { getContent(item.doc.types[0].title, i18n.language).replaceAll(getContent(item.doc.types[0].title, i18n.language).split(' ')[0], "")}</> : getContent(item.doc.types[0].title, i18n.language)  : t('document')}
                     </span>
                 </div>
                

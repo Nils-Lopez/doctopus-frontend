@@ -29,10 +29,10 @@ const FileUpload = ({setFile, pdf}) => {
 
   const onFileChange = (event) => {
     // capture file into state
-    
-    let file =  new File(event.target.files, event.target.files[0].name.replaceAll('.', Math.floor(Math.random() * 100000) +"."))
-    console.log(file)
-    //file.name = file.name.replaceAll('.', Math.floor(Math.random() * 100000) +".")
+    const options = {
+      type: event.target.files[0].name.includes('png') ? "image/png" : "image/jpeg"
+    }
+    let file =  new File(event.target.files, event.target.files[0].name.replaceAll('.', Math.floor(Math.random() * 100000) +"."), options)
     setFileSelected(file);
   };
 
@@ -50,7 +50,7 @@ const FileUpload = ({setFile, pdf}) => {
 
     console.log("opt: ", options)
 
-    const compressedFile = fileSelected.name.toLowerCase().includes('jpg') || fileSelected.name.toLowerCase().includes('jpg') ? await imageCompression(fileSelected, options) : fileSelected;
+    const compressedFile = fileSelected.name.toLowerCase().includes('jpg') || fileSelected.name.toLowerCase().includes('jpeg') || fileSelected.name.toLowerCase().includes('png') ? await imageCompression(fileSelected, options) : fileSelected;
 
     // *** UPLOAD TO AZURE STORAGE ***
     const blobsInContainer = await uploadFileToBlob(compressedFile);
@@ -108,7 +108,7 @@ const FileUpload = ({setFile, pdf}) => {
   {fileSelected ? <button type="submit" className="button is-primary ml-3 is-rounded" onClick={() => onFileUpload(false)}>
   <FontAwesomeIcon icon={faCircleCheck} className="is-primary"/>
       </button> : null}
-      {fileSelected && (fileSelected.name.toLowerCase().includes('jpg') || fileSelected.name.toLowerCase().includes('png')) ? <button type="submit" className="button is-light has-text-primary ml-3 is-rounded" onClick={() => onFileUpload(true)}>
+      {fileSelected && (fileSelected.name.toLowerCase().includes('jpg') || fileSelected.name.toLowerCase().includes('png') || fileSelected.name.toLowerCase().includes('jpeg')) ? <button type="submit" className="button is-light has-text-primary ml-3 is-rounded" onClick={() => onFileUpload(true)}>
   <FontAwesomeIcon icon={faCircleCheck} className="is-info mr-2"/>  {t('compressed')}
       </button> : null}
 

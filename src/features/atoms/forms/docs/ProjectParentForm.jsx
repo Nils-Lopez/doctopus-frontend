@@ -37,6 +37,7 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
       console.log("parents project: ", template.parent_project_defaults)
       template.parent_project_defaults.map((person) => {
         if (!selectedProj.includes(person)) {
+          delete person._id
           newParents.push(person)
         }
       })

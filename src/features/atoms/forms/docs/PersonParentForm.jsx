@@ -28,6 +28,8 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
       const newParents = []
       template.parent_person_defaults.map((person) => {
         if (!selectedPeople.includes(person)) {
+          delete person._id
+
           newParents.push(person)
         }
       })
