@@ -18,7 +18,6 @@ import { useDashboard } from "../../../utils/hooks/Dashboard";
 
 import { useTranslation } from "react-i18next";
 
-import ReactGlobe from "react-globe.gl"
 
 ChartJS.register(
     CategoryScale,
@@ -56,7 +55,7 @@ const VisitorsDash = ({}) => {
 
     const chartTypes = ["date", "location"]
     const chartRanges = ['since-ever', 'this-year', "this-month"]
-    const chartDisplays = ["globe", "chart"]
+    const chartDisplays = ["chart"]
 
     const [chartLoading, setChartLoading] = useState(false)
     const [data, setData] = useState(false)
@@ -258,11 +257,7 @@ const VisitorsDash = ({}) => {
             
             /> : data && ((chartDisplay === 0 && data[0]) || (data.datasets && chartDisplay === 1)) ? <>
            
-            {chartDisplay === 0 ? <>
-                <div className="globe-chart">
-                    <ReactGlobe pointsData={data}  pointRadius={0.5} pointColor="color" height={650} width={750} backgroundColor="rgba(0,0,0,0)" globeImageUrl={"//unpkg.com/three-globe/example/img/earth-night.jpg"}/>
-                </div>
-            </> : <div className="max-40 is-pointer">
+             <div className="max-40 is-pointer">
                 <Pie data={data} options={
                     {responsive: true,
                     plugins: {
@@ -272,7 +267,7 @@ const VisitorsDash = ({}) => {
                      
                     }}
                 }/>
-                </div>}
+                </div>
             </> :  null}
            
             
