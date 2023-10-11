@@ -2,10 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import bulmaSwitch from "bulma-switch"
+import "bulma-switch"
 import './styles/index.css';
-
-import './mystyles.scss'
+import "bulma"
 
 import "./i18n.js"
 

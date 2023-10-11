@@ -6,6 +6,7 @@
 * 
 * @return { Promise } The response from the API or null if no response is returned. 
 */
+
 export async function apiFetch (endpoint, options = {} ) {
 
     options = {
@@ -18,7 +19,7 @@ export async function apiFetch (endpoint, options = {} ) {
         ...options
     }
     
-     const apiUrl = "https://doctopus-cd-backend.herokuapp.com/api"
+     const apiUrl = "https://api.doctopus.app/api"
     // const apiUrl = "http://localhost:5000/api"
     
     
