@@ -588,7 +588,7 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
                     {childsDataLoading || childsPageLoading || childsSearchLoading ? <span className="button tag is-rounded is-medium has-background-transparent is-borderless has-text-primary is-loading"></span> : null}
                     {!childsData ? null : <span className="tag is-rounded is-light ">{childsData.length}</span>} 
                 </h3>
-                {childsData && childsData.length > 5 ? <button className="button is-primary has-background-transparent is-small is-rounded     ml-3 " onClick={() => setFilterBtn(!filterBtn)}><strong><FontAwesomeIcon icon={filterBtn ? faEyeSlash : faArrowDownAZ}/> {filterBtn ? null : <>&nbsp;&nbsp;{t('filters')}</>}  </strong></button> : null}
+                {(childsData && childsData.length > 5)  ? <button className="button is-primary has-background-transparent is-small is-rounded     ml-3 " onClick={() => setFilterBtn(!filterBtn)}><strong><FontAwesomeIcon icon={filterBtn ? faEyeSlash : faArrowDownAZ}/> {filterBtn ? null : <>&nbsp;&nbsp;{t('filters')}</>}  </strong></button> : null}
                 {filterBtn ? <>
                     {filtersOptions.length > 2 ? <div className="ml-1">    
                         <SelectForm selected={filters} select={setFilters} options={filtersOptions} applicationSettings={applicationSettings} mode="filters"/>
@@ -613,7 +613,7 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
         <div className="mt--1">
         {childsPage !== 1 ? <button className="button is-white" onClick={() => setChildsPage(childsPage - 1)}><FontAwesomeIcon icon={faAngleLeft} className=" is-size-3 has-text-grey"/></button> :null}
 
-                {childsData.length > (15*childsPage) ? <button className="button is-white" onClick={() => handleNextPage(filteredList, childsPage, setChildsPage, true, 15)}><FontAwesomeIcon icon={faAngleRight} className=" is-size-3 has-text-grey"/></button> :null}
+                {childsData.length > (15*childsPage) || !childsData &&  childs.length > 15 ? <button className="button is-white" onClick={() => handleNextPage(filteredList, childsPage, setChildsPage, true, 15)}><FontAwesomeIcon icon={faAngleRight} className=" is-size-3 has-text-grey"/></button> :null}
             </div>
         </div>     
         </> : null}
