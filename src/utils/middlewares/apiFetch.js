@@ -21,8 +21,8 @@ export async function apiFetch (endpoint, options = {} ) {
         ...options
     }
     
-    // const apiUrl = "https://api.doctopus.app/api"
-    const apiUrl = "http://localhost:5000/api"
+    const apiUrl = "https://api.doctopus.app/api"
+    //const apiUrl = "http://localhost:5000/api"
     //const apiUrl = "https://e4f2-2a02-1811-4c89-da00-4c43-38c8-e074-db21.ngrok-free.app/api"
     
     // Set the body of the options object to JSON.
