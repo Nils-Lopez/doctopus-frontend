@@ -229,6 +229,7 @@ const DocForm = ({client, setAlert, setClient, applicationSettings, selectedType
                               newList.push({_id: watch._id})
           }
         })
+        setClient({...client, user: {...client.user, drafts: newList}})
         updateUser({drafts: newList}, client.user._id)
       }
      await updateDoc(reqData, dataUpdate._id)

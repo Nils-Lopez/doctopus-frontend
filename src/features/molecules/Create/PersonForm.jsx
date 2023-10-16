@@ -319,23 +319,7 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate, dr
       <input type="text" value={lastNameValue} onChange={handleLastNameChange} className="input"/>
     </div>
     </div>
-    <div className="field" id="docLang">
-      <label className="label has-text-left">
-      {t('language')}
-      </label>
-      
-      <div className="is-flex">
-                <input type="text" placeholder="Default language" className="input" value={i18n.language === "en" ? langEnValue : langFrValue} onChange={handleLangChange} />
-                <button onClick={addLang} className="button is-small is-primary mt-1 ml-2">{t('add')}</button>
-                
-        </div>
-        {selectedLangs.map((lang) => {
-        return <Fragment key={lang.code}>
-          <span className="tag is-info is-medium mr-1 mt-2">{getContent(lang.labels, i18n.language)}</span>
-          <span className="tag is-danger is-medium mr-2 button mt-2" onClick={(e) => handleDeleteLang(e, lang)}><FontAwesomeIcon icon={faTrash}/></span>
-        </Fragment>
-        })}
-      </div>
+   
     <div className="columns">
       <div className="column field">
       <label className="label has-text-left">

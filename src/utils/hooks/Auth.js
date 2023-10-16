@@ -40,6 +40,7 @@ const useAuth = () => {
                 method: 'POST',
                 body: data
             })
+            console.log(data)
             dispatch({ type: "Login", payload: login})
         },
         logout : async function (data) { 

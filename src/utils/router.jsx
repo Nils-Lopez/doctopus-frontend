@@ -47,7 +47,7 @@ const Router = ({applicationSettings, setApplicationSettings}) => {
     //Restore session and user data from cookie
     useEffect(() => {
         if (responseFindUserById && loadingClient) {
-            if (responseFindUserById.success) {
+            if (responseFindUserById.success && responseFindUserById.data) {
                 setClient({user: responseFindUserById.data })
                 setLoadingClient(false)
                 i18n.changeLanguage(responseFindUserById.data.defaultLanguage)

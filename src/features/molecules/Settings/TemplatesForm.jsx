@@ -220,6 +220,8 @@ const TemplatesForm = ({client, setClient, setAlert, applicationSettings}) => {
           schema_slug: nameValue.toLowerCase(),
           description: descValue,
           languages: {exist: langValue, defaults: selectedLangs},
+          lang: langValue,
+          langs: selectedLangs.map((lang) => lang.value),
           //Relations
           support_role: typeValue, //Kind of doc support (media, book, ebook, article, movie etc)
           support_desc: supportDescValue,
