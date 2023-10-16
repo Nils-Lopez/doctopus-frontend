@@ -5,13 +5,14 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  height: 100%;
+  height: 100vh;
   overflow-x: hidden;
   overflow-y: hidden;
 }
 
 html {
   overflow-y: hidden !important;
+  height:100vh;
 }
 
 .content
@@ -22,6 +23,11 @@ html {
   padding-top: 50px;
   padding-bottom: 70px;
 }
+
+.page-content {
+  height: 100vh;
+}
+
 
 .opacity-50 {
   opacity: 80%;
@@ -184,6 +190,12 @@ position: relative;
   
 }
 
+@media (max-width: 450px) {
+  .recents-label {
+    display: none !important;
+  }
+}
+
 .overflow-y-auto {
   overflow-y: auto;
   width: 80%;
@@ -251,6 +263,7 @@ position: relative;
 
 }
 
+
 .lg-navbar {
   width: 90px;
   min-height: 65px; 
@@ -306,7 +319,6 @@ body {
   background-size: cover;
   min-height: 100%;
   background-repeat: no-repeat;
-  background-position: center;
   padding-bottom: 100px;
 }
 .image404 {
@@ -322,14 +334,15 @@ body {
 }
 
 .landing-container {
-  padding: 50px;
+  padding: 0;
+  
   padding-top: 90px;
 }
 .landing-container .search-box {
   height: 60px;
-    width: 800px;
-    margin-left: -8.5%;
+  width: 800px !important;
   position: relative;
+  left: -16px;
   z-index: 1;
 }
 
@@ -383,7 +396,7 @@ body {
 
 @media only screen and (max-width: 1023px) {
   .landing-container .search-box {
-    width: 90%;
+    width: 90% !important;
   }
   .dropdown-user-logged {
     visibility: hidden;
@@ -391,11 +404,44 @@ body {
   
 }
 
+.mobile-search-label {
+  display: none !important;
+}
+
 @media only screen and (max-width: 650px) {
   .landing-container .search-box {
-    width: 450px;
+    width: 80% !important;
+    margin-right: 0px;
+    left: 0;
   }
+  .recents-container {
+    margin-left: 18px !important;
+  }
+  .search-label {
+    display: none !important;
+  }
+  .mobile-search-label {
+    position: absolute;
+  top: 15px;
+  left: 3px;
+  
+  color: #5a6674;
+  z-index: 9;
+    display: block !important;
+  }
+  
 }
+@supports ( -webkit-touch-callout : none) {
+  .content:has(> .landing) {
+  background-attachment:scroll
+  }
+  }
+  
+  @supports not ( -webkit-touch-callout : none) {
+      .content:has(> .landing) {
+  background-attachment: fixed;
+  }
+  }
 .nodesk-only {
   display: none;
 }
@@ -592,7 +638,8 @@ body {
 .price-label {
   position: absolute;
   top: 15px;
-  left: 10px;
+  left: 3px;
+  
   color: #5a6674;
   z-index: 9;
 }
@@ -600,13 +647,15 @@ body {
 .search-input {
   position: absolute;
   top: 40px;
-  left: 10px;
+  left: 3px;
   padding-bottom: 5px;
   font-size: 1.5em;
   background: none;
   color: #5a6674;
-  width: 90%;
+  width: 99%;
   height: 30px;
+  padding-left: 0;
+  border-radius: 0;
   border: none;
   appearance: none;
   outline: none;
@@ -628,17 +677,20 @@ body {
 }
 
 .search-input:focus {
-  border-bottom: 1px solid #009688;
+  border-bottom: 1px solid #a9a9a9;
 }
 
 .landing-container .search-box {
   height: 80px;
-  padding: 10px 0 10px 10px;
+  padding: 10px 10px 10px 10px;
 }
+
+
 .landing-container .search-box .search-button {
-  width: 100%;
-  height: 80px;
-  margin-top: -10px;
+  width: 106%;
+  height: 82px;
+  margin-top: -11px;
+  
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
   border-top-right-radius: 5px;
@@ -711,6 +763,7 @@ label input[type=checkbox] {
   border-radius: 50%;
   perspective: 800px;
 }
+
 
 .mini-loader {
   scale: 0.5;

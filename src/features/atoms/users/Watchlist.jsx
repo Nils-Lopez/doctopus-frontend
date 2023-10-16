@@ -5,8 +5,8 @@ import {useTranslation} from "react-i18next"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
 import {useNavigate} from 'react-router-dom';
+import JsPDF from 'jspdf';
 
-import jsPDF from "jspdf";
 const Watchlist = ({docs, setDisplayDoc, setHideWatchlist}) => {
 
     const [dataList, setDataList] = useState([])
@@ -31,80 +31,56 @@ const Watchlist = ({docs, setDisplayDoc, setHideWatchlist}) => {
         }
     }, [page])
 
+    const additionalInfo = doc => doc.supports && doc.supports[0] ? (doc.supports[0].exemplaries && doc.supports[0].exemplaries[0] ? doc.supports[0].exemplaries[0].cote ? doc.supports[0].exemplaries[0].cote : doc.supports[0].exemplaries[0].position ? doc.supports[0].exemplaries[0].position: doc.supports[0].exemplaries[0].location ? doc.supports[0].exemplaries[0].location : null : null ) : ""
 
-    // const exportPDF = () => {
-    //   const unit = "pt";
-    //   const size = "A4"; // Use A1, A2, A3 or A4
-    //   const orientation = "portrait"; // portrait or landscape
-  
-    //   const marginLeft = 40;
-    //   const doc = new jsPDF(orientation, unit, size);
-  
-    //   doc.setFontSize(15);
-  
-    //   const title = "My dOctopus Watchlist";
-    //   const headers = [["Document", "Info"]];
-    //   const additionalInfo = doc => doc.supports && doc.supports[0] ? (doc.supports[0].exemplaries && doc.supports[0].exemplaries[0] ? doc.supports[0].exemplaries[0].cote ? doc.supports[0].exemplaries[0].cote : doc.supports[0].exemplaries[0].position ? doc.supports[0].exemplaries[0].position: doc.supports[0].exemplaries[0].location ? doc.supports[0].exemplaries[0].location : null : null ) : ""
 
-    //   const data = docs.map(elt=> {
-    //     let title = elt.title.length <= 25 ? elt.title.slice(0, 25) + "..." : elt.title
-    //     let more = additionalInfo(elt)
-    //     return [title, more]
-    //   });
-  
-    //   let content = {
-    //     startY: 50,
-    //     head: headers,
-    //     body: data
-    //   };
-  
-    //   doc.text(title, marginLeft, 40);
-    //   doc.autoTable(content);
-    //   doc.save("Watchlist-doctopus.pdf")
-    // }
 
+    const [displayTable, setDisplayTable] = useState("none")
+
+    const exportPDF = () => {
+      const report = new JsPDF('portrait','pt','a4');
+      setDisplayTable("block")
+      report.html(document.querySelector('#report')).then(() => {
+          report.save('watchlist.pdf')
+          setDisplayTable('none')
+      })
+    }
 
     return <div className="container"id="watchlist-table">
         <div className="is-flex is-justify-content-space-between mb-3">
         <h3 className="subtitle  is-4 has-text-grey mt-0 pt-0 mb-1"><small>{t('watchlist')}:</small></h3>
-        {/* <button onClick={exportPDF} className="button tag is-medium is-primary" type="button"><FontAwesomeIcon icon={faDownload}/> <span className="ml-3">{t('download')}</span></button> */}
-
+        <button onClick={exportPDF} className="button tag is-medium is-primary" type="button"><FontAwesomeIcon icon={faDownload}/> <span className="ml-3">{t('download')}</span></button>
+        
         </div>
-        <div className="columns is-multiline" >
+        <div className="columns is-multiline">
             {dataList.map((doc, i) => {
                 return <Fragment key={JSON.stringify(doc)}>
                     <SearchItem item={{doc: doc}} setDisplay={handleDisplay} watchlist={true}/>
                 </Fragment>
             })}
         </div>
-       <nav className="column is-two-thirds panel mt-4 pT-0 pb-2" id="pdf-watchlist" style={{display: pdfDl ? "block" : "none"}}>
-  <p className="panel-heading mb-0">
-    {t('watchlist')}
-  </p> 
-  
-</nav>
-        {docs && docs.length > 20 ? <div className="is-flex is-justify-content-end ">
-                <nav className="pagination" role="navigation" aria-label="pagination">
-              
-              <ul className="pagination-list">
-                <li>
-                  <a href="#searchBlock" className={"pagination-link " + (page === 1 ? "is-current" : "")} aria-label="Page 1" aria-current="page" onClick={() => setPage(1)}>1</a>
-                </li>
-                <li>
-                  <a href="#searchBlock" className={"pagination-link " + (page === 2 ? "is-current" : "")} aria-label="Goto page 2" onClick={() => setPage(2)}>2</a>
-                </li>
-                {docs.length > 40 ? <li>
-                  <a href="#searchBlock" className={"pagination-link " + (page === 3 ? "is-current" : "")} aria-label="Goto page 3" onClick={() => setPage(3)}>3</a>
-                </li> : null}
-                {docs.length > 60 ? <li>
-                  <a href="#searchBlock" className={"pagination-link " + (page === 4 ? "is-current" : "")} aria-label="Goto page 3" onClick={() => setPage(4)}>4</a>
-                </li> : null}
-                {docs.length > 80 ? <li>
-                  <a href="#searchBlock" className={"pagination-link " + (page === 5 ? "is-current" : "")} aria-label="Goto page 3" onClick={() => setPage(5)}>5</a>
-                </li> : null}
-              </ul>
-            </nav>
-          </div> : null}
+       <div className="container py-5 px-5 ml-5 " id="report" style={{display: displayTable}}>
+        <h2 className="title is-3 ml-2 has-text-left">Watchlist</h2>
+        <table className="ml-4">
+        <thead>
+          <tr>
+            <td className=" title is-5 has-text-left has-text-primary px-0 mb-3">{t('title')}</td>
+            <td className="title is-5 has-text-left has-text-primary px-0 mb-3">{t('copies')}</td>
+          </tr>
+        </thead>
+            <tbody>
+               {docs.map((doc) => <>
+                  <tr className="has-background-white-ter " style={{letterSpacing: "2px"}}>
+                  <td className="subtitle is-6 has-text-left py-3 px-2 " style={{ border: "1px solid lightgrey"}}>{doc.title.length >= 30 ? doc.title.slice(0, 25) + "..." : doc.title}</td>
+                  <td className="has-text-left py-3 px-2 ml-5" style={{ border: "1px solid lightgrey"}}>{additionalInfo(doc) && additionalInfo(doc).length > 15 ? additionalInfo(doc).slice(0, 15) +"..." : additionalInfo(doc)}</td>
+                  </tr>
+               </>)}
+               
+            </tbody>
+            
+       </table>
+       </div>
+        
     </div>
 }
 
@@ -115,5 +91,6 @@ const getContent = (value, lang = "en") => {
       return "Error"
     }
 }
+
 
 export default Watchlist

@@ -12,7 +12,7 @@
     --secondary: cyan;
     --serif: "Libre Baskerville";
     --sans-serif: "Dinot";
-    --bg-color: white;
+    --bg-color: #efeff0;
     --bg-image: none;
 }
 
@@ -27,6 +27,19 @@
     -moz-background-size: cover;
     -webkit-background-size: cover;
 }
+
+@supports ( -webkit-touch-callout : none) {
+    .content:has(> .landing) {
+    background-attachment:scroll
+    }
+    }
+    
+    @supports not ( -webkit-touch-callout : none) {
+        .content:has(> .landing) {
+    background-attachment: fixed;
+    }
+    }
+
 
 .title {
     font-family: var(--serif), serif !important;

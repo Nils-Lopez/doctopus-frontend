@@ -101,8 +101,8 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
                 setFormAlert({type: "error", message: {en: t('wrong-cred'), fr: t('wrong-cred')}})
                 setLoadingLogin(false)
             }
-        }
-    }, [responseLogin])
+        } 
+    }, [responseLogin, loadingLogin])
 
     //Erase cookie, remove session and user data
 
@@ -127,7 +127,7 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
             }
         }
     }, [responseLogout])
-
+    
 
     return <>
         <div className="navbar-end">

@@ -47,7 +47,7 @@ const MergeForm = ({originItem, searchItem, responseSearchItem, mergeItem, displ
                 </div>
                 <div className="column is-two-fifth ">
                     {!duplicate ? <>
-                        <SearchForm selectedItems={selectedDuplicates} selectItem={selectDuplicate} searchItems={searchItem} responseSearchItems={responseSearchItem} mainField={"name"}/>
+                        <SearchForm selectedItems={selectedDuplicates} originItem={originItem} selectItem={selectDuplicate} searchItems={searchItem} responseSearchItems={responseSearchItem} mainField={"name"}/>
                     </> : <SearchItem item={{person: duplicate}} width="full" handleSearchParent={() => {}}/>}
                 </div>
             </div>

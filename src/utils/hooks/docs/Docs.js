@@ -17,6 +17,8 @@ function reducer (state, action) {
             return { ...state, responseFindAll: action.payload }
         case 'Search':
             return { ...state, responseSearch: action.payload }
+        case 'FindLanguages': 
+            return { ...state, responseFindAllLanguages: action.payload }
         case 'FindPopular':
             return { ...state, responseFindPopular: action.payload }
         default:
@@ -31,6 +33,7 @@ const useDocs = () => {
         responseUpdateDoc: null,
         responseFindDocBySlug: null,
         responseCreateDoc: null,
+        responseFindAllLanguages: null,
         responseDeleteDoc: null,
         responseFindAllDocs: null,
         responseSearchDocs: null,
@@ -45,6 +48,7 @@ const useDocs = () => {
         responseFindDocBySlug: state.responseFindBySlug,
         responseCreateDoc: state.responseCreate,
         responseFindAllDocs: state.responseFindAll,
+        responseFindAllLanguages: state.responseFindAllLanguages,
         responseSearchDocs: state.responseSearch,
         findPopularDocs: async function (type) {
             const docs = await apiFetch('/docs/popular/' + type, { method: 'GET' })
@@ -94,6 +98,10 @@ const useDocs = () => {
                 method: 'DELETE'
             })
             dispatch({type: 'Delete', payload: doc})
+        },
+        findAllLanguages: async function () {
+            const langs = await apiFetch('/docs/langs');
+            dispatch({type: 'FindLanguages', payload: langs})
         }
     }
 }

@@ -5,6 +5,12 @@ function reducer (state, action) {
     switch(action.type) {
         case 'FindById':
             return {...state, responseFindById: action.payload}  
+        case 'FindChildsDataById':
+            return {...state, responseFindChildsDataById: action.payload}  
+        case 'FindChildsPageById':
+            return {...state, responseFindChildsPageById: action.payload}  
+        case 'SearchChildsById':
+            return {...state, responseSearchChildsById: action.payload}  
         case 'Update':
             return { ...state, responseUpdate: action.payload }
         case 'Create':
@@ -36,7 +42,10 @@ const usePeople = () => {
         responseDeletePerson: null,
         responseFindAllPeople: null,
         responseSearchPeople: null,
-        responseMerge: null
+        responseMerge: null,
+        responseFindPersonChildsDataById: null,
+        responseFindPersonChildsPageById: null,
+        responseSearchPersonChildsById: null
     })
 
     return {
@@ -48,12 +57,14 @@ const usePeople = () => {
         responseFindAllPeople: state.responseFindAllPeople,
         responseSearchPeople: state.responseSearch,
         responseMergePeople: state.responseMerge,
+        responseFindPersonChildsDataById: state.responseFindChildsDataById,
+        responseFindPersonChildsPageById: state.responseFindChildsPageById,
+        responseSearchPersonChildsById: state.responseSearchChildsById,
         mergePeople: async function (data) {
             const people = await apiFetch('/people/merge', {
                 method: 'POST',
                 body: data
             })
-            console.log(people)
             dispatch({type: 'Merge', payload: people})
         },
         searchPeople: async function (query) {
@@ -64,6 +75,26 @@ const usePeople = () => {
                 }
             })
             dispatch ({type: 'Search', payload: people})
+        },
+        findPersonChildsDataById : async function (id) {
+            const project = await apiFetch('/people/childs/id/' + id, {
+                method: 'GET'
+            })
+            dispatch({type: 'FindChildsDataById', payload: project})
+        },
+        findPersonChildsPageById : async function (id, page) {
+            const project = await apiFetch('/people/childs/id/' + id, {
+                method: 'POST',
+                body: page
+            })
+            dispatch({type: 'FindChildsPageById', payload: project})
+        },
+        searchPersonChildsById : async function (id, filters) {
+            const project = await apiFetch('/people/childs/search/' + id, {
+                method: 'POST',
+                body: filters
+            })
+            dispatch({type: 'SearchChildsById', payload: project})
         },
         findAllPeople: async function () {
             const people = await apiFetch("/people", {
@@ -78,7 +109,6 @@ const usePeople = () => {
             dispatch({type: 'FindById', payload: person})
         },
         findPersonByScapin : async function (id) {
-            console.log('yoooo')
             const person = await apiFetch('/people/scapin/' + id, {
                 method: 'GET'
             })
@@ -102,7 +132,6 @@ const usePeople = () => {
                 method: 'PUT',
                 body: data
             })
-            console.log('payload: ', person)
             dispatch({type: 'Update', payload: person})
         }, 
         deletePerson: async function (id) {

@@ -9,8 +9,9 @@ import Watchlist from "../atoms/users/Watchlist"
 import History from "../atoms/users/History"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRotateLeft, faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons'
+import { faRotateLeft, faAngleRight, faAngleLeft, faEyeSlash, faArrowDownAZ } from '@fortawesome/free-solid-svg-icons'
 import {useLocation, useNavigate} from 'react-router-dom';
+import SelectForm from '../atoms/forms/SelectForm';
 
 import {useTags} from "../../utils/hooks/Tags"
 import {useProjects} from "../../utils/hooks/Projects"
@@ -73,26 +74,22 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
     }, [displayDoc])
 
     const handleBack = () => {
-      if (navHistory.length > 1) {
-        if (navHistory[navHistory.length -2].query) {
-          handleSearch(navHistory[navHistory.length -2])
-        } else {
-          navigate(navHistory[navHistory.length -2])
-        }
-
+      setResult({})
+      setDisplayParent(false)
+        setDisplayTag(false)
+        setDisplayDoc(false)
+      if (navHistory.length > 1) { 
+        navigate(navHistory[navHistory.length -2])
         const filtered = []
         navHistory.map((n, i) => {
-          if (i !== navHistory.length - 1 && i !== navHistory.length - 2) filtered.push(n)
+          if (i !== navHistory.length - 1 ) filtered.push(n)
         })
         setNavHistory(filtered)
       } else {
         navigate('/')
         
       }
-      setResult({})
-      setDisplayParent(false)
-        setDisplayTag(false)
-        setDisplayDoc(false)
+      
     }
 
 
@@ -254,6 +251,55 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
         }
     }
 
+    const [filterBtn, setFilterBtn] = useState(false)
+    const [filters, setFilters] = useState({value: "all", label: t('all')})
+
+    const [filtersOptions, setFiltersOptions] = useState([])
+
+    useEffect(() => {
+        if (result.docs && result.docs[0] && !filtersOptions[0]) {
+            const newOptions = [{value: "all", label: t('all')}]
+
+            result.docs.forEach((child) => {
+                if (child.doc && child.doc.types && child.doc.types[0] && child.doc.types[0].title && getContent(child.doc.types[0].title, i18n.language) !== "Error" ) {
+                    const newOption = {
+                        value: child.doc.types[0]._id,
+                        label: getContent(child.doc.types[0].title, i18n.language)
+                    }
+                    let unique = true
+                    newOptions.forEach((opt) => {
+                        if (opt.value === newOption.value) unique = false
+                    })
+                    if (unique) {
+                        newOptions.push(newOption)
+                    }
+                    
+                }
+            })
+            setFiltersOptions([...new Set(newOptions)])
+        }
+    }, [result.docs, filtersOptions, i18n.language, t])
+
+    const [filteredList, setFilteredList] = useState(result.docs)
+
+
+    useEffect(() => {
+        let newFilteredList = []
+        if (filters && filters.value !== "all") {
+            result.docs.forEach((child) => {
+                if (child.doc && child.doc.types && child.doc.types[0] && child.doc.types[0]._id && filters && filters.value) {
+                    if (child.doc.types[0]._id === filters.value) {
+                        newFilteredList.push(child)
+                    }
+                }
+            })
+            setFilteredList(newFilteredList)
+            setDocsPage(1)
+        } 
+        if (!filterBtn || filters.value === "all") setFilteredList(result.docs)
+
+    }, [filters,  filterBtn, result.docs]);
+
     return  loading || searchTagsLoading ? <div className="loader">
     <div className="inner one"></div>
     <div className="inner two"></div>
@@ -269,7 +315,7 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
         </div> : null}
         
         {client && client.user && watchlist ? <><Watchlist docs={client.user.watchList} handleBack={handleBack} setDisplayDoc={handleSearchDoc} setHideWatchlist={setGoHome}/></> : history ? <><History client={client} handleSearch={handleSearch} setHideHistory={setGoHome} handleBack={handleBack}/></> : searchTags.docs ? <>
-            <ShowTag docs={searchTags.docs} tag={searchTags.tag} client={client} setAlert={setAlert} handleBack={handleBack} setDisplayDoc={setDisplayDoc} handleSearchTag={setSearchTags}/>
+            <ShowTag docs={searchTags.docs} tag={searchTags.tag} applicationSettings={applicationSettings} client={client} setAlert={setAlert} handleBack={handleBack} setDisplayDoc={setDisplayDoc} handleSearchTag={setSearchTags}/>
         </> : displayParent && !showParentDoc ? <> 
             <ShowParent parent={displayParent} applicationSettings={applicationSettings} setAlert={setAlert} client={client} handleSearchParent={handleSearchParent} handleBack={handleBack} handleSearchDoc={handleSearchDoc} handleSearchScapinID={handleSearchScapinParent}/>
         </> : displayDoc ? <>
@@ -312,17 +358,27 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
                         <hr />
 
            <div className="is-flex is-justify-content-space-between">
-        <h3 className="subtitle has-text-grey has-text-left is-5 mb-1">{t('documents')}</h3>
+       <div className="is-flex is-justify-content-start">
+       <h3 className="subtitle has-text-grey has-text-left is-5 mb-1">{t('documents')}</h3>
+        {result.docs && result.docs.length > 5 ? <button className="button is-primary has-background-transparent is-small is-rounded     ml-3 " onClick={() => setFilterBtn(!filterBtn)}><strong><FontAwesomeIcon icon={filterBtn ? faEyeSlash : faArrowDownAZ}/> {filterBtn ? null : <>&nbsp;&nbsp;{t('filters')}</>}  </strong></button> : null}
 
+{filterBtn ? <>
+            <div className="ml-1">    
+                <SelectForm selected={filters} select={setFilters} options={filtersOptions} applicationSettings={applicationSettings} mode="filters"/>
+            </div>
+           
+            
+        </> : null}
+       </div>
         <div className="mt--1">
         {docsPage !== 1 ? <button className="button is-white" onClick={() => setDocsPage(docsPage - 1)}><FontAwesomeIcon icon={faAngleLeft} className=" is-size-3 has-text-grey"/></button> :null}
 
-                {result.docs.length > (15*docsPage) ? <button className="button is-white" onClick={() => handleNextPage(result.docs, docsPage, setDocsPage, true, 15)}><FontAwesomeIcon icon={faAngleRight} className=" is-size-3 has-text-grey"/></button> :null}
+                {filteredList.length > (15*docsPage) ? <button className="button is-white" onClick={() => handleNextPage(result.docs, docsPage, setDocsPage, true, 15)}><FontAwesomeIcon icon={faAngleRight} className=" is-size-3 has-text-grey"/></button> :null}
             </div>
         </div>
         <div className="columns is-multiline">
         
-            {result.docs.map((item, i) => {
+            {filteredList.map((item, i) => {
             if ((docsPage === 1 && i < 15) || (i > (((docsPage - 1)*15)-1)) && (i < (((docsPage)*15)))) {
               return <Fragment key={JSON.stringify(item)}>
                         <SearchItem item={item} setDisplay={setDisplayDoc} handleSearchTag={handleSearchTag} i={i}/>

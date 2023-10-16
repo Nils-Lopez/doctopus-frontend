@@ -132,27 +132,8 @@ const DocForm = ({client, setAlert, setClient, applicationSettings, selectedType
       }
   }
 
-   const addLang = (e) => {
-      e.preventDefault()
-      const newLang = {
-        labels: [
-          { lang: "en", content: langEnValue },
-          {lang: "fr", content: langFrValue}
-        ],
-        code: langEnValue !== "" ? langEnValue.slice(0, 2).toLowerCase() : langFrValue.slice(0, 2).toLowerCase()
-      }
-      selectLang([...selectedLangs, newLang])
-      setLangEnValue("")
-      setLangFrValue("")
-    }
+
       
-    const handleDeleteLang = (e, lang) => {
-      e.preventDefault()
-      const filtered = selectedLangs.filter((l) => {
-        return l.code !== lang.code
-      })
-      selectLang(filtered)
-    }
   
     const getContent = (value, lang) => {
       if (value) {
@@ -215,7 +196,7 @@ const DocForm = ({client, setAlert, setClient, applicationSettings, selectedType
         slug: slugValue,
         title: titleValue,
         description: template && template.description ? [{ lang: "en", content: descEnValue }, { lang: "fr", content: descFrValue }] : null,
-        languages: selectedLangs,
+        langs: selectedLangs.map((l) => l.value),
         additionalCopyrights: copyrightsValue,
         publishedAt:  publiDateValue,
         date: dateValue,
@@ -273,20 +254,30 @@ const DocForm = ({client, setAlert, setClient, applicationSettings, selectedType
     if (responseUpdateDoc && responseUpdateDoc.success) {
       setAlert({ type: "success", message: { en: "Document has been successfully updated.", fr: "Le document a été mis à jour avec succès"}})
             setLoading(false)
+
+      if (!draft && setClient) {
+        const newDrafts = []
+        client.user.drafts.map((d) => {
+          if (d._id !== responseUpdateDoc.data._id) {
+            newDrafts.push(d)
+          }
+        })
+        setClient({...client, user: {...client.user, drafts: newDrafts}})
+
+      }
       setDataUpdate({...responseUpdateDoc.data, success: true})
     } else if (responseUpdateDoc && !responseUpdateDoc.success) {
       setAlert({ type: "error", message: { en: "An error occured while updating document.", fr: "Une erreure est survenue lors de la mise à jour du document"}})
             setLoading(false)
-            console.log("res: ",responseUpdateDoc)
             setDataUpdate(false)
     }
   }, [responseUpdateDoc])
-  
+
    useEffect(() => {
     if (!dataUpdate) {
       if (template && (template.tag_defaults !== selectedTags || template.type_defaults !== selectedTypes || (template.languages && template.languages.defaults !== selectedLangs))) {
         selectTag(template.tag_defaults)
-        selectLang(template.languages ? template.languages.defaults : [])
+        selectLang(template.langs ? template.langs.map((l) => {return {value: l._id, label: getContent(l.title, i18n.language)}}) : [])
         selectType(template.type_defaults)
       }
       if (template && template.support_issn_default && template.support_issn_default !== "" && issnValue === "") {
@@ -317,19 +308,24 @@ const DocForm = ({client, setAlert, setClient, applicationSettings, selectedType
   
   const handleSelectSubTemplate = (e) => {
     selectSubTemplate(e)
-    templateModel.schema_childs.map((template) => {
-      if (template.schema_name === e.value) {
-        setSubTemplate(template)
-      }
-    })
-    if (e.value === "None") {
-      setSubTemplate(false)
-    }
     selectPerson([])
     selectOrg([])
     selectProject([])
     selectDoc([])
     selectTag([])
+    templateModel.schema_childs.map((template) => {
+      if (template.schema_name === e.value) {
+        setSubTemplate(template)
+        selectTag(template.tag_defaults)
+        selectLang(template.langs ? template.langs.map((l) => {return {value: l._id, label: getContent(l.title, i18n.language)}}) : [])
+        selectType(template.type_defaults)
+        setIssnValue(template.support_issn_default)
+      }
+    })
+    if (e.value === "None") {
+      setSubTemplate(false)
+    }
+    
   }
 
   const {
@@ -362,8 +358,8 @@ const DocForm = ({client, setAlert, setClient, applicationSettings, selectedType
       setFullTemplate(templateModel)
     } else {
       let model = templateModel
-      if (model.languages.exist) {
-        model.languages.defaults = [...new Set([...model.languages.defaults, ...subTemplate.languages.defaults])]
+      if (model.lang) {
+        model.langs = [...new Set([...model.langs, ...subTemplate.langs])]
       }
       if (model.tag) {
         model.tag_defaults = [...new Set([...model.tag_defaults, ...subTemplate.tag_defaults])]
@@ -403,7 +399,7 @@ const DocForm = ({client, setAlert, setClient, applicationSettings, selectedType
        setDescFrValue(getContent(dataUpdate.description, "fr"))
        setDescEnValue(getContent(dataUpdate.description, "en"))
       }
-      selectLang(dataUpdate.languages)
+      selectLang(dataUpdate.langs.map((l) => {return {value: l._id, label: getContent(l.title, i18n.language)}}))
       setCopyrightsValue(dataUpdate.additionalCopyrights)
       setDateValue(dataUpdate.date)
       setPubliDateValue(dataUpdate.publishedAt ? dataUpdate.publishedAt.split('T')[0] : "")
@@ -521,8 +517,25 @@ const DocForm = ({client, setAlert, setClient, applicationSettings, selectedType
     setRestrictedContent(e.target.value)
   }
 
-  
+  const {findAllLanguages, responseFindAllLanguages} = useDocs()
 
+  const [languagesOptions, setLanguagesOptions] = useState([])
+
+  useEffect(() => {
+    if (!responseFindAllLanguages && !languagesOptions[0]) {
+      findAllLanguages()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (responseFindAllLanguages && responseFindAllLanguages.success) {
+      const newOptions = []
+      responseFindAllLanguages.data.map((lang) => {
+        newOptions.push({value: lang._id, label: getContent(lang.title, i18n.language)})
+      })
+      setLanguagesOptions(newOptions)
+    }
+  }, [responseFindAllLanguages])
   return loading || isbnLoading ? <>
    <div className="loader">
   <div className="inner one"></div>
@@ -615,16 +628,9 @@ const DocForm = ({client, setAlert, setClient, applicationSettings, selectedType
           <label className="label has-text-left">
           {t('language')}
           </label>
+          <SelectForm  applicationSettings={applicationSettings} select={selectLang} selected={selectedLangs} options={languagesOptions} multiple={true}/>
+
       
-              <div className="is-flex">
-                <input type="text" placeholder="Default language" className="input" value={i18n.language === "en" ? langEnValue : langFrValue} onChange={handleLangChange} />
-                <i className="has-text-info subtitle is-5 ml-2 mt-2  pointer" onClick={addLang}><FontAwesomeIcon icon={faCirclePlus} /></i>    
-              </div>
-        {selectedLangs.map((lang) => {
-        return <Fragment key={lang.code}>
-          <span className="tag is-light is-medium mr-1 mt-2">{lang.code.toUpperCase()} <i className="has-text-danger ml-3 pointer" onClick={(e) => handleDeleteLang(e, lang)}><FontAwesomeIcon icon={faCircleXmark} /></i></span>
-        </Fragment>
-      })}
       </div> 
       </div>
     </div>:  <div className="field">

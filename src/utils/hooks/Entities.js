@@ -5,6 +5,12 @@ function reducer (state, action) {
     switch(action.type) {
         case 'FindById':
             return {...state, responseFindById: action.payload}  
+        case 'FindChildsDataById':
+            return {...state, responseFindChildsDataById: action.payload}  
+        case 'FindChildsPageById':
+            return {...state, responseFindChildsPageById: action.payload}  
+        case 'SearchChildsById':
+            return {...state, responseSearchChildsById: action.payload}  
         case 'Update':
             return { ...state, responseUpdate: action.payload }
         case 'Create':
@@ -34,7 +40,10 @@ const useEntities = () => {
         responseDeleteEntity: null,
         responseFindAllEntities: null,
         responseSearchEntities: null,
-        responseMergeEntities: null
+        responseMergeEntities: null,
+        responseFindEntityChildsDataById: null,
+        responseFindEntityChildsPageById: null,
+        responseSearchEntityChildsById: null
     })
 
     return {
@@ -46,6 +55,9 @@ const useEntities = () => {
         responseFindAllEntities: state.responseFindAllEntities,
         responseSearchEntities: state.responseSearch,
         responseMergeEntities: state.responseMerge,
+        responseFindEntityChildsDataById: state.responseFindChildsDataById,
+        responseFindEntityChildsPageById: state.responseFindChildsPageById,
+        responseSearchEntityChildsById: state.responseSearchChildsById,
         mergeEntities: async function (data) {
             const entities = await apiFetch('/entities/merge', {
                 method: 'POST',
@@ -74,6 +86,26 @@ const useEntities = () => {
                 method: 'GET'
             })
             dispatch({type: 'FindById', payload: entity})
+        },
+        findEntityChildsDataById : async function (id) {
+            const entity = await apiFetch('/entities/childs/id/' + id, {
+                method: 'GET'
+            })
+            dispatch({type: 'FindChildsDataById', payload: entity})
+        },
+        findEntityChildsPageById : async function (id, page) {
+            const entity = await apiFetch('/entities/childs/id/' + id, {
+                method: 'POST',
+                body: page
+            })
+            dispatch({type: 'FindChildsPageById', payload: entity})
+        },
+        searchEntityChildsById : async function (id, filters) {
+            const entity = await apiFetch('/entities/childs/search/' + id, {
+                method: 'POST',
+                body: filters
+            })
+            dispatch({type: 'SearchChildsById', payload: entity})
         },
         findEntityByScapin : async function (id) {
             const entity = await apiFetch('/entities/scapin/' + id, {

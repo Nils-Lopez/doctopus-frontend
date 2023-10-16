@@ -92,7 +92,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
               }}><FontAwesomeIcon icon={faCircleXmark} /></i> : null}
                     </div>
                     <h3 className="subtitle is-5 mb-1 mt-1">{item.project.title}</h3>
-                {item.project.childs.length > 0 ? <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.project.childs.length} {t('documents')}</span> : null}
+                {item.project.childs && item.project.childs.length > 0 ? <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.project.childs.length} {t('documents')}</span> : null}
 
             </div>
         </div>

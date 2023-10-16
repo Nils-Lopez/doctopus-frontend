@@ -5,7 +5,7 @@ import { faTrash, faCircleXmark, faCirclePlus, faArrowRotateLeft, faMagnifyingGl
 
 import {useTranslation} from "react-i18next"
 
-const ItemForm = ({scope, location, selectedItems, handleAddItem, selectItem, defaults, searchItems, responseSearchItems, mainField, setFormModal, setNoDocFound, draftValue}) => {
+const ItemForm = ({scope, location, selectedItems, originItem, handleAddItem, selectItem, defaults, searchItems, responseSearchItems, mainField, setFormModal, setNoDocFound, draftValue}) => {
   const [itemEnValue, setItemEnValue] = useState("")
   const [itemFrValue, setItemFrValue] = useState("")
   const [itemDescEn, setItemDescEn] = useState("")
@@ -167,7 +167,6 @@ const ItemForm = ({scope, location, selectedItems, handleAddItem, selectItem, de
 
   let divClasses = mainField === "content" ? "field mt-1" : "field mt-4"
 
-  console.log('items', selectedItems)
 
   return <>
  
@@ -200,8 +199,8 @@ const ItemForm = ({scope, location, selectedItems, handleAddItem, selectItem, de
             <div className={inputClasses}>
           <input type="text" placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default items" : location && location.includes("parent") ? "Items": ""} className="input" value={i18n.language === "en" ? itemEnValue : itemFrValue} onChange={handleItemChange}/>
 
-          <span class="icon is-small is-left pointer">
-           <i className="has-text-grey  pointer" ><FontAwesomeIcon icon={faMagnifyingGlass} /></i>
+          <span class="icon is-small is-left ">
+           <i className="has-text-grey  " ><FontAwesomeIcon icon={faMagnifyingGlass} /></i>
     </span>
  
     </div>      
@@ -213,7 +212,7 @@ const ItemForm = ({scope, location, selectedItems, handleAddItem, selectItem, de
        
        <div className="columns is-multiline pl-3 mt-1 is-flex is-justify-content-start ">
        {items.map((t, i) => {
-                  if ((!scope || t.scope === scope) && i < 5 ) {
+                  if ((!scope || t.scope === scope) && i < 5 && (!originItem || originItem._id !== t._id)) {
                     return <Fragment key={t.slug}>
                     <span className="tag is-info mt-2 is-small mr-1 opacity-50" onClick={(e) => {
 

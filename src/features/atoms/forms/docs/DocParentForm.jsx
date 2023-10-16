@@ -33,13 +33,23 @@ const DocParentForm = ({selectedDoc, selectDoc, location, template, lang, hideRo
   
   const handleDeleteDoc = (e, doc) => {
     e.preventDefault()
-    const filtered = selectedDoc.filter((r) => {
-      if (location !== "app-dash") return r !== doc
-      else return r !== doc.parent_doc
+    
+    const filtered = []
+    selectedDoc.map((r) => {
+      if (location !== "app-dash") {
+        if (r.parent_doc._id !== doc.parent_doc._id) {
+          filtered.push(r)
+        }
+      } else {
+        if (r.parent_doc !== doc.parent_doc) {
+          filtered.push(r)
+        }
+      }
     })
     selectDoc(filtered)
     setDocs([])
   }
+
 
   const handleAddDoc = (doc) => {
     if (location !== "app-dash") selectDoc([...selectedDoc, {parent_doc: doc, roles: selectedRoles}])

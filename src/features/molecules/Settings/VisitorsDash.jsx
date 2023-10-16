@@ -68,6 +68,7 @@ const VisitorsDash = ({}) => {
     useEffect(() => {
         if (!data && !chartLoading) {
             setChartLoading(true)
+            console.log(chartTypes[chartType])
             getVisitorsChart({
                 chartRange: chartType === 0 ? chartRanges[chartRange] : chartRanges[0],
                 chartType: chartTypes[chartType]
@@ -84,24 +85,12 @@ const VisitorsDash = ({}) => {
     }
 
     useEffect(() => {
-        console.log(responseVisitorsChart)
+        console.log("test: ",responseVisitorsChart, chartType)
         if (responseVisitorsChart && responseVisitorsChart.success && chartLoading && responseVisitorsChart.type === chartTypes[chartType]) {
             setChartLoading(false)
             if (chartTypes[chartType] === "location") {
                 
-                if (chartDisplay === 0) {
-                    const labelsData = []
-                    responseVisitorsChart.data.countriesCode.map((country, i) => {
-                        labelsData.push({
-                            size:responseVisitorsChart.data.counter[i]/200,
-                            lat: responseVisitorsChart.data.labels[i][0],
-                            lng: responseVisitorsChart.data.labels[i][1],
-                            color: "red"
-    
-                        })
-                    })
-                    setData(labelsData)
-                } else {
+                console.log(responseVisitorsChart.data  )
                     let labels = responseVisitorsChart.data.countriesCode
                     const counter = responseVisitorsChart.data.counter
                  
@@ -121,7 +110,7 @@ const VisitorsDash = ({}) => {
                             }
                         ]
                     })
-                }
+                
             } else {
                 const labels = responseVisitorsChart.data.labels
                 const counter = responseVisitorsChart.data.counter
@@ -215,33 +204,7 @@ const VisitorsDash = ({}) => {
                             </div>
                         </div> : null}
                     </div> : null}
-                    {chartType === 1 ? <div className="dropdown is-active visitordropdown" onMouseEnter={() => setChartDisplayDropdown(true)} onMouseLeave={() => setChartDisplayDropdown(false)}>
-                        <div className="dropdown-trigger">
-                            <button className="button tag is-medium is-grey pt-0 pb-0 ml-2 has-text-monospace">
-                                {t(chartDisplays[chartDisplay])}
-                                &nbsp;
-                                {chartDisplayDropdown ? <FontAwesomeIcon icon={faChevronUp}/>  : <FontAwesomeIcon icon={faChevronDown}/> }
-                            </button>
-
-                        </div>
-                        {chartDisplayDropdown ? <div className="dropdown-menu ml-2">
-                            <div className="dropdown-content dropdown-dashboard">
-                                {chartDisplays.map((type, i) => {
-                                    if (chartDisplay !== i) {
-                                        return <Fragment key={type}>
-                                         <a className="dropdown-item has-text-left" onClick={() => {
-                                            setChartDisplay(i)
-                                            setChartDisplayDropdown(false)
-                                           
-                                         }}>
-                                            {t(type)}
-                                        </a>
-                                    </Fragment>
-                                    }
-                                })}
-                            </div>
-                        </div> : null}
-                    </div> : null}
+         
                     
                 </div>
                 
@@ -255,7 +218,7 @@ const VisitorsDash = ({}) => {
             options={options}
             data={data}
             
-            /> : data && ((chartDisplay === 0 && data[0]) || (data.datasets && chartDisplay === 1)) ? <>
+            /> : data &&  (data.datasets && chartDisplay === 0) ? <>
            
              <div className="max-40 is-pointer">
                 <Pie data={data} options={

@@ -4,7 +4,13 @@ import {apiFetch} from '../middlewares/apiFetch';
 function reducer (state, action) {
     switch(action.type) {
         case 'FindById':
-            return {...state, responseFindById: action.payload}  
+            return {...state, responseFindById: action.payload} 
+        case 'FindChildsDataById':
+            return {...state, responseFindChildsDataById: action.payload}  
+        case 'FindChildsPageById':
+            return {...state, responseFindChildsPageById: action.payload}  
+        case 'SearchChildsById':
+            return {...state, responseSearchChildsById: action.payload}   
         case 'Update':
             return { ...state, responseUpdate: action.payload }
         case 'Create':
@@ -40,7 +46,10 @@ const useTags = () => {
         responseSearchTags: null,
         responseFindDocByTag: null,
         responseFindDocByTagSlug: null,
-        responseMergeTags: null
+        responseMergeTags: null,
+        responseFindTagChildsDataById: null,
+        responseFindTagChildsPageById: null,
+        responseSearchTagChildsById: null
     })
 
     return {
@@ -53,6 +62,9 @@ const useTags = () => {
         responseSearchTags: state.responseSearch,
         responseFindDocByTag: state.responseFindDoc,
         responseMergeTags: state.responseMerge,
+        responseFindTagChildsDataById: state.responseFindChildsDataById,
+        responseFindTagChildsPageById: state.responseFindChildsPageById,
+        responseSearchTagChildsById: state.responseSearchChildsById,
         mergeTags: async function (data) {
             const tags = await apiFetch('/tags/merge', {
                 method: 'POST',
@@ -65,6 +77,26 @@ const useTags = () => {
                 method: 'GET'
             })
             dispatch({type: 'FindDoc', payload: docs})
+        },
+        findTagChildsDataById : async function (id) {
+            const project = await apiFetch('/tags/childs/id/' + id, {
+                method: 'GET'
+            })
+            dispatch({type: 'FindChildsDataById', payload: project})
+        },
+        findTagChildsPageById : async function (id, page) {
+            const project = await apiFetch('/tags/childs/id/' + id, {
+                method: 'POST',
+                body: page
+            })
+            dispatch({type: 'FindChildsPageById', payload: project})
+        },
+        searchTagChildsById : async function (id, filters) {
+            const project = await apiFetch('/tags/childs/search/' + id, {
+                method: 'POST',
+                body: filters
+            })
+            dispatch({type: 'SearchChildsById', payload: project})
         },
         responseFindDocByTagSlug: state.responseFindDocSlug,
         findDocByTagSlug: async function (slug) {

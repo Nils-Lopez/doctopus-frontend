@@ -16,7 +16,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
     const {
         title,
         description,
-        languages,
+        langs,
         thumb,
         types,
         supports,
@@ -25,7 +25,6 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
         childs,
         child_docs
       } = doc
-
 
       const [addingWatchlist, setAddingWatchlist] = useState(false)
 	const {updateUser, responseUpdateUser} = useUsers()
@@ -169,7 +168,6 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
     const [displayThumb, setDisplayThumb] = useState(true)
     const [displayVideo, setDisplayVideo] = useState(false)
 
-
     return showScapinParent ? <>
         <ShowParent parent={showScapinParent} client={client} setAlert={setAlert} handleSearchParent={handleSearchScapinParent} handleSearchScapinID={handleSearchScapinID} handleSearchDoc={handleSearchDoc} handleBack={handleSearchScapinParent}/>
     </> : dataUpdate && !dataUpdate.success ? <>
@@ -266,7 +264,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                         
                         </>
                     : null} </> : null}
-                {languages && languages[0] ? <p className="has-text-left mb-1">{t('language')}: {languages[0].code.toUpperCase()}</p> : null}
+                {langs && langs[0] ? <p className="has-text-left mb-1">{t('language')}: {getContent(langs[0].title, i18n.language)}</p> : null}
                 {doc.date && doc.date !== "" ? 
                                     <p className="has-text-left mt-0  mb-0 pt-0">{t('publication date')}: {doc.date} </p>
                               : null}
@@ -284,7 +282,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                     {description && description[0] ? <p className="  mt-1 mb-0 pb-0 has-text-left">{getContent(description, i18n.language)}</p> : null}
                 
                 </div>
-                {displayThumb ? <div className="column mb-0 pb-0">
+                {displayThumb && !displayVideo ? <div className="column mb-0 pb-0">
                     <img onError={() => setDisplayThumb(false)} src={thumb} alt="file" className="thumb-img"/> 
                 </div> : null}
             </div>
@@ -305,7 +303,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                         
                         </>
                     : null} </> : null}
-                {languages && languages[0] ? <p className="has-text-left mb-1">{t('language')}: {getContent(languages[0].labels, i18n.language)}</p> : null}
+                {langs && langs[0] ? <p className="has-text-left mb-1">{t('language')}: {getContent(langs[0].title, i18n.language)}</p> : null}
                 {doc.date && doc.date !== "" ? 
                                     <p className="has-text-left mt-0  mb-0 pt-0">{t('publication date')}: {doc.date} </p>
                               : null}
@@ -412,7 +410,8 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
         }): null}
         
         </div>
-        {includeParentType("project", parents) ? <>
+        {parents.length >= 10 ? <>
+            {includeParentType("project", parents) ? <>
         <h3 className="subtitle has-text-grey has-text-left is-5">{t('projects')}</h3>
         <div className="columns is-multiline is-flex is-justify-content-start">
         {parents && parents ? <>
@@ -427,21 +426,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                     </> : null}
         </div>
         </> : null}
-        {includeParentType("parent_doc", parents) ? <>
-        <hr />
-        <h3 className="subtitle has-text-grey has-text-left is-5">{t('Docs')}</h3>
-        <div className="columns is-multiline is-flex is-justify-content-start">
-        {parents && parents ? <>
-                        
-                        {parents.map((parent) => {
-                            if (parent.parent_doc) {
-                                return <Fragment key={JSON.stringify(parent)}>    
-                                <BoxItemParent item={parent} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>
-                            </Fragment>
-                            }
-                        })}
-                    </> : null}
-        </div> </> : null}
+        
         {includeParentType("person", parents) ? <>
         <hr />
         <h3 className="subtitle has-text-grey has-text-left is-5">{t('people')}</h3>
@@ -472,11 +457,52 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                         })}
                     </> : null}
         </div></> : null}
-        {(childs && childs[0]) || (child_docs && child_docs[0])? <>
+        </> : <>
+            {parents && parents[0] ? <>
+                <hr />
+                <h3 className="subtitle has-text-grey has-text-left is-5">{t('relations')}</h3>
+            </> : null}
+            <div className="columns is-multiline is-flex is-justify-content-start">
+                {parents && parents ? <>
+                    {parents.map((parent) => {
+                            if (parent.project) {
+                                return <Fragment key={JSON.stringify(parent)}>    
+                                <BoxItemParent item={parent} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>
+                            </Fragment>
+                            }
+                        })}
+                        {parents.map((parent) => {
+                            if (parent.entity) {
+                                return <Fragment key={JSON.stringify(parent)}>    
+                                <BoxItemParent item={parent} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>
+                            </Fragment>
+                            }
+                        })}
+                        {parents.map((parent) => {
+                            if (parent.person) {
+                                return <Fragment key={JSON.stringify(parent)}>    
+                                <BoxItemParent item={parent} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>
+                            </Fragment>
+                            }
+                        })}
+                         
+                        </> : null}
+            </div>
+        </>}
+        {(childs && childs[0]) || (child_docs && child_docs[0]) || includeParentType("parent_doc", parents) ? <>
         <hr />
         <h3 className="subtitle has-text-grey has-text-left is-5">{types && types[0] && types[0]._id === "6404c457e377d276c2dcac8a" ? t('Articles') : t('document')}</h3>
         <div className="columns is-multiline is-flex is-justify-content-start">
+        {parents && parents ? <>
                         
+                        {parents.map((parent) => {
+                            if (parent.parent_doc) {
+                                return <Fragment key={JSON.stringify(parent)}>    
+                                <BoxItemParent item={parent} handleSearchParent={handleSearchParent} handleSearchDoc={handleSearchDoc}/>
+                            </Fragment>
+                            }
+                        })}
+                    </> : null}
                         {childs.map((parent) => {
                             if (parent.doc) {
                                 return <Fragment key={JSON.stringify(parent)}>    
@@ -492,7 +518,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                             }
                         })}
         </div></> : null}
-        
+       
         
 
     </>

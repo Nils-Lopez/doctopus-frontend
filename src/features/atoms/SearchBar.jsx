@@ -78,13 +78,16 @@ const SearchBar = ({searchValue, setSearchValue, filtersData, setFiltersValue, a
     }, [selectedTypes, value])
 
     return <>
-      <div className='container landing-container is-flex is-justify-content-center  w-100'>
+      <div className=' landing-container is-flex is-justify-content-center  w-100'>
      
   <div className='columns is-mobile box search-box '>
-    <div className='column is-10 is-paddingless'>
+    <div className='column  is-9 is-paddingless'>
       <div className='search-block' id="searchBlock">
         <label className='search-label label'>
           <span>{t('what-are-you-looking-for')}</span>
+        </label>
+        <label className='mobile-search-label label'>
+          <span>{t('what')}</span>
         </label>
         <input className='search-input home-input is-family-monospace' placeholder={t('title') + ", " + t('author') + ", " + t('tags') + "..."} type='/search' value={searchValue} onChange={handleSearchChange} />
       </div>
@@ -93,59 +96,12 @@ const SearchBar = ({searchValue, setSearchValue, filtersData, setFiltersValue, a
       </div>
     </div>
    
-    {/* <div className='column options-searchbar is-paddingless desktop-only' onMouseEnter={() => setTagDropdown(true)} onMouseLeave={() => setTagDropdown(false)}>
-      <div className='price-block'>
-        <label className='price-label label'>
-          <span>{t('Filters')}</span>
-        </label>
-        <a className='button' onClick={() => setTagDropdown(!tagDropdown)} href='#' title='Rent Range'>
-          <span className="has-text-lightgrey has-text-muted  has-text-left  pb-3 filters-label">{tagDropdown ? <FontAwesomeIcon icon={faChevronCircleUp}/> : <FontAwesomeIcon icon={faChevronCircleDown}/>}&nbsp;Date, types &nbsp;</span>
-        </a>
-        {tagDropdown ? <div className={"dropdown-container is-open is-rounded"} >
-          <div className="dropdown p-2 pt-4 pb-4 is-rounded">
-          <div className="field mb-5">
-                  <div className="control"> 
-                    <label htmlFor="type" className="label has-text-left">{t('types')}</label>
-                    {filtersData && filtersData.types ? <SelectForm
-                      selected={typeValue}
-                      select={handleChooseType}
-                      options={filtersData.types.map((type) => {
-                        return {
-                          value: type.slug,
-                          label: getContent(type.title, i18n.language)
-                        }
-                      })}
-                      applicationSettings={applicationSettings}
-                    /> : null}
-
-                  </div>
-                  </div>
-          <div className="field mr-3 ml-3">
-            <div className="control">
-              <label className="label has-text-left">{t('published-btwn')}</label>
-                <Slider
-                  getAriaLabel={() => 'Temperature range'}
-                  value={value}
-                  onChange={handleChange}
-                  valueLabelDisplay="auto"
-                  getAriaValueText={valuetext}
-                  min={oldest}
-                  max={newest}
-                />
-        </div>
-      </div>
-                        
-                 
-                  
-          </div>
-        </div> :  null}
-      </div>
-    </div> */}
-    <div className='column is-paddingless desktop-only'>
+   
+    <div className='column  is-paddingless desktop-only'>
         {searchValue.length > 0 ? <button className='button is-primary is-large search-button' type="submit"><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/> &nbsp; <strong>{t('search')}</strong></button> :
         <button className='button is-primary is-large search-button' onClick={(e) => e.preventDefault()}><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/> &nbsp; <strong>{t('search')}</strong></button>}
     </div>
-        {searchValue.length > 0 ?<button className=" title has-text-primary is-4 mt-1 ml-1 nodesk-only has-background-transparent border-0"><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/></button> : <button className=" title has-text-primary is-4 mt-1 ml-1 pointer is-mobile has-background-transparent nodesk-only border-0" onClick={e => e.preventDefault()}><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/></button>}
+        {searchValue.length > 0 ?<button className="is-large search-button button is-primary nodesk-only is-hidden-tablet"><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/></button> : <button className="is-large search-button button is-primary nodesk-only is-hidden-tablet" onClick={e => e.preventDefault()}><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/></button>}
         </div>
         
       </div>
@@ -159,6 +115,10 @@ const SearchBar = ({searchValue, setSearchValue, filtersData, setFiltersValue, a
       }) : null}
       {value[0] !== oldest || value[1] !== newest ? <span className="tag is-light has-text-primary mb-1 is-medium mr-1">{value[0]} - {value[1]}</span> : null}
       </div>
+
+      {/* <div className="mt-5  pt-5 has-text-center mr-1 landing-container">
+        testsdsdsdsdsdsdsdsdsddsdsdsd
+      </div> */}
 </>
 }
 

@@ -2,7 +2,7 @@ import React from "react"
 
 import Select from "react-select"
 
-const SelectForm = ({options, selected, select, applicationSettings, mode}) => {
+const SelectForm = ({options, selected, select, applicationSettings, mode, multiple}) => {
     
     const primary = applicationSettings && applicationSettings.global && applicationSettings.global.primary ? applicationSettings.global.primary : "blue"
     
@@ -18,6 +18,7 @@ const SelectForm = ({options, selected, select, applicationSettings, mode}) => {
         onChange={select}
         options={options}
         className="has-text-left"
+        isMulti={multiple ? true : false}
         styles={{control: (provided, state) => ({
             ...provided,
             ...stylesOptions,
@@ -37,6 +38,8 @@ const SelectForm = ({options, selected, select, applicationSettings, mode}) => {
             paddingTop: "2px",
             paddingBottom: "2px",
             color: "",
+            zIndex: "auto",
+            position: "relative",
             "&:hover": {
                 cursor: "pointer",
                 backgroundColor: primary,

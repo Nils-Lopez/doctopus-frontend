@@ -19,6 +19,10 @@
   white-space: pre-wrap;
 }
 
+.no-wrap {
+  white-space: nowrap;
+}
+
 .tag-search-item {
   position: absolute;
   bottom: 20px;

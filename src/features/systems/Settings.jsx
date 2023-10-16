@@ -72,7 +72,7 @@ const Settings = ({client, setClient, setAlert, applicationSettings, setApplicat
     <span className="panel-icon">
     <FontAwesomeIcon icon={faArchive}/>
     </span>
-    {t('roles')}/{t('types')}
+    {t('roles')}/{t('types')}/{t('tags')}
   </a>
   <a className={classNames('visitors')}  onClick={() => setPage("visitors")}>
     <span className="panel-icon">

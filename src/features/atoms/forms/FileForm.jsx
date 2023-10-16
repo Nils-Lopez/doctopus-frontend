@@ -30,9 +30,10 @@ const FileUpload = ({setFile, pdf}) => {
   const onFileChange = (event) => {
     // capture file into state
     const options = {
-      type: event.target.files[0].name.includes('png') ? "image/png" : "image/jpeg"
+      type: event.target.files[0].type
     }
-    let file =  new File(event.target.files, event.target.files[0].name.replaceAll('.', Math.floor(Math.random() * 100000) +"."), options)
+
+    let file =  new File(event.target.files, event.target.files[0].name.replaceAll(/[&\/\\#,+()$~% @'":*?<>{}]/g, "").replaceAll('.', Math.floor(Math.random() * 100000) +"."), options)
     setFileSelected(file);
   };
 

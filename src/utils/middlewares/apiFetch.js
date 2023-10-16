@@ -16,19 +16,22 @@ export async function apiFetch (endpoint, options = {} ) {
         },
         credentials: "include",
         mode: "cors",
+        // headers: new Headers({
+        //     "ngrok-skip-browser-warning": "69420",
+        //   }),
         ...options
     }
     
-     const apiUrl = "https://api.doctopus.app/api"
+    const apiUrl = "https://api.doctopus.app/api"
     // const apiUrl = "http://localhost:5000/api"
-    
+    //const apiUrl = "https://e4f2-2a02-1811-4c89-da00-4c43-38c8-e074-db21.ngrok-free.app/api"
     
     // Set the body of the options object to JSON.
     if (options.body !== null && typeof options.body === 'object') {
         options.body = JSON.stringify(options.body)
         options.headers['Content-Type'] = 'application/json'
     }
-    const response = await fetch(apiUrl + endpoint, {...options, credentials: "include"})
+    const response = await fetch(apiUrl + endpoint, {...options, credentials: "include"}) //add creds
     // Returns null if the response status code is 204.
     if (response.status === 204) {
         return null;

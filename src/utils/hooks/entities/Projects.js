@@ -5,6 +5,12 @@ function reducer (state, action) {
     switch(action.type) {
         case 'FindById':
             return {...state, responseFindById: action.payload}  
+        case 'FindChildsDataById':
+            return {...state, responseFindChildsDataById: action.payload}  
+        case 'FindChildsPageById':
+            return {...state, responseFindChildsPageById: action.payload}  
+        case 'SearchChildsById':
+            return {...state, responseSearchChildsById: action.payload}  
         case 'Update':
             return { ...state, responseUpdate: action.payload }
         case 'Create':
@@ -28,7 +34,10 @@ const useProjects = () => {
         responseFindProjectBySlug: null,
         responseCreateProject: null,
         responseDeleteProject: null,
-        responseFindAllProjects: null
+        responseFindAllProjects: null,
+        responseFindProjectChildsDataById: null,
+        responseFindProjectChildsPageById: null,
+        responseSearchProjectChildsById: null
     })
 
     return {
@@ -38,6 +47,9 @@ const useProjects = () => {
         responseFindProjectBySlug: state.responseFindBySlug,
         responseCreateProject: state.responseCreate,
         responseFindAllProjects: state.responseFindAll,
+        responseFindProjectChildsDataById: state.responseFindChildsDataById,
+        responseFindProjectChildsPageById: state.responseFindChildsPageById,
+        responseSearchProjectChildsById: state.responseSearchChildsById,
         findAllProjects: async function () {
             const projects = await apiFetch('/projects', { method: "GET" })
             dispatch({type: "FindAll", payload: projects})
@@ -47,6 +59,26 @@ const useProjects = () => {
                 method: 'GET'
             })
             dispatch({type: 'FindById', payload: project})
+        },
+        findProjectChildsDataById : async function (id) {
+            const project = await apiFetch('/projects/childs/id/' + id, {
+                method: 'GET'
+            })
+            dispatch({type: 'FindChildsDataById', payload: project})
+        },
+        findProjectChildsPageById : async function (id, page) {
+            const project = await apiFetch('/projects/childs/id/' + id, {
+                method: 'POST',
+                body: page
+            })
+            dispatch({type: 'FindChildsPageById', payload: project})
+        },
+        searchProjectChildsById : async function (id, filters) {
+            const project = await apiFetch('/projects/childs/search/' + id, {
+                method: 'POST',
+                body: filters
+            })
+            dispatch({type: 'SearchChildsById', payload: project})
         },
         findProjectBySlug: async function (slug) {
             const project = await apiFetch('/projects/slug/' + slug, {

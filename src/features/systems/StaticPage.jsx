@@ -46,7 +46,7 @@ const paragraph = ({content, i18n}) => {
         }
         else text.push(word)
     })
-    return <div className='mt-4 p-3'>
+    return <div className='mt-4 '>
         {string.includes('mailto:') || string.includes('<br/>') || string.includes('https://') || string.includes('www.') ? <>
             {text.map((word) => <Fragment key={word}>
                 {word}&nbsp;

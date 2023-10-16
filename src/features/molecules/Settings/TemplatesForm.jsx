@@ -6,7 +6,7 @@ import {usePeople} from "../../../utils/hooks/People"
 import { useEntities } from "../../../utils/hooks/Entities"
 import {useDocTemplates} from "../../../utils/hooks/templates/DocTemplates"
 import {useUsers} from '../../../utils/hooks/Users'
-import {useProjects} from '../../../utils/hooks/entities/Projects'
+import {useDocs} from '../../../utils/hooks/docs/Docs'
 
 import DocTagsForm from "../../atoms/forms/docs/DocTagsForm"
 import RoleForm from "../../atoms/forms/RoleForm"
@@ -18,8 +18,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCirclePlus, faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from "react-i18next";
 import SearchTagsForm from '../../atoms/forms/docs/SearchTagsForm';
+import SelectForm from '../../atoms/forms/SelectForm';
 
-const TemplatesForm = ({client, setClient, setAlert}) => {
+const TemplatesForm = ({client, setClient, setAlert, applicationSettings}) => {
     
     const [editTemplate, setEditTemplate] = useState(false)
     const { t, i18n } = useTranslation();
@@ -65,7 +66,7 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
       setLangValue(template.languages.exist)
       setLangEnDefaultValue("")
       setLangFrDefaultValue("")
-      selectLang(template.languages.defaults)
+      selectLang(template.langs ? template.langs.map((l) => {return {value: l._id, label: getContent(l.title, i18n.language)}}) : [])
       setTypeValue(template.support_role)
       selectType(template.support_role_defaults)
       setSupportDescValue(template.support_desc)
@@ -147,27 +148,7 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
       setDateValue(true)
     }
   
-    const addLang = (e) => {
-      e.preventDefault()
-      const newLang = {
-        labels: [
-          { lang: "en", content: langEnDefaultValue },
-          {lang: "fr", content: langFrDefaultValue}
-        ],
-        code: langEnDefaultValue !== "" ? langEnDefaultValue.slice(0, 2).toLowerCase() : langFrDefaultValue.slice(0, 2).toLowerCase()
-      }
-      selectLang([...selectedLangs, newLang])
-      setLangEnDefaultValue("")
-      setLangFrDefaultValue("")
-    }
-      
-    const handleDeleteLang = (e, lang) => {
-      e.preventDefault()
-      const filtered = selectedLangs.filter((l) => {
-        return l.code !== lang.code
-      })
-      selectLang(filtered)
-    }
+    
   
     const getContent = (value, lang) => {
       if (value) {
@@ -280,7 +261,6 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
       }
       if (editTemplate) {
         if (reqData.template.schema_parent) reqData.template.schema_parent = {_id: reqData.template.schema_parent._id}
-        console.log("data: ", reqData.template)
         updateDocTemplate(reqData, editTemplate)
         setLoadingUpdateDocTemplate(true)
       } else {
@@ -298,7 +278,6 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
         setLoadingCreateDocTemplate(false)
       } else if (responseCreateDocTemplate) {
         setAlert({ type: "error", message: { en: t('error-template-create'), fr: t('error-template-create') } })
-        console.log('responseCreateDoc : ', responseCreateDocTemplate)
         setLoadingCreateDocTemplate(false)
       }
     }, [responseCreateDocTemplate])
@@ -306,7 +285,6 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
     useEffect(() => {
       if (responseUpdateDocTemplate && responseUpdateDocTemplate.success && loadingUpdateDocTemplate) {
         setAlert({ type: "success", message: { en: t('template-updated'), fr: t('template-updated') } })
-        handleNewTemplate()
         setLoadingUpdateDocTemplate(false)
       } else if (responseUpdateDocTemplate && loadingUpdateDocTemplate) {
         setAlert({ type: "error", message: { en: t('error-template-update'), fr: t('error-template-update')}})
@@ -381,7 +359,25 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
       }
     }, [parentTemplate])
 
-    
+    const {findAllLanguages, responseFindAllLanguages} = useDocs()
+
+  const [languagesOptions, setLanguagesOptions] = useState([])
+
+  useEffect(() => {
+    if (!responseFindAllLanguages && !languagesOptions[0]) {
+      findAllLanguages()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (responseFindAllLanguages && responseFindAllLanguages.success) {
+      const newOptions = []
+      responseFindAllLanguages.data.map((lang) => {
+        newOptions.push({value: lang._id, label: getContent(lang.title, i18n.language)})
+      })
+      setLanguagesOptions(newOptions)
+    }
+  }, [responseFindAllLanguages])
 
     return loadingCreateDocTemplate || loadingUpdateDocTemplate || docTemplatesLoading ? <>
       <div className="loader">
@@ -494,7 +490,7 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
 </div>
        </div>
      </div> : null}
-     {(parentTemplate  && parentTemplate.languages.exist) || !parentTemplate ?
+     {(parentTemplate  && parentTemplate.lang) || !parentTemplate ?
      <div className="columns ml-6 mr-6  mt-3">
        <div className="column is-flex is-justify-content-start">
          
@@ -504,20 +500,8 @@ const TemplatesForm = ({client, setClient, setAlert}) => {
 </div>
        </div>
        <div className="column">
-<div className="field">
-           {langValue ? <div className="is-flex">
-                <input type="text" placeholder="Default language" className="input" value={i18n.language === "en" ? langEnDefaultValue : langFrDefaultValue} onChange={handleLangDefaultChange} />
-                <i className="has-text-info subtitle is-5 ml-2 mt-2  pointer" onClick={addLang}><FontAwesomeIcon icon={faCirclePlus} /></i>    
-              </div> : <>
-           <input type="text" className="input" disabled/>
-           </>}
-           
-        {selectedLangs.map((lang) => {
-        return <Fragment key={lang.code}>
-          <span className="tag is-light is-medium mr-1 mt-2">{lang.code.toUpperCase()} <i className="has-text-danger ml-3 pointer" onClick={(e) => handleDeleteLang(e, lang)}><FontAwesomeIcon icon={faCircleXmark} /></i></span>
-        </Fragment>
-      })}
-       </div>
+       <SelectForm  applicationSettings={applicationSettings} select={selectLang} selected={selectedLangs} options={languagesOptions} multiple={true}/>
+
        </div>
        
      </div> : null}

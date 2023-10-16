@@ -80,7 +80,7 @@ const ExemplariesForm= ({setPendingExemplaries, pendingExemplaries, template}) =
         </label>
         <input type="text" className="input" value={locationValue} onChange={handleLocationChange} />
       </div> : null}
-      {template && template.copies_position ? <div className="field">
+      {(template && template.copies_position || positionValue !== "")? <div className="field">
         <label className="label has-text-left">
         {t('position')}
         </label>
@@ -98,7 +98,9 @@ const ExemplariesForm= ({setPendingExemplaries, pendingExemplaries, template}) =
         </label>
         <input type="text" className="input" value={qualityValue} onChange={handleQualityChange} />
       </div> : null}
-      <button className="button is-primary" onClick={handleExBtn}>{t('add')}</button>
+      <div className="is-flex is-justify-content-end">
+        <button className="button is-primary" onClick={handleExBtn}>{t('confirm')}</button>
+      </div>
     </div>
     
   </>

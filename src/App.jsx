@@ -60,7 +60,7 @@ function App() {
 
   useEffect(() => {
     let appSlug = false
-    if (window.location.host === "localhost:3000") {
+    if (window.location.host === "localhost:3000" || window.location.host === "9936-2a02-1811-4c89-da00-4c43-38c8-e074-db21.ngrok-free.app") {
       appSlug = "contredanse"
     } else {
       appSlug = window.location.host.split('.')[0]

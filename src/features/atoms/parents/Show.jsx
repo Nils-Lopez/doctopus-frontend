@@ -12,8 +12,11 @@ import OrganisationForm from "../../molecules/Create/OrganisationForm"
 import ProjectForm from "../forms/orgs/ProjectForm"
 import Slider from '@mui/material/Slider';
 
+import { useProjects } from "../../../utils/hooks/entities/Projects";
 import {useProds} from "../../../utils/hooks/Prods"
 import { TwitterShareButton, TwitterIcon, PinterestShareButton, PinterestIcon, FacebookShareButton, FacebookIcon } from 'react-share';
+import { useEntities } from "../../../utils/hooks/Entities";
+import { usePeople } from "../../../utils/hooks/People";
 
 const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, handleSearchScapinID, handleBack, applicationSettings}) => {
     
@@ -48,16 +51,95 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
         productionIds, 
         prodIds, 
         createdDocs,
-        childs,
         parents
     } = parent
 
+
+    const [childs, setChilds] = useState(parent.childs)
 
     const [productionsScapin, setProductions] = useState(false)
     const [prodLoading, setProdLoading] = useState(false)
 
     const {findProdByIds, responseFindProdByIds} = useProds()
 
+    const [childsData, setChildsData] = useState(false)
+    const [childsDataLoading, setChildsDataLoading] = useState(false)
+
+    const [childsPageLoading, setChildsPageLoading] = useState(false)
+
+    const [childsSearchLoading, setChildsSearchLoading] = useState(false)
+
+    const {
+        findProjectChildsDataById,
+        responseFindProjectChildsDataById, 
+        findProjectChildsPageById,
+        responseFindProjectChildsPageById, 
+        searchProjectChildsById, 
+        responseSearchProjectChildsById
+    } = useProjects()
+
+    const {
+        findPersonChildsDataById,
+        responseFindPersonChildsDataById, 
+        findPersonChildsPageById,
+        responseFindPersonChildsPageById, 
+        searchPersonChildsById, 
+        responseSearchPersonChildsById
+    } = usePeople()
+
+    const {
+        findEntityChildsDataById,
+        responseFindEntityChildsDataById, 
+        findEntityChildsPageById,
+        responseFindEntityChildsPageById, 
+        searchEntityChildsById, 
+        responseSearchEntityChildsById
+    } = useEntities()
+
+    useEffect(() => {
+        if (childs && childs[0] && !childsData && !childsDataLoading && childs.length >= 50) {
+            setChildsDataLoading(true)
+            switch (window.location.pathname.split("/")[1]) {
+                case "project":
+                    findProjectChildsDataById(window.location.pathname.split("/")[2])
+                    break;
+                case "entity":
+                    findEntityChildsDataById(window.location.pathname.split("/")[2])
+                    break;
+                case "person": 
+                    findPersonChildsDataById(window.location.pathname.split("/")[2])
+                default: 
+                    break;
+            }
+        }
+    }, [])
+
+    useEffect(() => {
+        if (childsDataLoading && responseFindProjectChildsDataById) {
+            if (responseFindProjectChildsDataById.success) {
+                setChildsData(responseFindProjectChildsDataById.data)
+                setChildsDataLoading(false)
+            } else {
+                setChildsDataLoading(false)
+            }
+        }
+        if (childsDataLoading && responseFindPersonChildsDataById) {
+            if (responseFindPersonChildsDataById.success) {
+                setChildsData(responseFindPersonChildsDataById.data)
+                setChildsDataLoading(false)
+            } else {
+                setChildsDataLoading(false)
+            }
+        }
+        if (childsDataLoading && responseFindEntityChildsDataById) {
+            if (responseFindEntityChildsDataById.success) {
+                setChildsData(responseFindEntityChildsDataById.data)
+                setChildsDataLoading(false)
+            } else {
+                setChildsDataLoading(false)
+            }
+        }
+    }, [responseFindProjectChildsDataById, responseFindEntityChildsDataById, responseFindPersonChildsDataById]);
 
     useEffect(() => {
         if (prodIds && prodIds[0] && !prodLoading && !productionsScapin[0]) {
@@ -150,6 +232,25 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
             if (list.length > (currentPage*rowSize)) {
                 setNewPage(currentPage+1)
             }
+            if (list.length < (((currentPage+1)*rowSize) + 6) && list.length < childsData.length && !childsPageLoading && (!filterBtn || filters.value === "all" && searchInput === "")) {
+                switch (window.location.pathname.split("/")[1]) {
+                    case "project":
+                        setChildsPageLoading(true)
+                        findProjectChildsPageById(window.location.pathname.split("/")[2], {page: list.length/50})
+                        break;
+                    case "entity":
+                        setChildsPageLoading(true)
+                        findEntityChildsPageById(window.location.pathname.split("/")[2], {page: list.length/50})
+                        break;
+                    case "person":
+                        setChildsPageLoading(true)
+                        findPersonChildsPageById(window.location.pathname.split("/")[2], {page: list.length/50})
+                        break;
+                    default: 
+                        break;
+                }
+                
+            }
         } else {
             if (page !== 1) {
                 let newPage = currentPage - 1
@@ -157,6 +258,34 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
             }
         }
     }
+
+    useEffect(() => {
+        if (childsPageLoading && responseFindProjectChildsPageById) {
+            if (responseFindProjectChildsPageById.success) {
+                setChilds([...childs, ...responseFindProjectChildsPageById.data.childs])
+                setChildsPageLoading(false)
+            } else {
+                setChildsPageLoading(false)
+            }
+        }
+        if (childsPageLoading && responseFindEntityChildsPageById) {
+            if (responseFindEntityChildsPageById.success) {
+                setChilds([...childs, ...responseFindEntityChildsPageById.data.childs])
+                setChildsPageLoading(false)
+            } else {
+                setChildsPageLoading(false)
+            }
+        }
+        if (childsPageLoading && responseFindPersonChildsPageById) {
+            if (responseFindPersonChildsPageById.success) {
+                setChilds([...childs, ...responseFindPersonChildsPageById.data.childs])
+                setChildsPageLoading(false)
+            } else {
+                setChildsPageLoading(false)
+            }
+        }
+    }, [responseFindProjectChildsPageById, responseFindPersonChildsPageById, responseFindEntityChildsPageById])
+
 
     const [copied, setCopied] = useState(false)
 
@@ -177,29 +306,13 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
     const [searchInput, setSearchInput] = useState("")
 
     useEffect(() => {
-        if (childs && childs[0] && !filtersOptions[0]) {
+        if (childsData  && !filtersOptions[0]) {
             const newOptions = [{value: "all", label: t('all')}]
-
-            childs.map((child) => {
-                if (child.doc && child.doc.types && child.doc.types[0] && child.doc.types[0].title && getContent(child.doc.types[0].title, i18n.language) !== "Error" ) {
-                    const newOption = {
-                        value: child.doc.types[0]._id,
-                        label: getContent(child.doc.types[0].title, i18n.language)
-                    }
-                    let unique = true
-                    newOptions.map((opt) => {
-                        if (opt.value === newOption.value) unique = false
-                    })
-                    if (unique) {
-                        console.log(newOptions, newOption)
-                        newOptions.push(newOption)
-                    }
-                    
-                }
-            })
+            childsData.options.map((option) => newOptions.push({value: option.value, label: getContent(option.title, i18n.language)}))
+            
             setFiltersOptions([...new Set(newOptions)])
         }
-    }, [childs])
+    }, [childsData])
 
     const [filteredList, setFilteredList] = useState(childs)
 
@@ -214,22 +327,102 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
                     }
                 }
             })
-            setFilteredList(newFilteredList)
             setChildsPage(1)
+
+            setFilteredList(newFilteredList)
         } else newFilteredList = childs
-        if (searchInput.length > 1) {
+        if (searchInput.length > 2) {
             const matchingList = []
             newFilteredList.map((child) => {
                 if (child.doc && child.doc.title && child.doc.title !== "" && child.doc.title.toLowerCase().replace(/[^\w ]/, "").includes(searchInput.toLowerCase().replace(/[^\w ]/, ""))) {
                     matchingList.push(child)
                 }
             })
+            setChildsPage(1)
+
             setFilteredList(matchingList)
         }
-        if (!filterBtn || filters.value === "all") setFilteredList(childs)
-
-    }, [filters, searchInput, filterBtn]);
+        if (!filterBtn || filters.value === "all" && searchInput === "") setFilteredList(childs)
+        else if (searchInput.length > 2 || filters.value !== "all" ) {
+            switch (window.location.pathname.split("/")[1]) {
+                case "project":
+                    setChildsSearchLoading(true)
+                    searchProjectChildsById(window.location.pathname.split("/")[2], {
+                        query: searchInput,
+                        filters: filters
+                    })
+                    break;
+                case "entity":
+                    setChildsSearchLoading(true)
+                    searchEntityChildsById(window.location.pathname.split("/")[2], {
+                        query: searchInput,
+                        filters: filters
+                    })
+                    break;
+                case "person":
+                    setChildsSearchLoading(true)
+                    searchPersonChildsById(window.location.pathname.split("/")[2], {
+                        query: searchInput,
+                        filters: filters
+                    })
+                    break;
+                default: 
+                    break;
+            }
+        }
+    }, [filters, searchInput, filterBtn, childs]);
     
+
+    useEffect(() => {
+        if (childsSearchLoading && responseSearchProjectChildsById) {
+            if (responseSearchProjectChildsById.success) {
+                const newFilteredList = [...filteredList]
+                responseSearchProjectChildsById.data.childs.map((child) => {
+                    let unique = true
+                    newFilteredList.map((c) => {
+                        if (c._id === child._id) unique = false
+                    })
+                    if (unique) newFilteredList.push(child)
+                })
+                setFilteredList([...newFilteredList])
+                setChildsSearchLoading(false)
+            } else {
+                setChildsSearchLoading(false)
+            }
+        }
+        if (childsSearchLoading && responseSearchPersonChildsById) {
+            if (responseSearchPersonChildsById.success) {
+                const newFilteredList = [...filteredList]
+                responseSearchPersonChildsById.data.childs.map((child) => {
+                    let unique = true
+                    newFilteredList.map((c) => {
+                        if (c._id === child._id) unique = false
+                    })
+                    if (unique) newFilteredList.push(child)
+                })
+                setFilteredList([...newFilteredList])
+                setChildsSearchLoading(false)
+            } else {
+                setChildsSearchLoading(false)
+            }
+        }
+        if (childsSearchLoading && responseSearchEntityChildsById) {
+            if (responseSearchEntityChildsById.success) {
+                const newFilteredList = [...filteredList]
+                responseSearchEntityChildsById.data.childs.map((child) => {
+                    let unique = true
+                    newFilteredList.map((c) => {
+                        if (c._id === child._id) unique = false
+                    })
+                    if (unique) newFilteredList.push(child)
+                })
+                setFilteredList([...newFilteredList])
+                setChildsSearchLoading(false)
+            } else {
+                setChildsSearchLoading(false)
+            }
+        }
+    }, [responseSearchProjectChildsById, responseSearchEntityChildsById, responseSearchPersonChildsById])
 
     return showScapinParent ? <>
         <Show parent={showScapinParent} client={client} setAlert={setAlert} handleSearchParent={handleSearchScapinParent} handleSearchScapinID={handleSearchScapinID} handleSearchDoc={handleSearchDoc} handleBack={handleSearchScapinParent}/>
@@ -391,13 +584,15 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
             <hr />
             <div className="is-flex is-justify-content-space-between" >
             <div className="is-flex is-justify-content-center pb-1" >
-                <h3 className="subtitle has-text-grey has-text-left is-5 mb-1">{t('documents')} <span className="tag is-rounded is-light ">{childs.length}</span></h3>
-                
-                {childs && childs.length > 5 ? <button className="button is-primary has-background-transparent is-small is-rounded     ml-3 " onClick={() => setFilterBtn(!filterBtn)}><strong><FontAwesomeIcon icon={filterBtn ? faEyeSlash : faArrowDownAZ}/> {filterBtn ? null : <>&nbsp;&nbsp;{t('filters')}</>}  </strong></button> : null}
+                <h3 className="subtitle has-text-grey has-text-left is-5 mb-1">{t('documents')} &nbsp;
+                    {childsDataLoading || childsPageLoading || childsSearchLoading ? <span className="button tag is-rounded is-medium has-background-transparent is-borderless has-text-primary is-loading"></span> : null}
+                    {!childsData ? null : <span className="tag is-rounded is-light ">{childsData.length}</span>} 
+                </h3>
+                {childsData && childsData.length > 5 ? <button className="button is-primary has-background-transparent is-small is-rounded     ml-3 " onClick={() => setFilterBtn(!filterBtn)}><strong><FontAwesomeIcon icon={filterBtn ? faEyeSlash : faArrowDownAZ}/> {filterBtn ? null : <>&nbsp;&nbsp;{t('filters')}</>}  </strong></button> : null}
                 {filterBtn ? <>
-                    <div className="ml-1">    
+                    {filtersOptions.length > 2 ? <div className="ml-1">    
                         <SelectForm selected={filters} select={setFilters} options={filtersOptions} applicationSettings={applicationSettings} mode="filters"/>
-                    </div>
+                    </div>: <>&nbsp;&nbsp;</>}
                     <div className="field pb-0 mb-0">
                 <div className="control has-icons-left ml-1 " style={{minWidth: "200px"}}>
                    
@@ -418,7 +613,7 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
         <div className="mt--1">
         {childsPage !== 1 ? <button className="button is-white" onClick={() => setChildsPage(childsPage - 1)}><FontAwesomeIcon icon={faAngleLeft} className=" is-size-3 has-text-grey"/></button> :null}
 
-                {filteredList.length > (15*childsPage) ? <button className="button is-white" onClick={() => handleNextPage(filteredList, childsPage, setChildsPage, true, 15)}><FontAwesomeIcon icon={faAngleRight} className=" is-size-3 has-text-grey"/></button> :null}
+                {childsData.length > (15*childsPage) ? <button className="button is-white" onClick={() => handleNextPage(filteredList, childsPage, setChildsPage, true, 15)}><FontAwesomeIcon icon={faAngleRight} className=" is-size-3 has-text-grey"/></button> :null}
             </div>
         </div>     
         </> : null}
@@ -477,36 +672,7 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
                 
             }) : null}
          </div> */}
-         {docs && docs.length > 20 ? <div className="is-flex is-justify-content-end ">
-                <nav className="pagination" role="navigation" aria-label="pagination">
-              
-              <ul className="pagination-list">
-                <li>
-                  <a href="#searchBlock" className={"pagination-link " + (page === 1 ? "is-current" : "")} aria-label="Page 1" aria-current="page" onClick={() => setPage(1)}>1</a>
-                </li>
-                <li>
-                  <a href="#searchBlock" className={"pagination-link " + (page === 2 ? "is-current" : "")} aria-label="Goto page 2" onClick={() => setPage(2)}>2</a>
-                </li>
-                {docs.length > 40 ? <li>
-                  <a href="#searchBlock" className={"pagination-link " + (page === 3 ? "is-current" : "")} aria-label="Goto page 3" onClick={() => setPage(3)}>3</a>
-                </li> : null}
-                {docs.length > 60 ? <li>
-                  <a href="#searchBlock" className={"pagination-link " + (page === 4 ? "is-current" : "")} aria-label="Goto page 3" onClick={() => setPage(4)}>4</a>
-                </li> : null}
-                {docs.length > 80 ? <li>
-                  <a href="#searchBlock" className={"pagination-link " + (page === 5 ? "is-current" : "")} aria-label="Goto page 3" onClick={() => setPage(5)}>5</a>
-                </li> : null}
-              </ul>
-            </nav>
-          </div> : null}
-{/*    
-        docs: [{ type: mongoose.Schema.ObjectId, ref: "Doc" }], //Link to child document
-        roles: [{ type: mongoose.Schema.ObjectId, ref: "Role" }], //E.G. author, publisher, illustrator, developer..
-        entity: [{ type: mongoose.Schema.ObjectId, ref: "Entity" }], //Replace with link to entity
-        organism: [{type: mongoose.Schema.ObjectId, ref: "Organism"}],
-        person: {type: mongoose.Schema.ObjectId, ref: "Person"}, //Replace with link to person
-                tags: [{ type: mongoose.Schema.ObjectId, ref: "Tags" }] //Functions of the person
-         */}
+     
         
 
     </>

@@ -39,16 +39,16 @@ const HomePage = ({client, setClient, setAlert, watchlist, history, applicationS
 
   const [navHistory, setNavHistory] = useState(["/"])
   let location = useLocation()
- 
+  let navigate = useNavigate()
 
   useEffect(() => {
-    if (location.pathname && (location.pathname !== "/" || navHistory.length === 0) && location.pathname !== navHistory[navHistory.length-1] && location.pathname !== navHistory[navHistory.length-2]) {
+    if (location.pathname && (location.pathname !== "/" || navHistory.length === 0) && location.pathname !== navHistory[navHistory.length-1]) {
       if (navHistory.indexOf(location.pathname) !== navHistory.length - 1) {
         const navHistoryFiltered = [...navHistory].filter(e => e !== location.pathname)
         setNavHistory([...navHistoryFiltered, location.pathname])
       }
     }
-  }, [location.pathname, navHistory])
+  }, [location.pathname])
 
   const {
     search, 
@@ -75,27 +75,27 @@ const HomePage = ({client, setClient, setAlert, watchlist, history, applicationS
   const submitSearch = useCallback(async (e) => {
     e.preventDefault()
     if (!loadingSearch) {
-        setLoadingSearch(responseSearch ? responseSearch: true)
-      search({query: searchValue, filters: filtersValue})
-      setNavHistory([...navHistory, {query: searchValue, filters: filtersValue}])
+      setDisplayDoc(false)
+      setDisplayParent(false)
+      setDisplayTag(false)
+      setEmpty(false)
+      setResult({})
+      console.log("ici")
+      setLoadingSearch(true)
+
+      navigate('/search/' + searchValue.replaceAll(" ", "%20"))
       if (client && client.user) {
         updateUser({history:  [...client.user.history, {query: searchValue}]}, client.user._id)
       }
       setPage(1)
-      setDisplayDoc(false)
-      setDisplayParent(false)
-      setDisplayTag(false)
-      
     }
   })
 
   useEffect(() => {
     if (params && params.query) {
-        setSearchValue(params.query.replaceAll("-", " "))
-        if (searchValue && searchValue !== "") {
-          submitSearch({preventDefault: () => {}})
-        }
-      
+        setSearchValue(params.query.replaceAll("%20", " "))
+        setLoadingSearch(true)
+        search({query: params.query.replaceAll("%20", " "), page: 1, filters: filtersValue})
     } else if (params && params.tag_slug) {
       setLoadingSearch(true)
 
@@ -170,12 +170,12 @@ const HomePage = ({client, setClient, setAlert, watchlist, history, applicationS
   } = useApplication()
 
   useEffect(() => {
-    if ((loadingSearch && loadingSearch !== responseSearch)){
+    if (responseSearch.data !== result) {
       if (responseSearch && responseSearch.success && responseSearch.data && (responseSearch.data.items[0] || responseSearch.data.docs[0] || responseSearch.data.tags[0])) {
         setResult(responseSearch.data)
         setPage(1)
+        setLoadingSearch(false)
         setEmpty(false)
-
       } else if (responseSearch && !responseSearch.success) {
         setLoadingSearch(false)
         setEmpty(false)
@@ -186,13 +186,9 @@ const HomePage = ({client, setClient, setAlert, watchlist, history, applicationS
         setEmpty(true)
       } 
     }
-  }, [responseSearch.data, loadingSearch])
+  }, [responseSearch])
   
-  useEffect(() => {
-    if (result === responseSearch.data && loadingSearch) {
-      setLoadingSearch(false)
-    }
-  }, [result])
+  
   
   useEffect(() => {
     if (!popularDocs) {
@@ -213,7 +209,6 @@ const HomePage = ({client, setClient, setAlert, watchlist, history, applicationS
   }, [responseFindPopularDocs])
 
     if (client && client.user && watchlist && result.docs !== client.user.watchList) {
-      console.log(client.user.watchList)
       setResult({docs: client.user.watchList})
     }
   
@@ -221,21 +216,7 @@ const HomePage = ({client, setClient, setAlert, watchlist, history, applicationS
       setResult({docs: client.user.watchList})
     }
 
-    const handleSearch = async (value) => {
-      if (!value.query) {
-        setSearchValue(value)
-        search({query: searchValue, filters: filtersValue})
-        setNavHistory([...navHistory, {query: searchValue, filters: filtersValue}])
-      } else {
-        setSearchValue(value.query)
-        setFiltersValue(value.filters)
-        search({query: value.query, filters: value.filters})
-      }
-      setLoadingSearch(true)
-      setDisplayDoc(false)
-      setDisplayParent(false)
-      setEmpty(false)
-    }
+   
 
 
     useEffect(() => {
@@ -277,7 +258,7 @@ const HomePage = ({client, setClient, setAlert, watchlist, history, applicationS
   <div className="inner two"></div>
   <div className="inner three"></div>
 </div> : (!result || !result.docs ||  !result.docs[0] || !window.location.href.includes('watchlist') && client && client.user && result.docs === client.user.watchList) && (!result || !result.items || !result.items[0]) && (!result || !result.tags || !result.tags[0]) && !displayDoc && !displayParent && !displayTag ? 
-  <Landing popularDocs={popularDocs} loadingLastDocs={loadingLastDocs} setInitialDoc={setInitialDoc} lastDocType={lastDocType} setLastDocType={setLastDocType}setDisplayDoc={setDisplayDoc} i18n={i18n} setResult={setResult} t={t} client={client} applicationSettings={applicationSettings}/> : <SearchResult result={result} client={client} setClient={setClient} applicationSettings={applicationSettings} setAlert={setAlert} page={page} setPage={setPage} loadingSearch={loadingSearch} setResult={setResult} displayDoc={displayDoc} setDisplayDoc={setDisplayDoc} displayParent={displayParent} setDisplayParent={setDisplayParent} setLoading={setLoadingSearch} watchlist={watchlist} history={history} handleSearch={handleSearch} displayTag={displayTag} navHistory={navHistory} setNavHistory={setNavHistory} setDisplayTag={setDisplayTag} setSignUpModal={setSignUpModal}/>}
+  <Landing popularDocs={popularDocs} loadingLastDocs={loadingLastDocs} setInitialDoc={setInitialDoc} lastDocType={lastDocType} setLastDocType={setLastDocType}setDisplayDoc={setDisplayDoc} i18n={i18n} setResult={setResult} t={t} client={client} applicationSettings={applicationSettings}/> : <SearchResult result={result} client={client} setClient={setClient} applicationSettings={applicationSettings} setAlert={setAlert} page={page} setPage={setPage} loadingSearch={loadingSearch} setResult={setResult} displayDoc={displayDoc} setDisplayDoc={setDisplayDoc} displayParent={displayParent} setDisplayParent={setDisplayParent} setLoading={setLoadingSearch} watchlist={watchlist} history={history} handleSearch={submitSearch} displayTag={displayTag} navHistory={navHistory} setNavHistory={setNavHistory} setDisplayTag={setDisplayTag} setSignUpModal={setSignUpModal}/>}
           </>}
           
       </div>
@@ -296,7 +277,7 @@ const getContent = (value, lang) => {
 
 const Counter = ({ number }) => {
   return (
-      <CountUp duration={2.1} className="counter" end={number} />
+      <CountUp duration={2.1} className="counter" end={number}/>
   );
 }
 
@@ -359,7 +340,7 @@ const Landing = ({popularDocs, setDisplayDoc, setResult, loadingLastDocs, setIni
                   <div className="box pt-5 smooth-appear has-background-primary " onClick={() => {
 
                   }}>
-                    <h1 className="title is-5 mt-2 has-text-white"><strong className="title is-2"><Counter number={17377}/></strong> <br />{t('articles')}</h1>
+                    <h1 className="title is-5 mt-2 has-text-white"><strong className="title is-2 is-clipped max-50 no-wrap"><Counter number={17377}/></strong> <br />{t('articles')}</h1>
                   </div>
                 </>: <>
                 
@@ -368,7 +349,7 @@ const Landing = ({popularDocs, setDisplayDoc, setResult, loadingLastDocs, setIni
                     setInitialDoc(false)
 
                   }}>
-                    <h1 className="title is-5 mt-2 "><strong className="title is-2"><Counter number={17377}/></strong> <br />{t('articles')}</h1>
+                    <h1 className="title is-5 mt-2 "><strong className="title is-2 is-clipped max-50 no-wrap"><Counter number={17377}/></strong> <br />{t('articles')}</h1>
                   </div>
                 </>}
         
@@ -433,7 +414,7 @@ const Landing = ({popularDocs, setDisplayDoc, setResult, loadingLastDocs, setIni
           <div className="inner three"></div>
         </div> : <>
 
-        <h1 className="title is-4 has-text-white has-text-shadow mb-0 pb-0 mt-3 pt-0">{applicationSettings && applicationSettings.homePageSubtitles && applicationSettings.homePageSubtitles[1] ? getContent(applicationSettings.homePageSubtitles[1].subtitle, i18n.language) : null} :</h1>
+        <h1 className="title is-4 has-text-white has-text-shadow mb-0 recents-label pb-0 mt-3 pt-0">{applicationSettings && applicationSettings.homePageSubtitles && applicationSettings.homePageSubtitles[1] ? getContent(applicationSettings.homePageSubtitles[1].subtitle, i18n.language) : null} :</h1>
 
 <div className="columns is-multiline pb-3 mb-0 mt--1 pt-0">
 {popularDocs[0] && popularDocs.map((item, index) => {

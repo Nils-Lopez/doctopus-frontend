@@ -5,6 +5,7 @@ import {faChevronDown, faChevronUp, faAngleLeft, faAngleRight, faMagnifyingGlass
 import { useTranslation } from "react-i18next";
 
 import {useRoles} from "../../../utils/hooks/Roles"
+import { useTags } from "../../../utils/hooks/Tags";
 
 const RolesDash = ({}) => {
 
@@ -15,14 +16,23 @@ const RolesDash = ({}) => {
 
     const {findAllRoles, responseFindAllRoles} = useRoles()
 
+    const {findAllTags, responseFindAllTags} = useTags()
+
     const [roles, setRoles] = useState([])
     const [rolesLoading, setRolesLoading] = useState(false)
     const [matchingRoles, setMatchingRoles] = useState([])
+
+    const [tags, setTags] = useState([])
+    const [tagsLoading, setTagsLoading] = useState(false)
 
     useEffect(() => {
         if (!rolesLoading && !roles[0]) {
             setRolesLoading(true)
             findAllRoles()
+        }
+        if (!tagsLoading && !tags[0]) {
+            setTagsLoading(true)
+            findAllTags()
         }
     }, [])
 
@@ -33,18 +43,32 @@ const RolesDash = ({}) => {
         }
     }, [responseFindAllRoles])
 
-    
+    useEffect(() => {
+        if (tagsLoading && responseFindAllTags && responseFindAllTags.success) {
+            setTags(responseFindAllTags.data)
+            setTagsLoading(false)
+        }
+    }, [responseFindAllTags])
 
     useEffect(() => {
         if (query.length > 0) {
             const matching = []
-            roles.map((role) => {
-                if (role.scope === scope) {
-                    if (getContent(role.title, "en").toLowerCase().includes(query.toLowerCase())) matching.push(role)
-                    else if (getContent(role.title, "fr").toLowerCase().includes(query.toLowerCase())) matching.push(role)
-                }
-            })
-            console.log('mach: ', matching)
+            if (scope === "tags") {
+
+                tags.map((role) => {
+                    
+                        if (getContent(role.title, "en").toLowerCase().includes(query.toLowerCase())) matching.push(role)
+                        else if (getContent(role.title, "fr").toLowerCase().includes(query.toLowerCase())) matching.push(role)
+                    
+                })
+            } else {
+                roles.map((role) => {
+                    if (role.scope === scope) {
+                        if (getContent(role.title, "en").toLowerCase().includes(query.toLowerCase())) matching.push(role)
+                        else if (getContent(role.title, "fr").toLowerCase().includes(query.toLowerCase())) matching.push(role)
+                    }
+                })
+            }
             setMatchingRoles(matching)
         } else {
             setMatchingRoles([])
@@ -53,7 +77,9 @@ const RolesDash = ({}) => {
 
     const [merging, setMerging] = useState(false)
 
-
+    useEffect(() => {
+        setMatchingRoles([])
+    }, [scope])
 
 
     return <>
@@ -63,7 +89,7 @@ const RolesDash = ({}) => {
             <div className="dropdown is-active" onMouseEnter={() => setScopeDropdown(true)} onMouseLeave={() => setScopeDropdown(false)}>
                 <div className="dropdown-trigger ml--1">
                     <div className="button tag is-medium is-primary ">
-                        {scope === "docs" ? t("Document's types") : t("Roles/Functions")} &nbsp;{scopeDropdown ? <FontAwesomeIcon icon={faChevronUp}/> : <FontAwesomeIcon icon={faChevronDown}/>}
+                        {scope === "docs" ? t("Document's types") : scope === "parents" ? t("Roles/Functions") : t('tags')} &nbsp;{scopeDropdown ? <FontAwesomeIcon icon={faChevronUp}/> : <FontAwesomeIcon icon={faChevronDown}/>}
                     </div>
                 </div>
                 {scopeDropdown ? <div className="dropdown-menu">
@@ -77,8 +103,41 @@ const RolesDash = ({}) => {
                                          }}>
                                             {t("Roles/Functions")}
                                         </a>
-                        </> : <>
+                                        <a className="dropdown-item has-text-left" onClick={() => {
+                                            setScope('tags')
+                                            setScopeDropdown(false)
+                                            setQuery('')
+                                            setMerging(false)
+                                         }}>
+                                            {t("Tags")}
+                                        </a>
+                        </> : scope === "parents" ? <>
                             <a className="dropdown-item has-text-left" onClick={() => {
+                                            setScope('docs')
+                                            setScopeDropdown(false)
+                                            setQuery('')
+                                            setMerging(false)
+                                         }}>
+                                            {t("Document's types")}
+                                        </a>
+                                        <a className="dropdown-item has-text-left" onClick={() => {
+                                            setScope('tags')
+                                            setScopeDropdown(false)
+                                            setQuery('')
+                                            setMerging(false)
+                                         }}>
+                                            {t("Tags")}
+                                        </a>
+                        </> : <>
+                        <a className="dropdown-item has-text-left" onClick={() => {
+                                            setScope('parents')
+                                            setScopeDropdown(false)
+                                            setQuery('')
+                                            setMerging(false)
+                                         }}>
+                                            {t("Roles/Functions")}
+                                        </a>
+                                        <a className="dropdown-item has-text-left" onClick={() => {
                                             setScope('docs')
                                             setScopeDropdown(false)
                                             setQuery('')
@@ -108,21 +167,29 @@ const RolesDash = ({}) => {
                 <div className="inner two"></div>
                 <div className="inner three"></div>
             </div> : <>
-                {merging ? <RoleBlock role={merging}  t={t} roles={roles} setRoles={setRoles} setQuery={setQuery} setMerging={setMerging} merging={merging} setMatchingRoles={setMatchingRoles} matchingRoles={matchingRoles}/> : null}
-                {!matchingRoles[0] && !merging ? roles?.map((role) => {
+                {merging ? <RoleBlock role={merging}  t={t} roles={roles} tags={tags} setTags={setTags} setRoles={setRoles} setQuery={setQuery} setMerging={setMerging} merging={merging} setMatchingRoles={setMatchingRoles} matchingRoles={matchingRoles} scope={scope}/> : null}
+                {!matchingRoles[0] && !merging ? scope !== "tags" ? roles?.map((role) => {
                     if (role.scope === scope && merging !== role) {
                         return <>
                             <Fragment key={role._id}>
-                                <RoleBlock role={role} t={t} roles={roles} setRoles={setRoles} setQuery={setQuery} setMerging={setMerging} merging={merging} setMatchingRoles={setMatchingRoles} matchingRoles={matchingRoles}/>
+                                <RoleBlock role={role} t={t} roles={roles} setRoles={setRoles} tags={tags} setTags={setTags} setQuery={setQuery} setMerging={setMerging} merging={merging} setMatchingRoles={setMatchingRoles} matchingRoles={matchingRoles} scope={scope}/>
+                            </Fragment>
+                        </>
+                    }
+                }) : tags?.map((role) => {
+                    if (merging !== role) {
+                        return <>
+                            <Fragment key={role._id}>
+                                <RoleBlock role={role} t={t} roles={tags} setRoles={setTags} tags={tags} setTags={setTags} setQuery={setQuery} setMerging={setMerging} merging={merging} setMatchingRoles={setMatchingRoles} matchingRoles={matchingRoles} scope={scope}/>
                             </Fragment>
                         </>
                     }
                 }) : !merging ? matchingRoles?.map((role) => {
-                    if (role.scope === scope && merging !== role) {
+                    if ((role.scope === scope || scope === "tags") && merging !== role) {
 
                         return <>
                             <Fragment key={role._id}>
-                                <RoleBlock role={role} t={t} roles={roles} setRoles={setRoles} setQuery={setQuery} setMerging={setMerging} merging={merging} setMatchingRoles={setMatchingRoles} matchingRoles={matchingRoles}/>
+                                <RoleBlock role={role} t={t} roles={roles} setRoles={setRoles} tags={tags} setTags={setTags} setQuery={setQuery} setMerging={setMerging} merging={merging} setMatchingRoles={setMatchingRoles} matchingRoles={matchingRoles} scope={scope}/>
                             </Fragment>
                         </>
                     }
@@ -141,7 +208,7 @@ const getContent = (value, lang) => {
     }
 }
 
-const RoleBlock = ({role, t, roles, setRoles, setQuery, setMerging, merging, matchingRoles, setMatchingRoles}) => {
+const RoleBlock = ({role, t, roles, setRoles, tags, setTags, setQuery, setMerging, merging, matchingRoles, setMatchingRoles, scope}) => {
 
     const [update, setUpdate] = useState(false)
     const [merge, setMerge] = useState(false)
@@ -149,7 +216,9 @@ const RoleBlock = ({role, t, roles, setRoles, setQuery, setMerging, merging, mat
     const [titleEnValue, setTitleEnValue] = useState(getContent(role.title, "en"))
     const [titleFrValue, setTitleFrValue] = useState(getContent(role.title, "fr"))
 
-    const {updateRole, responseUpdateRole, mergeRoles, handleMergeRole} = useRoles()
+    const {updateRole, responseUpdateRole, mergeRoles} = useRoles()
+
+    const {updateTag, responseUpdateTag, mergeTags} = useTags()
 
     if (merging === role && !merge) {
         setMerge(true)
@@ -161,7 +230,8 @@ const RoleBlock = ({role, t, roles, setRoles, setQuery, setMerging, merging, mat
             {lang: "fr", content: titleFrValue},
             {lang: "en", content: titleEnValue}
         ]}
-        updateRole(newRole, role._id)
+        if (scope === "tags") updateTag(newRole, role._id)
+        else updateRole(newRole, role._id)
     }
 
     useEffect(() => {
@@ -173,18 +243,37 @@ const RoleBlock = ({role, t, roles, setRoles, setQuery, setMerging, merging, mat
             setQuery('')
         }
     }, [responseUpdateRole])
-
+    useEffect(() => {
+        if (responseUpdateTag && responseUpdateTag.success) {
+            let newRoles = [...roles]
+            newRoles[roles.indexOf(role)] = responseUpdateTag.data
+            setRoles(newRoles)
+            setUpdate(false)
+            setQuery('')
+        }
+    }, [responseUpdateTag])
     const handleMerge = (e, matchingRole) => {
         e.preventDefault()
         const reqData = {
             origin: role,
             duplicate: matchingRole
         }
-        mergeRoles(reqData)
-        const newRoles = roles.filter((r) => {
-            if (r !== matchingRole) return r
-        })
-        setRoles(newRoles)
+        if (scope === "tags") mergeTags(reqData)
+        else mergeRoles(reqData)
+        const newRoles = []
+        if (scope === "tags") {
+            tags?.map((t) => {
+                if (t !== matchingRole) newRoles.push(t)
+            })
+            setTags(newRoles)
+
+        } else {
+            roles.map((r) => {
+                if (r !== matchingRole) newRoles.push(r)
+            })
+            setRoles(newRoles)
+
+        }
         setMerging(false)
         setMerge(false)
         setMatchingRoles([])
