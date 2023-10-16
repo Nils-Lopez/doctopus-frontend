@@ -21,6 +21,7 @@ import {usePeople} from "../../utils/hooks/People.js"
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useApplication } from "../../utils/hooks/Application"
 import { init } from "i18next"
+import { read_cookie } from 'sfcookies';
 
 const HomePage = ({client, setClient, setAlert, watchlist, history, applicationSettings, setSignUpModal}) => {
   const { t, i18n } = useTranslation();
@@ -258,7 +259,7 @@ const HomePage = ({client, setClient, setAlert, watchlist, history, applicationS
   <div className="inner two"></div>
   <div className="inner three"></div>
 </div> : (!result || !result.docs ||  !result.docs[0] || !window.location.href.includes('watchlist') && client && client.user && result.docs === client.user.watchList) && (!result || !result.items || !result.items[0]) && (!result || !result.tags || !result.tags[0]) && !displayDoc && !displayParent && !displayTag ? 
-  <Landing popularDocs={popularDocs} loadingLastDocs={loadingLastDocs} setInitialDoc={setInitialDoc} lastDocType={lastDocType} setLastDocType={setLastDocType}setDisplayDoc={setDisplayDoc} i18n={i18n} setResult={setResult} t={t} client={client} applicationSettings={applicationSettings}/> : <SearchResult result={result} client={client} setClient={setClient} applicationSettings={applicationSettings} setAlert={setAlert} page={page} setPage={setPage} loadingSearch={loadingSearch} setResult={setResult} displayDoc={displayDoc} setDisplayDoc={setDisplayDoc} displayParent={displayParent} setDisplayParent={setDisplayParent} setLoading={setLoadingSearch} watchlist={watchlist} history={history} handleSearch={submitSearch} displayTag={displayTag} navHistory={navHistory} setNavHistory={setNavHistory} setDisplayTag={setDisplayTag} setSignUpModal={setSignUpModal}/>}
+  <Landing popularDocs={popularDocs} setClient={setClient} loadingLastDocs={loadingLastDocs} setInitialDoc={setInitialDoc} lastDocType={lastDocType} setLastDocType={setLastDocType}setDisplayDoc={setDisplayDoc} i18n={i18n} setResult={setResult} t={t} client={client} applicationSettings={applicationSettings}/> : <SearchResult result={result} client={client} setClient={setClient} applicationSettings={applicationSettings} setAlert={setAlert} page={page} setPage={setPage} loadingSearch={loadingSearch} setResult={setResult} displayDoc={displayDoc} setDisplayDoc={setDisplayDoc} displayParent={displayParent} setDisplayParent={setDisplayParent} setLoading={setLoadingSearch} watchlist={watchlist} history={history} handleSearch={submitSearch} displayTag={displayTag} navHistory={navHistory} setNavHistory={setNavHistory} setDisplayTag={setDisplayTag} setSignUpModal={setSignUpModal}/>}
           </>}
           
       </div>
@@ -281,7 +282,7 @@ const Counter = ({ number }) => {
   );
 }
 
-const Landing = ({popularDocs, setDisplayDoc, setResult, loadingLastDocs, setInitialDoc, lastDocType, setLastDocType,  t, i18n, client, applicationSettings}) => {
+const Landing = ({popularDocs, setDisplayDoc, setClient, setResult, loadingLastDocs, setInitialDoc, lastDocType, setLastDocType,  t, i18n, client, applicationSettings}) => {
 
   const setDisplay = (item) => {
     setResult({docs: [item]})
@@ -289,7 +290,33 @@ const Landing = ({popularDocs, setDisplayDoc, setResult, loadingLastDocs, setIni
   }
 
 
+  const [loadingClient, setLoadingClient] = useState(false)
 
+  const cookieKey = "VISITOR_COOKIE_TOKEN"
+
+      //Fetch Users API
+      const {
+          responseFindUserById,
+          findUserById
+      } = useUsers()
+  
+      useEffect(() => {
+          //Check for cookies
+          if (read_cookie(cookieKey).id && !client && !loadingClient) {
+              findUserById(read_cookie(cookieKey).id)
+              setLoadingClient(true)
+          }
+      }, [])
+  
+      //Restore session and user data from cookie
+      useEffect(() => {
+          if (responseFindUserById && loadingClient) {
+              if (responseFindUserById.success) {
+                  setClient({user: responseFindUserById.data })
+                  setLoadingClient(false)
+              } 
+          }
+      }, [responseFindUserById, loadingClient])
 
 
 
