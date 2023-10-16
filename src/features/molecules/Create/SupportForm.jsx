@@ -152,23 +152,18 @@ const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selec
   }, [dataUpdate])
 
   return <>
-    {/* {pendingSupports.map((support) => {
-      return <Fragment key={support.title["fr"] + support.title["en"] + support.date}>
-        <SupportPreviewCard support={support} editSupportPreview={editSupportPreview} deleteSupportPreview={deleteSupportPreview}/>
-      </Fragment>
-    })} */}
-    
-    {/* <div className="field mt-3" id="supportTitle">
-      <label className="label has-text-left">{t('title')}</label>
-      {i18n.language === "en" ? <input type="text" className="input" value={titleEnValue} onChange={handleTitleEnChange}/> : <input type="text" className="input" value={titleFrValue} onChange={handleTitleFrChange}/>}
-    </div> */}
+
     <div className="field" id="supportDesc">
        <label className="label has-text-left">{t('description')}</label>
       {i18n.language === "en" ? <input type="text" className="input" value={descEnValue} onChange={handleDescEnChange}/> : <input type="text" className="input" value={descFrValue} onChange={handleDescFrChange}/>}
     </div>
-    <label className="label has-text-left mb--1">{t('types')}</label>
 
-    {template && template.support_role ? <RoleForm roles={roles} scope="docs" location="support-form-doc" selectedRoles={selectedRoles} selectRole={selectRole} defaults={template.support_role_defaults} lang={i18n.language} /> : null}
+    {template && template.support_role ? <>
+      <label className="label has-text-left mb--1">{t('types')}</label>
+
+      <RoleForm roles={roles} scope="docs" location="support-form-doc" selectedRoles={selectedRoles} selectRole={selectRole} defaults={template.support_role_defaults} lang={i18n.language} /> 
+    
+    </>: null}
     
 
     <div className="columns">

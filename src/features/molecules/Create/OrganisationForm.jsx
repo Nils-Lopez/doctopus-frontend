@@ -287,15 +287,14 @@ const OrganisationForm = ({client, setAlert, setCreated, dataUpdate, setDataUpda
         <input type="text" value={countryValue} onChange={handleCountryChange} className="input"/>
       </div>
       </div>
-    <RoleForm scope="parents" location="org-form" selectedRoles={selectedRoles} selectRole={selectRole} lang={i18n.language} />
-    <ActorForm selectedPeople={selectedActors} selectPerson={selectActor} lang={i18n.language} client={client} setAlert={setAlert}/>
-    <label className="label has-text-left mb-0 pb-0 mt-5">
-          {t('projects')}
+      <label className="label has-text-left mb--1 mt--2">
+          {t('roles')}
         </label>
-    <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj} lang={i18n.language} location="org-form"/>
-     <footer className="card-footer mt-3 pt-4 is-flex is-justify-content-center">
-      <button className="button is-primary is-medium" onClick={handleFormSubmit}>
-        {t('create')}
+    <RoleForm scope="parents" location="org-form" selectedRoles={selectedRoles} selectRole={selectRole} lang={i18n.language} />
+  
+     <footer className="card-footer mt-3 pt-4 is-flex is-justify-content-end">
+      <button className="button is-primary is-radiusless" onClick={handleFormSubmit}>
+        {t('confirm')}
       </button>
     </footer>
   

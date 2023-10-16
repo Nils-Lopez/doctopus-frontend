@@ -96,12 +96,11 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
      </div>
     {projForm ? <div className={"modal " + "is-active" }>
             <div className="modal-background"></div>
-            <div className="modal-card">
-                <div className="modal-card-head has-background-white-ter">
-                    <p className="modal-card-title is-size-3 ml-6">{t('create-project')}</p>
-                    <button onClick={() => setProjForm(false)} className="delete is-large ml-4" aria-label="close"></button>
-                </div>
-                <div className="modal-card-body has-background-white-ter">
+            <div className="modal-card ">
+              
+                <div className="modal-card-body has-background-white">
+                  <div className="is-flex is-justify-content-space-between"><p className="modal-card-title title has-text-left is-4 pt-1">{t('project')}</p>
+                    <button onClick={() => setProjForm(false)} className="delete is-large ml-4" aria-label="close"></button></div>
                   <ProjectForm client={client} setAlert={setAlert} setCreated={setCreated}/>
                 </div>
        

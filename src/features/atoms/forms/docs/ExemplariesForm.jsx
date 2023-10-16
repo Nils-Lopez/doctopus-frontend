@@ -61,16 +61,16 @@ const ExemplariesForm= ({setPendingExemplaries, pendingExemplaries, template}) =
   }
   
   return <>  
-    <div className="box mt-5">
-      <label className="label title is-4">
-      {t('copies')}
+    <div className=" mt-5">
+      <hr />
+    <label className="label subtitle is-5 has-text-left mb-5">
+      {t('copies')} <span className="tag">{pendingExemplaries.length}</span>
       </label>
-      <div className="columns">
+      
+      <div className="container px-4 columns ">
         {pendingExemplaries.map((ex) => {
         return <Fragment key={ex.location}>
-          <div className="column">
             <ExemplaryPreviewCard exemplary={ex} editExemplary={editExemplary} deleteExemplary={deleteExemplary}/>
-          </div>
         </Fragment>
       })}
       </div>
@@ -99,7 +99,7 @@ const ExemplariesForm= ({setPendingExemplaries, pendingExemplaries, template}) =
         <input type="text" className="input" value={qualityValue} onChange={handleQualityChange} />
       </div> : null}
       <div className="is-flex is-justify-content-end">
-        <button className="button is-primary" onClick={handleExBtn}>{t('confirm')}</button>
+        <button className="button is-radiusless is-primary" onClick={handleExBtn}>{t('confirm')}</button>
       </div>
     </div>
     

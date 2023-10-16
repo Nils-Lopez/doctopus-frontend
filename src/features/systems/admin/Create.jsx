@@ -25,7 +25,7 @@ const Create = ({client, setAlert, setClient, applicationSettings}) => {
     }
 
     return <div className="columns is-flex is-justify-content-center mt-5">
-      <div className="column is-three-quarters-mobile is-two-thirds-tablet is-half-desktop is-half-widescreen mt-5">
+      <div className="column is-7 mt-5">
         <div className="box">
           {selectedType && selectedType.value === "document" ? null : <div className="columns">
             <div className="column is-one-third">

@@ -190,16 +190,16 @@ const ProjectForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) 
             <input type="date" className="input is-active" value={dateValue} onChange={handleDateChange}/>
         </div>
         <RoleForm scope="parents" location="project-form" selectedRoles={selectedRoles} selectRole={selectRole} lang={idLang} />
-        <label className="label has-text-left mb--1">
-            {t('actors')}
-            </label>
-        <SearchForm selectedItems={selectedActors} selectItem={selectActor} searchItems={searchPeople} responseSearchItems={responseSearchPeople} mainField={"name"}/>
+
         <label className="label has-text-left mb--1">
             {t('Organizations')}
             </label>
         <SearchForm selectedItems={selectedOrgs} selectItem={selectOrg} searchItems={searchEntities} responseSearchItems={responseSearchEntities} mainField={"name"}/>
-
-        <button className="button is-primary is-medium is-radiusless  " onClick={handleSubmit}>{t('create')}</button>
+        <footer className="card-footer mt-3 pt-4 is-flex is-justify-content-end">
+      <button className="button is-primary is-radiusless" onClick={handleSubmit}>
+        {t('confirm')}
+      </button>
+    </footer>
     </>
 }
 

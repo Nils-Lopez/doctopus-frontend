@@ -174,16 +174,15 @@ console.log('org: ', orgForm)
     {orgForm ? <div className={"modal " + "is-active" }>
       <div className="modal-background"></div>
         <div className="modal-card mb-6 mt-6">
-          <div className="modal-card-head has-background-white-ter">
-            <p className="modal-card-title is-size-3 ml-6">{t('organization')}</p>
-              <button onClick={() => setOrgForm(false)} className="delete is-large ml-4" aria-label="close"></button>
-              </div>
-              <div className="modal-card-body has-background-white-ter"> 
-                <OrganisationForm client={client} setAlert={setAlert} setCreated={setCreated} draftOrg={orgForm}/>
-              </div>
-       
-            </div>
-            
+          
+            <div className="modal-card-body has-background-white">
+                  <div className="is-flex is-justify-content-space-between">
+                    <p className="modal-card-title title has-text-left is-4 pt-1">{t('organization')}</p>
+                    <button onClick={() => setOrgForm(false)} className="delete is-large ml-4" aria-label="close"></button>
+                    </div>
+                    <OrganisationForm client={client} setAlert={setAlert} setCreated={setCreated} draftOrg={orgForm}/>
+                </div>
+        </div>
         </div> : null}
   </>
 }

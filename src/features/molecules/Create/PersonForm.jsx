@@ -181,7 +181,7 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate, dr
      setLoading(true)
     const reqData = {
       person: {
-        name: nameValue,
+        name: nameValue !== "" ? nameValue : firstNameValue + " " + lastNameValue,
         description: [{ lang: "en", content: descEnValue }, {lang: "fr", content: descFrValue}],
         birthDate: birthDateValue,
         deathDate: deathDateValue,
@@ -299,12 +299,7 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate, dr
    {merge ? <>
       <MergeForm originItem={dataUpdate} searchItem={searchPeople} responseSearchItem={responseSearchPeople} mergeItem={mergePeople}/>
    </> : <>
-   <div className="field">
-      <label className="label has-text-left">
-        {t('name')}
-      </label>
-      <input type="text" value={nameValue} onChange={handleNameChange} className="input"/>
-    </div>
+  
       <div className="columns">
       <div className="column field">
       <label className="label has-text-left">
@@ -312,6 +307,7 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate, dr
       </label>
       <input type="text" value={firstNameValue} onChange={handleFirstNameChange} className="input"/>
     </div>
+    
     <div className="column field">
       <label className="label has-text-left">
       {t('last-name')}
@@ -319,8 +315,13 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate, dr
       <input type="text" value={lastNameValue} onChange={handleLastNameChange} className="input"/>
     </div>
     </div>
-   
-    <div className="columns">
+    <div className="field mt--2">
+      <label className="label has-text-left">
+        {t('description')}
+      </label>
+      <textarea value={i18n.language === "en" ? descEnValue : descFrValue} onChange={handleDescChange} className="textarea"></textarea>
+    </div>
+    <div className="columns mb--1">
       <div className="column field">
       <label className="label has-text-left">
       {t('birthdate')}
@@ -334,7 +335,7 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate, dr
       <input type="date" value={deathDateValue} onChange={handleDeathDateChange} className="input"/>
     </div>
     </div>
-    <div className="columns">
+    <div className="columns mt--2">
       <div className="column field">
       <label className="label has-text-left">
         {t('city')}
@@ -348,30 +349,20 @@ const PersonForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate, dr
       <input type="text" value={countryValue} onChange={handleCountryChange} className="input"/>
     </div>
     </div>
-    <div className="field">
-      <label className="label has-text-left">
-        {t('description')}
-      </label>
-      <textarea value={i18n.language === "en" ? descEnValue : descFrValue} onChange={handleDescChange} className="textarea"></textarea>
-    </div>
-      <div className="field">
+    
+      <div className="field mt--2">
         <label className="label has-text-left">
           {t('link-url')}
         </label>
         <input type="text" value={urlValue} onChange={handleUrlChange} className="input"/>
       </div>
       
-    <label className="label has-text-left">
-        {t('projects')}
-      </label>
-    <ProjectParentForm selectedProj={selectedProj} selectProj={selectProj} lang={i18n.language} client={client} setAlert={setAlert}/>
-    <label className="label has-text-left mt-5 mb-0 pb-0">
-        {t('organization')}
-      </label>
-    <OrganisationParentForm selectedOrg={selectedOrg} selectOrg={selectOrg} lang={i18n.language} client={client} setAlert={setAlert}/>
-    <button className="button is-large is-primary" onClick={handlePersonSubmit}>
+      <footer className="card-footer mt-3 pt-4 is-flex is-justify-content-end">
+
+    <button className="button is-primary is-radiusless" onClick={handlePersonSubmit}>
       {t('create')}
     </button>
+    </footer>
    </>}
   </> 
 }
