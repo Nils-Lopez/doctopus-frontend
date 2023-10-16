@@ -12,7 +12,7 @@ const Alert = ({alertType, message, setAlert = false}) => {
             {setAlert ? <button className="delete" onClick={() => setAlert(null)}></button> : null}
             {message['en']}
     </div>
-
+ 
 }
 
 export default Alert
