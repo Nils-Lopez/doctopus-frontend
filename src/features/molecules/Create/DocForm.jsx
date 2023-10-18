@@ -528,6 +528,7 @@ const DocForm = ({client, setAlert, setClient, applicationSettings, selectedType
     }
   }, [])
 
+
   useEffect(() => {
     if (responseFindAllLanguages && responseFindAllLanguages.success) {
       const newOptions = []

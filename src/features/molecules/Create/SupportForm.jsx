@@ -66,7 +66,7 @@ const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selec
   }
 
 
-
+  console.log(selectedRoles)
   const handleNewSupportBtn = () => {
     const newSupport = {
       title: [{lang: "en", content: titleEnValue}, {lang: "fr", content: titleFrValue}],
@@ -79,7 +79,6 @@ const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selec
       roles: selectedRoles
     }
     setPendingSupports([newSupport])
-    console.log('eeh new support', newSupport, pdfValue)
     // setTitleEnValue("")
     // setTitleFrValue("")
     // selectRole([])
@@ -151,6 +150,7 @@ const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selec
     }
   }, [dataUpdate])
 
+
   return <>
 
     <div className="field" id="supportDesc">
@@ -158,12 +158,7 @@ const SupportForm = ({ pendingSupports, setPendingSupports, selectedRoles, selec
       {i18n.language === "en" ? <input type="text" className="input" value={descEnValue} onChange={handleDescEnChange}/> : <input type="text" className="input" value={descFrValue} onChange={handleDescFrChange}/>}
     </div>
 
-    {template && template.support_role ? <>
-      <label className="label has-text-left mb--1">{t('types')}</label>
-
-      <RoleForm roles={roles} scope="docs" location="support-form-doc" selectedRoles={selectedRoles} selectRole={selectRole} defaults={template.support_role_defaults} lang={i18n.language} /> 
     
-    </>: null}
     
 
     <div className="columns">

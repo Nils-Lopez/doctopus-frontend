@@ -19,7 +19,6 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
 
   const { t, i18n } = useTranslation()
 
-console.log('org: ', orgForm)
   useEffect(() => {
    
     if (template && template.parent_entity_defaults && template.parent_entity_defaults[0] && selectedOrg.length === 0) {
@@ -70,10 +69,8 @@ console.log('org: ', orgForm)
             }
           })
           setDraftOrg(filteredDrafts)
-          console.log('filteredDrafts', filteredDrafts)
         } else       selectRole([])
 
-        console.log("filtered: ", filtered)
     } else {
       selectRole([])
 
@@ -112,10 +109,8 @@ console.log('org: ', orgForm)
             }
           })
           setDraftOrg(filteredDrafts)
-          console.log('filteredDrafts', filteredDrafts)
         } else       selectRole([])
 
-        console.log("filtered: ", filtered)
     } else {
       selectRole([])
 

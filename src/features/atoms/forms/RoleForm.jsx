@@ -23,7 +23,7 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
   useEffect(() => {
     if (defaults && defaults[0]) {
       defaults.map((role) => {
-        if (!selectedRoles.includes(role)) {
+        if (!selectedRoles || !selectedRoles.includes(role)) {
           selectRole([...selectedRoles, role])
         }
       })
