@@ -273,7 +273,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                                 : null}        
                                 {doc.pages && doc.pages !== "" ? <p className="has-text-left mt-1  mb-0 pt-0">{((!(doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2)) || doc.pages.includes('-')) ? "Pages : " : null} {doc.pages} {!(doc.pages.includes('-')) && doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2 ? "pages" : null}</p> : doc.volume && doc.volume !== "" ? 
                                 <p className="has-text-left mt-1  mb-0 pt-0">{t('volume')} {doc.volume}</p>
-                                : doc.number && doc.number !== "" ? 
+                                :null}{doc.number && doc.number !== "" ? 
                                 <p className="has-text-left mt-1  mb-0 pt-0">{t('number')} {doc.number}</p>
                                  : null}  
                                {doc.issn && doc.issn !== "" ?  <p className="has-text-left mt-1  mb-0 pt-0">ISSN: {doc.issn} </p> : null}
@@ -312,7 +312,7 @@ const Show = ({doc, handleSearchTag, client, setClient, setAlert, handleSearchPa
                                 : null}        
                                 {doc.pages && doc.pages !== "" ? <p className="has-text-left mt-1  mb-0 pt-0">{!(doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2) || doc.pages.includes('-') ? "Pages : " : null} {doc.pages} {doc.pages.charAt(0) * 2 && doc.pages.charAt(doc.pages.length -1) * 2 && !doc.pages.includes('-') ? "pages" : null}</p> : doc.volume && doc.volume !== "" ? 
                                 <p className="has-text-left mt-1  mb-0 pt-0">{t('volume')} {doc.volume}</p>
-                                : doc.number && doc.number !== "" ? 
+                                :null}{ doc.number && doc.number !== "" ? 
                                 <p className="has-text-left mt-1  mb-0 pt-0">{t('number')} {doc.number}</p>
                                  : null}  
                                {doc.issn && doc.issn !== "" ?  <p className="has-text-left mt-1  mb-0 pt-0">ISSN: {doc.issn} </p> : null}

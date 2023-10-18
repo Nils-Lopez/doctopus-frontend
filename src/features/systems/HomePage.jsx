@@ -189,7 +189,7 @@ const HomePage = ({client, setClient, setAlert, watchlist, history, applicationS
     }
   }, [responseSearch])
   
-  
+
   
   useEffect(() => {
     if (!popularDocs) {
@@ -323,7 +323,7 @@ const Landing = ({popularDocs, setDisplayDoc, setClient, setResult, loadingLastD
   return <>
   
  
-      <div className="container recents-container mt-6 mb-0 pb-0 pl-2 pr-4">
+      <div className="container recents-container mt-6 mb-0 pb-0 ">
         <div className="metrics">
         <h1 className="title is-4 has-text-white has-text-shadow mb-0">{applicationSettings && applicationSettings.homePageSubtitles && applicationSettings.homePageSubtitles[0] ? getContent(applicationSettings.homePageSubtitles[0].subtitle, i18n.language) : null}</h1>
         <div className="columns is-multiline pb-0 mb-0 mt-1 is-mobile">

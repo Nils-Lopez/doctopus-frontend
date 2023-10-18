@@ -96,7 +96,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
 
             </div>
         </div>
-    } else if (item.person && parent !== "person") {
+    } else if (item.person && parent !== "person" && item.person._id) {
         return <div className={width !== "full" ? "column is-one-quarter-desktop is-half-tablet" : "column"}>
             <div className={"box results-col " +colClasses} onClick={() => {
                 if (!handleDelete) handleSearchParent(item.person)
@@ -123,7 +123,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
                 <div className="is-flex is-justify-content-start mb-0">
                         <div className="mt-3 mb-0">
                     
-                        {item.person.childs.length > 0 ? <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.person.childs.length} {t('documents')}</span> : null}
+                        {item.person.childs && item.person.childs.length > 0 ? <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.person.childs.length} {t('documents')}</span> : null}
                         </div>
                     </div>
             </div>

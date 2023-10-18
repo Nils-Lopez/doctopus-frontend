@@ -41,7 +41,7 @@
     }
 
 
-.title {
+.title, .search-button {
     font-family: var(--serif), serif !important;
 }
 

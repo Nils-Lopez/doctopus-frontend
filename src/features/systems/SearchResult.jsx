@@ -305,7 +305,7 @@ const SearchResult = ({result, client, setAlert, setClient, page, setPage, handl
     <div className="inner two"></div>
     <div className="inner three"></div>
   </div> : <>
-    <div className="container pb-6 overflow-auto pl-2">
+    <div className="container pb-6 overflow-auto ">
         {!(client && client.user && watchlist) && !(displayParent && !showParentDoc) && !(displayDoc) && !history && !searchTags.docs ? <div className="is-flex is-justify-content-start mt-0 mb-0 pb-0 pt-0" id="backBtn">
             <button className="button is-light" onClick={handleBack}>
                 <FontAwesomeIcon icon={faRotateLeft} size="lg"/>

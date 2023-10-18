@@ -78,8 +78,9 @@ const SearchBar = ({searchValue, setSearchValue, filtersData, setFiltersValue, a
     }, [selectedTypes, value])
 
     return <>
-      <div className=' landing-container is-flex is-justify-content-center  w-100'>
-     
+      <div className='  is-flex is-justify-content-center  w-100'>
+     <div className="landing-container">
+
   <div className='columns is-mobile box search-box '>
     <div className='column  is-9 is-paddingless'>
       <div className='search-block' id="searchBlock">
@@ -97,11 +98,11 @@ const SearchBar = ({searchValue, setSearchValue, filtersData, setFiltersValue, a
     </div>
    
    
-    <div className='column  is-paddingless desktop-only'>
+    <div className='column  is-paddingless desktop-only has-text-monospace'>
         {searchValue.length > 0 ? <button className='button is-primary is-large search-button' type="submit"><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/> &nbsp; <strong>{t('search')}</strong></button> :
-        <button className='button is-primary is-large search-button' onClick={(e) => e.preventDefault()}><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/> &nbsp; <strong>{t('search')}</strong></button>}
+        <button className='button is-primary is-large search-button' onClick={(e) => e.preventDefault()}><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/> &nbsp; <strong >{t('search')}</strong></button>}
     </div>
-        {searchValue.length > 0 ?<button className="is-large search-button button is-primary nodesk-only is-hidden-tablet"><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/></button> : <button className="is-large search-button button is-primary nodesk-only is-hidden-tablet" onClick={e => e.preventDefault()}><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/></button>}
+        {searchValue.length > 0 ?<button className="is-large search-button button is-primary nodesk-only is-hidden-tablet"><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/></button> : <button className="search-button button subtitle is-4 is-primary nodesk-only is-hidden-tablet" onClick={e => e.preventDefault()}><FontAwesomeIcon icon={faMagnifyingGlass} size="xl"/></button>}
         </div>
         
       </div>
@@ -119,6 +120,8 @@ const SearchBar = ({searchValue, setSearchValue, filtersData, setFiltersValue, a
       {/* <div className="mt-5  pt-5 has-text-center mr-1 landing-container">
         testsdsdsdsdsdsdsdsdsddsdsdsd
       </div> */}
+           </div>
+
 </>
 }
 

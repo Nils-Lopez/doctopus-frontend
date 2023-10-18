@@ -97,7 +97,7 @@ const Show = ({parent, client, setAlert, handleSearchParent, handleSearchDoc, ha
     } = useEntities()
 
     useEffect(() => {
-        if (childs && childs[0] && !childsData && !childsDataLoading && childs.length >= 50) {
+        if (childs && childs[0] && !childsData && !childsDataLoading && childs.length >= 16) {
             setChildsDataLoading(true)
             switch (window.location.pathname.split("/")[1]) {
                 case "project":

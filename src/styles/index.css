@@ -342,8 +342,8 @@ body {
   height: 60px;
   width: 800px !important;
   position: relative;
-  left: -16px;
   z-index: 1;
+  border: none;
 }
 
 .max-40 {
@@ -396,7 +396,7 @@ body {
 
 @media only screen and (max-width: 1023px) {
   .landing-container .search-box {
-    width: 90% !important;
+   width: 550px !important;
   }
   .dropdown-user-logged {
     visibility: hidden;
@@ -408,15 +408,25 @@ body {
   display: none !important;
 }
 
+.search {
+  margin-top: -50px;
+}
+
 @media only screen and (max-width: 650px) {
+  .landing-container {
+    width: 100%;
+    display: flex !important;
+    justify-content: center !important;
+    margin-left: 0.2rem !important;
+  }
+  .landing-content {
+    margin-left: 0.3rem !important;
+  }
   .landing-container .search-box {
     width: 80% !important;
-    margin-right: 0px;
-    left: 0;
+
   }
-  .recents-container {
-    margin-left: 18px !important;
-  }
+ 
   .search-label {
     display: none !important;
   }
@@ -485,7 +495,6 @@ body {
   height: 80px;
   margin-top: -10px;
   padding: 0;
-  border-right: 2px solid rgba(10, 10, 10, 0.1);
   background: #fff;
   transition: all 0.3s ease;
 }
@@ -687,10 +696,12 @@ body {
 
 
 .landing-container .search-box .search-button {
-  width: 106%;
-  height: 82px;
-  margin-top: -11px;
-  
+  width: 25%;
+  height: 80px;
+  margin-top: -10px;
+  text-align: center;
+  position: absolute;
+  left: 75%;
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
   border-top-right-radius: 5px;
