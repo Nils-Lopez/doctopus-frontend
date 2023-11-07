@@ -197,8 +197,8 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
                   if (t.scope === scope) {
                     return <Fragment key={t.slug}>
                     <span className="tag is-info mt-2 is-small mr-1 opacity-50" onClick={(e) => {
-                      console.log('rols: ', selectedRoles)
-                        selectRole([...selectedRoles, t])
+                        e.preventDefault()
+                          selectRole([...selectedRoles, t])
                         setRoles([])
                         setRoleForm(false)
                         setRoleFrValue("")

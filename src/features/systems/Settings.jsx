@@ -59,7 +59,7 @@ const Settings = ({client, setClient, setAlert, applicationSettings, setApplicat
         <div className="columns mx-2 mt-5 overflow-hidden">
             <div className="column is-one-quarter template-fixed mt-5 ">
                 <div className="is-fixed">
-                <div className="panel is-grey ">
+                <div className="panel is-grey has-background-white">
                     <a className={classNames('documents')} onClick={() => setPage("documents")}>
                       <span className="panel-icon">
                         

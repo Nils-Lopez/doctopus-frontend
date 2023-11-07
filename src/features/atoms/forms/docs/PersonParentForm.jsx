@@ -48,7 +48,6 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
   const handleAddPerson = (p) => {
     const newPerson = {person: p, roles: selectedRoles}
     selectPerson([...selectedPeople, newPerson])
-      console.log("test", draftPerson[0] && personValue === draftPerson[0].person.name)
       if (draftPerson[0] && personValue === draftPerson[0].person.name) {
         const filtered = []
         autoCompletion.parents.map((p) => {
@@ -69,10 +68,8 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
             }
           })
           setDraftPerson(filteredDrafts)
-          console.log('filteredDrafts', filteredDrafts)
         } else       selectRole([])
 
-        console.log("filtered: ", filtered)
     } else {
       selectRole([])
 
@@ -128,7 +125,6 @@ const PersonParentForm = ({selectedPeople, selectPerson, location, template, lan
   }, [draftPerson])
 
 
-  console.log(draftPerson)
 
   return <>
       {(template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="parents" location={!location || !location.includes("template") ? "org-parent-doc" : "template-parent"} selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}

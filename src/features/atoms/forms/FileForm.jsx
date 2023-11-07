@@ -42,8 +42,8 @@ const FileUpload = ({setFile, pdf}) => {
     setUploading(true);
     
     const options = compress ? {
-      maxSizeMB: 0.005,
-      maxWidthOrHeight: 250
+      maxSizeMB: 0.29,
+      maxWidthOrHeight: 450
     } : {
       maxSizeMB: 1,
       maxWidthOrHeight: 1920

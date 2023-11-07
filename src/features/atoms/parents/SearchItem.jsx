@@ -50,7 +50,6 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
                         <div>
                         {item.roles.map((tag, i) => {
                             let title = getContent(tag.title, i18n.language)
-                            console.log("test: ", title)
                             if (i < 2 && title !== "Error" && title !== "") {
                                 return <Fragment key={JSON.stringify(tag)}>
                                 <span className="tag is-info is-small mb-2 " >{title}</span>
@@ -147,7 +146,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
                 </div>
                 <h3 className="subtitle is-5 mb-1 mt-1">{item.entity.name}</h3>
                 <span className='has-text-grey'><small>{item.entity.country ? item.entity.country + ", " : null}{item.entity.city}</small></span>
--                {item.entity.childs.length > 0 ? <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.entity.childs.length} {t('documents')}</span> : null}
+-                {item.entity.childs?.length > 0 ? <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.entity.childs.length} {t('documents')}</span> : null}
 
             </div>
         </div>

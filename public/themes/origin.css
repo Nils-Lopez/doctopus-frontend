@@ -17,7 +17,7 @@
 }
 
 
-.content:has(> .landing) {
+.content {
     background-color: var(--bg-color);
     background-size: cover;
     background-position: top;
@@ -29,13 +29,13 @@
 }
 
 @supports ( -webkit-touch-callout : none) {
-    .content:has(> .landing) {
+    .content{
     background-attachment:scroll
     }
     }
     
     @supports not ( -webkit-touch-callout : none) {
-        .content:has(> .landing) {
+        .content {
     background-attachment: fixed;
     }
     }

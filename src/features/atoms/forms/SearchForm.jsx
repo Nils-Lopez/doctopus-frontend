@@ -199,7 +199,7 @@ const ItemForm = ({scope, location, selectedItems, originItem, handleAddItem, se
             <div className={inputClasses}>
           <input type="text" placeholder={location === "templates" ? "Default types" : location === "templates-parents" ? "Default items" : location && location.includes("parent") ? "Items": ""} className="input" value={i18n.language === "en" ? itemEnValue : itemFrValue} onChange={handleItemChange}/>
 
-          <span class="icon is-small is-left ">
+          <span className="icon is-small is-left ">
            <i className="has-text-grey  " ><FontAwesomeIcon icon={faMagnifyingGlass} /></i>
     </span>
  
@@ -213,7 +213,7 @@ const ItemForm = ({scope, location, selectedItems, originItem, handleAddItem, se
        <div className="columns is-multiline pl-3 mt-1 is-flex is-justify-content-start ">
        {items.map((t, i) => {
                   if ((!scope || t.scope === scope) && i < 5 && (!originItem || originItem._id !== t._id)) {
-                    return <Fragment key={t.slug}>
+                    return <Fragment key={Math.random()}>
                     <span className="tag is-info mt-2 is-small mr-1 opacity-50" onClick={(e) => {
 
                         if (!handleAddItem) {

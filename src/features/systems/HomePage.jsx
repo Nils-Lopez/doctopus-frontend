@@ -220,13 +220,7 @@ const HomePage = ({client, setClient, setAlert, watchlist, history, applicationS
    
 
 
-    useEffect(() => {
-      const root = document.documentElement;
-      const bgUrls = ['https://imagesdoctopus.blob.core.windows.net/contredanse/Lara%20Barsaq%20-%20Fruit%20Tree%C2%A9Stanislav%20Dobak.jpg', 'https://imagesdoctopus.blob.core.windows.net/contredanse/TheGoldbergVariations_(c)Kat_ja%20Illner_20221013-163700.jpg']
-
-      root.style.setProperty("--bg-image", 'url("' + bgUrls[Math.floor(Math.random()*bgUrls.length)] + '")');
-      
-    }, [])
+    
 
     const handleFindLastDocs = (type) => {
       findPopularDocs(type)

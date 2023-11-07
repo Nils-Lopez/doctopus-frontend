@@ -164,7 +164,7 @@ const ProjectForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) 
   <div className="inner one"></div>
   <div className="inner two"></div>
   <div className="inner three"></div>
-</div> : <>
+</div> : <div>
         
         <div className="is-flex is-justify-content-end">{dataUpdate ?
       <button className="button is-danger is-small mt-3" onClick={handleDeleteProj}>
@@ -200,7 +200,7 @@ const ProjectForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) 
         {t('confirm')}
       </button>
     </footer>
-    </>
+    </div>
 }
 
 export default ProjectForm

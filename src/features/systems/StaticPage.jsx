@@ -21,7 +21,7 @@ const StaticPage = ({applicationSettings}) => {
     const Components = {paragraph, title}
 
     return <>
-        <div className="container pt-6 mt-4 no-overflow">
+        <div className="container mt-7 no-overflow box has-background-white">
             {page.components?.map((component) => {
                 const ComponentType = Components[component.type]
                 return <ComponentType content={component.content} i18n={i18n}/>

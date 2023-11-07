@@ -12,6 +12,15 @@
 .line-break {
   word-break: break-all;
 
+  
+}
+
+.mt-7 {
+  margin-top:70px !important;
+}
+
+.settings-scrollable {
+overflow-y: scroll;
 }
 .no-overflow {
   width: 100%;
