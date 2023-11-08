@@ -64,7 +64,12 @@ function App() {
         document
           .querySelector('meta[name="description"]')
           .setAttribute("content", settings.metaTagValue);
-      if (settings.htmlTitle) document.title = settings.htmlTitle;
+      if (settings.htmlTitle) {
+        document
+          .querySelector('title')
+          .setAttribute("content", settings.htmlTitle);
+        document.title = settings.htmlTitle;
+      }
       if (
         applicationSettings.backgroundColor &&
         applicationSettings.backgroundColor !== ""

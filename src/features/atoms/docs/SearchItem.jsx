@@ -114,7 +114,7 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
                 {!watchlist && item.doc && item.doc.tags && item.doc.tags[0] ? <>
                     <hr />
          
-                    <div className="columns is-multiline tag-search-item is-flex is-justify-content-space-around ">
+                    <div className="columns is-multiline  is-flex is-justify-content-space-around ">
                         {item.doc.tags.map((tag, i) => {
                             if (tag) {
                                 let title = getContent(tag.title, i18n.language)

@@ -27,6 +27,7 @@ import {
   FacebookIcon,
 } from "react-share";
 import { useProds } from "../../../utils/hooks/Prods";
+import removeDuplicates from "../../../utils/helpers/duplicates.js";
 
 const Show = ({
   doc,
@@ -202,6 +203,8 @@ const Show = ({
 
   const [displayThumb, setDisplayThumb] = useState(true);
   const [displayVideo, setDisplayVideo] = useState(false);
+
+  console.log(childs, child_docs)
 
   return showScapinParent ? (
     <>
@@ -1083,7 +1086,7 @@ const Show = ({
                 })}
               </>
             ) : null}
-            {childs.map((parent) => {
+            {removeDuplicates([...childs, ...child_docs]).map((parent) => {
               if (parent.doc) {
                 return (
                   <Fragment key={JSON.stringify(parent)}>
@@ -1097,20 +1100,7 @@ const Show = ({
                 );
               }
             })}
-            {child_docs.map((parent) => {
-              if (parent.doc) {
-                return (
-                  <Fragment key={JSON.stringify(parent)}>
-                    <BoxItemParent
-                      item={parent}
-                      handleSearchParent={handleSearchParent}
-                      handleSearchDoc={handleSearchDoc}
-                      parent="parent_doc"
-                    />
-                  </Fragment>
-                );
-              }
-            })}
+           
           </div>
         </>
       ) : null}

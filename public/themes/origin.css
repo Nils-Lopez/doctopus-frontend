@@ -1,78 +1,97 @@
-@import url('https://fonts.googleapis.com/css2?family=Bitter&family=Libre+Baskerville&family=Merriweather&family=Oswald&family=Roboto&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Bitter&family=Libre+Baskerville&family=Merriweather&family=Oswald&family=Roboto&display=swap");
 @font-face {
-    font-family: "Dinot";
-    src: url("/DINOT.otf") format("truetype");
-    font-weight: normal;
-    font-style: normal;
+  font-family: "Dinot";
+  src: url("/DINOT.otf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
 }
-
 
 :root {
-    --primary: black;
-    --secondary: cyan;
-    --serif: "Libre Baskerville";
-    --sans-serif: "Dinot";
-    --bg-color: #efeff0;
-    --bg-image: none;
+  --primary: black;
+  --secondary: cyan;
+  --serif: "Libre Baskerville";
+  --sans-serif: "Dinot";
+  --bg-color: #efeff0;
+  --bg-image: none;
 }
-
 
 .content {
-    background-color: var(--bg-color);
-    background-size: cover;
-    background-position: top;
-    background-image: var(--bg-image) !important;
-    background-repeat: no-repeat;
-    -o-background-size: cover;
-    -moz-background-size: cover;
-    -webkit-background-size: cover;
+  background-color: var(--bg-color);
+  background-size: cover;
+  background-position: top;
+  background-image: var(--bg-image) !important;
+  background-repeat: no-repeat;
+  -o-background-size: cover;
+  -moz-background-size: cover;
+  -webkit-background-size: cover;
 }
 
-@supports ( -webkit-touch-callout : none) {
-    .content{
-    background-attachment:scroll
-    }
-    }
-    
-    @supports not ( -webkit-touch-callout : none) {
-        .content {
+@supports (-webkit-touch-callout: none) {
+  .content {
+    background-attachment: scroll;
+  }
+}
+
+@supports not (-webkit-touch-callout: none) {
+  .content {
     background-attachment: fixed;
-    }
-    }
-
-
-.title, .search-button {
-    font-family: var(--serif), serif !important;
+  }
 }
 
-body, .subtitle,  button, input, optgroup, select, textarea {
+.title,
+.search-button {
+  font-family: var(--serif), serif !important;
+}
+
+.search-input::placeholder,
+.search-input::-webkit-input-placeholder {
     font-family: var(--sans-serif), sans-serif !important;
+    font-size: 21px;
 }
 
-.button.is-primary, .css-eg0mwd-MuiSlider-thumb, .has-background-primary, .file.is-primary .file-cta, .tag:not(body).is-primary {
-    background-color: var(--primary) !important;
+body,
+.subtitle,
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: var(--sans-serif), sans-serif !important;
 }
 
-.select:not(.is-multiple):not(.is-loading)::after  {
-    border-color: var(--primary) !important;
+.button.is-primary,
+.css-eg0mwd-MuiSlider-thumb,
+.has-background-primary,
+.file.is-primary .file-cta,
+.tag:not(body).is-primary {
+  background-color: var(--primary) !important;
+}
+
+.select:not(.is-multiple):not(.is-loading)::after {
+  border-color: var(--primary) !important;
 }
 
 .tabs li.is-active a {
-    border-bottom-color: var(--primary) !important;
+  border-bottom-color: var(--primary) !important;
 }
 
-.has-text-primary, .panel-block.is-active .panel-icon, a, .css-eg0mwd-MuiSlider-thumb, .css-187mznn-MuiSlider-root{
-    color:  var(--primary) !important;    
+.has-text-primary,
+.panel-block.is-active .panel-icon,
+a,
+.css-eg0mwd-MuiSlider-thumb,
+.css-187mznn-MuiSlider-root {
+  color: var(--primary) !important;
 }
 
-.has-text-info{
-    color:  var(--secondary) !important;
+.has-text-info {
+  color: var(--secondary) !important;
 }
 
-.inner.one,.inner.three {
-    border-bottom: 10px solid var(--secondary) !important;
+.inner.one,
+.inner.three {
+  border-bottom: 10px solid var(--secondary) !important;
 }
 
 .is-info {
-    background-color:  var(--secondary) !important;
+  background-color: var(--secondary) !important;
 }

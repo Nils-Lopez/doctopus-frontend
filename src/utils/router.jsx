@@ -79,6 +79,9 @@ const Router = ({applicationSettings, setApplicationSettings}) => {
               <Route path="/search">
                 <Route path=":query" element={<HomePage client={client} setClient={setClient} watchlist={false} setAlert={setAlert} applicationSettings={applicationSettings}/>}/>
               </Route>
+              <Route path="/category">
+                <Route path=":category" element={<HomePage client={client} setClient={setClient} watchlist={false} setAlert={setAlert} applicationSettings={applicationSettings}/>}/>
+              </Route>
               <Route path="/person">
                 <Route path=":person_slug" element={<HomePage client={client} setClient={setClient} watchlist={false} setAlert={setAlert} applicationSettings={applicationSettings}/>}/>
               </Route>    

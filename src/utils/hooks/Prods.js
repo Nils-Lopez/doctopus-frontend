@@ -157,9 +157,8 @@ const useProds = () => {
               "/docs/parents/prod/" + prodSchema.prod._id
             );
 
-            if (parentDocs.data)
-              prodSchema.parents = [...parents, ...parentDocs.data];
-            else prodSchema.parents = [...parents];
+            if (parentDocs.data) prodSchema.prod.childs = [...parentDocs.data];
+            prodSchema.parents = [...parents];
 
             const prod = {
               item: prodSchema,

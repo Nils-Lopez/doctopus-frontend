@@ -94,7 +94,7 @@ const Show = ({
   const [childsPageLoading, setChildsPageLoading] = useState(false);
 
   const [childsSearchLoading, setChildsSearchLoading] = useState(false);
-
+  console.log(parent)
   const {
     findProjectChildsDataById,
     responseFindProjectChildsDataById,
@@ -897,7 +897,7 @@ const Show = ({
           <hr />
           <div className="is-flex is-justify-content-space-between">
             <h3 className="subtitle has-text-grey has-text-left is-5 mb-1">
-              {t("parents")}
+              {t("relations")}
             </h3>
 
             <div className="mt--1">
@@ -1106,7 +1106,7 @@ const Show = ({
             </div>
           </div>
         </>
-      ) : null}
+      ) : console.log(childs)}
       <div className="columns is-multiline is-flex is-justify-content-start">
         {filteredList && filteredList[0]
           ? filteredList.map((child, i) => {
