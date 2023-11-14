@@ -12,7 +12,12 @@
 .line-break {
   word-break: break-all;
 }
-
+@media (min-width: 1024px) {
+      .mobile-auth-menu {
+          display: none !important;
+          visibility: hidden !important;
+        }
+}
 @media (max-width: 1024px) {
   .navbar-menu.is-active {
     display: inline-block !important;
@@ -38,6 +43,9 @@
   }
   .navbar .dropdown-menu, .dropdown-trigger {
     display: none !important;
+  }
+  .mobile-auth-menu {
+    display: block !important;
   }
 }
 
