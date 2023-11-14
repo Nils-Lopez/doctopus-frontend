@@ -502,11 +502,13 @@ const DocForm = ({
     if (dataUpdate) {
       setSlugValue(dataUpdate.slug);
       setTitleValue(dataUpdate.title);
-      setTemplateModel(dataUpdate.template);
+      if (dataUpdate.template) {
+        setTemplateModel(dataUpdate.template);
       selectTemplate({
         value: dataUpdate.template.schema_name,
         label: dataUpdate.template.schema_name,
       });
+      }
       if (dataUpdate.description && dataUpdate.description[0]) {
         setDescFrValue(getContent(dataUpdate.description, "fr"));
         setDescEnValue(getContent(dataUpdate.description, "en"));

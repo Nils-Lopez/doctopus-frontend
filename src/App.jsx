@@ -115,7 +115,6 @@ function App() {
     const bgUrls = [
       "https://imagesdoctopus.blob.core.windows.net/contredanse/Lara%20Barsaq%20-%20Fruit%20Tree%C2%A9Stanislav%20Dobak.jpg",
       "https://imagesdoctopus.blob.core.windows.net/contredanse/TheGoldbergVariations_(c)Kat_ja%20Illner_20221013-163700.jpg",
-      "https://imagesdoctopus.blob.core.windows.net/contredanse/SIMPLE%C2%A9Franc%CC%A7oisDeclercq117888.jpg",
       "https://imagesdoctopus.blob.core.windows.net/contredanse/BRUSSELSDANCEEXPO_0914595.jpeg",
       "https://imagesdoctopus.blob.core.windows.net/contredanse/Weg%C2%A9DajanaLothert21510.jpg"
     ];

@@ -18,8 +18,9 @@
 .content {
   background-size: cover !important;
   background-position: top !important;
-  background: 
-    var(--bg-image) !important;
+  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+    var(--bg-image)
+     !important;
   background-repeat: no-repeat !important;
   -o-background-size: cover !important;
   -moz-background-size: cover !important;
@@ -40,7 +41,7 @@
 }
 
 .box, .panel {
-  background-color: rgba(255, 255, 255, 0.75) !important;
+  background-color: rgba(255, 255, 255, 0.8) !important;
     backdrop-filter: blur(16px);
 }
 
@@ -62,7 +63,7 @@
 }
 
 .dropdown-content {
-  background-color: rgba(255, 255, 255, 0.75) !important;
+  background-color: rgba(255, 255, 255, 0.8) !important;
     backdrop-filter: blur(16px);
 }
 
@@ -71,11 +72,11 @@
 }
 
 .popular > .column > .results-col.box {
-  background-color: rgba(255, 255, 255, 0.75) !important;
+  background-color: rgba(255, 255, 255, 0.8) !important;
 }
 
 .navbar {
-  background-color: rgba(255, 255, 255, 0.7) !important;
+  background-color: rgba(255, 255, 255, 0.8) !important;
     backdrop-filter: blur(16px);
 
   margin-top: 7px;
@@ -245,7 +246,7 @@ a.langLink {
 }
 
 .clickable-is-primary {
-background-color: rgba(255, 255, 255, 0.7) !important;
+background-color: rgba(255, 255, 255, 0.8) !important;
   backdrop-filter: blur(16px);
 }
 

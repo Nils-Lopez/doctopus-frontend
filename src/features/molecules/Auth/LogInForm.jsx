@@ -69,7 +69,6 @@ const LogInForm = ({handleSubmit, formAlert, setFormAlert}) => {
                     <label htmlFor="password" name="password" className="label is-6 has-text-left has-text-primary mb-0">{t('pwd')}</label>
                     <input type="password" value={password} onChange={handleChangePassword} className="input is-size-5" />
                 </div>
-                <a href="" className='is-7 mt-1 ml-1 pt-0 has-text-left is-flex is-justify-content-start'><small>{t('forgot-pwd')}</small></a>
                 <div className="is-flex is-justify-content-center mt-5">
                     <div className="field">
                         <button className="button pl-5 pr-5 is-primary" role="submit">

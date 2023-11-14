@@ -18,7 +18,6 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
     }
     const { t, i18n } = useTranslation() 
 
-
     const [displayThumb, setDisplayThumb] = useState(true)
         return <div className={"column is-one-fifth"} >
             <div className={"box results-col has-shadow " +colClasses} onClick={() => {

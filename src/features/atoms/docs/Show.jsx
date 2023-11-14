@@ -209,7 +209,6 @@ const Show = ({
   const [displayThumb, setDisplayThumb] = useState(true);
   const [displayVideo, setDisplayVideo] = useState(false);
 
-
   return showScapinParent ? (
     <>
       <ShowParent
@@ -882,7 +881,7 @@ const Show = ({
             })
           : null}
       </div>
-      {parents.length >= 10 ? (
+      {parents && parents[0] ? (
         <>
           {includeParentType("project", parents) ? (
             <>
@@ -967,63 +966,7 @@ const Show = ({
             </>
           ) : null}
         </>
-      ) : (
-        <>
-          {parents && parents[0] ? (
-            <>
-              <hr className="mt--1" />
-              <h3 className="subtitle has-text-grey has-text-left is-6 mt--2 pt-1 mb-4 pb-1">
-                {t("relations")}
-              </h3>
-            </>
-          ) : null}
-          <div className="columns is-multiline is-flex is-justify-content-start">
-            {parents && parents ? (
-              <>
-                {parents.map((parent) => {
-                  if (parent.project) {
-                    return (
-                      <Fragment key={JSON.stringify(parent)}>
-                        <BoxItemParent
-                          item={parent}
-                          handleSearchParent={handleSearchParent}
-                          handleSearchDoc={handleSearchDoc}
-                        />
-                      </Fragment>
-                    );
-                  }
-                })}
-                {parents.map((parent) => {
-                  if (parent.entity) {
-                    return (
-                      <Fragment key={JSON.stringify(parent)}>
-                        <BoxItemParent
-                          item={parent}
-                          handleSearchParent={handleSearchParent}
-                          handleSearchDoc={handleSearchDoc}
-                        />
-                      </Fragment>
-                    );
-                  }
-                })}
-                {parents.map((parent) => {
-                  if (parent.person) {
-                    return (
-                      <Fragment key={JSON.stringify(parent)}>
-                        <BoxItemParent
-                          item={parent}
-                          handleSearchParent={handleSearchParent}
-                          handleSearchDoc={handleSearchDoc}
-                        />
-                      </Fragment>
-                    );
-                  }
-                })}
-              </>
-            ) : null}
-          </div>
-        </>
-      )}
+      ) : null}
       {(childs && childs[0]) ||
       (child_docs && child_docs[0]) ||
       includeParentType("parent_doc", parents) ? (
@@ -1032,7 +975,7 @@ const Show = ({
           <h3 className="subtitle has-text-grey has-text-left is-6 mt--2 pt-1 mb-4 pb-1">
             {types && types[0] && types[0]._id === "6404c457e377d276c2dcac8a"
               ? t("Articles")
-              : t("document")}
+              : t("documents")}
           </h3>
           <div className="columns is-multiline is-flex is-justify-content-start">
             {parents && parents ? (
@@ -1052,8 +995,8 @@ const Show = ({
                 })}
               </>
             ) : null}
-            {removeDuplicates([...childs, ...child_docs]).map((parent) => {
-              if (parent.doc) {
+            {removeDuplicates([...childs, ...child_docs]).map((parent, i) => {
+              if (parent.doc ) {
                 return (
                   <Fragment key={JSON.stringify(parent)}>
                     <BoxItemParent
