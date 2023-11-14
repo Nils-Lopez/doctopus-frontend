@@ -13,7 +13,7 @@ import Slider from "@mui/material/Slider";
 import Select from "react-select";
 import SelectForm from "./forms/SelectForm";
 
-import magnifyingIcon from "../../styles/magnifying-glass.svg";
+import {ReactComponent as Magnifying} from "../../styles/magnifyingGlass.svg";
 
 const SearchBar = ({
   searchValue,
@@ -101,10 +101,10 @@ const SearchBar = ({
           <div className="columns is-mobile box search-box ">
             <div className="column  is-9 is-paddingless">
               <div className="search-block" id="searchBlock">
-                <label className="search-label label">
+                <label className="search-label ">
                   <span>{t("what-are-you-looking-for")}</span>
                 </label>
-                <label className="mobile-search-label label">
+                <label className="mobile-search-label search-label label">
                   <span>{t("what")}</span>
                 </label>
                 <input
@@ -120,34 +120,27 @@ const SearchBar = ({
               <div className="column"></div>
             </div>
 
-            <div className="column  is-paddingless desktop-only has-text-monospace">
+            <div className="column  is-paddingless  has-text-monospace">
               {searchValue.length > 0 ? (
                 <button
-                  className="button is-primary is-large search-button"
+                  className="button is-white has-text-primary pr--1 is-large search-button"
                   type="submit">
-                  <FontAwesomeIcon icon={faMagnifyingGlass} size="xl" /> &nbsp;{" "}
-                  <strong>{t("search")}</strong>
+                  <Magnifying className="icon "/>
+                    <span className="pt-1 title is-6 ">{t('search')}</span>
+
                 </button>
               ) : (
                 <button
-                  className="button is-primary is-large search-button"
+                  className="button is-white has-text-primary pr--1 is-large search-button"
                   onClick={(e) => e.preventDefault()}>
-                  <FontAwesomeIcon icon={faMagnifyingGlass} size="xl" /> &nbsp;{" "}
-                  <strong>{t("search")}</strong>
+                  {/* <FontAwesomeIcon icon={faMagnifyingGlass} size="xl" /> &nbsp;{" "} */}
+                    <Magnifying className="icon "/>
+                    <span className="pt-1 title is-6 ">{t('search')}</span>
+
                 </button>
               )}
             </div>
-            {searchValue.length > 0 ? (
-              <button className="is-large search-button button is-primary nodesk-only is-hidden-tablet">
-                <FontAwesomeIcon icon={faMagnifyingGlass} size="xl" />
-              </button>
-            ) : (
-              <button
-                className="search-button button subtitle is-4 is-primary nodesk-only is-hidden-tablet"
-                onClick={(e) => e.preventDefault()}>
-                <FontAwesomeIcon icon={faMagnifyingGlass} size="xl" />
-              </button>
-            )}
+            
           </div>
         </div>
         <div className="search-box is-flex is-justify-content-center selected-types-search  mb-2">

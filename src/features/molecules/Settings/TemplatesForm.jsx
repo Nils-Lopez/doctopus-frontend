@@ -450,7 +450,7 @@ const TemplatesForm = ({
     </>
   ) : (
     <>
-      <div className="panel mb-6 template-form-panel is-shadowless">
+      <div className=" mb-6 template-form-panel is-shadowless">
         {docTemplates.map((template) => {
           if (
             (!parentTemplate || parentTemplate._id === template._id) &&
@@ -459,7 +459,7 @@ const TemplatesForm = ({
             return (
               <Fragment key={template.schema_slug}>
                 <div
-                  className="panel-block columns panel-hover"
+                  className="panel-block columns "
                   onClick={() => {
                     setDisplayChilds(
                       displayChilds === template ? null : template
@@ -597,7 +597,7 @@ const TemplatesForm = ({
         {editTemplate ? (
           <div className="panel-block">
             <button className="button is-primary" onClick={handleNewTemplate}>
-              {t("create-template")}
+              <span> {t("create-template")}</span>
             </button>
           </div>
         ) : null}
@@ -1256,7 +1256,9 @@ const TemplatesForm = ({
             </div>
           ) : null}
           <button type="submit" className="button is-primary mt-4">
-            {editTemplate ? t("update-template") : t("create-template")}
+            <span>
+              {editTemplate ? t("update-template") : t("create-template")}
+            </span>
           </button>
         </form>
       ) : null}

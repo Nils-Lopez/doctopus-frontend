@@ -7,7 +7,12 @@ import { useUsers } from "../../../utils/hooks/Users.js";
 
 import DocForm from "../../molecules/Create/DocForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGlobe, faRotateLeft } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEye,
+  faEyeSlash,
+  faGlobe,
+  faRotateLeft,
+} from "@fortawesome/free-solid-svg-icons";
 import {
   faChevronDown,
   faChevronUp,
@@ -204,7 +209,6 @@ const Show = ({
   const [displayThumb, setDisplayThumb] = useState(true);
   const [displayVideo, setDisplayVideo] = useState(false);
 
-  console.log(childs, child_docs)
 
   return showScapinParent ? (
     <>
@@ -232,75 +236,75 @@ const Show = ({
     <div className="">
       <div className="is-flex is-justify-content-space-between  mb-5">
         <div>
-          <button
-            className="button is-light is-medium tag  mb-2 mobile-only"
-            id="backBtn"
-            onClick={handleBack}>
-            <FontAwesomeIcon icon={faRotateLeft} size="lg" />
-            <strong>&nbsp;{t("back")}</strong>
-          </button>
+        
 
           <div className="actions-btn">
             <button
-              className="button is-light is-medium tag  mb-2"
+              className="button is-light   mb-2"
               id="backBtn"
               onClick={handleBack}>
-              <FontAwesomeIcon icon={faRotateLeft} size="lg" />
-              <strong>&nbsp;{t("back")}</strong>
+              <span>
+                <FontAwesomeIcon icon={faRotateLeft} size="lg" />
+                <strong>&nbsp;{t("back")}</strong>
+              </span>
             </button>
             <button
               className={
                 !copied
-                  ? "button is-light is-medium tag is-light ml-3"
-                  : "button is-light has-text-primary is-medium tag is-light ml-3"
+                  ? "button is-light is-light ml-3"
+                  : "button is-light has-text-primary is-light ml-3"
               }
               onClick={() => {
                 setShareBtn(!shareBtn);
               }}>
-              {!shareBtn ? (
-                <FontAwesomeIcon icon={faShareAlt} size="lg" />
-              ) : (
-                <FontAwesomeIcon icon={faCircleXmark} size="lg" />
-              )}
+              <span>
+                {!shareBtn ? (
+                  <FontAwesomeIcon icon={faShareAlt} size="lg" />
+                ) : (
+                  <FontAwesomeIcon icon={faCircleXmark} size="lg" />
+                )}
+              </span>
             </button>
             {client && client.user ? (
               !addingWatchlist ? (
                 checkWatchlist() ? (
                   <button
-                    className="button   mb-2 is-primary ml-3 is-medium tag"
+                    className="button   mb-2 is-primary ml-3 "
                     onClick={(e) => {
                       e.preventDefault();
                       handleUpdateUser("remove");
                       setAddingWatchlist(true);
                     }}>
-                    {t("Remove from watchlist")}
+                    <span>{t("Remove from watchlist")}</span>
                   </button>
                 ) : (
                   <button
-                    className="button is-primary  mb-2 ml-3 is-medium tag"
+                    className="button is-primary  mb-2 ml-3 "
                     onClick={(e) => {
                       e.preventDefault();
                       handleUpdateUser();
                       setAddingWatchlist(true);
                     }}>
-                    {t("Add to watchlist")}
+                    <span>{t("Add to watchlist")}</span>
                   </button>
                 )
               ) : (
                 <button
-                  className="button is-primary  mb-2 ml-3 is-medium tag disabled is-disabled"
+                  className="button is-primary  mb-2 ml-3   disabled is-disabled"
                   disabled>
-                  {t("Loading...")}
+                  <span>{t("Loading...")}</span>
                 </button>
               )
             ) : (
               <button
-                className="button is-primary  mb-2 ml-3 is-medium tag"
+                className=" button is-primary  mb-2 ml-3  "
                 onClick={(e) => {
                   e.preventDefault();
                   setSignUpModal(true);
                 }}>
-                {t("Add to watchlist")}
+                <span>
+                  <strong>{t("Add to watchlist")}</strong>
+                </span>
               </button>
             )}
 
@@ -311,9 +315,9 @@ const Show = ({
               client.user.type ===
                 "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? (
               <button
-                className="button is-primary ml-3  is-medium tag"
+                className="button is-primary ml-3  "
                 onClick={() => setDataUpdate(doc)}>
-                {t("update")}
+                <span>{t("update")}</span>
               </button>
             ) : null}
             {client &&
@@ -326,7 +330,7 @@ const Show = ({
             doc.views !== "" &&
             doc.views !== null ? (
               <>
-                <span className="tag is-light is-medium button  ml-3">
+                <span className=" is-light button  ml-3">
                   {doc.views} {t("views")}
                 </span>
               </>
@@ -334,13 +338,71 @@ const Show = ({
           </div>
         </div>
         <div>
+          {doc && (!doc.restrictedContent ||
+                  doc.restrictedContent === "all" ||
+                  (client && client.user && client.user.type !== "visitor")) && supports[0] &&
+          supports[0].url &&
+          supports[0].url.includes("vimeo") ? (
+            <div className="button has-name pl-5 pr-5 mt-0 is-primary">
+              <span
+                className="file-label"
+                onClick={() => setDisplayVideo(!displayVideo)}>
+                {!displayVideo ? (
+                  <>
+                    {t("show-video")}
+                    <FontAwesomeIcon
+                      icon={faEye}
+                      className="is-primary mt-1 ml-2"
+                    />
+                  </>
+                ) : (
+                  <>
+                    {t("hide-video")}{" "}
+                    <FontAwesomeIcon
+                      icon={faEyeSlash}
+                      className="is-primary mt-1 ml-2"
+                    />
+                  </>
+                )}
+              </span>
+            </div>
+          ) : null}
+          {doc && (!doc.restrictedContent ||
+                  doc.restrictedContent === "all" ||
+                  (client && client.user && client.user.type !== "visitor")) && supports[0] && supports[0].pdf && supports[0].pdf !== "" ? (
+            <>
+            <div className="button has-name pl-5 pr-5 mt-05 is-primary">
+              <span
+                className="file-label"
+                onClick={handleDisplayFile}>
+                {!displayVideo ? (
+                  <>
+                    {t("read-doc")}
+                    <FontAwesomeIcon
+                      icon={faEye}
+                      className="is-primary mt-05 ml-2"
+                    />
+                  </>
+                ) : (
+                  <>
+                    {t("hide-video")}{" "}
+                    <FontAwesomeIcon
+                      icon={faEyeSlash}
+                      className="is-primary mt-1 ml-2"
+                    />
+                  </>
+                )}
+              </span>
+            </div>
+            </>
+          ) : null}
           {types && types[0] ? (
             <>
               {types.map((type) => {
                 return (
                   <Fragment key={JSON.stringify(type)}>
-                    <span className="tag is-large is-white has-text-info mr-1 ml-1 mb-0">
-                      {getContent(type.title, i18n.language)}
+                    <span className="tag is-large is-white has-text-info mr-1 ml-1 mb-0 mt-1 text-wrap">
+                      <strong className="has-text-info">{getContent(type.title, i18n.language)}</strong>
                     </span>
                   </Fragment>
                 );
@@ -356,8 +418,8 @@ const Show = ({
           <button
             className={
               !copied
-                ? "button is-light is-medium tag is-light ml-3"
-                : "button is-light has-text-primary is-medium tag is-light ml-3"
+                ? "button is-white  ml-3"
+                : "button is-white has-text-primary ml-3"
             }
             onClick={() => {
               navigator.clipboard.writeText(window.location.href);
@@ -371,17 +433,17 @@ const Show = ({
           </button>
           <FacebookShareButton
             url={window.location.href}
-            className="button is-light is-medium tag is-light ml-3">
+            className="button is-white     ml-3">
             <FacebookIcon size={32} round />
           </FacebookShareButton>
           <TwitterShareButton
             url={window.location.href}
-            className="button is-light is-medium tag is-light ml-3">
+            className="button is-white  ml-3">
             <TwitterIcon size={32} round />
           </TwitterShareButton>
           <PinterestShareButton
             url={window.location.href}
-            className="button is-light is-medium tag is-light ml-3">
+            className="button is-white   ml-3">
             <PinterestIcon size={32} round />
           </PinterestShareButton>
         </div>
@@ -390,7 +452,9 @@ const Show = ({
         <>
           <div className="columns mb-0 pb-0">
             <div className="column mb-0 pb-0">
-              <h1 className="mt-2 title is-1 has-text-left">{title}</h1>
+              <div className=" is-flex is-justify-content-start">
+                <h1 className="mt-2 title is-1 has-text-left">{title}</h1>
+              </div>
               {doc &&
               (!doc.restrictedContent ||
                 doc.restrictedContent === "all" ||
@@ -401,31 +465,6 @@ const Show = ({
                   supports[0].url &&
                   supports[0].url.includes("vimeo") ? (
                     <>
-                      <div className="is-flex is-justify-content-start mt-0 mb-2">
-                        <div className="button has-name is-primary">
-                          <span
-                            className="file-label"
-                            onClick={() => setDisplayVideo(!displayVideo)}>
-                            {!displayVideo ? (
-                              <>
-                                {t("show-video")}
-                                <FontAwesomeIcon
-                                  icon={faChevronDown}
-                                  className="is-primary mt-1 ml-2"
-                                />
-                              </>
-                            ) : (
-                              <>
-                                {t("hide-video")}{" "}
-                                <FontAwesomeIcon
-                                  icon={faChevronUp}
-                                  className="is-primary mt-1 ml-2"
-                                />
-                              </>
-                            )}
-                          </span>
-                        </div>
-                      </div>
                       {displayVideo ? (
                         <div className="is-flex is-justify-content-center ">
                           <iframe
@@ -546,31 +585,6 @@ const Show = ({
               supports[0].url &&
               supports[0].url.includes("vimeo") ? (
                 <>
-                  <div className="is-flex is-justify-content-start mt-2">
-                    <div className="button has-name is-primary">
-                      <span
-                        className="file-label"
-                        onClick={() => setDisplayVideo(!displayVideo)}>
-                        {!displayVideo ? (
-                          <>
-                            {t("show-video")}
-                            <FontAwesomeIcon
-                              icon={faChevronDown}
-                              className="is-primary mt-1 ml-2"
-                            />
-                          </>
-                        ) : (
-                          <>
-                            {t("hide-video")}{" "}
-                            <FontAwesomeIcon
-                              icon={faChevronUp}
-                              className="is-primary mt-1 ml-2"
-                            />
-                          </>
-                        )}
-                      </span>
-                    </div>
-                  </div>
                   {displayVideo ? (
                     <div className="is-flex is-justify-content-center ">
                       <iframe
@@ -704,56 +718,7 @@ const Show = ({
                     </a>
                   </p>
                 ) : null}
-                {doc &&
-                (!doc.restrictedContent ||
-                  doc.restrictedContent === "all" ||
-                  (client && client.user && client.user.type !== "visitor")) ? (
-                  <>
-                    {supp.pdf && supp.pdf !== "" ? (
-                      <div className="is-flex is-justify-content-start">
-                        <div className="file has-name is-primary">
-                          <label className="file-label">
-                            <span className="file-cta">
-                              <span
-                                className="file-label"
-                                onClick={handleDisplayFile}>
-                                {!displayFile ? (
-                                  <>
-                                    {t("show-file")}
-                                    <FontAwesomeIcon
-                                      icon={faChevronDown}
-                                      className="is-primary mt-1 ml-2"
-                                    />
-                                  </>
-                                ) : (
-                                  <>
-                                    {t("hide-file")}{" "}
-                                    <FontAwesomeIcon
-                                      icon={faChevronUp}
-                                      className="is-primary mt-1 ml-2"
-                                    />
-                                  </>
-                                )}
-                              </span>
-                            </span>
-                            <span className="file-name">
-                              {
-                                supp.pdf.split("/")[
-                                  supp.pdf.split("/").length - 1
-                                ]
-                              }
-                            </span>
-                          </label>
-                        </div>
-                      </div>
-                    ) : null}{" "}
-                  </>
-                ) : null}
-                {supp.exemplaries && supp.exemplaries[0] ? (
-                  <p className="has-text-left mb-0 mt-2 has-text-grey">
-                    {t("copies")}:{" "}
-                  </p>
-                ) : null}
+      
                 {supp.exemplaries && supp.exemplaries[0]
                   ? supp.exemplaries.map((ex) => {
                       return (
@@ -855,10 +820,10 @@ const Show = ({
       </div>
       {productionsScapin && productionsScapin[0] ? (
         <>
-          <hr />
+          <hr className="mt-5" />
 
-          <div className="is-flex is-justify-content-space-between">
-            <h3 className="subtitle has-text-grey has-text-left is-5 mb-1">
+          <div className="is-flex is-justify-content-space-between mt-0">
+            <h3 className="subtitle has-text-grey has-text-left is-6 mt--2 pt-1 mb-0">
               {t("productions")}
             </h3>
 
@@ -896,7 +861,7 @@ const Show = ({
           </div>
         </>
       ) : null}
-      <div className="columns is-multiline mb-6">
+      <div className="columns is-multiline mb-6 ">
         {productionsScapin && productionsScapin[0]
           ? productionsScapin.map((prodScapin, i) => {
               if (
@@ -921,7 +886,8 @@ const Show = ({
         <>
           {includeParentType("project", parents) ? (
             <>
-              <h3 className="subtitle has-text-grey has-text-left is-5">
+              <hr className="mt--1" />
+              <h3 className="subtitle has-text-grey has-text-left is-6 mt--2 pt-1 mb-4 pb-1">
                 {t("projects")}
               </h3>
               <div className="columns is-multiline is-flex is-justify-content-start">
@@ -948,8 +914,8 @@ const Show = ({
 
           {includeParentType("person", parents) ? (
             <>
-              <hr />
-              <h3 className="subtitle has-text-grey has-text-left is-5">
+              <hr className="mt--1" />
+              <h3 className="subtitle has-text-grey has-text-left is-6 mt--2 pt-1 mb-4 pb-1">
                 {t("people")}
               </h3>
               <div className="columns is-multiline is-flex is-justify-content-start">
@@ -975,8 +941,8 @@ const Show = ({
           ) : null}
           {includeParentType("entity", parents) ? (
             <>
-              <hr />
-              <h3 className="subtitle has-text-grey has-text-left is-5">
+              <hr className="mt--1" />
+              <h3 className="subtitle has-text-grey has-text-left is-6 mt--2 pt-1 mb-4 pb-1">
                 {t("Organizations")}
               </h3>
               <div className="columns is-multiline is-flex is-justify-content-start">
@@ -1005,8 +971,8 @@ const Show = ({
         <>
           {parents && parents[0] ? (
             <>
-              <hr />
-              <h3 className="subtitle has-text-grey has-text-left is-5">
+              <hr className="mt--1" />
+              <h3 className="subtitle has-text-grey has-text-left is-6 mt--2 pt-1 mb-4 pb-1">
                 {t("relations")}
               </h3>
             </>
@@ -1062,8 +1028,8 @@ const Show = ({
       (child_docs && child_docs[0]) ||
       includeParentType("parent_doc", parents) ? (
         <>
-          <hr />
-          <h3 className="subtitle has-text-grey has-text-left is-5">
+          <hr className="mt--1" />
+          <h3 className="subtitle has-text-grey has-text-left is-6 mt--2 pt-1 mb-4 pb-1">
             {types && types[0] && types[0]._id === "6404c457e377d276c2dcac8a"
               ? t("Articles")
               : t("document")}
@@ -1100,7 +1066,6 @@ const Show = ({
                 );
               }
             })}
-           
           </div>
         </>
       ) : null}

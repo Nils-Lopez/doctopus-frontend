@@ -569,9 +569,9 @@ const Show = ({
   ) : (
     <div className="">
       <div className="is-flex is-justify-content-space-between mb-5">
-        <div>
+        <div className="actions-btn">
           <button
-            className="button is-light is-medium tag"
+            className="button is-light "
             id="backBtn"
             onClick={handleBack}>
             <FontAwesomeIcon icon={faRotateLeft} size="lg" />
@@ -580,8 +580,8 @@ const Show = ({
           <button
             className={
               !copied
-                ? "button is-light is-medium tag is-light ml-3"
-                : "button is-light has-text-primary is-medium tag is-light ml-3"
+                ? "button is-light is-light ml-3"
+                : "button is-light has-text-primary  ml-3"
             }
             onClick={() => {
               setShareBtn(!shareBtn);
@@ -600,9 +600,9 @@ const Show = ({
               "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? (
             <>
               <button
-                className="button is-primary ml-3 is-medium tag"
+                className="button is-primary ml-3 "
                 onClick={() => setDataUpdate(parent)}>
-                {t("update")}
+                <span>{t("update")}</span>
               </button>
             </>
           ) : null}
@@ -613,7 +613,7 @@ const Show = ({
               {filteredRoles.map((type) => {
                 return (
                   <Fragment key={JSON.stringify(type)}>
-                    <span className="tag is-medium has-text-info has-background-transparent mr-1 ml-1 mb-0">
+                    <span className="tag is-large has-text-info has-background-transparent mr-1 ml-1 mb-0">
                       {getContent(type.title, i18n.language)}
                     </span>
                   </Fragment>
@@ -621,14 +621,16 @@ const Show = ({
               })}
             </>
           ) : (
-            <span className="tag is-medium has-text-info has-background-transparent mr-1 ml-1 mb-0">
-              {parent.scapin
+            <span className="tag is-large has-text-info has-background-transparent mr-1 ml-1 mb-0">
+              <strong className="has-text-info">
+                {parent.scapin
                 ? t("production")
                 : parent.projects
                 ? t("organization")
                 : parent.entities
                 ? t("project")
                 : t("person")}
+              </strong>
             </span>
           )}
         </div>
@@ -640,8 +642,8 @@ const Show = ({
           <button
             className={
               !copied
-                ? "button is-light is-medium tag is-light ml-3"
-                : "button is-light has-text-primary is-medium tag is-light ml-3"
+                ? "button is-white ml-3"
+                : "button is-white has-text-primary ml-3"
             }
             onClick={() => {
               navigator.clipboard.writeText(window.location.href);
@@ -655,17 +657,17 @@ const Show = ({
           </button>
           <FacebookShareButton
             url={window.location.href}
-            className="button is-light is-medium tag is-light ml-3">
+            className="button is-white ml-3">
             <FacebookIcon size={32} round />
           </FacebookShareButton>
           <TwitterShareButton
             url={window.location.href}
-            className="button is-light is-medium tag is-light ml-3">
+            className="button is-white ml-3">
             <TwitterIcon size={32} round />
           </TwitterShareButton>
           <PinterestShareButton
             url={window.location.href}
-            className="button is-light is-medium tag is-light ml-3">
+            className="button is-white ml-3">
             <PinterestIcon size={32} round />
           </PinterestShareButton>
         </div>
@@ -816,15 +818,18 @@ const Show = ({
         ) : null}
         {parent.scapin ? (
           <div className="is-flex is-justify-content-end">
-            <a
+            <div className="is-inline-block">
+              <a
               href={
                 "https://scapin.aml-cfwb.be/recherche/details/?pid=" +
                 parent._id
               }
               target="_blank"
-              className="tag button is-white has-text-primary is-medium">
+              className="scapin-link"
+              >
               {t("read-more-scapin")}
             </a>
+            </div>
           </div>
         ) : null}
       </div>
@@ -832,12 +837,12 @@ const Show = ({
         <>
           <hr />
 
-          <div className="is-flex is-justify-content-space-between">
-            <h3 className="subtitle has-text-grey has-text-left is-5 mb-1">
+          <div className="is-flex is-justify-content-space-between pt-2">
+            <h3 className="subtitle has-text-grey has-text-left is-6 mt--2 mb-0">
               {t("productions")}
             </h3>
 
-            <div className="mt--1">
+            <div className="mt--3">
               {productionsPage !== 1 ? (
                 <button
                   className="button is-white"
@@ -896,7 +901,7 @@ const Show = ({
         <>
           <hr />
           <div className="is-flex is-justify-content-space-between">
-            <h3 className="subtitle has-text-grey has-text-left is-5 mb-1">
+            <h3 className="subtitle has-text-grey has-text-left is-6 mt--2 mb-1">
               {t("relations")}
             </h3>
 
@@ -961,7 +966,7 @@ const Show = ({
         <>
           <hr />
 
-          <h3 className="subtitle has-text-grey has-text-left is-5 mb-5 mt--1">
+          <h3 className="subtitle has-text-grey has-text-left is-6 mb-5 mt--2">
             {t("relations")}
           </h3>
         </>
@@ -1007,10 +1012,10 @@ const Show = ({
       </div>
       {childs && childs[0] ? (
         <>
-          <hr />
-          <div className="is-flex is-justify-content-space-between">
+          <hr/>
+          <div className="is-flex is-justify-content-space-between pt-1">
             <div className="is-flex is-justify-content-center pb-1">
-              <h3 className="subtitle has-text-grey has-text-left is-5 mb-1">
+              <h3 className="subtitle has-text-grey has-text-left  is-6 mt--2 pt-1 mb-0">
                 {t("documents")} &nbsp;
                 {childsDataLoading ||
                 childsPageLoading ||
@@ -1025,20 +1030,22 @@ const Show = ({
               </h3>
               {childsData && childsData.length > 5 ? (
                 <button
-                  className="button is-primary has-background-transparent is-small is-rounded     ml-3 "
+                  className="button is-primary  is-small is-rounded    ml-3 mt--2 "
                   onClick={() => setFilterBtn(!filterBtn)}>
-                  <strong>
+                 <span>
+                   <strong>
                     <FontAwesomeIcon
                       icon={filterBtn ? faEyeSlash : faArrowDownAZ}
                     />{" "}
                     {filterBtn ? null : <>&nbsp;&nbsp;{t("filters")}</>}{" "}
                   </strong>
+                 </span>
                 </button>
               ) : null}
               {filterBtn ? (
                 <>
                   {filtersOptions.length > 2 ? (
-                    <div className="ml-1">
+                    <div className="ml-1 mt--2">
                       <SelectForm
                         selected={filters}
                         select={setFilters}
@@ -1050,7 +1057,7 @@ const Show = ({
                   ) : (
                     <>&nbsp;&nbsp;</>
                   )}
-                  <div className="field pb-0 mb-0">
+                  <div className="field pb-0 mb-0 mt--2">
                     <div
                       className="control has-icons-left ml-1 "
                       style={{ minWidth: "200px" }}>
@@ -1072,7 +1079,7 @@ const Show = ({
               ) : null}
             </div>
 
-            <div className="mt--1">
+            <div className="mt--3">
               {childsPage !== 1 ? (
                 <button
                   className="button is-white"

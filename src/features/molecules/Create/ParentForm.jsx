@@ -212,7 +212,7 @@ const ParentForm = ({
                 </div>
                 <div className="column is-one-fifth">
                   <button className="button is-primary" onClick={handleNewProd}>
-                    {t("add")}
+                    <span>{t("add")}</span>
                   </button>
                 </div>
               </div>

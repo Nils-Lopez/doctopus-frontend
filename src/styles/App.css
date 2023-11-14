@@ -6,21 +6,69 @@
 
 .thumb-search-item {
   max-height: 250px;
-  border-radius:1.5%;
+  border-radius: 1.5%;
 }
 
 .line-break {
   word-break: break-all;
+}
 
+@media (max-width: 1024px) {
+  .navbar-menu.is-active {
+    display: inline-block !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
+  .navbar-start {
+    padding-bottom: 15px;
+    display: inline-table !important;
+    padding-left: 50px;
+    padding-right: 50px;
+    border-bottom: 1px solid white;
+  }
+  .navbar-start .buttons,
+  .navbar-end .buttons {
+    display: inline-table !important;
+    text-align: center;
+  }
+  .navbar-start .buttons .ml-2,
+  .navbar-end .buttons .mr-4 {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  .navbar .dropdown-menu, .dropdown-trigger {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .recents-container .title.is-5 {
+    margin-bottom: 30px !important;
+  }
+  .metrics .title.is-5 {
+    display: none !important;
+  }
+  .search-button.nodesk-only {
+    display: none !important;
+  }
+        .actions-btn {
+          display: flex !important;
+          justify-content: space-between !important;
+          flex-wrap: wrap;
+          left: 0 !important;
+        }
+        .actions-btn .button {
+          margin-left: 0 !important;
+        } 
   
 }
 
 .mt-7 {
-  margin-top:70px !important;
+  margin-top: 70px !important;
 }
 
 .settings-scrollable {
-overflow-y: scroll;
+  overflow-y: scroll;
 }
 .no-overflow {
   width: 100%;
@@ -82,8 +130,8 @@ body {
 }
 @media (max-width: 768px) {
   .thumb-img {
-   height: auto;
-   position: relative;
+    height: auto;
+    position: relative;
   }
 }
 
@@ -93,9 +141,7 @@ body {
   }
 }
 @media (max-width: 419px) {
-  .actions-btn {
-    display: none;
-  }
+
   .mobile-only {
     margin-top: 5px;
     display: block;
@@ -112,9 +158,9 @@ body {
 }
 
 @media (max-width: 400px) {
- .auth-btn {
-  display: none !important;
- }
+  .auth-btn {
+    display: none !important;
+  }
 }
 
 /* .title-nav {
@@ -139,16 +185,35 @@ body {
   }
   button.navbar-burger {
     position: fixed;
-    right:0;
+    right: 0;
+  }
+  .text-wrap strong {
+    word-wrap: break-word;
+    white-space: initial;
+        overflow-wrap: break-word;
+        text-align: right;
+        margin-right: -25px;
+        
   }
 }
-@media (max-width: 410px) {
+@media (max-width: 530px) {
   .title.is-4.title-nav {
     font-size: 1.1rem !important;
     overflow-wrap: break-word;
     max-width: 60%;
   }
   .tagline {
+    display: none;
+  }
+  .search-button {
+    max-width: 80px;
+    
+  }
+
+  .search-button .icon {
+    margin-left: -4px !important;
+  }
+  .search-button .title {
     display: none;
   }
 
@@ -162,18 +227,15 @@ body {
 }
 
 .tabs {
-  border-bottom:0px;
+  border-bottom: 0px;
 }
-
-
 
 .pointer:hover {
   scale: 1.1;
   position: relative;
-  
+
   opacity: 0.7;
 }
-
 
 .App-header {
   background-color: #282c34;

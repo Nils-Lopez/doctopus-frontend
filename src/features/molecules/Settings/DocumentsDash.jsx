@@ -209,14 +209,16 @@ const DocumentsDash = ({}) => {
               onMouseEnter={() => setChartTypeDropdown(true)}
               onMouseLeave={() => setChartTypeDropdown(false)}>
               <div className="dropdown-trigger">
-                <button className="button tag is-medium is-primary pt-0 pb-0 has-text-monospace">
-                  {t(chartTypes[chartType])}
-                  &nbsp;
-                  {chartTypeDropdown ? (
-                    <FontAwesomeIcon icon={faChevronUp} />
-                  ) : (
-                    <FontAwesomeIcon icon={faChevronDown} />
-                  )}
+                <button className="button is-primary pt-1 pb-0 has-text-monospace">
+                  <span>
+                    {t(chartTypes[chartType])}
+                    &nbsp;
+                    {chartTypeDropdown ? (
+                      <FontAwesomeIcon icon={faChevronUp} />
+                    ) : (
+                      <FontAwesomeIcon icon={faChevronDown} />
+                    )}
+                  </span>
                 </button>
               </div>
               {chartTypeDropdown ? (
@@ -248,14 +250,14 @@ const DocumentsDash = ({}) => {
                 onMouseEnter={() => setChartRangeDropdown(true)}
                 onMouseLeave={() => setChartRangeDropdown(false)}>
                 <div className="dropdown-trigger">
-                  <button className="button tag is-medium is-grey pt-0 pb-0 ml-2 has-text-monospace">
-                    {t(chartRanges[chartRange])}
+                  <button className="button is-primary pt-1 pb-0 ml-2 has-text-monospace">
+                    <span>{t(chartRanges[chartRange])}
                     &nbsp;
                     {chartRangeDropdown ? (
                       <FontAwesomeIcon icon={faChevronUp} />
                     ) : (
                       <FontAwesomeIcon icon={faChevronDown} />
-                    )}
+                    )}</span>
                   </button>
                 </div>
                 {chartRangeDropdown ? (

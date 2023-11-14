@@ -317,8 +317,8 @@ const SearchResult = ({
               <strong>&nbsp;{t("back")}</strong>
             </button>
             {result.docs && result.items ? (
-              <span className="tag is-primary mt-1 ml-2 is-medium">
-                {result.docs.length + result.items.length} {t("results")}
+              <span className="tag is-white is-rounded has-text-grey  mt-1 pt-1 ml-1 is-medium">
+                {result.docs.length + result.items.length}
               </span>
             ) : null}
           </div>
@@ -387,11 +387,9 @@ const SearchResult = ({
           <>
             {tags && tags[0] ? (
               <>
-                <h3 className="subtitle has-text-right is-5 has-text-grey mt-0 pt-0 ml-0 mb-4">
-                  {t("tags")}
-                </h3>
+                
                 {tags[4] ? (
-                  <div className="is-flex is-justify-content-start ml-0">
+                  <div className="is-flex is-justify-content-start mt-5 ml-0">
                     {tags.map((item, index) => {
                       return (
                         <Fragment key={JSON.stringify(item)}>
@@ -413,7 +411,7 @@ const SearchResult = ({
                     })}
                   </div>
                 ) : (
-                  <div className="is-flex is-justify-content-start ml-0">
+                  <div className="is-flex is-justify-content-start mt-5 ml-0">
                     {tags.map((item, index) => {
                       return (
                         <Fragment key={JSON.stringify(item)}>
@@ -435,21 +433,20 @@ const SearchResult = ({
               <>
                 <hr />
                 <div className="is-flex is-justify-content-space-between">
-                  <div className="is-flex is-justify-content-start">
-                    <h3 className="subtitle has-text-grey has-text-left is-5 mb-1">
+                  <div className="is-flex is-justify-content-start pt-1">
+                    <h3 className="subtitle has-text-grey has-text-left is-6 mt--2 mb-1">
                       {t("result")}
                     </h3>
                    
                   </div>
-                  <div className="mt--1">
+                  <div className="mt--3">
                     {parentsPage !== 1 ? (
                       <button
                         className="button is-white"
                         onClick={() => setParentsPage(parentsPage - 1)}>
                         <FontAwesomeIcon
                           icon={faAngleLeft}
-                          className=" is-size-3 has-text-grey"
-                        />
+                          />
                       </button>
                     ) : null}
 
@@ -500,26 +497,26 @@ const SearchResult = ({
                 <hr />
 
                 <div className="is-flex is-justify-content-space-between">
-                  <div className="is-flex is-justify-content-start">
-                    <h3 className="subtitle has-text-grey has-text-left is-5 mb-1">
+                  <div className="is-flex is-justify-content-start pt-1">
+                    <h3 className="subtitle has-text-grey has-text-left is-6 mt--2 mb-1">
                       {t("documents")}
                     </h3>
                     {result.docs && result.docs.length > 5 ? (
                       <button
-                        className="button is-primary has-background-transparent is-small is-rounded     ml-3 "
+                        className="button is-primary has-background-transparent is-small is-rounded  mt--3   ml-3 "
                         onClick={() => setFilterBtn(!filterBtn)}>
                         <strong>
-                          <FontAwesomeIcon
+                          <span><FontAwesomeIcon
                             icon={filterBtn ? faEyeSlash : faArrowDownAZ}
                           />{" "}
-                          {filterBtn ? null : <>&nbsp;&nbsp;{t("filters")}</>}{" "}
+                          {filterBtn ? null : <>&nbsp;&nbsp;{t("filters")}</>}{" "}</span>
                         </strong>
                       </button>
                     ) : null}
 
                     {filterBtn ? (
                       <>
-                        <div className="ml-1">
+                        <div className="ml-1 mt--3">
                           <SelectForm
                             selected={filters}
                             select={setFilters}
@@ -531,7 +528,7 @@ const SearchResult = ({
                       </>
                     ) : null}
                   </div>
-                  <div className="mt--1">
+                  <div className="mt--3">
                     {docsPage !== 1 ? (
                       <button
                         className="button is-white"

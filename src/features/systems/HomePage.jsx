@@ -393,7 +393,7 @@ const getContent = (value, lang) => {
 };
 
 const Counter = ({ number }) => {
-  return <CountUp duration={2.1} className="counter" end={number} />;
+  return <CountUp duration={2.7} className="counter" end={number} />;
 };
 
 const Landing = ({
@@ -444,7 +444,7 @@ const Landing = ({
     <>
       <div className="container recents-container mt-6 mb-0 pb-0 ">
         <div className="metrics">
-          <h1 className="title is-4 has-text-white has-text-shadow mb-0">
+          <h1 className="title is-5 has-text-white has-text-shadow has-text-left mb-0">
             {applicationSettings &&
             applicationSettings.homePageSubtitles &&
             applicationSettings.homePageSubtitles[0]
@@ -454,15 +454,15 @@ const Landing = ({
                 )
               : null}
           </h1>
-          <div className="columns is-multiline pb-0 mb-0 mt-1 is-mobile">
+          <div className="columns is-multiline pb-0 mb-0 pt-2 is-mobile">
             <div className="column results-col  is-one-fifth-desktop is-one-third-tablet is-half-mobile">
               {lastDocType === "book" ? (
                 <>
                   <div
-                    className="box pt-5 smooth-appear has-background-primary "
+                    className="box is-paddingless pt-2 pb-2 smooth-appear has-background-primary "
                     onClick={() => {}}>
-                    <h1 className="title is-5 mt-2 has-text-white">
-                      <strong className="title is-2">
+                    <h1 className="title is-6 mt-2 has-text-white">
+                      <strong className="title is-4">
                         <Counter number={2157} />
                       </strong>{" "}
                       <br />
@@ -473,12 +473,12 @@ const Landing = ({
               ) : (
                 <>
                   <div
-                    className="box pt-5 smooth-appear  "
+                    className="box clickable-is-primary is-paddingless pt-2 pb-2 smooth-appear  "
                     onClick={() => {
                       setLastDocType("book");
                     }}>
-                    <h1 className="title is-5 mt-2 ">
-                      <strong className="title is-2">
+                    <h1 className="title is-6 mt-2 ">
+                      <strong className="title is-4">
                         <Counter number={2157} />
                       </strong>{" "}
                       <br />
@@ -492,10 +492,10 @@ const Landing = ({
               {lastDocType === "periodical" ? (
                 <>
                   <div
-                    className="box pt-5 smooth-appear has-background-primary "
+                    className="box is-paddingless pt-2 pb-2 smooth-appear has-background-primary "
                     onClick={() => {}}>
-                    <h1 className="title is-5 mt-2 has-text-white">
-                      <strong className="title is-2">
+                    <h1 className="title is-6 mt-2 has-text-white">
+                      <strong className="title is-4">
                         <Counter number={351} />
                       </strong>{" "}
                       <br />
@@ -506,13 +506,13 @@ const Landing = ({
               ) : (
                 <>
                   <div
-                    className="box pt-5 smooth-appear  "
+                    className="box clickable-is-primary is-paddingless pt-2 pb-2 smooth-appear  "
                     onClick={() => {
                       setLastDocType("periodical");
                       setInitialDoc(false);
                     }}>
-                    <h1 className="title is-5 mt-2 ">
-                      <strong className="title is-2">
+                    <h1 className="title is-6 mt-2 ">
+                      <strong className="title is-4">
                         <Counter number={351} />
                       </strong>{" "}
                       <br />
@@ -526,10 +526,10 @@ const Landing = ({
               {lastDocType === "articles" ? (
                 <>
                   <div
-                    className="box pt-5 smooth-appear has-background-primary "
+                    className="box is-paddingless pt-2 pb-2 smooth-appear has-background-primary "
                     onClick={() => {}}>
-                    <h1 className="title is-5 mt-2 has-text-white">
-                      <strong className="title is-2 is-clipped max-50 no-wrap">
+                    <h1 className="title is-6 mt-2 has-text-white">
+                      <strong className="title is-4 is-clipped max-50 no-wrap">
                         <Counter number={17377} />
                       </strong>{" "}
                       <br />
@@ -540,13 +540,13 @@ const Landing = ({
               ) : (
                 <>
                   <div
-                    className="box pt-5 smooth-appear  "
+                    className="box clickable-is-primary is-paddingless pt-2 pb-2 smooth-appear  "
                     onClick={() => {
                       setLastDocType("articles");
                       setInitialDoc(false);
                     }}>
-                    <h1 className="title is-5 mt-2 ">
-                      <strong className="title is-2 is-clipped max-50 no-wrap">
+                    <h1 className="title is-6 mt-2 ">
+                      <strong className="title is-4 is-clipped max-50 no-wrap">
                         <Counter number={17377} />
                       </strong>{" "}
                       <br />
@@ -560,10 +560,11 @@ const Landing = ({
               {lastDocType === "videos" ? (
                 <>
                   <div
-                    className="box pt-5 smooth-appear has-background-primary "
+                    className="box 
+                    is-paddingless pt-2 pb-2 smooth-appear has-background-primary "
                     onClick={() => {}}>
-                    <h1 className="title is-5 mt-2 has-text-white">
-                      <strong className="title is-2">
+                    <h1 className="title is-6 mt-2 has-text-white">
+                      <strong className="title is-4">
                         <Counter number={2554} />
                       </strong>{" "}
                       <br />
@@ -574,13 +575,13 @@ const Landing = ({
               ) : (
                 <>
                   <div
-                    className="box pt-5 smooth-appear  "
+                    className="box clickable-is-primary is-paddingless pt-2 pb-2 smooth-appear  "
                     onClick={() => {
                       setLastDocType("videos");
                       setInitialDoc(false);
                     }}>
-                    <h1 className="title is-5 mt-2 ">
-                      <strong className="title is-2">
+                    <h1 className="title is-6 mt-2 ">
+                      <strong className="title is-4">
                         <Counter number={2554} />
                       </strong>{" "}
                       <br />
@@ -590,14 +591,14 @@ const Landing = ({
                 </>
               )}
             </div>
-            <div className="column results-col is-half-mobile  is-one-fifth-desktop is-one-third-tablet tablet-centered-item ml-auto mr-auto mt-1">
+            <div className="column results-col is-half-mobile  is-one-fifth-desktop is-one-third-tablet tablet-centered-item ml-auto mr-auto ">
               {lastDocType === "photos" ? (
                 <>
                   <div
-                    className="box pt-5 smooth-appear has-background-primary "
+                    className="box  is-paddingless pt-2 pb-2 smooth-appear has-background-primary "
                     onClick={() => {}}>
-                    <h1 className="title is-5 mt-2 has-text-white">
-                      <strong className="title is-2">
+                    <h1 className="title is-6 mt-2 has-text-white">
+                      <strong className="title is-4 ">
                         <Counter number={5396} />
                       </strong>{" "}
                       <br />
@@ -608,13 +609,13 @@ const Landing = ({
               ) : (
                 <>
                   <div
-                    className="box pt-5 smooth-appear  "
+                    className="box clickable-is-primary is-paddingless pt-2 pb-2 smooth-appear  "
                     onClick={() => {
                       setLastDocType("photos");
                       setInitialDoc(false);
                     }}>
-                    <h1 className="title is-5 mt-2 ">
-                      <strong className="title is-2">
+                    <h1 className="title is-6 mt-2 ">
+                      <strong className="title is-4 ">
                         <Counter number={5396} />
                       </strong>{" "}
                       <br />
@@ -660,7 +661,7 @@ const Landing = ({
           </div>
         ) : (
           <>
-            <h1 className="title is-4 has-text-white has-text-shadow mb-0 recents-label pb-0 mt-3 pt-0">
+            <h1 className="title is-5 has-text-white has-text-shadow has-text-left mb--1  pb-0 mt-3 pt-0">
               {applicationSettings &&
               applicationSettings.homePageSubtitles &&
               applicationSettings.homePageSubtitles[1]
@@ -672,7 +673,7 @@ const Landing = ({
               :
             </h1>
 
-            <div className="columns is-multiline pb-3 mb-0 mt--1 pt-0">
+            <div className="columns is-multiline pb-3 mb-0 mt--3 pt-0 popular">
               {popularDocs[0] &&
                 popularDocs.map((item, index) => {
                   return (

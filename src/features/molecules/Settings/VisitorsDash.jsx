@@ -155,14 +155,16 @@ const VisitorsDash = ({}) => {
               onMouseEnter={() => setChartTypeDropdown(true)}
               onMouseLeave={() => setChartTypeDropdown(false)}>
               <div className="dropdown-trigger">
-                <button className="button tag is-medium is-primary pt-0 pb-0 has-text-monospace">
-                  {t(chartTypes[chartType])}
+                <button className="button  is-primary pt-1 pb-0 has-text-monospace">
+                  <span>
+                    {t(chartTypes[chartType])}
                   &nbsp;
                   {chartTypeDropdown ? (
                     <FontAwesomeIcon icon={faChevronUp} />
                   ) : (
                     <FontAwesomeIcon icon={faChevronDown} />
                   )}
+                  </span>
                 </button>
               </div>
               {chartTypeDropdown ? (
@@ -195,7 +197,7 @@ const VisitorsDash = ({}) => {
                 onMouseEnter={() => setChartRangeDropdown(true)}
                 onMouseLeave={() => setChartRangeDropdown(false)}>
                 <div className="dropdown-trigger">
-                  <button className="button tag is-medium is-grey pt-0 pb-0 ml-2 has-text-monospace">
+                  <button className="button is-light pt-1 pb-0 ml-2 has-text-monospace">
                     {t(chartRanges[chartRange])}
                     &nbsp;
                     {chartRangeDropdown ? (

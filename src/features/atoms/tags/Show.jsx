@@ -213,7 +213,7 @@ const Show = ({
     <div className="">
       <div className="is-flex is-justify-content-space-between">
         <button
-          className="button is-light is-medium tag"
+          className="button is-light"
           id="backBtn"
           onClick={handleBack}>
           <FontAwesomeIcon icon={faRotateLeft} size="lg" />
@@ -228,28 +228,28 @@ const Show = ({
           <div>
             {!updateTag ? (
               <button
-                className="button is-primary is-medium tag"
+                className="button is-primary"
                 onClick={handleUpdate}>
-                <strong>{t("update")}</strong>&nbsp;
+                <span><strong>{t("update")}</strong>&nbsp;</span>
               </button>
             ) : (
               <>
                 {!mergeTag ? (
                   <button
-                    className="button is-primary is-medium tag mr-2"
+                    className="button is-primary  mr-2"
                     onClick={() => {
                       setMergeTag(true);
                     }}>
-                    <strong>{t("merge")}</strong>&nbsp;
+                    <span><strong>{t("merge")}</strong>&nbsp;</span>
                   </button>
                 ) : null}
                 <button
-                  className="button is-info is-medium tag"
+                  className="button is-info"
                   onClick={() => {
                     if (mergeTag) setMergeTag(false);
                     else setUpdateTag(false);
                   }}>
-                  <strong>{t("cancel")}</strong>&nbsp;
+                  <span><strong>{t("cancel")}</strong>&nbsp;</span>
                 </button>
               </>
             )}
@@ -258,10 +258,8 @@ const Show = ({
       </div>
       {!updateTag ? (
         <>
-          <h3 className="subtitle  is-4 has-text-grey mt-0 pt-0 mb-1">
-            <small>{t("tag")} :</small>
-          </h3>
-          <h3 className="subtitle is-2 has-text-grey mt-0 pt-0 mb-6">
+        
+          <h3 className="subtitle is-2 mt-0 pt-0 mb-6">
             <strong className="has-text-primary">
               {getContent(tag.title, i18n.language)}
             </strong>

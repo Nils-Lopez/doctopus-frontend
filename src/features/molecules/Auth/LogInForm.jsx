@@ -22,7 +22,6 @@ const LogInForm = ({handleSubmit, formAlert, setFormAlert}) => {
 
     const handleChangeEmail = event => {
         if (!isValidEmail(event.target.value)) {
-            setFormAlert({ type: "error", message: { en: t('invalid-email'), fr: t('invalid-email') } });
             setDisabled({email: true, pwd: disabled.pwd, confirmPwd: disabled.confirmPwd})
         } else {
             setFormAlert(false)
@@ -62,18 +61,20 @@ const LogInForm = ({handleSubmit, formAlert, setFormAlert}) => {
             <form onSubmit={handleSubmit}>
                 <div className="field">
                     <div className="control">
-                        <label htmlFor="input" name="email" className="label is-5 has-text-left has-text-primary">{t('email')}</label>
+                        <label htmlFor="input" name="email" className="label is-6 has-text-left has-text-primary mb-0">{t('email')}</label>
                         <input type="email" value={email} onChange={handleChangeEmail} className="input is-size-5" />
                     </div>
                 </div>
                 <div className="field mb-0">
-                    <label htmlFor="password" name="password" className="label is-5 has-text-left has-text-primary">{t('pwd')}</label>
+                    <label htmlFor="password" name="password" className="label is-6 has-text-left has-text-primary mb-0">{t('pwd')}</label>
                     <input type="password" value={password} onChange={handleChangePassword} className="input is-size-5" />
                 </div>
                 <a href="" className='is-7 mt-1 ml-1 pt-0 has-text-left is-flex is-justify-content-start'><small>{t('forgot-pwd')}</small></a>
                 <div className="is-flex is-justify-content-center mt-5">
                     <div className="field">
-                        <button className="button is-primary" role="submit">{t('confirm')}</button>
+                        <button className="button pl-5 pr-5 is-primary" role="submit">
+                            <span>{t('confirm')}</span>
+                        </button>
                     </div>
                 </div>
                 

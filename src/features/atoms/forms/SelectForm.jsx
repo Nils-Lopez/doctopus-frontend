@@ -25,7 +25,8 @@ const SelectForm = ({options, selected, select, applicationSettings, mode, multi
             border: !state.isFocused ? "1px solid lightgrey" : "1px solid " + primary,
             boxShadow: !state.isFocused ? "none" :  "0px 0px 3px " + primary,
             borderRadius: mode && mode === "filters" ? "37px" : "7px",
-            
+            backgroundColor: "rgba(255, 255, 255, 0.35) !important",
+            paddingTop: "1px",
             "&:hover": {
                 border: "1px solid " + primary,
                 
@@ -39,6 +40,7 @@ const SelectForm = ({options, selected, select, applicationSettings, mode, multi
             paddingBottom: "2px",
             color: "",
             zIndex: "auto",
+            
             position: "relative",
             "&:hover": {
                 cursor: "pointer",

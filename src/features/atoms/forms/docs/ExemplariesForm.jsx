@@ -126,9 +126,9 @@ const ExemplariesForm = ({
         ) : null}
         <div className="is-flex is-justify-content-end">
           <button
-            className="button is-radiusless is-primary"
+            className="button is-primary"
             onClick={handleExBtn}>
-            {t("confirm")}
+            <span>{t("confirm")}</span>
           </button>
         </div>
       </div>

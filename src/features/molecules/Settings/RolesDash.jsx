@@ -105,15 +105,16 @@ const RolesDash = ({}) => {
 
   return (
     <>
-      <div className="panel is-shadowless">
-        <div className="panel-heading has-background-white is-flex is-justify-content-space-between">
+      <div className=" is-shadowless">
+        <div className="px-5 pt-2 pb-3 is-flex is-justify-content-space-between">
           <div
             className="dropdown is-active"
             onMouseEnter={() => setScopeDropdown(true)}
             onMouseLeave={() => setScopeDropdown(false)}>
             <div className="dropdown-trigger ml--1">
-              <div className="button tag is-medium is-primary ">
-                {scope === "docs"
+              <div className="button  is-primary ">
+                <span>
+                  {scope === "docs"
                   ? t("Document's types")
                   : scope === "parents"
                   ? t("Roles/Functions")
@@ -124,6 +125,7 @@ const RolesDash = ({}) => {
                 ) : (
                   <FontAwesomeIcon icon={faChevronDown} />
                 )}
+                </span>
               </div>
             </div>
             {scopeDropdown ? (
@@ -469,7 +471,7 @@ const RoleBlock = ({
         </p>
         <div className="column is-4 is-flex is-justify-content-end">
           <button
-            className="button tag is-medium is-info mr-2"
+            className="button is-info mr-2"
             onClick={(e) => {
               e.preventDefault();
               if (!merging) setUpdate(!update);
@@ -484,25 +486,27 @@ const RoleBlock = ({
             titleFrValue !== getContent(role.title, "fr") ||
             titleEnValue !== getContent(role.title, "en") ? (
               <button
-                className="button tag is-medium is-primary mr-2"
+                className="button is-primary mr-2"
                 onClick={sendRole}>
-                {t("confirm")}
+                <span>
+                  {t("confirm")}
+                </span>
               </button>
             ) : (
-              <button className="button tag is-medium is-primary mr-2" disabled>
-                {t("confirm")}
+              <button className="button is-primary mr-2" disabled>
+                <span>{t("confirm")}</span>
               </button>
             )
           ) : !merge ? (
             <button
-              className="button tag is-medium is-primary mr-2"
+              className="button is-primary mr-2"
               onClick={() => {
                 setMerge(true);
                 setMerging(role);
                 setQuery("");
                 setMatchingRoles([]);
               }}>
-              {t("merge")}
+              <span>{t("merge")}</span>
             </button>
           ) : null}
         </div>
@@ -521,9 +525,9 @@ const RoleBlock = ({
                     </p>
                     <div className="column is-4 is-flex is-justify-content-end">
                       <button
-                        className="button tag is-medium is-primary mr-2"
+                        className="button is-primary mr-2"
                         onClick={(e) => handleMerge(e, matchingRole)}>
-                        {t("merge")}
+                        <span>{t("merge")}</span>
                       </button>
                     </div>
                   </div>

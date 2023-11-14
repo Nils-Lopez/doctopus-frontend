@@ -1054,17 +1054,17 @@ const DocForm = ({
         <footer className=" is-flex is-justify-content-end">
           <div className="is-fullwidth is-flex is-justify-content-end">
             <button
-              className="button is-white-ter is-radiusless mr-3"
+              className="button is-light mr-3"
               onClick={(e) => {
                 setDraft(true);
                 handleDocSubmit(e, true);
               }}>
-              {t("Save as draft")}
+              <span>{t("Save as draft")}</span>
             </button>
             <button
-              className="button is-primary is-radiusless "
+              className="button is-primary "
               onClick={handleDocSubmit}>
-              {dataUpdate ? t("update") : t("Publish")}
+              <span>{dataUpdate ? t("update") : t("Publish")}</span>
             </button>
           </div>
         </footer>

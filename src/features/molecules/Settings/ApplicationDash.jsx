@@ -764,7 +764,7 @@ const ApplicationDash = ({ applicationSettings, setApplicationSettings }) => {
       </div>
       <div className="is-flex is-justify-content-end">
         <button
-          className="button is-primary tag is-medium mt-3"
+          className="button is-primary mt-3"
           onClick={() => {
             setStaticPageComponents([
               ...staticPageComponents,
@@ -784,7 +784,7 @@ const ApplicationDash = ({ applicationSettings, setApplicationSettings }) => {
               },
             ]);
           }}>
-          Add component
+          <span>Add component</span>
         </button>
       </div>
       {staticPageComponents.length > 0 ? (
@@ -792,7 +792,7 @@ const ApplicationDash = ({ applicationSettings, setApplicationSettings }) => {
           <hr />
           <div className="is-flex is-justify-content-end">
             <button
-              className="button is-primary tag is-medium mt-3"
+              className="button is-primary mt-3"
               onClick={() => {
                 setStaticPages([
                   ...staticPages,
@@ -817,17 +817,17 @@ const ApplicationDash = ({ applicationSettings, setApplicationSettings }) => {
                 setComponentContentEnValue("");
                 setComponentContentFrValue("");
               }}>
-              Add page
+              <span>Add page</span>
             </button>
           </div>
         </>
       ) : null}
       <div className="is-flex is-justify-content-center mt-3">
         <button
-          className="button tag is-large is-primary"
+          className="button  is-primary"
           onClick={handleUpdateAppSettings}>
-          <FontAwesomeIcon icon={faCheckCircle} className="mr-3" />
-          {t("confirm")}
+          <span><FontAwesomeIcon icon={faCheckCircle} className="mr-3" />
+          {t("confirm")}</span>
         </button>
       </div>
       <div className="mb-6 pb-0"></div>

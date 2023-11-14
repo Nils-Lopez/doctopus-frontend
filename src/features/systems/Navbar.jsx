@@ -28,7 +28,7 @@ const Navbar = ({bake_cookie, read_cookie, delete_cookie, client, setClient, set
         <nav className="navbar has-shadow pt-0 pb-0 is-fixed-top" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">         
                 <div className="navbar-item">
-                    <a href="/" className="mt-1"><img src={applicationSettings?.global?.logo ? applicationSettings?.global?.logo  : logoOrange} className="lg-navbar"/></a>
+                    <a href="/" className="mt-1 logolink"><img src={applicationSettings?.global?.logo ? applicationSettings?.global?.logo  : logoOrange} className="lg-navbar"/></a>
                     <h2 className="title is-4 mt-2 mb-1 ml-2 mr-2 title-nav has-text-left">
                         <strong>{applicationSettings?.global?.title[0] ? getContent(applicationSettings?.global?.title, i18n.language)  : t('documentation-center')}</strong> 
                         <br />                     
@@ -50,20 +50,25 @@ const Navbar = ({bake_cookie, read_cookie, delete_cookie, client, setClient, set
 
             <div id="navbar" className={"navbar-menu " + (hamburger ? "is-active" : "")}>
                 <div className="navbar-start">
-                  <div className="navbar-item">
-                    <Link to="/"><p className="has-text-primary"><strong>{t('home')}</strong></p></Link>
-                  </div>
+                  <div className="buttons">
+                    <div className="navbar-item">
+                    <Link to="/">
+                       <strong> {t('home')}</strong>
+                    </Link>
+                  </div>    
                     {applicationSettings?.staticPages?.map((page) => {
                         return <Fragment key={JSON.stringify(page)}>
-                            <div className="navbar-item">
+                            <div className="navbar-item ml-2">
                                 <Link to={"/pages/" + page.title[0].content.toLowerCase().replaceAll(' ', '-')}><p className="has-text-primary"><strong>{getContent(page.title, i18n.language)}</strong></p></Link>
                             </div>
                         </Fragment>
                     })}
-                  
-            {client && client.user && (client.user.type === "admin" || client.user.type === "moderator" || client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ?
+                    {client && client.user && (client.user.type === "admin" || client.user.type === "moderator" || client.user.type === "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ?
               <Admin />
               : null}
+                  </div>
+                  
+            
                 </div>
                 
                 
@@ -74,9 +79,10 @@ const Navbar = ({bake_cookie, read_cookie, delete_cookie, client, setClient, set
                 
                 
             </div>
-            <a href="https://doctopus.app" className='mr-3 poweredBy is-hidden-tablet-only'><p className="has-text-grey has-text-left title is-7 tag is-white">powered by&nbsp;<span className="is-6 has-text-primary">dOctopus</span></p></a>
 
         </nav>
+                    <a href="https://doctopus.app" className='mr-3 poweredBy is-hidden-tablet-only'><p className="has-text-grey has-text-left title is-7 tag is-white">powered by&nbsp;<span className="is-6 has-text-primary">dOctopus</span></p></a>
+
     </>
 }
 

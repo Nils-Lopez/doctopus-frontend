@@ -49,7 +49,7 @@ const Watchlist = ({docs, setDisplayDoc, setHideWatchlist}) => {
     return <div className="container"id="watchlist-table">
         <div className="is-flex is-justify-content-space-between mb-3">
         <h3 className="subtitle  is-4 has-text-grey mt-0 pt-0 mb-1"><small>{t('watchlist')}:</small></h3>
-        <button onClick={exportPDF} className="button tag is-medium is-primary" type="button"><FontAwesomeIcon icon={faDownload}/> <span className="ml-3">{t('download')}</span></button>
+        <button onClick={exportPDF} className="button is-primary" type="button"><span><FontAwesomeIcon icon={faDownload}/> <span className="ml-3">{t('download')}</span></span></button>
         
         </div>
         <div className="columns is-multiline">

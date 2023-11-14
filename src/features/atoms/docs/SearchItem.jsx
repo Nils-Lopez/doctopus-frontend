@@ -21,7 +21,7 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
 
     const [displayThumb, setDisplayThumb] = useState(true)
         return <div className={"column is-one-fifth"} >
-            <div className={"box results-col " +colClasses} onClick={() => {
+            <div className={"box results-col has-shadow " +colClasses} onClick={() => {
                 
                 if (handleSearchDoc !== "false") {
                     handleSearchDoc(item.doc)
@@ -41,11 +41,11 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
                         {item.doc && item.doc.types && item.doc.types[0] && getContent(item.doc.types[0].title, i18n.language) !== "Error" ? getContent(item.doc.types[0].title, i18n.language).length > 14 ? <>{ getContent(item.doc.types[0].title, i18n.language).split(' ')[0]} { getContent(item.doc.types[0].title, i18n.language).replaceAll(getContent(item.doc.types[0].title, i18n.language).split(' ')[0], "")}</> : getContent(item.doc.types[0].title, i18n.language)  : t('document')}
                     </span>
                 </div>
-               
+                           <h3 className="subtitle is-6 mb-1 mt-1">{item.doc && item.doc.title}</h3>
+
                           {displayThumb && item.doc && item.doc.thumb && item.doc.thumb !== "" ? <div className="column mb-0 pb-0">
                     <img onError={() => setDisplayThumb(false)} src={item.doc.thumb} alt="file" className="thumb-search-item"/> 
                 </div> : null}
-            <h3 className="subtitle is-6 mb-1 mt-1">{item.doc && item.doc.title}</h3>
             <h3 className="subtitle is-6 mb-1 mt-1 has-text-grey mt-3"><small>{item.doc && item.doc.date}</small></h3>
                 {/* <p>{item.doc.description && item.doc.description[0] ? getContent(item.doc.description, i18n.language).substring(0,20) + "..." : null}</p>
                
@@ -111,7 +111,7 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
             })}
                 </div> : null}
 
-                {!watchlist && item.doc && item.doc.tags && item.doc.tags[0] ? <>
+                {!watchlist && item.doc && item.doc.tags && item.doc.tags[0] ? <div className="tags-searchitem">
                     <hr />
          
                     <div className="columns is-multiline  is-flex is-justify-content-space-around ">
@@ -136,7 +136,7 @@ const SearchItem = ({item, setDisplay, handleSearchTag, location = "index", hand
                             }
                         })}
                     </div>
-                </> : null}
+                </div> : null}
         
             </div>
         </div>

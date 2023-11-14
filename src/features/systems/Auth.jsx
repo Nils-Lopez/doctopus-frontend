@@ -29,7 +29,7 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
 
     const [formAlert, setFormAlert] = useState(false)
 
-    const [lang, setLang] = useState("en")
+    const [lang, setLang] = useState("fr")
 
     const {
         login, 
@@ -63,6 +63,12 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
 			updateUser({defaultLanguage: lang}, client.user._id) 
 		}
 	}
+
+    useEffect(() => {
+        if (lang && client && client.user) {
+            handleUpdateUser({lang})
+        }
+    }, [lang])
 
 	//useEffect(() => {
 	//	if (reponseUpdateUser && responseUpdateUser.success) {
@@ -136,40 +142,99 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
                
                 
                 <div className="buttons">
-                    {!client ? <>
-                        <div className="navbar-item mr-4 mb-1">
-                            <a href="" className={lang === "en" ? "langchoose has-text-dark" : "langchoose"} onClick={(e) => {
-                                e.preventDefault()
-                                i18n.changeLanguage("en")
-                                setLang("en")
-                            }}>EN</a>
+                       
+                        {!client ? <>
+                         <div className="navbar-item mr-4 mb-1">
                             
-                            <a href="" className={lang === "fr" ? "has-text-dark" : ""} onClick={(e) => {
+                            {lang === "en" ? <>
+                               <a className="langLink" onClick={(e) => {
                                 e.preventDefault()
                                 i18n.changeLanguage("fr")
                                 setLang("fr")
-                            }}>FR</a>
+                            }}>
+                                <small>
+                                    Français
+                                </small>    
+                            </a> 
+                            </> : <>
+                                <a className="langLink" onClick={(e) => {
+                                e.preventDefault()
+                                i18n.changeLanguage("en")
+                                setLang("en")
+                            }}>
+                                <small>
+                                    English
+                                </small>    
+                            </a>
+                            </>}
                         </div>
+ <button onClick={() => setLogInModal(true)} className="button is-light auth-btn">
+                            <span>
+                                <strong>{t('login')}</strong>
+                            </span>
+                        </button>
                
                         <button onClick={() => setSignUpModal(true)} className="button is-primary auth-btn">
-                            <strong>{t('signup')}</strong>
+                            <span>
+                                 <strong>{t('signup')}</strong>
+                            </span>
                         </button>
-                        <button onClick={() => setLogInModal(true)} className="button is-light auth-btn">
-                            {t('login')}
-                        </button>
+                       
                     </> : <>
-                        
+                        <div className="mobile-auth-menu">
+                             <Link to="/watchlist" className="navbar-item ">
+        {t('watchlist')}
+                                            </Link>
+                                            {/* <Link to="/history" className="dropdown-item  pl-6">
+        {t('history')}
+      </Link> */}
+
+      {/* <a className="dropdown-item  pl-6">
+        {t('settings')}
+      </a>
+      
+      <a href="#" className="dropdown-item pl-6">
+        {t('help')}
+      </a> */}
+
+	 
+                            <div className="mt--05">
+                                {lang === "en" ? <>
+                               <a className='navbar-item' onClick={(e) => {
+                                e.preventDefault()
+                                i18n.changeLanguage("fr")
+                                setLang("fr")
+                            }}>
+                                    Français
+                                
+                            </a> 
+                            </> : <>
+                                <a className='navbar-item' onClick={(e) => {
+                                e.preventDefault()
+                                i18n.changeLanguage("en")
+                                setLang("en")
+                            }}>
+                                    English
+                            </a>
+                            </>}
+                            </div>
+      <div className=" navbar-item  pb-05 mb-0 mt-3 mb-0 pb-0"><button className="button is-small  is-light" onClick={() => handleLogOut()}>
+        <span>{t('logout')}</span>
+      </button></div>
+                        </div>
                             
-                        <div className="dropdown is-active is-hoverable" onMouseLeave={() => setUserDropdown(!userDropdown)}>
+                        <div className="dropdown is-active is-hoverable" onMouseLeave={() => setUserDropdown(false)}>
                             <div className="dropdown-trigger">
-                                <button onClick={() => setUserDropdown(!userDropdown)} onMouseEnter={() => setUserDropdown(!userDropdown)} className={"button is-primary has-text-white is-rounded "} aria-haspopup="true" aria-controls="dropdown-menu">
-                                    <FontAwesomeIcon icon={faUser} size="xl"/>
+                                <button onClick={() => setUserDropdown(!userDropdown)} onMouseEnter={() => setUserDropdown(!userDropdown)} className={"button is-primary has-text-white px-5 "} aria-haspopup="true" aria-controls="dropdown-menu">
+                                    <span>
+                                        <FontAwesomeIcon icon={faUser} size="xl"/>
                                     <FontAwesomeIcon icon={userDropdown ? faChevronUp : faChevronDown} />
+                                    </span>
                                 </button>
                             </div>
                                 {userDropdown ? <>
-                                    <div className="dropdown-menu dropdown-user-logged is-mobile is-tablet" id="dropdown-menu" role="menu" onClick={() => setUserDropdown(!userDropdown)}>
-                                    <div className="dropdown-content">
+                                    <div className="dropdown-menu pb-0 pr--1 left-0 dropdown-user-logged is-mobile is-tablet" id="dropdown-menu" role="menu" onClick={() => setUserDropdown(!userDropdown)}>
+                                    <div className="dropdown-content pb-0">
                                         <Link to="/watchlist" className="dropdown-item pl-6">
         {t('watchlist')}
                                             </Link>
@@ -184,25 +249,31 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
       <a href="#" className="dropdown-item pl-6">
         {t('help')}
       </a> */}
-	<div className="dropdown-item is-flex is-justify-content-center">
-                            <a href="" className={lang === "en" ? "langchoose has-text-dark" : "langchoose"} onClick={(e) => {
-                                e.preventDefault()
-                                i18n.changeLanguage("en")
-                                setLang("en")
-handleUpdateUser({lang: "en"})
-                            }}>EN</a>
-                            
-                            <a href="" className={lang === "fr" ? "has-text-dark" : ""} onClick={(e) => {
+
+	 
+                            <div className="mt--05">
+                                {lang === "en" ? <>
+                               <a className='dropdown-item pl-6' onClick={(e) => {
                                 e.preventDefault()
                                 i18n.changeLanguage("fr")
                                 setLang("fr")
-									handleUpdateUser({lang: "fr"})
-                            }}>FR</a>
-                        </div>
-      <hr className="dropdown-divider"/>
-      <button className="button is-small mt-2 is-dark" onClick={() => handleLogOut()}>
-        {t('logout')}
-      </button>
+                            }}>
+                                    Français
+                                
+                            </a> 
+                            </> : <>
+                                <a className='dropdown-item pl-6' onClick={(e) => {
+                                e.preventDefault()
+                                i18n.changeLanguage("en")
+                                setLang("en")
+                            }}>
+                                    English
+                            </a>
+                            </>}
+                            </div>
+      <div className="is-flex is-justify-content-end mr-3 pb-05 mb-0 mt-3"><button className="button is-small  is-light" onClick={() => handleLogOut()}>
+        <span>{t('logout')}</span>
+      </button></div>
     </div>
   </div>
                                 </> : null}
