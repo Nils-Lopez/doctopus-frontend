@@ -1030,7 +1030,7 @@ const Show = ({
               </h3>
               {childsData && childsData.length > 5 ? (
                 <button
-                  className="button is-primary  is-small is-rounded    ml-3 mt--2 "
+                  className="button is-primary  is-small is-rounded   is-filter-btn  ml-3 mt--2 "
                   onClick={() => setFilterBtn(!filterBtn)}>
                  <span>
                    <strong>

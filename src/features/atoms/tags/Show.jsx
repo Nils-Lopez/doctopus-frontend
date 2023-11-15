@@ -259,8 +259,8 @@ const Show = ({
       {!updateTag ? (
         <>
         
-          <h3 className="subtitle is-2 mt-0 pt-0 mb-6">
-            <strong className="has-text-primary">
+          <h3 className="title is-1 mt-0 pt-0 mb-3 mob-mb-0">
+            <strong className="">
               {getContent(tag.title, i18n.language)}
             </strong>
           </h3>
@@ -277,7 +277,7 @@ const Show = ({
 
               {childsData && childsData.length > 5 ? (
                 <button
-                  className="button is-primary has-background-transparent is-small is-rounded     ml-3 "
+                  className="button is-primary has-background-transparent is-small is-rounded  is-filter-btn   ml-3 "
                   onClick={() => setFilterBtn(!filterBtn)}>
                   <strong>
                     <FontAwesomeIcon

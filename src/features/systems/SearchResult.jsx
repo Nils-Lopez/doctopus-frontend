@@ -389,7 +389,7 @@ const SearchResult = ({
               <>
                 
                 {tags[4] ? (
-                  <div className="is-flex is-justify-content-start mt-5 ml-0">
+                  <div className="is-flex is-justify-content-start tags-result mt-5 ml-0">
                     {tags.map((item, index) => {
                       return (
                         <Fragment key={JSON.stringify(item)}>
@@ -411,7 +411,7 @@ const SearchResult = ({
                     })}
                   </div>
                 ) : (
-                  <div className="is-flex is-justify-content-start mt-5 ml-0">
+                  <div className="is-flex is-justify-content-start tags-result mt-5 ml-0">
                     {tags.map((item, index) => {
                       return (
                         <Fragment key={JSON.stringify(item)}>
@@ -503,7 +503,7 @@ const SearchResult = ({
                     </h3>
                     {result.docs && result.docs.length > 5 ? (
                       <button
-                        className="button is-primary has-background-transparent is-small is-rounded  mt--3   ml-3 "
+                        className="button is-primary has-background-transparent is-small  is-filter-btn is-rounded  mt--3   ml-3 "
                         onClick={() => setFilterBtn(!filterBtn)}>
                         <strong>
                           <span><FontAwesomeIcon

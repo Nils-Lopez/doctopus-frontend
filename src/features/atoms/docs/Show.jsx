@@ -342,7 +342,7 @@ const Show = ({
                   (client && client.user && client.user.type !== "visitor")) && supports[0] &&
           supports[0].url &&
           supports[0].url.includes("vimeo") ? (
-            <div className="button has-name pl-5 pr-5 mt-0 is-primary">
+            <div className="button has-name pl-5 pr-5 mt-0 is-primary file-doc-btn">
               <span
                 className="file-label"
                 onClick={() => setDisplayVideo(!displayVideo)}>
@@ -370,7 +370,7 @@ const Show = ({
                   doc.restrictedContent === "all" ||
                   (client && client.user && client.user.type !== "visitor")) && supports[0] && supports[0].pdf && supports[0].pdf !== "" ? (
             <>
-            <div className="button has-name pl-5 pr-5 mt-05 is-primary">
+            <div className="button has-name pl-5 pr-5 mt-05 is-primary file-doc-btn">
               <span
                 className="file-label"
                 onClick={handleDisplayFile}>
@@ -453,6 +453,67 @@ const Show = ({
             <div className="column mb-0 pb-0">
               <div className=" is-flex is-justify-content-start">
                 <h1 className="mt-2 title is-1 has-text-left">{title}</h1>
+              </div>
+              <div className="is-flex is-justify-content-start mt--05 mb-3
+              ">
+              {doc && (!doc.restrictedContent ||
+                  doc.restrictedContent === "all" ||
+                  (client && client.user && client.user.type !== "visitor")) && supports[0] &&
+          supports[0].url &&
+          supports[0].url.includes("vimeo") ? (
+            <div className="button has-name pl-5 pr-5 mt-0 is-primary mobile-file-doc-btn">
+              <span
+                className="file-label"
+                onClick={() => setDisplayVideo(!displayVideo)}>
+                {!displayVideo ? (
+                  <>
+                    {t("show-video")}
+                    <FontAwesomeIcon
+                      icon={faEye}
+                      className="is-primary mt-1 ml-2"
+                    />
+                  </>
+                ) : (
+                  <>
+                    {t("hide-video")}{" "}
+                    <FontAwesomeIcon
+                      icon={faEyeSlash}
+                      className="is-primary mt-1 ml-2"
+                    />
+                  </>
+                )}
+              </span>
+            </div>
+          ) : null}
+          {doc && (!doc.restrictedContent ||
+                  doc.restrictedContent === "all" ||
+                  (client && client.user && client.user.type !== "visitor")) && supports[0] && supports[0].pdf && supports[0].pdf !== "" ? (
+            <>
+            <div className="button has-name pl-5 pr-5 mt-05 is-primary mobile-file-doc-btn">
+              <span
+                className="file-label"
+                onClick={handleDisplayFile}>
+                {!displayVideo ? (
+                  <>
+                    {t("read-doc")}
+                    <FontAwesomeIcon
+                      icon={faEye}
+                      className="is-primary mt-05 ml-2"
+                    />
+                  </>
+                ) : (
+                  <>
+                    {t("hide-video")}{" "}
+                    <FontAwesomeIcon
+                      icon={faEyeSlash}
+                      className="is-primary mt-1 ml-2"
+                    />
+                  </>
+                )}
+              </span>
+            </div>
+            </>
+          ) : null}
               </div>
               {doc &&
               (!doc.restrictedContent ||
