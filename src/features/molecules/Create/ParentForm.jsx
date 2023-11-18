@@ -86,8 +86,8 @@ const ParentForm = ({
                   <a>{t("organization")}</a>
                 </li>
               ) : (
-                <li className=" is-light" onClick={handleOrganisationBtn}>
-                  <a>{t("organization")}</a>
+                <li className="is-transparent" onClick={handleOrganisationBtn}>
+                  <a className="has-text-grey">{t("organization")}</a>
                 </li>
               )}
             </>
@@ -100,7 +100,7 @@ const ParentForm = ({
                 </li>
               ) : (
                 <li className=" is-light" onClick={handlePersonBtn}>
-                  <a>{t("person")}</a>
+                  <a className="has-text-grey">{t("person")}</a>
                 </li>
               )}
             </>
@@ -113,7 +113,7 @@ const ParentForm = ({
                 </li>
               ) : (
                 <li className=" is-light" onClick={handleProjectBtn}>
-                  <a>{t("project")}</a>
+                  <a className="has-text-grey">{t("project")}</a>
                 </li>
               )}
             </>
@@ -125,7 +125,7 @@ const ParentForm = ({
               </li>
             ) : (
               <li className=" is-light" onClick={handleDocBtn}>
-                <a>{t("document")}</a>
+                <a className="has-text-grey">{t("document")}</a>
               </li>
             )}
           </>
@@ -137,7 +137,7 @@ const ParentForm = ({
                 </li>
               ) : (
                 <li className=" is-light" onClick={handleProdBtn}>
-                  <a>{t("production")}</a>
+                  <a className="has-text-grey">{t("production")}</a>
                 </li>
               )}
             </>

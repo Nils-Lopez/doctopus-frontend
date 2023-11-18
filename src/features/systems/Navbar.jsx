@@ -59,7 +59,7 @@ const Navbar = ({bake_cookie, read_cookie, delete_cookie, client, setClient, set
                     {applicationSettings?.staticPages?.map((page) => {
                         return <Fragment key={JSON.stringify(page)}>
                             <div className="navbar-item ml-2">
-                                <Link to={"/pages/" + page.title[0].content.toLowerCase().replaceAll(' ', '-')}><p className="has-text-primary"><strong>{getContent(page.title, i18n.language)}</strong></p></Link>
+                                <Link to={"/pages/" + page.title[0].content.toLowerCase().replaceAll(' ', '-')}><strong>{getContent(page.title, i18n.language)}</strong></Link>
                             </div>
                         </Fragment>
                     })}

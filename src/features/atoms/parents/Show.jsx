@@ -37,6 +37,7 @@ import {
 } from "react-share";
 import { useEntities } from "../../../utils/hooks/Entities";
 import { usePeople } from "../../../utils/hooks/People";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Show = ({
   parent,
@@ -64,7 +65,7 @@ const Show = ({
     city,
     startedAt,
     endedAt,
-    url,
+    url,  
     issn,
     title,
     date,
@@ -85,8 +86,19 @@ const Show = ({
 
   const [productionsScapin, setProductions] = useState(false);
   const [prodLoading, setProdLoading] = useState(false);
+  
+  let navigate = useNavigate();
 
-  const { findProdByIds, responseFindProdByIds } = useProds();
+  const {
+    findProdByIds,
+    responseFindProdByIds,
+    findProdsByString, 
+    responseFindProdsByString,
+    findEntityByName,
+    responseFindEntityByName,
+    findPersonByName,
+    responseFindPersonByName,
+  } = useProds();
 
   const [childsData, setChildsData] = useState(false);
   const [childsDataLoading, setChildsDataLoading] = useState(false);
@@ -94,7 +106,6 @@ const Show = ({
   const [childsPageLoading, setChildsPageLoading] = useState(false);
 
   const [childsSearchLoading, setChildsSearchLoading] = useState(false);
-  console.log(parent)
   const {
     findProjectChildsDataById,
     responseFindProjectChildsDataById,
@@ -178,26 +189,23 @@ const Show = ({
   ]);
 
   useEffect(() => {
-    if (prodIds && prodIds[0] && !prodLoading && !productionsScapin[0]) {
-      setProdLoading(true);
-      findProdByIds(prodIds);
-    } else if (
-      productionIds &&
-      productionIds[0] &&
-      !prodLoading &&
-      !productionsScapin[0]
-    ) {
-      setProdLoading(true);
-      findProdByIds(productionIds);
+    if (!prodLoading && !productionsScapin[0]) {
+      setProdLoading(true)
+      if (parent.firstName) {
+        findProdsByString(parent.lastName + ", " + parent.firstName, "person");
+      } else if (parent.name) {
+        findProdsByString(parent.name, "entity");
+      }
     }
-  }, [prodIds, productionIds]);
+    
+  }, [parent, prodLoading]);
 
   useEffect(() => {
-    if (responseFindProdByIds && prodLoading) {
-      setProductions(responseFindProdByIds);
+    if (responseFindProdsByString && prodLoading) {
+      setProductions(responseFindProdsByString);
       setProdLoading(false);
     }
-  }, [responseFindProdByIds]);
+  }, [responseFindProdsByString]);
 
   const [dataList, setDataList] = useState([]);
   const [page, setPage] = useState(1);
@@ -263,11 +271,9 @@ const Show = ({
       }
     }
     return ret_arr;
-  }
+  };
 
-  let filteredRoles = roles
-    ? removeDuplicates(roles)
-    : [];
+  let filteredRoles = roles ? removeDuplicates(roles) : [];
 
   const [showScapinParent, setShowScapinParent] = useState(false);
 
@@ -281,9 +287,35 @@ const Show = ({
         });
       else setShowScapinParent(false);
     } else {
-      handleSearchScapinID(item);
+      if (item.entity) {
+        findEntityByName(item.entity.name);
+      } else if (item.person) {
+        findPersonByName(item.person.name)
+      }
     }
   };
+
+  useEffect(() => {
+    if (responseFindPersonByName && responseFindPersonByName.success) {
+      navigate('/person/' + responseFindPersonByName.data._id)
+    } else if (responseFindPersonByName) {
+      setAlert({
+        type: "light",
+        message: {en: t('no-additional-data'), fr: t('no-additional-data')}
+      })
+    }
+  }, [responseFindPersonByName])
+  useEffect(() => {
+    if (responseFindEntityByName && responseFindEntityByName.success) {
+      
+      navigate('/entity/' + responseFindEntityByName.data._id)
+    } else if (responseFindEntityByName) {
+      setAlert({
+        type: "light",
+        message: {en: t('no-additional-data'), fr: t('no-additional-data')}
+      })
+    }
+  }, [responseFindEntityByName])
 
   const [productionsPage, setProductionsPage] = useState(1);
   const [parentsPage, setParentsPage] = useState(1);
@@ -624,12 +656,12 @@ const Show = ({
             <span className="tag is-large has-text-info has-background-transparent mr-1 ml-1 mb-0">
               <strong className="has-text-info">
                 {parent.scapin
-                ? t("production")
-                : parent.projects
-                ? t("organization")
-                : parent.entities
-                ? t("project")
-                : t("person")}
+                  ? t("production")
+                  : parent.projects
+                  ? t("organization")
+                  : parent.entities
+                  ? t("project")
+                  : t("person")}
               </strong>
             </span>
           )}
@@ -820,15 +852,14 @@ const Show = ({
           <div className="is-flex is-justify-content-end">
             <div className="is-inline-block">
               <a
-              href={
-                "https://scapin.aml-cfwb.be/recherche/details/?pid=" +
-                parent._id
-              }
-              target="_blank"
-              className="scapin-link"
-              >
-              {t("read-more-scapin")}
-            </a>
+                href={
+                  "https://scapin.aml-cfwb.be/recherche/details/?pid=" +
+                  parent._id
+                }
+                target="_blank"
+                className="scapin-link">
+                {t("read-more-scapin")}
+              </a>
             </div>
           </div>
         ) : null}
@@ -1012,7 +1043,7 @@ const Show = ({
       </div>
       {childs && childs[0] ? (
         <>
-          <hr/>
+          <hr />
           <div className="is-flex is-justify-content-space-between pt-1">
             <div className="is-flex is-justify-content-center pb-1">
               <h3 className="subtitle has-text-grey has-text-left  is-6 mt--2 pt-1 mb-0">
@@ -1032,14 +1063,14 @@ const Show = ({
                 <button
                   className="button is-primary  is-small is-rounded   is-filter-btn  ml-3 mt--2 "
                   onClick={() => setFilterBtn(!filterBtn)}>
-                 <span>
-                   <strong>
-                    <FontAwesomeIcon
-                      icon={filterBtn ? faEyeSlash : faArrowDownAZ}
-                    />{" "}
-                    {filterBtn ? null : <>&nbsp;&nbsp;{t("filters")}</>}{" "}
-                  </strong>
-                 </span>
+                  <span>
+                    <strong>
+                      <FontAwesomeIcon
+                        icon={filterBtn ? faEyeSlash : faArrowDownAZ}
+                      />{" "}
+                      {filterBtn ? null : <>&nbsp;&nbsp;{t("filters")}</>}{" "}
+                    </strong>
+                  </span>
                 </button>
               ) : null}
               {filterBtn ? (
@@ -1113,7 +1144,9 @@ const Show = ({
             </div>
           </div>
         </>
-      ) : console.log(childs)}
+      ) : (
+        console.log(childs)
+      )}
       <div className="columns is-multiline is-flex is-justify-content-start">
         {filteredList && filteredList[0]
           ? filteredList.map((child, i) => {

@@ -512,7 +512,8 @@ body {
   transition: all 0.3s ease;
 }
 
-.modal {
+
+.modal-auth {
   position: absolute; 
   z-index: 1000;
   height: 101vh;
@@ -525,11 +526,12 @@ body {
   background-color: transparent !important;
 }
 
+
 .modal-card {
-background-color: rgba(255, 255, 255, 0.7) !important;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
     border-radius: 15px;
+    background-color: rgba(255, 255, 255, 0.8) !important;
 }
 
 .search-label  {

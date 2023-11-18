@@ -285,11 +285,10 @@ background-color: rgba(255, 255, 255, 0.8) !important;
   height: 520%;
   width: 350%;
   background: var(--primary);
-  -webkit-transition: all 0.5s ease-out;
-  border-radius: 9999px;
-  transition: all 0.5s ease-out;
-  -webkit-transform: translateX(-140%) translateY(-25%) rotate(45deg);
-  transform: translateX(-140%) translateY(-25%) rotate(45deg);
+  -webkit-transition: all 0.01s ease-out;
+  transition: all 0.01s ease-out;
+  -webkit-transform: translateX(-140%);
+  transform: translateX(-140%);
 }
 
 .button.is-light:after {
@@ -300,11 +299,10 @@ background-color: rgba(255, 255, 255, 0.8) !important;
   height: 520%;
   width: 450%;
   background: rgba(0, 0, 0, 0.13);
-  -webkit-transition: all 0.5s ease-out;
-  border-radius: 9999px;
-  transition: all 0.5s ease-out;
-  -webkit-transform: translateX(-100%) translateY(-15%) rotate(35deg);
-  transform: translateX(-100%) translateY(-15%) rotate(35deg);
+  -webkit-transition: all 0.01s ease-out;
+  transition: all 0.01s ease-out;
+  -webkit-transform: translateX(-100%) ;
+  transform: translateX(-100%) ;
 }
 
 .button.is-dark:after {
@@ -355,11 +353,11 @@ background-color: rgba(255, 255, 255, 0.8) !important;
 .button.is-primary:hover span,
 .search-button:hover span, 
 .clickable-is-primary:hover h1 {
-  -webkit-animation: color-change 0.6s ease-out;
-  -moz-animation: color-change 0.6s ease-out;
-  -o-animation: color-change 0.6s ease-out;
-  -ms-animation: color-change 0.6s ease-out;
-  animation: color-change 0.6s ease-out;
+  -webkit-animation: color-change 0.05s ease-out;
+  -moz-animation: color-change 0.05s ease-out;
+  -o-animation: color-change 0.05s ease-out;
+  -ms-animation: color-change 0.05s ease-out;
+  animation: color-change 0.05s ease-out;
   animation-fill-mode: forwards;
 }
 
@@ -373,19 +371,19 @@ background-color: rgba(255, 255, 255, 0.8) !important;
 }
 
 .search-button:hover .icon {
-  -webkit-animation: bg-change 0.6s ease-out;
-  -moz-animation: bg-change 0.6s ease-out;
-  -o-animation: bg-change 0.6s ease-out;
-  -ms-animation: bg-change 0.6s ease-out;
-  animation: bg-change 0.6s ease-out;
+  -webkit-animation: bg-change 0.05s ease-out;
+  -moz-animation: bg-change 0.05s ease-out;
+  -o-animation: bg-change 0.05s ease-out;
+  -ms-animation: bg-change 0.05s ease-out;
+  animation: bg-change 0.05s ease-out;
   animation-fill-mode: forwards;
 }
 
 .button:hover:after,
 .search-button:hover:after,
 .clickable-is-primary:hover:after {
-  -webkit-transform: translateX(-0%) translateY(-25%) rotate(25deg);
-  transform: translateX(-15%) translateY(-10%) rotate(25deg);
+  -webkit-transform: translateX(-0%) ;
+  transform: translateX(-15%) ;
 }
 
 

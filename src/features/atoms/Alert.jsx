@@ -2,9 +2,9 @@ import React from 'react'
 
 const Alert = ({alertType, message, setAlert = false}) => {
 
-    var type = alertType === 'error' ? 'is-danger' : alertType === 'success' ? "is-success" : "is-primary"
+    var type = alertType === 'error' ? 'is-danger' : alertType === 'success' ? "is-success" : "is-light"
 
-    setTimeout(() => {
+    setTimeout(() => {  
         setAlert(null)
     }, 2500)
 

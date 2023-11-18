@@ -77,7 +77,17 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
 
 
   return <div className={!location || !location.includes('template') ? "mt--1" : ""}>
-
+{projForm ?
+            <div className="modal-card mt-5">
+              
+                <div className="modal-card-body has-background-white">
+                  <div className="is-flex is-justify-content-space-between"><p className="modal-card-title title has-text-left is-4 pt-1">{t('project')}</p>
+                    <button onClick={() => setProjForm(false)} className="delete is-large ml-4" aria-label="close"></button></div>
+                  <ProjectForm client={client} setAlert={setAlert} setCreated={setCreated}/>
+                </div>
+       
+            </div> :null}
+            
       {(template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="parents" location={!location || !location.includes("template") ? "proj-parent-doc" : "template-parent-proj"} selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
       {(selectedRoles && selectedRoles[0]) || (template && !template.parent_role) ? 
         <SearchForm selectedItems={selectedProj} handleAddItem={handleAddProj} searchItems={searchProjects} responseSearchItems={responseSearchProjects} mainField={"title"} setFormModal={setProjForm}/>
@@ -94,19 +104,7 @@ const ProjectParentForm = ({location, selectedProj, selectProj, template, lang, 
         }
       })}
      </div>
-    {projForm ? <div className={"modal " + "is-active" }>
-            <div className="modal-background"></div>
-            <div className="modal-card ">
-              
-                <div className="modal-card-body has-background-white">
-                  <div className="is-flex is-justify-content-space-between"><p className="modal-card-title title has-text-left is-4 pt-1">{t('project')}</p>
-                    <button onClick={() => setProjForm(false)} className="delete is-large ml-4" aria-label="close"></button></div>
-                  <ProjectForm client={client} setAlert={setAlert} setCreated={setCreated}/>
-                </div>
-       
-            </div>
-            
-        </div> : null}
+    
   </div>
 }
 

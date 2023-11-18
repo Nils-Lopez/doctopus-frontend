@@ -2,6 +2,8 @@ import React, {Fragment} from "react"
 
 import {useTranslation} from "react-i18next"
 
+import {useNavigate} from "react-router-dom"
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
@@ -21,6 +23,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
     let colClasses = i || index === 0 ? " smooth-appear" : ""
     colClasses += i && index === 0 ? "" : index === 4 ? " sm5" : index === 3 ? " sm4" : index === 2 ? " sm3" : index === 1 ? " sm2" : ""
     const { t, i18n } = useTranslation() 
+    let navigate = useNavigate()
     if (parent !== "production" && item.scapin) {
         return <div className="column is-one-quarter-desktop is-half-tablet">
             <div className={"box results-col "+colClasses} onClick={() => handleSearchScapinParent(item, "parent")}>
@@ -151,7 +154,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
             </div>
         </div>
     } else if (parent === "production") {
-            return <div className={"column is-one-quarter-desktop is-half-tablet"} onClick={() => handleSearchScapinParent(item)}>
+            return <div className={"column is-one-quarter-desktop is-half-tablet"} onClick={() => navigate("/production/" + item.prod._id)}>
                     <div className={"box results-col " +colClasses} onClick={() => {
                            
                     }}>
@@ -170,7 +173,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
                 </div>
             </div>
              
-    }else if (item.parent_doc && parent !== "parent_doc") {
+    } else if (item.parent_doc && parent !== "parent_doc") {
         return <DocSearchItem item={{...item, doc: item.parent_doc}} handleSearchDoc={handleSearchDoc} handleDelete={handleDelete}i={i} relTypes={relTypes}/>
     } else if (item.doc && parent !== "doc") {
         return <DocSearchItem item={item} handleSearchDoc={handleSearchDoc} handleDelete={handleDelete} i={i}/>

@@ -150,7 +150,18 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
   }, [draftOrg])
 
   return <>
-
+ {orgForm ? 
+        <div className="modal-card has-background-transparent no-bg mb-6 mt-6">
+          
+            <div className="modal-card-body has-background-transparent">
+                  <div className="is-flex is-justify-content-space-between">
+                    <p className="modal-card-title title has-text-left is-4 pt-1">{t('organization')}</p>
+                    <button onClick={() => setOrgForm(false)} className="delete is-large ml-4" aria-label="close"></button>
+                    </div>
+                    <OrganisationForm client={client} setAlert={setAlert} setCreated={setCreated} draftOrg={orgForm}/>
+                </div>
+        </div>
+         : null}
         { location !== "activity-form" && (template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="parents" location={!location || !location.includes("template") ? "org-parent-doc" : "template-parent-org"} selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
   {(selectedRoles && selectedRoles[0]) || (template && !template.parent_role) ? <>
     <SearchForm selectedItems={selectedOrg} handleAddItem={handleAddOrg}searchItems={searchEntities} responseSearchItems={responseSearchEntities} mainField={"name"} setFormModal={setOrgForm} draftValue={organisationValue}/>
@@ -166,19 +177,7 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
         }
       }) : null}
  </div>
-    {orgForm ? <div className={"modal " + "is-active" }>
-      <div className="modal-background"></div>
-        <div className="modal-card mb-6 mt-6">
-          
-            <div className="modal-card-body has-background-white">
-                  <div className="is-flex is-justify-content-space-between">
-                    <p className="modal-card-title title has-text-left is-4 pt-1">{t('organization')}</p>
-                    <button onClick={() => setOrgForm(false)} className="delete is-large ml-4" aria-label="close"></button>
-                    </div>
-                    <OrganisationForm client={client} setAlert={setAlert} setCreated={setCreated} draftOrg={orgForm}/>
-                </div>
-        </div>
-        </div> : null}
+   
   </>
 }
 

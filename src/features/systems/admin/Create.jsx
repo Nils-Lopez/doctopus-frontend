@@ -20,7 +20,6 @@ const Create = ({client, setAlert, setClient, applicationSettings}) => {
     const [selectedType, selectType] = useState({value: 'document', label: t('document')})
 
     const handleSelectType = (e) => {
-      console.log(e)
       selectType(e)
     }
 

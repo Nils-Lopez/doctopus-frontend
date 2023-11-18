@@ -28,6 +28,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useApplication } from "../../utils/hooks/Application";
 import { init } from "i18next";
 import { read_cookie } from "sfcookies";
+import { useProds } from "../../utils/hooks/Prods.js";
 
 const HomePage = ({
   client,
@@ -68,6 +69,9 @@ const HomePage = ({
         );
         setNavHistory([...navHistoryFiltered, location.pathname]);
       }
+      if (!location.pathname.includes("/document")) {
+        setDisplayDoc(false);
+      }
     }
   }, [location.pathname]);
 
@@ -84,6 +88,8 @@ const HomePage = ({
   const { findDocByTagSlug, responseFindDocByTagSlug } = useTags();
 
   const { findDocById, responseFindDocById } = useDocs();
+
+  const {findProdRelsById, responseFindProdRelsById} = useProds();
 
   let params = useParams();
 
@@ -120,25 +126,24 @@ const HomePage = ({
       });
     } else if (params && params.tag_slug) {
       setLoadingSearch(true);
-
       findDocByTagSlug(params.tag_slug);
     } else if (params && params.project_slug) {
       setLoadingSearch(true);
-
       findProjectById(params.project_slug);
     } else if (params && params.entity_slug) {
       setLoadingSearch(true);
-
       findEntityById(params.entity_slug);
     } else if (params && params.person_slug) {
       setLoadingSearch(true);
-
       findPersonById(params.person_slug);
     } else if (params && params.doc_slug) {
       setLoadingSearch(true);
-
       findDocById(params.doc_slug);
-    } 
+    } else if (params && params.prod_id) {
+      console.log(params.prod_id);
+      setLoadingSearch(true);
+      findProdRelsById(params.prod_id);
+    }
   }, [params]);
 
   useEffect(() => {
@@ -154,6 +159,13 @@ const HomePage = ({
       setLoadingSearch(false);
     }
   }, [responseFindProjectById]);
+
+  useEffect(() => {
+    if (responseFindProdRelsById) {
+      setDisplayParent({...responseFindProdRelsById.item.prod, scapin: true});
+      setLoadingSearch(false);
+    }
+  }, [responseFindProdRelsById])
 
   useEffect(() => {
     if (responseFindEntityById && responseFindEntityById.success) {
@@ -227,7 +239,6 @@ const HomePage = ({
         registerVisitor();
         setLoadingSearch(true);
       }
-      
     }
   }, []);
 

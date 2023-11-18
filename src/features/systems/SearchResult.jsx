@@ -169,6 +169,7 @@ const SearchResult = ({
 
   const handleSearchParent = (parent) => {
     setDisplayDoc(false);
+    console.log("aqui: ", parent)
     if (showParentDoc) {
       setShowParentDoc(false);
       setShowDocParent(true);

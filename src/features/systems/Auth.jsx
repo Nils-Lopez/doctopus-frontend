@@ -83,8 +83,7 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
     useEffect(() => {
         if (responseSignUp && loadingSignUp) {
             if (responseSignUp.success) {
-                setAlert({type: "success", message: {en: t('signup-success'), fr: t('signup-success')}})
-                bake_cookie(cookieKey, {session: responseSignUp.data.session, id: responseSignUp.data.user._id}, {path: "/"})
+                 bake_cookie(cookieKey, {session: responseSignUp.data.session, id: responseSignUp.data.user._id}, {path: "/"})
                 setClient(responseSignUp.data)
                 setSignUpModal(false)
                 setLoadingSignUp(false)

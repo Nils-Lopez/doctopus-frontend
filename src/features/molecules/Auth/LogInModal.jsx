@@ -7,7 +7,7 @@ const LogInModal = ({isActive, setLogInModal, setSignUpModal, handleSubmit, form
     const { t, i18n } = useTranslation();
 
     return <>
-        <div className={"modal " + (isActive ? "is-active" : "")}>
+        <div className={"modal modal-auth " + (isActive ? "is-active" : "")}>
             <div className="modal-background"></div>
             <div className="modal-card p-5">
                 <div className="modal-card-head ">

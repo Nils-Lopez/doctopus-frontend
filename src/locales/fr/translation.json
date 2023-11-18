@@ -9,7 +9,6 @@
     "settings": "Paramètres",
     "help": "Aide",
     "relations": "Relations",
-
     "logout": "Déconnexion",
     "create": "Enregistrer",
     "no-match": "Aucune correspondance n'a été trouvée avec votre requête, essayez autre chose ...",
@@ -25,6 +24,7 @@
     "Filters": "Filtres",
     "Publish": "Publier",
     "show-video": "Consulter la vidéo",
+    "no-additional-data": "Nous n'avons pas de données supplémentaires",
     "hide-video": "Masquer la vidéo",
     "compressed": "compressée",
     "results": "résultats",
