@@ -83,11 +83,11 @@ const ParentForm = ({
             <>
               {create === "organisation" ? (
                 <li className=" is-active ">
-                  <a>{t("organization")}</a>
+                  <a className="logolink">{t("organization")}</a>
                 </li>
               ) : (
                 <li className="is-transparent" onClick={handleOrganisationBtn}>
-                  <a className="has-text-grey">{t("organization")}</a>
+                  <a className="logolink has-text-grey">{t("organization")}</a>
                 </li>
               )}
             </>
@@ -96,11 +96,11 @@ const ParentForm = ({
             <>
               {create === "person" ? (
                 <li className=" is-active" onClick={handlePersonBtn}>
-                  <a>{t("person")}</a>
+                  <a className="logolink">{t("person")}</a>
                 </li>
               ) : (
                 <li className=" is-light" onClick={handlePersonBtn}>
-                  <a className="has-text-grey">{t("person")}</a>
+                  <a className="logolink has-text-grey">{t("person")}</a>
                 </li>
               )}
             </>
@@ -109,11 +109,11 @@ const ParentForm = ({
             <>
               {create === "project" ? (
                 <li className=" is-active">
-                  <a>{t("project")}</a>
+                  <a className="logolink">{t("project")}</a>
                 </li>
               ) : (
                 <li className=" is-light" onClick={handleProjectBtn}>
-                  <a className="has-text-grey">{t("project")}</a>
+                  <a className="logolink has-text-grey">{t("project")}</a>
                 </li>
               )}
             </>
@@ -121,11 +121,11 @@ const ParentForm = ({
           <>
             {create === "doc" ? (
               <li className=" is-active">
-                <a>{t("document")}</a>
+                <a className="logolink">{t("document")}</a>
               </li>
             ) : (
               <li className=" is-light" onClick={handleDocBtn}>
-                <a className="has-text-grey">{t("document")}</a>
+                <a className="logolink has-text-grey">{t("document")}</a>
               </li>
             )}
           </>
@@ -133,11 +133,11 @@ const ParentForm = ({
             <>
               {create === "prod" ? (
                 <li className=" is-active">
-                  <a>{t("production")}</a>
+                  <a className="logolink">{t("production")}</a>
                 </li>
               ) : (
                 <li className=" is-light" onClick={handleProdBtn}>
-                  <a className="has-text-grey">{t("production")}</a>
+                  <a className="logolink has-text-grey">{t("production")}</a>
                 </li>
               )}
             </>

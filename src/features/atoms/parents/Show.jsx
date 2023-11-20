@@ -198,12 +198,14 @@ const Show = ({
       }
     }
     
-  }, [parent, prodLoading]);
+  }, []);
 
   useEffect(() => {
     if (responseFindProdsByString && prodLoading) {
       setProductions(responseFindProdsByString);
       setProdLoading(false);
+    } else if (prodLoading) {
+      setProdLoading("doesn't exist");
     }
   }, [responseFindProdsByString]);
 
@@ -768,7 +770,7 @@ const Show = ({
         {url && url !== "" ? (
           <div className="is-flex is-justify-content-start">
             <span className="tag is-light is-small mb-2 mr-1">
-              <a href={url}>{url}</a>
+              <a className="logolink" href={url}>{url}</a>
             </span>
           </div>
         ) : null}
@@ -972,7 +974,7 @@ const Show = ({
       ) : null}
       <div className="columns is-multiline mb-6">
         {parents && parents[0]
-          ? parents.map((p, i) => {
+          ? removeDuplicates(parents).map((p, i) => {
               if (
                 (parentsPage === 1 && i < 8) ||
                 (i > (parentsPage - 1) * 8 - 1 && i < parentsPage * 8)
@@ -1029,7 +1031,7 @@ const Show = ({
       </div>
       <div className="columns is-multiline is-flex is-justify-content-start">
         {projects && projects[0]
-          ? projects.map((project) => {
+          ? removeDuplicates(projects).map((project) => {
               return (
                 <Fragment key={JSON.stringify(project)}>
                   <SearchItemParent
