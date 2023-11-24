@@ -14,6 +14,9 @@ import {
 import SelectForm from "../../atoms/forms/SelectForm";
 import DocParentForm from "../../atoms/forms/docs/DocParentForm";
 import { useApplication } from "../../../utils/hooks/Application";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { handleDrop } from "../../../utils/helpers/lists";
+import { StrictModeDroppable } from "../../../utils/helpers/droppable";
 
 const ApplicationDash = ({ applicationSettings, setApplicationSettings }) => {
   const { t, i18n } = useTranslation();
@@ -237,8 +240,6 @@ const ApplicationDash = ({ applicationSettings, setApplicationSettings }) => {
       label: (staticPageComponents.length + 1).toString(),
     });
   }
-
-  console.log(staticPages);
 
   return (
     <div className="">
@@ -672,50 +673,102 @@ const ApplicationDash = ({ applicationSettings, setApplicationSettings }) => {
         </div>
       </div>
       <hr />
-      <label className="label mt-2">Components</label>
-      <div className="is-flex is-justify-content-space-between mb-3 columns is-multiline">
-        {staticPageComponents.map((component) => {
-          return (
-            <Fragment key={component}>
-              <div className="tag is-large mt-1 mb-1">
-                {component.type}
-                <span
-                  className="has-text-info pointer ml-3 "
-                  onClick={() => {
-                    setComponentContentEnValue(
-                      getContent(component.content, "en")
-                    );
-                    setComponentContentFrValue(
-                      getContent(component.content, "fr")
-                    );
-                    setComponentType({
-                      value: component.type,
-                      label: component.type,
-                    });
+      <label className="label mt-2 has-text-left">
+        Components{" "}
+        <span className="tag is-rounded is-light">
+          {staticPageComponents.length}
+        </span>
+      </label>
+      <div className="is-flex is-justify-content-center">
+        <div className="column is-6  mb-3 px-6 ">
+          <DragDropContext
+            styles={{ overflow: "hidden" }}
+            onDragEnd={(item) =>
+              handleDrop(item, staticPageComponents, setStaticPageComponents)
+            }>
+            <StrictModeDroppable droppableId="list-container">
+              {(provided) => (
+                <div
+                  className="list-container"
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}>
+                  {staticPageComponents.map((component, i) => {
+                    return (
+                      <Draggable
+                        key={JSON.stringify(component)}
+                        draggableId={JSON.stringify(component)}
+                        index={i}>
+                        {(provided) => (
+                          <div
+                            className="item-container"
+                            ref={provided.innerRef}
+                            {...provided.dragHandleProps}
+                            {...provided.draggableProps}>
+                            <div className="box mt-1 mb-2">
+                              <div className="is-flex is-justify-content-space-between pt-0 mt--1">
+                                <h4 className="subtitle is-6 mb-1 has-text-grey">
+                                  {component.type.toUpperCase()}
+                                </h4>
+                                <div>
+                                  <span
+                                    className="has-text-info pointer ml-3 "
+                                    onClick={() => {
+                                      setComponentContentEnValue(
+                                        getContent(component.content, "en")
+                                      );
+                                      setComponentContentFrValue(
+                                        getContent(component.content, "fr")
+                                      );
+                                      setComponentType({
+                                        value: component.type,
+                                        label: component.type,
+                                      });
 
-                    setStaticPageComponents(
-                      [...staticPageComponents].filter((c) => {
-                        if (c !== component) return c;
-                      })
+                                      setStaticPageComponents(
+                                        [...staticPageComponents].filter(
+                                          (c) => {
+                                            if (c !== component) return c;
+                                          }
+                                        )
+                                      );
+                                    }}>
+                                    <FontAwesomeIcon icon={faPencil} />
+                                  </span>
+                                  <span
+                                    className="has-text-danger pointer ml-3"
+                                    onClick={() => {
+                                      setStaticPageComponents(
+                                        [...staticPageComponents].filter(
+                                          (c) => {
+                                            if (c !== component) return c;
+                                          }
+                                        )
+                                      );
+                                    }}>
+                                    <FontAwesomeIcon icon={faCircleXmark} />
+                                  </span>
+                                </div>
+                              </div>
+
+                              {getContent(component.content, i18n.language)
+                                .length > 55
+                                ? getContent(
+                                    component.content,
+                                    i18n.language
+                                  ).substring(0, 55) + ".."
+                                : getContent(component.content, i18n.language)}
+                            </div>
+                          </div>
+                        )}
+                      </Draggable>
                     );
-                  }}>
-                  <FontAwesomeIcon icon={faPencil} />
-                </span>
-                <span
-                  className="has-text-danger pointer ml-3"
-                  onClick={() => {
-                    setStaticPageComponents(
-                      [...staticPageComponents].filter((c) => {
-                        if (c !== component) return c;
-                      })
-                    );
-                  }}>
-                  <FontAwesomeIcon icon={faCircleXmark} />
-                </span>
-              </div>
-            </Fragment>
-          );
-        })}
+                  })}
+                  {provided.placeholder}
+                </div>
+              )}
+            </StrictModeDroppable>
+          </DragDropContext>
+        </div>
       </div>
       <div className="columns">
         <div className="column">
@@ -734,9 +787,9 @@ const ApplicationDash = ({ applicationSettings, setApplicationSettings }) => {
         <div className="columns">
           <div className="column">
             <div className="control">
-              <input
+              <textarea
                 type="text"
-                className="input"
+                className="textarea"
                 placeholder="fr"
                 value={componentContentFrValue}
                 onChange={(e) => {
@@ -748,9 +801,9 @@ const ApplicationDash = ({ applicationSettings, setApplicationSettings }) => {
           </div>
           <div className="column">
             <div className="control">
-              <input
+              <textarea
                 type="text"
-                className="input"
+                className="textarea"
                 placeholder="en"
                 value={componentContentEnValue}
                 onChange={(e) => {
@@ -783,6 +836,8 @@ const ApplicationDash = ({ applicationSettings, setApplicationSettings }) => {
                 type: componentType.value,
               },
             ]);
+            setComponentContentEnValue("");
+            setComponentContentFrValue("");
           }}>
           <span>Add component</span>
         </button>
@@ -826,15 +881,13 @@ const ApplicationDash = ({ applicationSettings, setApplicationSettings }) => {
         <button
           className="button  is-primary"
           onClick={handleUpdateAppSettings}>
-          <span><FontAwesomeIcon icon={faCheckCircle} className="mr-3" />
-          {t("confirm")}</span>
+          <span>
+            <FontAwesomeIcon icon={faCheckCircle} className="mr-3" />
+            {t("confirm")}
+          </span>
         </button>
       </div>
       <div className="mb-6 pb-0"></div>
-      {/* <hr />
-        <h2 className="title is-4 has-text-left">
-            Features settings
-        </h2> */}
     </div>
   );
 };

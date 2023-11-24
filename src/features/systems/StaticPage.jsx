@@ -1,6 +1,7 @@
 import React, {Fragment} from 'react';
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
+import image from'../../visu_centrededoc_apropos.png';
 
 const getContent = (value, lang) => {
     if (value) {
@@ -21,10 +22,31 @@ const StaticPage = ({applicationSettings}) => {
     const Components = {paragraph, title}
 
     return <>
-        <div className="container mt-7 no-overflow box has-background-white">
-            {page.components?.map((component) => {
+        <div className="container mt-7 no-overflow box has-background-white has-text-left">
+            {page.components?.map((component, i) => {
                 const ComponentType = Components[component.type]
-                return <ComponentType content={component.content} i18n={i18n}/>
+                if (i < 3) {
+                    return <ComponentType content={component.content} i18n={i18n}/>
+                }
+            })}
+            <div className="columns mt-2">
+                <div className="column is-8">
+                    {page.components?.map((component, i) => {
+                        const ComponentType = Components[component.type]
+                        if (i >= 3 && i < 14) {
+                            return <ComponentType content={component.content} i18n={i18n}/>
+                        }
+                    })}
+                </div>
+                <div className="column is-flex is-justify-content-end">
+                    <img src={image} alt="" style={{maxHeight: "660px"}}/>
+                </div>
+            </div>
+            {page.components?.map((component, i) => {
+                const ComponentType = Components[component.type]
+                if (i >= 14) {
+                    return <ComponentType content={component.content} i18n={i18n}/>
+                }
             })}
        </div>
     </>
@@ -36,8 +58,7 @@ const paragraph = ({content, i18n}) => {
     const text = []
     words.map((word) => {
         if (word.includes('mailto:')) {
-            text.push(<br/>)
-            text.push(<><a href={word}>{word.replaceAll('mailto:', '')}</a></>)
+            text.push(<><a href={word} className='logolink'>{word.replaceAll('mailto:', '')}</a></>)
         }
         else if (word === "<br/>") text.push(<br/>)
         else if (word.includes('https://') || word.includes('www.')) {
@@ -57,7 +78,7 @@ const paragraph = ({content, i18n}) => {
 
 const title = ({content, i18n}) => {
     return <>
-        <h1 className='title is-4'>{getContent(content, i18n.language)}</h1>
+        <h1 className='title is-5 mb-0 '>{getContent(content, i18n.language)}</h1>
     </>
 }
 

@@ -770,7 +770,7 @@ const Show = ({
         {url && url !== "" ? (
           <div className="is-flex is-justify-content-start">
             <span className="tag is-light is-small mb-2 mr-1">
-              <a className="logolink" href={url}>{url}</a>
+              <a className="logolink test" href={url}>{url}</a>
             </span>
           </div>
         ) : null}

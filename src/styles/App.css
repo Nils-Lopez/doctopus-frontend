@@ -9,6 +9,11 @@
   border-radius: 1.5%;
 }
 
+.max-height-350 {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
 .line-break {
   word-break: break-all;
 }

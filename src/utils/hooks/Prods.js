@@ -95,7 +95,10 @@ const useProds = () => {
             "&sortBy=s.a&resultFields=s.a,t,p.d",
           {
             method: "GET",
-
+headers: {
+                Accept: "application/json",
+                appName: "CDOctopus",
+              },
             mode: "cors",
           }
         ).then(function (response) {
@@ -141,14 +144,22 @@ const useProds = () => {
           };
 
           let alreadyIn = false;
-          productions.map((p) => {
-            if (p.item.prod._id === prodFinal.item.prod._id) {
+          productions.map((p, i) => {
+            if (p.item.prod.title === prodFinal.item.prod.title) {
               alreadyIn = true;
-            }
+              productions[i].item.prod.date += ", " + prodFinal.item.prod.date;
+              if (productions[i].item.prod.date.length > 20) {
+                productions[i].item.prod.date = productions[
+                  i
+                ].item.prod.date.substring(0, 9) +  " ..." + productions[i].item.prod.date.substring(productions[i].item.prod.date.length - 10, productions[i].item.prod.date.length );
+
+              }
+             }
           });
           if (!alreadyIn) productions.push(prodFinal);
         })
       );
+      productions.reverse()
       dispatch({ type: "FindByString", payload: productions });
     },
     findProdRelsById: async (id) => {

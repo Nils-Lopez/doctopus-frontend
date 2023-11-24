@@ -29,7 +29,7 @@ const Auth = ({bake_cookie, read_cookie, delete_cookie, client, setClient, setAl
 
     const [formAlert, setFormAlert] = useState(false)
 
-    const [lang, setLang] = useState("fr")
+    const [lang, setLang] = useState(i18n.language)
 
     const {
         login, 
