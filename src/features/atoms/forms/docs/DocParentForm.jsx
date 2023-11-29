@@ -33,7 +33,6 @@ const DocParentForm = ({selectedDoc, selectDoc, location, template, lang, hideRo
   
   const handleDeleteDoc = (e, doc) => {
     e.preventDefault()
-    
     const filtered = []
     selectedDoc.map((r) => {
       if (location !== "app-dash") {
@@ -41,7 +40,8 @@ const DocParentForm = ({selectedDoc, selectDoc, location, template, lang, hideRo
           filtered.push(r)
         }
       } else {
-        if (r.parent_doc !== doc.parent_doc) {
+        
+        if (r !== doc.parent_doc) {
           filtered.push(r)
         }
       }
@@ -71,15 +71,11 @@ const DocParentForm = ({selectedDoc, selectDoc, location, template, lang, hideRo
       {selectedDoc && selectedDoc[0] ? selectedDoc.map((doc) => {
         if (doc.parent_doc && (doc.parent_doc.title || doc.parent_doc.slug)) {
           return <Fragment key={doc.parent_doc._id + "selected"}>
-            
-                         <ParentSearchItem item={doc} handleDelete={handleDeleteDoc}/>
-
+            <ParentSearchItem item={doc} handleDelete={handleDeleteDoc}/>
           </Fragment>
         } else if (location === "app-dash") {
-          return <Fragment key={doc + "selected"}>
-            
+          return <Fragment key={JSON.stringify(doc) + "selected" + Math.random()}>
             <ParentSearchItem item={{parent_doc: doc}} handleDelete={handleDeleteDoc}/>
-
           </Fragment>
         }
       }) : null}

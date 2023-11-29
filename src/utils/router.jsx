@@ -21,7 +21,7 @@ import Alert from "../features/atoms/Alert";
 import { useUsers } from "./hooks/Users";
 import { useTranslation } from "react-i18next";
 
-const Router = ({ applicationSettings, setApplicationSettings }) => {
+const Router = ({ applicationSettings, setApplicationSettings, bgCreds }) => {
   const [client, setClient] = useState(false);
   const [loadingClient, setLoadingClient] = useState(false);
   const [alert, setAlert] = useState(false);
@@ -66,6 +66,7 @@ const Router = ({ applicationSettings, setApplicationSettings }) => {
           applicationSettings={applicationSettings}
           signUpModal={signUpModal}
           setSignUpModal={setSignUpModal}
+          bgCreds={bgCreds}
         />
         <div className="page-content">
           {alert ? (

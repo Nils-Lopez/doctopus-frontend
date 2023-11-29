@@ -66,7 +66,7 @@ function App() {
           .setAttribute("content", settings.metaTagValue);
       if (settings.htmlTitle) {
         document
-          .querySelector('title')
+          .querySelector("title")
           .setAttribute("content", settings.htmlTitle);
         document.title = settings.htmlTitle;
       }
@@ -109,20 +109,42 @@ function App() {
   }, [responseGetApplication]);
 
   const [bg, setBg] = useState(false);
+  const [bgCreds, setBgCreds] = useState(false);
 
   useEffect(() => {
     const root = document.documentElement;
-    const bgUrls = [
-      "https://imagesdoctopus.blob.core.windows.net/contredanse/Lara%20Barsaq%20-%20Fruit%20Tree%C2%A9Stanislav%20Dobak.jpg",
-      "https://imagesdoctopus.blob.core.windows.net/contredanse/TheGoldbergVariations_(c)Kat_ja%20Illner_20221013-163700.jpg",
-      "https://imagesdoctopus.blob.core.windows.net/contredanse/BRUSSELSDANCEEXPO_0914595.jpeg",
-      "https://imagesdoctopus.blob.core.windows.net/contredanse/Weg%C2%A9DajanaLothert21510.jpg"
-    ];
-    if (!bg) {
-      root.style.setProperty("--bg-image", 'url("' + bgUrls[Math.floor(Math.random() * bgUrls.length)] + '")');
-      setBg(bgUrls[Math.floor(Math.random() * bgUrls.length)]);
-    } 
-  }, [bg]);
+    console.log(applicationSettings.backgroundDocs)
+    if (applicationSettings && applicationSettings.backgroundUrls && applicationSettings.backgroundUrls[0]) {
+      const bgUrls = applicationSettings.backgroundUrls;
+
+      const changeBackground = () => {
+        let randomBg = bgUrls[Math.floor(Math.random() * bgUrls.length)];
+
+        // Ensure the new background is different from the current one
+        while (randomBg === bg) {
+          randomBg = bgUrls[Math.floor(Math.random() * bgUrls.length)];
+        }
+        applicationSettings.backgroundDocs.map((doc) => {
+          if (doc.thumb === randomBg) {
+            setBgCreds(doc)
+          }
+        })
+        root.style.setProperty("--bg-image", `url("${randomBg}")`);
+        setBg(randomBg);
+      };
+
+      // Initial background change
+      changeBackground();
+
+      // Change background every 6 seconds
+      const intervalId = setInterval(() => {
+        changeBackground();
+      }, 10000);
+
+      // Cleanup interval on component unmount
+      return () => clearInterval(intervalId);
+    }
+  }, [applicationSettings]);
 
   return (
     <div className="App">
@@ -130,6 +152,7 @@ function App() {
         <Router
           applicationSettings={applicationSettings}
           setApplicationSettings={setApplicationSettings}
+          bgCreds={bgCreds}
         />
       ) : (
         <div className="loader mt-6 pt-6">
