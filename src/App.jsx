@@ -136,13 +136,7 @@ function App() {
       // Initial background change
       changeBackground();
 
-      // Change background every 6 seconds
-      const intervalId = setInterval(() => {
-        changeBackground();
-      }, 10000);
-
-      // Cleanup interval on component unmount
-      return () => clearInterval(intervalId);
+      
     }
   }, [applicationSettings]);
 

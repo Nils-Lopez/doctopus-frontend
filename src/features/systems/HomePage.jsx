@@ -204,7 +204,6 @@ const HomePage = ({
       ) {
         setResult(responseSearch.data);
         setPage(1);
-        setLoadingSearch(false);
         setEmpty(false);
       } else if (responseSearch && !responseSearch.success) {
         setLoadingSearch(false);
@@ -224,6 +223,13 @@ const HomePage = ({
       }
     }
   }, [responseSearch]);
+
+  useEffect(() => {
+    if (loadingSearch && result && ((result.docs && result.docs[0]) || (result.items && result.items[0]) || (result.tags && result.tags[0]))) { 
+
+      setLoadingSearch(false)
+    }
+  }, [result])
 
   useEffect(() => {
     if (!popularDocs) {
