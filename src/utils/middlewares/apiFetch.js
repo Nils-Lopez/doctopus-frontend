@@ -23,8 +23,8 @@ export async function apiFetch(endpoint, options = {}) {
     ...options,
   };
 
-  // const apiUrl = "https://api.doctopus.app/api";
-  const apiUrl = "http://localhost:5000/api"
+  const apiUrl = "https://api.doctopus.app/api";
+  // const apiUrl = "http://localhost:5000/api"
 
   // Set the body of the options object to JSON.
   if (options.body !== null && typeof options.body === "object") {
