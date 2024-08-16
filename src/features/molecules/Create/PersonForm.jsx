@@ -153,7 +153,6 @@ const PersonForm = ({
       selectRole(dataUpdate.roles);
     }
   }, [dataUpdate]);
-
   const handlePersonSubmit = (e) => {
     e.preventDefault();
     setLoading(true);

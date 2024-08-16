@@ -162,7 +162,7 @@ const OrganisationForm = ({
         url: urlValue,
         slug: nameValue.replaceAll(" ", "-").toLowerCase(),
         city: cityValue,
-        countryValue: countryValue,
+        country: countryValue,
         languages: selectedLangs,
       },
       roles: selectedRoles,

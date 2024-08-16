@@ -366,6 +366,20 @@ const Show = ({
   };
 
   useEffect(() => {
+    const filteredChilds = []
+    childs.map((child) => {
+      if (child.doc && child.doc._id) {
+        let isUnique = true
+        filteredChilds.map((c) => {
+          if (c.doc._id === child.doc._id) isUnique = false
+        })
+        if (isUnique) filteredChilds.push(child)
+      }
+    })
+    if (filteredChilds.length !== childs.length) setChilds(filteredChilds)
+  }, [childs])
+
+  useEffect(() => {
     if (childsPageLoading && responseFindProjectChildsPageById) {
       if (responseFindProjectChildsPageById.success) {
         setChilds([
@@ -787,11 +801,11 @@ const Show = ({
                 ? " - " +
                   t("deathdate") +
                   ": " +
-                  new Date(birthDate).getDate() +
+                  new Date(deathDate).getDate() +
                   "/" +
-                  (new Date(birthDate).getMonth() + 1) +
+                  (new Date(deathDate).getMonth() + 1) +
                   "/" +
-                  new Date(birthDate).getFullYear()
+                  new Date(deathDate).getFullYear()
                 : null}
             </span>
           </div>

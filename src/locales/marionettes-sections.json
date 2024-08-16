@@ -1,0 +1,75 @@
+[
+  {
+    "title": "Marionnettes",
+    "image_url": "https://www.maisondelamarionnette.be/files/Mus%C3%A9e/Echantillon%20des%20collections/Lafleur.png",
+    "search_slug": "type:Marionnette",
+
+    "subsections": [
+      {
+        "title": "Marionnettes"
+      }
+    ]
+  },
+  {
+    "title": "Accessoires",
+    "image_url": "https://www.maisondelamarionnette.be/files/Mus%C3%A9e/Echantillon%20des%20collections/Lafleur.png",
+    "search_slug": "type:accessoires",
+
+    "subsections": [
+      {
+        "title": "Costumes"
+      },
+      {
+        "title": "Décors"
+      }
+    ]
+  },
+  {
+    "title": "Décors",
+    "image_url": "https://www.maisondelamarionnette.be/files/Mus%C3%A9e/Echantillon%20des%20collections/Lafleur.png",
+    "search_slug": "type:décors",
+
+    "subsections": [
+      {
+        "title": "Castelet"
+      },
+      {
+        "title": "Fond"
+      }
+    ]
+  },
+  {
+    "title": "Centre de doc",
+    "image_url": "https://www.maisondelamarionnette.be/files/Mus%C3%A9e/Echantillon%20des%20collections/Lafleur.png",
+    "search_slug": "type:centre-de-doc",
+
+    "subsections": [
+      {
+        "title": "Ouvrages"
+      },
+      {
+        "title": "Périodiques"
+      },
+      {
+        "title": "Vidéos"
+      }
+    ]
+  },
+  {
+    "title": "Archives",
+    "image_url": "https://www.maisondelamarionnette.be/files/Centre/Evenements/Marionnettes%20au%20jardin/Micheline%20Legendre%20expo.jpg",
+    "search_slug": "type:archives",
+
+    "subsections": [
+      {
+        "title": "Photos"
+      },
+      {
+        "title": "Documents"
+      },
+      {
+        "title": "Affiches"
+      }
+    ]
+  }
+]

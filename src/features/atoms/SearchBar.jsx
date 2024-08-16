@@ -125,7 +125,7 @@ const SearchBar = ({
                 <button
                   className="button is-white has-text-primary pr--1 is-large search-button"
                   type="submit">
-                  <Magnifying className="icon "/>
+                    {applicationSettings.homepageVersion === "0.2" ? <><FontAwesomeIcon icon={faMagnifyingGlass} className="icon"/></> : <Magnifying className="icon "/>}
                     <span className="pt-1 title is-6 ">{t('search')}</span>
 
                 </button>
@@ -134,7 +134,7 @@ const SearchBar = ({
                   className="button is-white has-text-primary pr--1 is-large search-button"
                   onClick={(e) => e.preventDefault()}>
                   {/* <FontAwesomeIcon icon={faMagnifyingGlass} size="xl" /> &nbsp;{" "} */}
-                    <Magnifying className="icon "/>
+                    {applicationSettings.homepageVersion === "0.2" ? <><FontAwesomeIcon icon={faMagnifyingGlass} className="icon"/></> : <Magnifying className="icon "/>}
                     <span className="pt-1 title is-6 ">{t('search')}</span>
 
                 </button>

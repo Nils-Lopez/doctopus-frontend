@@ -52,7 +52,7 @@ const Router = ({ applicationSettings, setApplicationSettings, bgCreds }) => {
       }
     }
   }, [responseFindUserById, loadingClient]);
-
+  console.log('applicationSettings', applicationSettings)
   return (
     <div className="app-ctn">
       <BrowserRouter>
@@ -82,7 +82,7 @@ const Router = ({ applicationSettings, setApplicationSettings, bgCreds }) => {
               </div>
             </>
           ) : null}
-          <div className="content">
+          <div className={applicationSettings && applicationSettings.backgroundUrls && applicationSettings.backgroundUrls[0] ? "content" : "content bg-color"}>
             <Routes>
               <Route path="/">
                 <Route

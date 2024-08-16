@@ -29,7 +29,7 @@ import { useApplication } from "../../utils/hooks/Application";
 import { init } from "i18next";
 import { read_cookie } from "sfcookies";
 import { useProds } from "../../utils/hooks/Prods.js";
-
+import marioSections from "../../locales/marionettes-sections.json";
 const HomePage = ({
   client,
   setClient,
@@ -89,7 +89,7 @@ const HomePage = ({
 
   const { findDocById, responseFindDocById } = useDocs();
 
-  const {findProdRelsById, responseFindProdRelsById} = useProds();
+  const { findProdRelsById, responseFindProdRelsById } = useProds();
 
   let params = useParams();
 
@@ -162,10 +162,10 @@ const HomePage = ({
 
   useEffect(() => {
     if (responseFindProdRelsById) {
-      setDisplayParent({...responseFindProdRelsById.item.prod, scapin: true});
+      setDisplayParent({ ...responseFindProdRelsById.item.prod, scapin: true });
       setLoadingSearch(false);
     }
-  }, [responseFindProdRelsById])
+  }, [responseFindProdRelsById]);
 
   useEffect(() => {
     if (responseFindEntityById && responseFindEntityById.success) {
@@ -225,11 +225,16 @@ const HomePage = ({
   }, [responseSearch]);
 
   useEffect(() => {
-    if (loadingSearch && result && ((result.docs && result.docs[0]) || (result.items && result.items[0]) || (result.tags && result.tags[0]))) { 
-
-      setLoadingSearch(false)
+    if (
+      loadingSearch &&
+      result &&
+      ((result.docs && result.docs[0]) ||
+        (result.items && result.items[0]) ||
+        (result.tags && result.tags[0]))
+    ) {
+      setLoadingSearch(false);
     }
-  }, [result])
+  }, [result]);
 
   useEffect(() => {
     if (!popularDocs) {
@@ -310,6 +315,7 @@ const HomePage = ({
     !displayTag
       ? "landing"
       : "search";
+
   return (
     <>
       <div className={className}>
@@ -426,6 +432,7 @@ const Landing = ({
   i18n,
   client,
   applicationSettings,
+  
 }) => {
   const setDisplay = (item) => {
     setResult({ docs: [item] });
@@ -438,6 +445,7 @@ const Landing = ({
 
   //Fetch Users API
   const { responseFindUserById, findUserById } = useUsers();
+  const navigate = useNavigate();
 
   useEffect(() => {
     //Check for cookies
@@ -456,8 +464,46 @@ const Landing = ({
       }
     }
   }, [responseFindUserById, loadingClient]);
-
-  return (
+  return applicationSettings &&
+    applicationSettings.homepageVersion &&
+    applicationSettings.homepageVersion === "0.2" ? (
+    <>
+      <div className="container recents-container mt-6 pt-6 mb-0 pb-0 ">
+        <div className="columns is-multiline pb-0 mb-0 pt-2 is-mobile">
+          {marioSections.map((section, index) => (
+            <div
+              className="column results-col  is-one-fifth-desktop is-one-third-tablet is-half-mobile"
+              key={index}>
+              <>
+                <div
+                  className="box is-paddingless pt-2 pb-2 smooth-appear "
+                  onClick={() => {}}>
+                  <h1 className="title is-4 mt-4">{section.title}</h1>
+                </div>
+              </>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div>
+        <div className="container subsections-container mt-3 mb-0 pb-0 ">
+          <div className="columns is-multiline pb-0 mb-0 pt-2 is-mobile">
+            {marioSections.map((section, index) => (
+              <div
+                className="column results-col is-one-fifth-desktop is-one-third-tablet is-half-mobile"
+                key={index}>
+                <div
+                  className="box is-paddingless pb--1 smooth-appear img-section-box"
+                  onClick={() => {navigate("/search/" + section.search_slug)}}>
+                  <img src={section.image_url} alt="" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </>
+  ) : (
     <>
       <div className="container recents-container mt-6 mb-0 pb-0 ">
         <div className="metrics">
@@ -644,31 +690,7 @@ const Landing = ({
             </div>
           </div>
         </div>
-        {client &&
-        client.user &&
-        client.user.drafts &&
-        client.user.drafts[0] &&
-        client.user.drafts[0].title &&
-        client.type !== "visitor" ? (
-          <>
-            <h1 className="title is-4 has-text-white has-text-shadow mb-0 pb-0 mt-0 pt-0">
-              {t("drafts")} :
-            </h1>
-            <div className="columns is-multiline pb-3 mb-4 mt-0 pt-0">
-              {client.user.drafts.map((item, index) => {
-                return (
-                  <Fragment key={JSON.stringify(item)}>
-                    <SearchItem
-                      item={{ doc: item }}
-                      setDisplay={setDisplayDoc}
-                      i={index}
-                    />
-                  </Fragment>
-                );
-              })}
-            </div>
-          </>
-        ) : null}
+        
 
         {loadingLastDocs ? (
           <div className="loader mt-4 pt-4">

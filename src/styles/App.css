@@ -17,6 +17,8 @@
 .line-break {
   word-break: break-all;
 }
+
+
 @media (min-width: 1024px) {
       .mobile-auth-menu {
           display: none !important;

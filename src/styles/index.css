@@ -733,6 +733,19 @@ label input[type="checkbox"] {
   border: 0px;
 }
 
+.img-section-box {
+  width: 100%;
+  height: 350px;
+  overflow: hidden;
+  padding: 0 !important;
+}
+
+.img-section-box img{
+  height: 360px !important;
+    object-fit: cover;
+  width: 105%;
+}
+
 .inner.two {
   right: 0%;
   top: 0%;

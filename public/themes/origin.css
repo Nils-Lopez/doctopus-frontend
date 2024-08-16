@@ -18,13 +18,17 @@
 .content {
   background-size: cover !important;
   background-position: top !important;
+
   background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
-    var(--bg-image)
-     !important;
+    var(--bg-image) !important;
   background-repeat: no-repeat !important;
   -o-background-size: cover !important;
   -moz-background-size: cover !important;
   -webkit-background-size: cover !important; 
+}
+
+.content.bg-color {
+  background: var(--bg-color) !important;
 }
 
 .tag.is-white{

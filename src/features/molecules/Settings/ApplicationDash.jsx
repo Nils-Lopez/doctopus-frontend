@@ -55,7 +55,7 @@ const ApplicationDash = ({ applicationSettings, setApplicationSettings }) => {
   const [componentPosition, setComponentPosition] = useState(1);
   const [componentContentFrValue, setComponentContentFrValue] = useState("");
   const [componentContentEnValue, setComponentContentEnValue] = useState("");
-
+  const [homePageVersion, setHomePageVersion] = useState("0.1");
   const { updateApp, responseUpdateApp } = useApplication();
 
   const handleUpdateAppSettings = (e) => {
@@ -89,6 +89,7 @@ const ApplicationDash = ({ applicationSettings, setApplicationSettings }) => {
       },
       backgroundType: backgroundType.value,
       backgroundColor: backgroundColor,
+      homepageVersion:  homePageVersion,
       backgroundUrls: bgUrl[0] ? bgUrl : backgroundUrls,
       backgroundDocs: backgroundDocs,
       homePageDocs: homePageDocs,
@@ -112,6 +113,7 @@ const ApplicationDash = ({ applicationSettings, setApplicationSettings }) => {
     setBackgroundColor(applicationSettings.backgroundColor);
     setBackgroundUrls(applicationSettings.backgroundUrls);
     setBackgroundDocs(applicationSettings.backgroundDocs);
+    setHomePageVersion(applicationSettings.homepageVersion);
     setBackgroundType({
       value: applicationSettings.backgroundType,
       label: applicationSettings.backgroundType,
@@ -130,10 +132,16 @@ const ApplicationDash = ({ applicationSettings, setApplicationSettings }) => {
       value: applicationSettings.global.fontSansSerif,
       label: applicationSettings.global.fontSansSerif,
     });
-    setTaglineEnValue(getContent(applicationSettings.global.tagline, "en"));
-    setTaglineFrValue(getContent(applicationSettings.global.tagline, "fr"));
-    setTitleEnValue(getContent(applicationSettings.global.title, "en"));
+    if (applicationSettings.global.tagline && applicationSettings.global.tagline[0]) {
+      console.log(applicationSettings.global.tagline)
+      setTaglineEnValue(getContent(applicationSettings.global.tagline, "en"));
+      setTaglineFrValue(getContent(applicationSettings.global.tagline, "fr"));
+    
+    } 
+    if (applicationSettings.global.title && applicationSettings.global.title[0]) {
+      setTitleEnValue(getContent(applicationSettings.global.title, "en"));
     setTitleFrValue(getContent(applicationSettings.global.title, "fr"));
+    }
     setHtmlTitleValue(applicationSettings.global.htmlTitle);
     setHtmlMetaTagValue(applicationSettings.global.metaTag);
     setPrimaryColorValue(applicationSettings.global.primary);
@@ -199,6 +207,7 @@ const ApplicationDash = ({ applicationSettings, setApplicationSettings }) => {
   ];
 
   const getContent = (value, lang) => {
+    console.log('aqui', value, lang)
     if (value) {
       return value.filter((obj) => obj.lang === lang)[0]
         ? value.filter((obj) => obj.lang === lang)[0].content
@@ -433,6 +442,22 @@ const ApplicationDash = ({ applicationSettings, setApplicationSettings }) => {
       <div>
         <hr />
         <h2 className="title is-4 has-text-left">Homepage settings</h2>
+         <div className="field">
+              <label className="label has-text-left">Version</label>
+
+              <div className="control">
+             
+                <input
+                  type="text"
+                  className="input"
+                  value={homePageVersion}
+                  onChange={(e) => {
+                    e.preventDefault();
+                    setHomePageVersion(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
         <div className="columns">
           <div className="column">
             <div className="field">

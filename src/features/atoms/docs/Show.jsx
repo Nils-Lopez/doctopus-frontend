@@ -235,8 +235,6 @@ const Show = ({
     <div className="">
       <div className="is-flex is-justify-content-space-between  mb-5">
         <div>
-        
-
           <div className="actions-btn">
             <button
               className="button is-light   mb-2"
@@ -337,9 +335,11 @@ const Show = ({
           </div>
         </div>
         <div>
-          {doc && (!doc.restrictedContent ||
-                  doc.restrictedContent === "all" ||
-                  (client && client.user && client.user.type !== "visitor")) && supports[0] &&
+          {doc &&
+          (!doc.restrictedContent ||
+            doc.restrictedContent === "all" ||
+            (client && client.user && client.user.type !== "visitor")) &&
+          supports[0] &&
           supports[0].url &&
           supports[0].url.includes("vimeo") ? (
             <div className="button has-name pl-5 pr-5 mt-0 is-primary file-doc-btn">
@@ -366,33 +366,35 @@ const Show = ({
               </span>
             </div>
           ) : null}
-          {doc && (!doc.restrictedContent ||
-                  doc.restrictedContent === "all" ||
-                  (client && client.user && client.user.type !== "visitor")) && supports[0] && supports[0].pdf && supports[0].pdf !== "" ? (
+          {doc &&
+          (!doc.restrictedContent ||
+            doc.restrictedContent === "all" ||
+            (client && client.user && client.user.type !== "visitor")) &&
+          supports[0] &&
+          supports[0].pdf &&
+          supports[0].pdf !== "" ? (
             <>
-            <div className="button has-name pl-5 pr-5 mt-05 is-primary file-doc-btn">
-              <span
-                className="file-label"
-                onClick={handleDisplayFile}>
-                {!displayVideo ? (
-                  <>
-                    {t("read-doc")}
-                    <FontAwesomeIcon
-                      icon={faEye}
-                      className="is-primary mt-05 ml-2"
-                    />
-                  </>
-                ) : (
-                  <>
-                    {t("hide-video")}{" "}
-                    <FontAwesomeIcon
-                      icon={faEyeSlash}
-                      className="is-primary mt-1 ml-2"
-                    />
-                  </>
-                )}
-              </span>
-            </div>
+              <div className="button has-name pl-5 pr-5 mt-05 is-primary file-doc-btn">
+                <span className="file-label" onClick={handleDisplayFile}>
+                  {!displayVideo ? (
+                    <>
+                      {t("read-doc")}
+                      <FontAwesomeIcon
+                        icon={faEye}
+                        className="is-primary mt-05 ml-2"
+                      />
+                    </>
+                  ) : (
+                    <>
+                      {t("hide-video")}{" "}
+                      <FontAwesomeIcon
+                        icon={faEyeSlash}
+                        className="is-primary mt-1 ml-2"
+                      />
+                    </>
+                  )}
+                </span>
+              </div>
             </>
           ) : null}
           {types && types[0] ? (
@@ -401,7 +403,9 @@ const Show = ({
                 return (
                   <Fragment key={JSON.stringify(type)}>
                     <span className="tag is-large is-white has-text-info mr-1 ml-1 mb-0 mt-1 text-wrap">
-                      <strong className="has-text-info">{getContent(type.title, i18n.language)}</strong>
+                      <strong className="has-text-info">
+                        {getContent(type.title, i18n.language)}
+                      </strong>
                     </span>
                   </Fragment>
                 );
@@ -454,66 +458,71 @@ const Show = ({
               <div className=" is-flex is-justify-content-start">
                 <h1 className="mt-2 title is-1 has-text-left">{title}</h1>
               </div>
-              <div className="is-flex is-justify-content-start mt--05 mb-3
+              <div
+                className="is-flex is-justify-content-start mt--05 mb-3
               ">
-              {doc && (!doc.restrictedContent ||
+                {doc &&
+                (!doc.restrictedContent ||
                   doc.restrictedContent === "all" ||
-                  (client && client.user && client.user.type !== "visitor")) && supports[0] &&
-          supports[0].url &&
-          supports[0].url.includes("vimeo") ? (
-            <div className="button has-name pl-5 pr-5 mt-0 is-primary mobile-file-doc-btn">
-              <span
-                className="file-label"
-                onClick={() => setDisplayVideo(!displayVideo)}>
-                {!displayVideo ? (
-                  <>
-                    {t("show-video")}
-                    <FontAwesomeIcon
-                      icon={faEye}
-                      className="is-primary mt-1 ml-2"
-                    />
-                  </>
-                ) : (
-                  <>
-                    {t("hide-video")}{" "}
-                    <FontAwesomeIcon
-                      icon={faEyeSlash}
-                      className="is-primary mt-1 ml-2"
-                    />
-                  </>
-                )}
-              </span>
-            </div>
-          ) : null}
-          {doc && (!doc.restrictedContent ||
+                  (client && client.user && client.user.type !== "visitor")) &&
+                supports[0] &&
+                supports[0].url &&
+                supports[0].url.includes("vimeo") ? (
+                  <div className="button has-name pl-5 pr-5 mt-0 is-primary mobile-file-doc-btn">
+                    <span
+                      className="file-label"
+                      onClick={() => setDisplayVideo(!displayVideo)}>
+                      {!displayVideo ? (
+                        <>
+                          {t("show-video")}
+                          <FontAwesomeIcon
+                            icon={faEye}
+                            className="is-primary mt-1 ml-2"
+                          />
+                        </>
+                      ) : (
+                        <>
+                          {t("hide-video")}{" "}
+                          <FontAwesomeIcon
+                            icon={faEyeSlash}
+                            className="is-primary mt-1 ml-2"
+                          />
+                        </>
+                      )}
+                    </span>
+                  </div>
+                ) : null}
+                {doc &&
+                (!doc.restrictedContent ||
                   doc.restrictedContent === "all" ||
-                  (client && client.user && client.user.type !== "visitor")) && supports[0] && supports[0].pdf && supports[0].pdf !== "" ? (
-            <>
-            <div className="button has-name pl-5 pr-5 mt-05 is-primary mobile-file-doc-btn">
-              <span
-                className="file-label"
-                onClick={handleDisplayFile}>
-                {!displayVideo ? (
+                  (client && client.user && client.user.type !== "visitor")) &&
+                supports[0] &&
+                supports[0].pdf &&
+                supports[0].pdf !== "" ? (
                   <>
-                    {t("read-doc")}
-                    <FontAwesomeIcon
-                      icon={faEye}
-                      className="is-primary mt-05 ml-2"
-                    />
+                    <div className="button has-name pl-5 pr-5 mt-05 is-primary mobile-file-doc-btn">
+                      <span className="file-label" onClick={handleDisplayFile}>
+                        {!displayVideo ? (
+                          <>
+                            {t("read-doc")}
+                            <FontAwesomeIcon
+                              icon={faEye}
+                              className="is-primary mt-05 ml-2"
+                            />
+                          </>
+                        ) : (
+                          <>
+                            {t("hide-video")}{" "}
+                            <FontAwesomeIcon
+                              icon={faEyeSlash}
+                              className="is-primary mt-1 ml-2"
+                            />
+                          </>
+                        )}
+                      </span>
+                    </div>
                   </>
-                ) : (
-                  <>
-                    {t("hide-video")}{" "}
-                    <FontAwesomeIcon
-                      icon={faEyeSlash}
-                      className="is-primary mt-1 ml-2"
-                    />
-                  </>
-                )}
-              </span>
-            </div>
-            </>
-          ) : null}
+                ) : null}
               </div>
               {doc &&
               (!doc.restrictedContent ||
@@ -566,7 +575,12 @@ const Show = ({
                 </p>
               ) : doc.publishedAt && doc.publishedAt !== "" ? (
                 <p className="has-text-left mt-0  mb-0 pt-0">
-                  {t("publication date")}: {doc.publishedAt.split("T")[0]}{" "}
+                  {t("publication date")}:{" "}
+                  {new Date(doc.publishedAt).getDate() +
+                    "/" +
+                    (new Date(doc.publishedAt).getMonth() + 1) +
+                    "/" +
+                    new Date(doc.publishedAt).getFullYear()}{" "}
                 </p>
               ) : null}
               {doc.eanIsbn && doc.eanIsbn !== "" ? (
@@ -576,18 +590,7 @@ const Show = ({
               ) : null}
               {doc.pages && doc.pages !== "" ? (
                 <p className="has-text-left mt-1  mb-0 pt-0">
-                  {!(
-                    doc.pages.charAt(0) * 2 &&
-                    doc.pages.charAt(doc.pages.length - 1) * 2
-                  ) || doc.pages.includes("-")
-                    ? "Pages : "
-                    : null}{" "}
-                  {doc.pages}{" "}
-                  {!doc.pages.includes("-") &&
-                  doc.pages.charAt(0) * 2 &&
-                  doc.pages.charAt(doc.pages.length - 1) * 2
-                    ? "pages"
-                    : null}
+                  Pages :{doc.pages}{" "}
                 </p>
               ) : doc.volume && doc.volume !== "" ? (
                 <p className="has-text-left mt-1  mb-0 pt-0">
@@ -687,7 +690,12 @@ const Show = ({
             </p>
           ) : doc.publishedAt && doc.publishedAt !== "" ? (
             <p className="has-text-left mt-0  mb-0 pt-0">
-              {t("publication date")}: {doc.publishedAt.split("T")[0]}{" "}
+              {t("publication date")}:{" "}
+              {new Date(doc.publishedAt).getDate() +
+                "/" +
+                (new Date(doc.publishedAt).getMonth() + 1) +
+                "/" +
+                new Date(doc.publishedAt).getFullYear()}{" "}
             </p>
           ) : null}
           {doc.eanIsbn && doc.eanIsbn !== "" ? (
@@ -696,20 +704,7 @@ const Show = ({
             </p>
           ) : null}
           {doc.pages && doc.pages !== "" ? (
-            <p className="has-text-left mt-1  mb-0 pt-0">
-              {!(
-                doc.pages.charAt(0) * 2 &&
-                doc.pages.charAt(doc.pages.length - 1) * 2
-              ) || doc.pages.includes("-")
-                ? "Pages : "
-                : null}{" "}
-              {doc.pages}{" "}
-              {doc.pages.charAt(0) * 2 &&
-              doc.pages.charAt(doc.pages.length - 1) * 2 &&
-              !doc.pages.includes("-")
-                ? "pages"
-                : null}
-            </p>
+            <p className="has-text-left mt-1  mb-0 pt-0">Pages: {doc.pages} </p>
           ) : doc.volume && doc.volume !== "" ? (
             <p className="has-text-left mt-1  mb-0 pt-0">
               {t("volume")} {doc.volume}
@@ -778,7 +773,7 @@ const Show = ({
                     </a>
                   </p>
                 ) : null}
-      
+
                 {supp.exemplaries && supp.exemplaries[0]
                   ? supp.exemplaries.map((ex) => {
                       return (
@@ -1057,7 +1052,7 @@ const Show = ({
               </>
             ) : null}
             {removeDuplicates([...childs, ...child_docs]).map((parent, i) => {
-              if (parent.doc ) {
+              if (parent.doc) {
                 return (
                   <Fragment key={JSON.stringify(parent)}>
                     <BoxItemParent

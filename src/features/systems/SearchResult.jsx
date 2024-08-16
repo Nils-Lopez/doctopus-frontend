@@ -277,7 +277,7 @@ const SearchResult = ({
 
   useEffect(() => {
     if (result.docs && result.docs[0] && !filtersOptions[0]) {
-      getDocTypes(result.docs, setFiltersOptions, setFiltersOptions, t);
+      getDocTypes(result.docs, i18n, setFiltersOptions, t);
     }
   }, [result.docs, filtersOptions, i18n.language]);
 
