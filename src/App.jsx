@@ -90,7 +90,7 @@ function App() {
       window.location.host ===
         "9936-2a02-1811-4c89-da00-4c43-38c8-e074-db21.ngrok-free.app"
     ) {
-      appSlug = "contredanse";
+      appSlug = "panorama";
     } else {
       appSlug = window.location.host.split(".")[0];
     }
