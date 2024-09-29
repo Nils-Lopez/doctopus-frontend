@@ -14,7 +14,7 @@ export async function apiFetch(endpoint, options = {}) {
       Accept: "application/json",
       ClientDatabase:
         window.location.host === "localhost:3000"
-          ? "panorama"
+          ? "contredanse"
           : window.location.host.split(".")[0],
     },
     credentials: "include",

@@ -16,7 +16,7 @@ import {
   faEyeSlash,
   faArrowDownAZ,
 } from "@fortawesome/free-solid-svg-icons";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import SelectForm from "../atoms/forms/SelectForm";
 
 import { useTags } from "../../utils/hooks/Tags";
@@ -54,6 +54,8 @@ const SearchResult = ({
   setDisplayTag,
   setSignUpModal,
   applicationSettings,
+  docsPage,
+  setDocsPage,
 }) => {
   const [dataList, setDataList] = useState([]);
   const [tags, setTags] = useState([]);
@@ -169,7 +171,7 @@ const SearchResult = ({
 
   const handleSearchParent = (parent) => {
     setDisplayDoc(false);
-    console.log("aqui: ", parent)
+    console.log("aqui: ", parent);
     if (showParentDoc) {
       setShowParentDoc(false);
       setShowDocParent(true);
@@ -268,8 +270,6 @@ const SearchResult = ({
     }
   }, [goHome]);
 
-  const [docsPage, setDocsPage] = useState(1);
-
   const [filterBtn, setFilterBtn] = useState(false);
   const [filters, setFilters] = useState({ value: "all", label: t("all") });
 
@@ -294,7 +294,7 @@ const SearchResult = ({
   }, [filters, filterBtn, result.docs]);
 
   const [parentsPage, setParentsPage] = useState(1);
-
+  let params = useParams();
 
   return loading || searchTagsLoading ? (
     <div className="loader">
@@ -319,7 +319,9 @@ const SearchResult = ({
             </button>
             {result.docs && result.items ? (
               <span className="tag is-white is-rounded has-text-grey  mt-1 pt-1 ml-1 is-medium">
-                {result.docs.length + result.items.length}
+                {result.totalDocs
+                  ? result.totalDocs + (result.items && result.items.length)
+                  : result.docs.length + result.items.length}
               </span>
             ) : null}
           </div>
@@ -388,7 +390,6 @@ const SearchResult = ({
           <>
             {tags && tags[0] ? (
               <>
-                
                 {tags[4] ? (
                   <div className="is-flex is-justify-content-start tags-result mt-5 ml-0">
                     {tags.map((item, index) => {
@@ -438,16 +439,13 @@ const SearchResult = ({
                     <h3 className="subtitle has-text-grey has-text-left is-6 mt--2 mb-1">
                       {t("result")}
                     </h3>
-                   
                   </div>
                   <div className="mt--3">
                     {parentsPage !== 1 ? (
                       <button
                         className="button is-white"
                         onClick={() => setParentsPage(parentsPage - 1)}>
-                        <FontAwesomeIcon
-                          icon={faAngleLeft}
-                          />
+                        <FontAwesomeIcon icon={faAngleLeft} />
                       </button>
                     ) : null}
 
@@ -477,18 +475,19 @@ const SearchResult = ({
                     result.items[0] &&
                     result.items.map((item, i) => {
                       if (
-                      (parentsPage === 1 && i < 8) ||
-                      (i > (parentsPage - 1) * 8 - 1 && i < parentsPage * 8)
-                    ) {return (
-                        <Fragment key={JSON.stringify(item)}>
-                          <SearchItemParent
-                            item={item}
-                            handleSearchParent={handleSearchParent}
-                            i={i}
-                          />
-                        </Fragment>
-                      );
-                    }
+                        (parentsPage === 1 && i < 8) ||
+                        (i > (parentsPage - 1) * 8 - 1 && i < parentsPage * 8)
+                      ) {
+                        return (
+                          <Fragment key={JSON.stringify(item)}>
+                            <SearchItemParent
+                              item={item}
+                              handleSearchParent={handleSearchParent}
+                              i={i}
+                            />
+                          </Fragment>
+                        );
+                      }
                     })}
                 </div>
               </>
@@ -502,15 +501,23 @@ const SearchResult = ({
                     <h3 className="subtitle has-text-grey has-text-left is-6 mt--2 mb-1">
                       {t("documents")}
                     </h3>
-                    {result.docs && result.docs.length > 5 ? (
+                    {result.docs &&
+                    result.docs.length > 5 &&
+                    !(
+                      params &&
+                      params.query &&
+                      params.query.includes("section:")
+                    ) ? (
                       <button
                         className="button is-primary has-background-transparent is-small  is-filter-btn is-rounded  mt--3   ml-3 "
                         onClick={() => setFilterBtn(!filterBtn)}>
                         <strong>
-                          <span><FontAwesomeIcon
-                            icon={filterBtn ? faEyeSlash : faArrowDownAZ}
-                          />{" "}
-                          {filterBtn ? null : <>&nbsp;&nbsp;{t("filters")}</>}{" "}</span>
+                          <span>
+                            <FontAwesomeIcon
+                              icon={filterBtn ? faEyeSlash : faArrowDownAZ}
+                            />{" "}
+                            {filterBtn ? null : <>&nbsp;&nbsp;{t("filters")}</>}{" "}
+                          </span>
                         </strong>
                       </button>
                     ) : null}

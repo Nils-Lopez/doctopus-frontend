@@ -74,11 +74,11 @@ function App() {
         applicationSettings.backgroundColor &&
         applicationSettings.backgroundColor !== ""
       )
-      console.log("setting bg color")
-        root?.style.setProperty(
-          "--bg-color",
-          applicationSettings.backgroundColor
-        );
+        console.log("setting bg color");
+      root?.style.setProperty(
+        "--bg-color",
+        applicationSettings.backgroundColor
+      );
       //if (applicationSettings.backgroundType === "Picture") root?.style.setProperty("--bg-image", 'url(' + applicationSettings.backgroundUrls[0] + ')');
     }
   }, [applicationSettings]);
@@ -90,7 +90,7 @@ function App() {
       window.location.host ===
         "9936-2a02-1811-4c89-da00-4c43-38c8-e074-db21.ngrok-free.app"
     ) {
-      appSlug = "panorama";
+      appSlug = "contredanse";
     } else {
       appSlug = window.location.host.split(".")[0];
     }
@@ -114,10 +114,22 @@ function App() {
 
   useEffect(() => {
     const root = document.documentElement;
-    console.log(applicationSettings)
-    if (applicationSettings && applicationSettings.backgroundUrls && applicationSettings.backgroundUrls[0] && !applicationSettings.backgroundUrls[1]) {
-        root.style.setProperty("--bg-image", `url("${applicationSettings.backgroundUrls[0]}")`);
-    } else if (applicationSettings && applicationSettings.backgroundUrls && applicationSettings.backgroundUrls[0]) {
+    console.log(applicationSettings);
+    if (
+      applicationSettings &&
+      applicationSettings.backgroundUrls &&
+      applicationSettings.backgroundUrls[0] &&
+      !applicationSettings.backgroundUrls[1]
+    ) {
+      root.style.setProperty(
+        "--bg-image",
+        `url("${applicationSettings.backgroundUrls[0]}")`
+      );
+    } else if (
+      applicationSettings &&
+      applicationSettings.backgroundUrls &&
+      applicationSettings.backgroundUrls[0]
+    ) {
       const bgUrls = applicationSettings.backgroundUrls;
       const changeBackground = () => {
         let randomBg = bgUrls[Math.floor(Math.random() * bgUrls.length)];
@@ -128,17 +140,15 @@ function App() {
         }
         applicationSettings.backgroundDocs.map((doc) => {
           if (doc.thumb === randomBg) {
-            setBgCreds(doc)
+            setBgCreds(doc);
           }
-        })
+        });
         root.style.setProperty("--bg-image", `url("${randomBg}")`);
         setBg(randomBg);
       };
 
       // Initial background change
       changeBackground();
-
-      
     }
   }, [applicationSettings]);
 

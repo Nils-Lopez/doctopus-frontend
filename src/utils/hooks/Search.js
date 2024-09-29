@@ -19,6 +19,7 @@ const useSearch = () => {
     return {
         responseSearch: state.responseSearch,
         search: async function (query) {
+            console.log('query', query)
             const roles = await apiFetch('/search/query', {
                 method: 'POST',
                 body: query

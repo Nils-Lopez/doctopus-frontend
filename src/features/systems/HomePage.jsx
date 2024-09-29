@@ -189,40 +189,58 @@ const HomePage = ({
   }, [responseFindDocById]);
 
   const { updateUser } = useUsers();
-
+  const [loadingNextPage, setLoadingNextPage] = useState(false);
   const { registerVisitor } = useApplication();
 
   useEffect(() => {
     if (responseSearch.data !== result) {
-      if (
-        responseSearch &&
-        responseSearch.success &&
-        responseSearch.data &&
-        (responseSearch.data.items[0] ||
-          responseSearch.data.docs[0] ||
-          responseSearch.data.tags[0])
-      ) {
-        setResult(responseSearch.data);
-        setPage(1);
-        setEmpty(false);
-      } else if (responseSearch && !responseSearch.success) {
-        setLoadingSearch(false);
-        setEmpty(false);
+      if (!loadingNextPage) {
+        if (
+          responseSearch &&
+          responseSearch.success &&
+          responseSearch.data &&
+          (responseSearch.data.items[0] ||
+            responseSearch.data.docs[0] ||
+            responseSearch.data.tags[0])
+        ) {
+          setResult(responseSearch.data);
+          setPage(1);
+          setEmpty(false);
+        } else if (responseSearch && !responseSearch.success) {
+          setLoadingSearch(false);
+          setEmpty(false);
 
-        setAlert({
-          type: "error",
-          message: { en: t("error"), fr: t("error") },
-        });
-      } else if (
-        responseSearch &&
-        responseSearch.data &&
-        !responseSearch.data[0]
-      ) {
-        setLoadingSearch(false);
-        setEmpty(true);
+          setAlert({
+            type: "error",
+            message: { en: t("error"), fr: t("error") },
+          });
+        } else if (
+          responseSearch &&
+          responseSearch.data &&
+          !responseSearch.data[0]
+        ) {
+          setLoadingSearch(false);
+          setEmpty(true);
+        }
+      } else if (loadingNextPage) {
+        setLoadingNextPage(false);
+        if (
+          responseSearch &&
+          responseSearch.success &&
+          responseSearch.data &&
+          responseSearch.data.docs[0]
+        ) {
+          const newDocs = [...result.docs, ...responseSearch.data.docs];
+
+          setResult({
+            ...result,
+            docs: newDocs,
+          });
+        }
       }
     }
   }, [responseSearch]);
+  const [docsPage, setDocsPage] = useState(1);
 
   useEffect(() => {
     if (
@@ -299,6 +317,34 @@ const HomePage = ({
       handleFindLastDocs(lastDocType);
     }
   }, [lastDocType]);
+
+  useEffect(() => {
+    if (
+      result &&
+      result.docs &&
+      result.docs.length > 44 &&
+      result.totalDocs &&
+      result.totalDocs > result.docs.length &&
+      docsPage === parseInt(result.docs.length / 15) - 1
+    ) {
+      console.log("BEING ON ONE OF THE LAST PAGES");
+      if (!loadingNextPage) {
+        setLoadingNextPage(true);
+        console.log("LOADING NEXT PAGE: ", docsPage + 2);
+        search({
+          query: searchValue,
+          page: docsPage + 2,
+          filters: filtersValue,
+        });
+      }
+    } else if (
+      result.docs &&
+      parseInt(result.docs.length / 15) < docsPage &&
+      !loadingNextPage
+    ) {
+      setDocsPage(1);
+    }
+  }, [result, docsPage]);
 
   const className =
     (!result ||
@@ -393,6 +439,8 @@ const HomePage = ({
                   setNavHistory={setNavHistory}
                   setDisplayTag={setDisplayTag}
                   setSignUpModal={setSignUpModal}
+                  docsPage={docsPage}
+                  setDocsPage={setDocsPage}
                 />
               )}
             </>
@@ -432,7 +480,6 @@ const Landing = ({
   i18n,
   client,
   applicationSettings,
-  
 }) => {
   const setDisplay = (item) => {
     setResult({ docs: [item] });
@@ -494,7 +541,9 @@ const Landing = ({
                 key={index}>
                 <div
                   className="box is-paddingless pb--1 smooth-appear img-section-box"
-                  onClick={() => {navigate("/search/" + section.search_slug)}}>
+                  onClick={() => {
+                    navigate("/search/" + section.search_slug);
+                  }}>
                   <img src={section.image_url} alt="" />
                 </div>
               </div>
@@ -690,7 +739,6 @@ const Landing = ({
             </div>
           </div>
         </div>
-        
 
         {loadingLastDocs ? (
           <div className="loader mt-4 pt-4">
