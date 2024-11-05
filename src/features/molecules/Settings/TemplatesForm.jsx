@@ -63,11 +63,17 @@ const TemplatesForm = ({
   const [accessValue, setAccessValue] = useState(true);
   const [issnValue, setIssnValue] = useState(true);
   const [issnDefault, setIssnDefault] = useState("");
+  const [materialValue, setMaterialValue] = useState(false);
+  const [dimensionsValue, setDimensionsValue] = useState(false);
+  const [locationValue, setLocationValue] = useState(false);
 
   const handleEditTemplate = (template) => {
     setNameValue(template.schema_name);
     setDescValue(template.description);
     setLangValue(template.languages.exist);
+    setLocationValue(template.location);
+    setDimensionsValue(template.dimensions);
+    setMaterialValue(template.material);
     setLangEnDefaultValue("");
     setLangFrDefaultValue("");
     selectLang(
@@ -232,6 +238,9 @@ const TemplatesForm = ({
         languages: { exist: langValue, defaults: selectedLangs },
         lang: langValue,
         langs: selectedLangs.map((lang) => lang.value),
+        location: locationValue,
+        dimensions: dimensionsValue,
+        material: materialValue,
         //Relations
         support_role: typeValue, //Kind of doc support (media, book, ebook, article, movie etc)
         support_desc: supportDescValue,
@@ -630,7 +639,7 @@ const TemplatesForm = ({
                     checked={descValue ? "checked" : ""}
                     value={descValue}
                     onChange={() => {
-                      setDescValue(!descValue)
+                      setDescValue(!descValue);
                     }}
                   />
                   <label htmlFor="switchDesc" className="label">
@@ -1043,6 +1052,47 @@ const TemplatesForm = ({
                     />
                     <label htmlFor="switchNumber" className="label">
                       {t("number")}
+                    </label>
+                  </div>
+
+                  <div className="field is-flex is-flex is-justify-content-start">
+                    <input
+                      id="switchLocation"
+                      type="checkbox"
+                      name="switchLocation"
+                      className="switch is-rtl"
+                      checked={locationValue ? "checked" : ""}
+                      onChange={() => setLocationValue(!locationValue)}
+                    />
+                    <label htmlFor="switchLocation" className="label">
+                      {t("Location")}
+                    </label>
+                  </div>
+
+                  <div className="field is-flex is-flex is-justify-content-start">
+                    <input
+                      id="switchDimensions"
+                      type="checkbox"
+                      name="switchDimensions"
+                      className="switch is-rtl"
+                      checked={dimensionsValue ? "checked" : ""}
+                      onChange={() => setDimensionsValue(!dimensionsValue)}
+                    />
+                    <label htmlFor="switchDimensions" className="label">
+                      {t("Dimensions")}
+                    </label>
+                  </div>
+                  <div className="field is-flex is-flex is-justify-content-start">
+                    <input
+                      id="switchMaterial"
+                      type="checkbox"
+                      name="switchMaterial"
+                      className="switch is-rtl"
+                      checked={materialValue ? "checked" : ""}
+                      onChange={() => setMaterialValue(!materialValue)}
+                    />
+                    <label htmlFor="switchMaterial" className="label">
+                      {t("Material")}
                     </label>
                   </div>
                 </div>

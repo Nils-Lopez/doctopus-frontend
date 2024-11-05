@@ -47,6 +47,9 @@ const DocForm = ({
   const [showIdentityForm, setShowIdentityForm] = useState(true);
   const [showSupportForm, setShowSupportForm] = useState(true);
   const [showParentForm, setShowParentForm] = useState(true);
+  const [materialValue, setMaterialValue] = useState("");
+  const [locationValue, setLocationValue] = useState("");
+  const [dimensionsValue, setDimensionsValue] = useState("");
   const [copyrightsValue, setCopyrightsValue] = useState("");
   const [isbnValue, setIsbnValue] = useState("");
   const [pagesValue, setPagesValue] = useState("");
@@ -126,6 +129,21 @@ const DocForm = ({
     setDateValue(e.target.value);
   };
 
+  const handleDimensionsChange = (e) => {
+    e.preventDefault();
+    setDimensionsValue(e.target.value);
+  };
+
+  const handleMaterialChange = (e) => {
+    e.preventDefault();
+    setMaterialValue(e.target.value);
+  };
+
+  const handleLocationChange = (e) => {
+    e.preventDefault();
+    setLocationValue(e.target.value);
+  };
+
   const handleVolumeChange = (e) => {
     e.preventDefault();
     setVolumeValue(e.target.value);
@@ -203,7 +221,16 @@ const DocForm = ({
     setLoading(true);
     const reqData = {
       doc: {
-        slug: slugValue,
+        slug:
+          (window.location.host === "localhost:3000"
+            ? "panorama"
+            : window.location.host.split(".")[0]) === "panorama" &&
+          pendingSupports &&
+          pendingSupports[0] &&
+          pendingSupports[0].exemplaries &&
+          pendingSupports[0].exemplaries[0]
+            ? pendingSupports[0].exemplaries[0].cote
+            : slugValue,
         title: titleValue,
         description:
           template && template.description
@@ -225,6 +252,9 @@ const DocForm = ({
         restrictedContent: restrictedContent,
         number: numberValue,
         template: templateModel,
+        location: locationValue,
+        dimensions: dimensionsValue,
+        material: materialValue,
       },
       types: selectedTypes,
       tags: selectedTags,
@@ -504,10 +534,10 @@ const DocForm = ({
       setTitleValue(dataUpdate.title);
       if (dataUpdate.template) {
         setTemplateModel(dataUpdate.template);
-      selectTemplate({
-        value: dataUpdate.template.schema_name,
-        label: dataUpdate.template.schema_name,
-      });
+        selectTemplate({
+          value: dataUpdate.template.schema_name,
+          label: dataUpdate.template.schema_name,
+        });
       }
       if (dataUpdate.description && dataUpdate.description[0]) {
         setDescFrValue(getContent(dataUpdate.description, "fr"));
@@ -530,6 +560,10 @@ const DocForm = ({
       setThumbValue(dataUpdate.thumb);
       setRestrictedContent(dataUpdate.restrictedContent);
       setVolumeValue(dataUpdate.volume);
+      setLocationValue(dataUpdate.location);
+      setDimensionsValue(dataUpdate.dimensions);
+      setMaterialValue(dataUpdate.material);
+
       setNumberValue(dataUpdate.number);
       selectProd();
       selectType(dataUpdate.types);
@@ -950,7 +984,7 @@ const DocForm = ({
               <FileForm setFile={setThumbValue} pdf={thumbValue} />
             </div>
           ) : null}
-           {template && template.support_volume ? (
+          {template && template.support_volume ? (
             <>
               <div className="field">
                 <label className="label has-text-left">{t("volume")}</label>
@@ -976,7 +1010,7 @@ const DocForm = ({
               </div>
             </>
           ) : null}
-         
+
           {template && template.support_issn ? (
             <>
               <div className="field">
@@ -986,6 +1020,48 @@ const DocForm = ({
                   className="input"
                   value={issnValue}
                   onChange={handleIssnChange}
+                />
+              </div>
+            </>
+          ) : null}
+
+          {template && template.material ? (
+            <>
+              <div className="field">
+                <label className="label has-text-left">{t("Material")}</label>
+                <input
+                  type="text"
+                  className="input"
+                  value={materialValue}
+                  onChange={handleMaterialChange}
+                />
+              </div>
+            </>
+          ) : null}
+
+          {template && template.location ? (
+            <>
+              <div className="field">
+                <label className="label has-text-left">{t("Location")}</label>
+                <input
+                  type="text"
+                  className="input"
+                  value={locationValue}
+                  onChange={handleLocationChange}
+                />
+              </div>
+            </>
+          ) : null}
+
+          {template && template.dimensions ? (
+            <>
+              <div className="field">
+                <label className="label has-text-left">{t("Dimensions")}</label>
+                <input
+                  type="text"
+                  className="input"
+                  value={dimensionsValue}
+                  onChange={handleDimensionsChange}
                 />
               </div>
             </>
@@ -1063,9 +1139,7 @@ const DocForm = ({
               }}>
               <span>{t("Save as draft")}</span>
             </button>
-            <button
-              className="button is-primary "
-              onClick={handleDocSubmit}>
+            <button className="button is-primary " onClick={handleDocSubmit}>
               <span>{dataUpdate ? t("update") : t("Publish")}</span>
             </button>
           </div>

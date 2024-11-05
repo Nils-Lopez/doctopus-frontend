@@ -58,7 +58,6 @@ const Show = ({
     childs,
     child_docs,
   } = doc;
-
   const [addingWatchlist, setAddingWatchlist] = useState(false);
   const { updateUser, responseUpdateUser } = useUsers();
   const [displayFile, setDisplayFile] = useState(false);
@@ -612,14 +611,30 @@ const Show = ({
                   {t("duration")}: {doc.duration}{" "}
                 </p>
               ) : null}
-              {doc.additionalCopyrights && doc.additionalCopyrights !== "" ? (
+
+              {doc.dimensions && doc.dimensions !== "" ? (
                 <p className="has-text-left mt-1  mb-0 pt-0">
-                  {t("credits")}: {doc.additionalCopyrights}{" "}
+                  {t("Dimensions")}: {doc.dimensions}{" "}
+                </p>
+              ) : null}
+              {doc.material && doc.material !== "" ? (
+                <p className="has-text-left mt-1  mb-0 pt-0">
+                  {t("Material")}: {doc.material}{" "}
+                </p>
+              ) : null}
+              {doc.location && doc.location !== "" ? (
+                <p className="has-text-left mt-1  mb-0 pt-0">
+                  {t("Location")}: {doc.location}{" "}
                 </p>
               ) : null}
               {description && description[0] ? (
                 <p className="  mt-1 mb-0 pb-0 has-text-left">
                   {getContent(description, i18n.language)}
+                </p>
+              ) : null}
+              {doc.additionalCopyrights && doc.additionalCopyrights !== "" ? (
+                <p className="has-text-left mt-1  mb-0 pt-0">
+                  {t("credits")}: {doc.additionalCopyrights}{" "}
                 </p>
               ) : null}
             </div>
@@ -686,11 +701,21 @@ const Show = ({
           ) : null}{" "}
           {doc.date && doc.date !== "" ? (
             <p className="has-text-left mt-0  mb-0 pt-0">
-              {t("publication date")}: {doc.date}{" "}
+              {(window.location.host === "localhost:3000"
+                ? "panorama"
+                : window.location.host.split(".")[0]) === "panorama"
+                ? "Date"
+                : t("publication date")}
+              : {doc.date}{" "}
             </p>
           ) : doc.publishedAt && doc.publishedAt !== "" ? (
             <p className="has-text-left mt-0  mb-0 pt-0">
-              {t("publication date")}:{" "}
+              {(window.location.host === "localhost:3000"
+                ? "panorama"
+                : window.location.host.split(".")[0]) === "panorama"
+                ? "Date"
+                : t("publication date")}
+              :{" "}
               {new Date(doc.publishedAt).getDate() +
                 "/" +
                 (new Date(doc.publishedAt).getMonth() + 1) +
@@ -723,14 +748,29 @@ const Show = ({
               {t("duration")}: {doc.duration}{" "}
             </p>
           ) : null}
-          {doc.additionalCopyrights && doc.additionalCopyrights !== "" ? (
+          {doc.dimensions && doc.dimensions !== "" ? (
             <p className="has-text-left mt-1  mb-0 pt-0">
-              {t("credits")}: {doc.additionalCopyrights}{" "}
+              {t("Dimensions")}: {doc.dimensions}{" "}
+            </p>
+          ) : null}
+          {doc.material && doc.material !== "" ? (
+            <p className="has-text-left mt-1  mb-0 pt-0">
+              {t("Material")}: {doc.material}{" "}
+            </p>
+          ) : null}
+          {doc.location && doc.location !== "" ? (
+            <p className="has-text-left mt-1  mb-0 pt-0">
+              {t("Location")}: {doc.location}{" "}
             </p>
           ) : null}
           {description && description[0] ? (
             <p className="  mt-1 mb-1 pb-0 has-text-left">
               {getContent(description, i18n.language)}
+            </p>
+          ) : null}
+          {doc.additionalCopyrights && doc.additionalCopyrights !== "" ? (
+            <p className="has-text-left mt-1  mb-0 pt-0">
+              {t("credits")}: {doc.additionalCopyrights}{" "}
             </p>
           ) : null}
         </>

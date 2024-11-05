@@ -14,12 +14,11 @@ export async function apiFetch(endpoint, options = {}) {
       Accept: "application/json",
       ClientDatabase:
         window.location.host === "localhost:3000"
-          ? "contredanse"
+          ? "panorama"
           : window.location.host.split(".")[0],
     },
     credentials: "include",
     mode: "cors",
-
     ...options,
   };
 

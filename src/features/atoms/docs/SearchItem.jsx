@@ -126,6 +126,14 @@ const SearchItem = ({
             </span>
           </>
         ) : null}
+
+        {(window.location.host === "localhost:3000"
+          ? "panorama"
+          : window.location.host.split(".")[0]) === "panorama" ? (
+          <span className="tag is-light is-small is-flex is-justify-content-start mb-2">
+            {item.doc && item.doc.slug ? item.doc.slug : null}
+          </span>
+        ) : null}
         {/* <p>{item.doc.description && item.doc.description[0] ? getContent(item.doc.description, i18n.language).substring(0,20) + "..." : null}</p>
                
                     
