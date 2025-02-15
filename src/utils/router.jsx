@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../features/systems/Navbar";
 import Create from "../features/systems/admin/Create";
 import Dashboard from "../features/systems/admin/Dashboard";
+import AdminWatchlist from "../features/systems/admin/AdminWatchlist";
 
 import HomePage from "../features/systems/HomePage";
 import Settings from "../features/systems/Settings";
@@ -280,6 +281,14 @@ const Router = ({ applicationSettings, setApplicationSettings, bgCreds }) => {
                   path="/pages/:name"
                   element={
                     <StaticPage applicationSettings={applicationSettings} />
+                  }
+                />
+                <Route
+                  path="/admin_watchlist/:user_id"
+                  element={
+                    <AdminWatchlist
+                      applicationSettings={applicationSettings}
+                    />
                   }
                 />
                 <Route

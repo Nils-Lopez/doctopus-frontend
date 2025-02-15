@@ -334,6 +334,7 @@ const SearchResult = ({
               handleBack={handleBack}
               setDisplayDoc={handleSearchDoc}
               setHideWatchlist={setGoHome}
+              client={client}
             />
           </>
         ) : history ? (

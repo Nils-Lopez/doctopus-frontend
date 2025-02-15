@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, Fragment, useEffect, useCallback } from "react";
 
 import RoleForm from "../../atoms/forms/RoleForm";
 
@@ -13,7 +13,8 @@ import MergeForm from "../../atoms/forms/MergeForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-
+import { usePeople } from "../../../utils/hooks/People";
+import SearchForm from "../../atoms/forms/SearchForm";
 const OrganisationForm = ({
   client,
   setAlert,
@@ -38,6 +39,17 @@ const OrganisationForm = ({
   const [selectedProj, selectProj] = useState([]);
 
   const [loading, setLoading] = useState(false);
+
+  const [aliases, setAliases] = useState([]);
+
+  const [postalAddress, setPostalAddress] = useState("");
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [activityStartDate, setActivityStartDate] = useState("");
+  const [activityEndDate, setActivityEndDate] = useState("");
+  const [addressSuggestions, setAddressSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const {
     findEntityById,
@@ -131,6 +143,62 @@ const OrganisationForm = ({
     }
   };
 
+  const handleAliasAdd = (e) => {
+    e.preventDefault();
+    const value = e.target.parentElement.previousElementSibling.querySelector('input').value;
+    if (value && value.trim()) {
+      setAliases([...aliases, value.trim()]);
+      e.target.parentElement.previousElementSibling.querySelector('input').value = '';
+    }
+  };
+
+  const handleAliasRemove = (index) => {
+    setAliases(aliases.filter((_, i) => i !== index));
+  };
+
+  // Debounced search function
+  const debouncedAddressSearch = useCallback(
+    (() => {
+      let timeoutId;
+      return (address) => {
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+        timeoutId = setTimeout(async () => {
+          if (address.length > 5) {
+            try {
+              const response = await fetch(
+                `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`
+              );
+              const data = await response.json();
+              setAddressSuggestions(data.slice(0, 5));
+              setShowSuggestions(true);
+            } catch (error) {
+              console.error("Error fetching address details:", error);
+            }
+          } else {
+            setAddressSuggestions([]);
+            setShowSuggestions(false);
+          }
+        }, 1500); // Wait 500ms after last keystroke before searching
+      };
+    })(),
+    []
+  );
+
+  const handlePostalAddressSearch = (e) => {
+    const address = e.target.value;
+    setPostalAddress(address);
+    debouncedAddressSearch(address);
+  };
+
+  const handleAddressSelect = (suggestion) => {
+    setPostalAddress(suggestion.display_name);
+    setLatitude(suggestion.lat);
+    setLongitude(suggestion.lon);
+    setShowSuggestions(false);
+  };
+
   useEffect(() => {
     if (dataUpdate && nameValue !== dataUpdate.name) {
       setNameValue(dataUpdate.name);
@@ -143,8 +211,15 @@ const OrganisationForm = ({
       setCountryValue(dataUpdate.country);
       selectLang(dataUpdate.languages);
       selectRole(dataUpdate.roles);
-      selectActor(dataUpdate.actors);
+      selectActor(dataUpdate.associatedPeople);
       selectProj(dataUpdate.proj);
+      setAliases(dataUpdate.aliases || []);
+      setPostalAddress(dataUpdate.postalAddress || "");
+      setLatitude(dataUpdate.latitude || "");
+      setLongitude(dataUpdate.longitude || "");
+      setContactEmail(dataUpdate.contactEmail || "");
+      setActivityStartDate(dataUpdate.activityStartDate ? new Date(dataUpdate.activityStartDate).toISOString().split('T')[0] : "");
+      setActivityEndDate(dataUpdate.activityEndDate ? new Date(dataUpdate.activityEndDate).toISOString().split('T')[0] : "");
     }
   }, [dataUpdate]);
 
@@ -164,9 +239,16 @@ const OrganisationForm = ({
         city: cityValue,
         country: countryValue,
         languages: selectedLangs,
+        associatedPeople: selectedActors,
+        aliases: aliases,
+        postalAddress,
+        latitude: latitude ? parseFloat(latitude) : null,
+        longitude: longitude ? parseFloat(longitude) : null,
+        contactEmail,
+        activityStartDate: activityStartDate || null,
+        activityEndDate: activityEndDate || null,
       },
       roles: selectedRoles,
-      actors: selectedActors,
       projects: selectedProj,
     };
     if (dataUpdate) {
@@ -283,6 +365,13 @@ const OrganisationForm = ({
     setMerge(!merge);
   };
 
+  const {
+    searchPeople,
+    responseSearchPeople,
+  } = usePeople();
+
+
+
   return loading ? (
     <div className="loader">
       <div className="inner one"></div>
@@ -364,6 +453,92 @@ const OrganisationForm = ({
               />
             </div>
           </div>
+          <div className="field">
+            <label className="label has-text-left">Adresse postale</label>
+            <div className="dropdown is-active" style={{ width: '100%' }}>
+              <div className="dropdown-trigger" style={{ width: '100%' }}>
+                <input
+                  type="text"
+                  value={postalAddress}
+                  onChange={handlePostalAddressSearch}
+                  onFocus={() => setShowSuggestions(true)}
+                  className="input"
+                  placeholder="Rechercher une adresse..."
+                />
+              </div>
+              {showSuggestions && addressSuggestions.length > 0 && (
+                <div className="dropdown-menu" style={{ width: '100%' }}>
+                  <div className="dropdown-content">
+                    {addressSuggestions.map((suggestion, index) => (
+                      <a
+                        key={index}
+                        className="dropdown-item"
+                        onClick={() => handleAddressSelect(suggestion)}
+                      >
+                        {suggestion.display_name}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="columns">
+            <div className="column field">
+              <label className="label has-text-left">Latitude</label>
+              <input
+                type="number"
+                step="any"
+                value={latitude}
+                onChange={(e) => setLatitude(e.target.value)}
+                className="input"
+                readOnly
+              />
+            </div>
+            <div className="column field">
+              <label className="label has-text-left">Longitude</label>
+              <input
+                type="number"
+                step="any"
+                value={longitude}
+                onChange={(e) => setLongitude(e.target.value)}
+                className="input"
+                readOnly
+              />
+            </div>
+          </div>
+
+          <div className="field">
+            <label className="label has-text-left">Email de contact</label>
+            <input
+              type="email"
+              value={contactEmail}
+              onChange={(e) => setContactEmail(e.target.value)}
+              className="input"
+            />
+          </div>
+
+          <div className="columns">
+            <div className="column field">
+              <label className="label has-text-left">Date début d'activité</label>
+              <input
+                type="date"
+                value={activityStartDate}
+                onChange={(e) => setActivityStartDate(e.target.value)}
+                className="input"
+              />
+            </div>
+            <div className="column field">
+              <label className="label has-text-left">Date fin d'activité</label>
+              <input
+                type="date"
+                value={activityEndDate}
+                onChange={(e) => setActivityEndDate(e.target.value)}
+                className="input"
+              />
+            </div>
+          </div>
           <label className="label has-text-left mb--1 mt--2">
             {t("roles")}
           </label>
@@ -374,6 +549,34 @@ const OrganisationForm = ({
             selectRole={selectRole}
             lang={i18n.language}
           />
+          <label className="label has-text-left mb--1 mt-3">
+            {t('people')}
+            </label>
+        <SearchForm selectedItems={selectedActors} selectItem={selectActor} searchItems={searchPeople} responseSearchItems={responseSearchPeople} mainField={"name"}/>
+     
+        
+
+          <div className="field ">
+            <label className="label has-text-left">Alias</label>
+            <div className="is-flex is-flex-wrap-wrap mb-2">
+              {aliases.map((alias, index) => (
+                <span key={index} className="tag is-info is-medium mr-2 mb-2">
+                  {alias}
+                  <button className="delete is-small" onClick={() => handleAliasRemove(index)}></button>
+                </span>
+              ))}
+            </div>
+            <div className="field has-addons mt--1">
+              <div className="control is-expanded">
+                <input type="text" className="input"/>
+              </div>
+              <div className="control">
+                <button className="button is-info" onClick={handleAliasAdd}>
+                  {t("add")}
+                </button>
+              </div>
+            </div>
+          </div>
 
           <footer className="card-footer mt-3 pt-4 is-flex is-justify-content-end">
             <button
@@ -385,6 +588,7 @@ const OrganisationForm = ({
         </>
       )}
     </div>
+
   );
 };
 

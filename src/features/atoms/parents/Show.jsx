@@ -65,7 +65,7 @@ const Show = ({
     city,
     startedAt,
     endedAt,
-    url,  
+    url,
     issn,
     title,
     date,
@@ -80,19 +80,21 @@ const Show = ({
     prodIds,
     createdDocs,
     parents,
+    associatedEntities,
+    associatedPeople
   } = parent;
 
   const [childs, setChilds] = useState(parent.childs);
-
+  console.log("ACTORS; ", associatedEntities)
   const [productionsScapin, setProductions] = useState(false);
   const [prodLoading, setProdLoading] = useState(false);
-  
+
   let navigate = useNavigate();
 
   const {
     findProdByIds,
     responseFindProdByIds,
-    findProdsByString, 
+    findProdsByString,
     responseFindProdsByString,
     findEntityByName,
     responseFindEntityByName,
@@ -160,6 +162,7 @@ const Show = ({
   useEffect(() => {
     if (childsDataLoading && responseFindProjectChildsDataById) {
       if (responseFindProjectChildsDataById.success) {
+        console.log("Response Find Project Childs Data By Id", responseFindProjectChildsDataById)
         setChildsData(responseFindProjectChildsDataById.data);
         setChildsDataLoading(false);
       } else {
@@ -197,7 +200,7 @@ const Show = ({
         findProdsByString(parent.name, "entity");
       }
     }
-    
+
   }, []);
 
   useEffect(() => {
@@ -303,18 +306,18 @@ const Show = ({
     } else if (responseFindPersonByName) {
       setAlert({
         type: "light",
-        message: {en: t('no-additional-data'), fr: t('no-additional-data')}
+        message: { en: t('no-additional-data'), fr: t('no-additional-data') }
       })
     }
   }, [responseFindPersonByName])
   useEffect(() => {
     if (responseFindEntityByName && responseFindEntityByName.success) {
-      
+
       navigate('/entity/' + responseFindEntityByName.data._id)
     } else if (responseFindEntityByName) {
       setAlert({
         type: "light",
-        message: {en: t('no-additional-data'), fr: t('no-additional-data')}
+        message: { en: t('no-additional-data'), fr: t('no-additional-data') }
       })
     }
   }, [responseFindEntityByName])
@@ -641,10 +644,10 @@ const Show = ({
             )}
           </button>
           {client &&
-          client.user &&
-          (client.user.type === "admin" ||
-            client.user.type === "moderator" ||
-            client.user.type ===
+            client.user &&
+            (client.user.type === "admin" ||
+              client.user.type === "moderator" ||
+              client.user.type ===
               "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") ? (
             <>
               <button
@@ -674,10 +677,10 @@ const Show = ({
                 {parent.scapin
                   ? t("production")
                   : parent.projects
-                  ? t("organization")
-                  : parent.entities
-                  ? t("project")
-                  : t("person")}
+                    ? t("organization")
+                    : parent.entities
+                      ? t("project")
+                      : t("person")}
               </strong>
             </span>
           )}
@@ -724,8 +727,8 @@ const Show = ({
         {title && title !== ""
           ? title
           : name && name !== ""
-          ? name
-          : firstName + " " + lastName}
+            ? name
+            : firstName + " " + lastName}
       </h1>
       {parent && parent.scapin ? (
         <>
@@ -799,13 +802,13 @@ const Show = ({
                 new Date(birthDate).getFullYear()}{" "}
               {deathDate && deathDate !== ""
                 ? " - " +
-                  t("deathdate") +
-                  ": " +
-                  new Date(deathDate).getDate() +
-                  "/" +
-                  (new Date(deathDate).getMonth() + 1) +
-                  "/" +
-                  new Date(deathDate).getFullYear()
+                t("deathdate") +
+                ": " +
+                new Date(deathDate).getDate() +
+                "/" +
+                (new Date(deathDate).getMonth() + 1) +
+                "/" +
+                new Date(deathDate).getFullYear()
                 : null}
             </span>
           </div>
@@ -821,13 +824,13 @@ const Show = ({
                 new Date(startedAt).getFullYear()}{" "}
               {endedAt && endedAt !== ""
                 ? " - " +
-                  t("deathdate") +
-                  ": " +
-                  new Date(endedAt).getDate() +
-                  "/" +
-                  (new Date(endedAt).getMonth() + 1) +
-                  "/" +
-                  new Date(endedAt).getFullYear()
+                t("deathdate") +
+                ": " +
+                new Date(endedAt).getDate() +
+                "/" +
+                (new Date(endedAt).getMonth() + 1) +
+                "/" +
+                new Date(endedAt).getFullYear()
                 : null}
             </span>
           </div>
@@ -926,22 +929,22 @@ const Show = ({
       <div className="columns is-multiline mb-6">
         {productionsScapin && productionsScapin[0]
           ? productionsScapin.map((prodScapin, i) => {
-              if (
-                (productionsPage === 1 && i < 8) ||
-                (i > (productionsPage - 1) * 8 - 1 && i < productionsPage * 8)
-              ) {
-                return (
-                  <Fragment key={JSON.stringify(prodScapin)}>
-                    <SearchItemParent
-                      item={prodScapin.item}
-                      handleSearchScapinParent={handleSearchScapinParent}
-                      parent="production"
-                      i={i}
-                    />
-                  </Fragment>
-                );
-              }
-            })
+            if (
+              (productionsPage === 1 && i < 8) ||
+              (i > (productionsPage - 1) * 8 - 1 && i < productionsPage * 8)
+            ) {
+              return (
+                <Fragment key={JSON.stringify(prodScapin)}>
+                  <SearchItemParent
+                    item={prodScapin.item}
+                    handleSearchScapinParent={handleSearchScapinParent}
+                    parent="production"
+                    i={i}
+                  />
+                </Fragment>
+              );
+            }
+          })
           : null}
       </div>
       {parents && parents[0] ? (
@@ -989,27 +992,27 @@ const Show = ({
       <div className="columns is-multiline mb-6">
         {parents && parents[0]
           ? removeDuplicates(parents).map((p, i) => {
-              if (
-                (parentsPage === 1 && i < 8) ||
-                (i > (parentsPage - 1) * 8 - 1 && i < parentsPage * 8)
-              ) {
-                return (
-                  <Fragment key={JSON.stringify(p)}>
-                    <SearchItemParent
-                      item={p}
-                      handleSearchScapinParent={handleSearchScapinParent}
-                      handleSearchDoc={handleSearchDoc}
-                      i={i}
-                    />
-                  </Fragment>
-                );
-              }
-            })
+            if (
+              (parentsPage === 1 && i < 8) ||
+              (i > (parentsPage - 1) * 8 - 1 && i < parentsPage * 8)
+            ) {
+              return (
+                <Fragment key={JSON.stringify(p)}>
+                  <SearchItemParent
+                    item={p}
+                    handleSearchScapinParent={handleSearchScapinParent}
+                    handleSearchDoc={handleSearchDoc}
+                    i={i}
+                  />
+                </Fragment>
+              );
+            }
+          })
           : null}
       </div>
-      {(actors && actors[0]) ||
-      (entities && entities[0]) ||
-      (projects && projects[0]) ? (
+      {(associatedPeople && associatedPeople[0]) ||(associatedEntities && associatedEntities[0]) ||
+        (entities && entities[0]) ||
+        (projects && projects[0]) ? (
         <>
           <hr />
 
@@ -1019,42 +1022,58 @@ const Show = ({
         </>
       ) : null}
       <div className="columns is-multiline is-flex is-justify-content-start">
-        {actors && actors[0]
-          ? actors.map((actor) => {
-              return (
-                <Fragment key={JSON.stringify(actor)}>
-                  <SearchItemParent
-                    item={{ person: actor }}
-                    handleSearchParent={handleSearchParent}
-                    relTypes={actor.role}
-                  />
-                </Fragment>
-              );
-            })
+      
+        {associatedEntities && associatedEntities[0]
+          ? associatedEntities.map((actor) => {
+            console.log(actor.roles)
+            return (
+              <Fragment key={JSON.stringify(actor)}>
+                <SearchItemParent
+                  item={{ entity: actor }}
+                  handleSearchParent={handleSearchParent}
+                  relTypes={actor.roles[0]}
+                />
+              </Fragment>
+            );
+          })
+          : null}
+          {associatedPeople && associatedPeople[0]
+          ? associatedPeople.map((actor) => {
+            console.log(actor.roles)
+            return (
+              <Fragment key={JSON.stringify(actor)}>
+                <SearchItemParent
+                  item={{ person: actor }}
+                  handleSearchParent={handleSearchParent}
+                  relTypes={actor.roles[0]}
+                />
+              </Fragment>
+            );
+          })
           : null}
         {entities && entities[0]
           ? entities.map((entity) => (
-              <Fragment key={JSON.stringify(entity)}>
-                <SearchItemParent
-                  item={{ entity: entity }}
-                  handleSearchParent={handleSearchParent}
-                />
-              </Fragment>
-            ))
+            <Fragment key={JSON.stringify(entity)}>
+              <SearchItemParent
+                item={{ entity: entity }}
+                handleSearchParent={handleSearchParent}
+              />
+            </Fragment>
+          ))
           : null}
       </div>
       <div className="columns is-multiline is-flex is-justify-content-start">
         {projects && projects[0]
           ? removeDuplicates(projects).map((project) => {
-              return (
-                <Fragment key={JSON.stringify(project)}>
-                  <SearchItemParent
-                    item={{ project: project }}
-                    handleSearchParent={handleSearchParent}
-                  />
-                </Fragment>
-              );
-            })
+            return (
+              <Fragment key={JSON.stringify(project)}>
+                <SearchItemParent
+                  item={{ project: project }}
+                  handleSearchParent={handleSearchParent}
+                />
+              </Fragment>
+            );
+          })
           : null}
       </div>
       {childs && childs[0] ? (
@@ -1065,8 +1084,8 @@ const Show = ({
               <h3 className="subtitle has-text-grey has-text-left  is-6 mt--2 pt-1 mb-0">
                 {t("documents")} &nbsp;
                 {childsDataLoading ||
-                childsPageLoading ||
-                childsSearchLoading ? (
+                  childsPageLoading ||
+                  childsSearchLoading ? (
                   <span className="button tag is-rounded is-medium has-background-transparent is-borderless has-text-primary is-loading"></span>
                 ) : null}
                 {!childsData ? null : (
@@ -1139,7 +1158,7 @@ const Show = ({
               ) : null}
 
               {childsData.length > 15 * childsPage ||
-              (!childsData && childs.length > 15) ? (
+                (!childsData && childs.length > 15) ? (
                 <button
                   className="button is-white"
                   onClick={() =>
@@ -1166,50 +1185,50 @@ const Show = ({
       <div className="columns is-multiline is-flex is-justify-content-start">
         {filteredList && filteredList[0]
           ? filteredList.map((child, i) => {
+            if (
+              (childsPage === 1 && i < 15) ||
+              (i > (childsPage - 1) * 15 - 1 && i < childsPage * 15)
+            ) {
+              let parentType = undefined;
+              if (child.person && parent._id === child.person._id)
+                parentType = "person";
+              if (child.project && parent._id === child.project._id)
+                parentType = "project";
+              if (child.entity && parent._id === child.entity._id)
+                parentType = "entity";
               if (
-                (childsPage === 1 && i < 15) ||
-                (i > (childsPage - 1) * 15 - 1 && i < childsPage * 15)
+                child.roles &&
+                child.roles[0] &&
+                child.roles[0].title &&
+                child.roles[0].title !== ""
               ) {
-                let parentType = undefined;
-                if (child.person && parent._id === child.person._id)
-                  parentType = "person";
-                if (child.project && parent._id === child.project._id)
-                  parentType = "project";
-                if (child.entity && parent._id === child.entity._id)
-                  parentType = "entity";
-                if (
-                  child.roles &&
-                  child.roles[0] &&
-                  child.roles[0].title &&
-                  child.roles[0].title !== ""
-                ) {
-                  return (
-                    <Fragment key={JSON.stringify(child)}>
-                      <SearchItemParent
-                        item={child}
-                        handleSearchParent={handleSearchParent}
-                        relTypes={child.roles[0]}
-                        handleSearchDoc={handleSearchDoc}
-                        parent={parentType}
-                        i={i}
-                      />
-                    </Fragment>
-                  );
-                } else {
-                  return (
-                    <Fragment key={JSON.stringify(child)}>
-                      <SearchItemParent
-                        item={child}
-                        handleSearchParent={handleSearchParent}
-                        handleSearchDoc={handleSearchDoc}
-                        parent={parentType}
-                        i={i}
-                      />
-                    </Fragment>
-                  );
-                }
+                return (
+                  <Fragment key={JSON.stringify(child)}>
+                    <SearchItemParent
+                      item={child}
+                      handleSearchParent={handleSearchParent}
+                      relTypes={child.roles[0]}
+                      handleSearchDoc={handleSearchDoc}
+                      parent={parentType}
+                      i={i}
+                    />
+                  </Fragment>
+                );
+              } else {
+                return (
+                  <Fragment key={JSON.stringify(child)}>
+                    <SearchItemParent
+                      item={child}
+                      handleSearchParent={handleSearchParent}
+                      handleSearchDoc={handleSearchDoc}
+                      parent={parentType}
+                      i={i}
+                    />
+                  </Fragment>
+                );
               }
-            })
+            }
+          })
           : null}
       </div>
 
@@ -1231,8 +1250,8 @@ const getContent = (value, lang = "fr") => {
     return value.filter((obj) => obj.lang === lang)[0]
       ? value.filter((obj) => obj.lang === lang)[0].content
       : value.filter((obj) => obj.lang === "en")[0]
-      ? value.filter((obj) => obj.lang === "en")[0].content
-      : value.filter((obj) => obj.lang === "fr")[0].content;
+        ? value.filter((obj) => obj.lang === "en")[0].content
+        : value.filter((obj) => obj.lang === "fr")[0].content;
   } else {
     return "Error";
   }

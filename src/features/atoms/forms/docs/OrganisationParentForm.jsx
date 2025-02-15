@@ -1,4 +1,6 @@
 import React, {useState, useEffect, Fragment} from "react"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 
 import RoleForm from "../RoleForm"
 import OrganisationForm from "../../../molecules/Create/OrganisationForm"
@@ -14,6 +16,7 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
   const [selectedRoles, selectRole] = useState([])
   const [idLang, setIdLang] = useState("fr")
   const [created, setCreated] = useState({})
+  const [isReorderMode, setIsReorderMode] = useState(false)
 
   const [orgs, setOrgs] = useState([])
 
@@ -149,6 +152,74 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
     }
   }, [draftOrg])
 
+  const moveItem = (index, direction) => {
+    const newOrgs = [...selectedOrg];
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    
+    if (newIndex >= 0 && newIndex < newOrgs.length) {
+      [newOrgs[index], newOrgs[newIndex]] = [newOrgs[newIndex], newOrgs[index]];
+      selectOrg(newOrgs);
+    }
+  };
+
+  const renderNormalView = () => (
+    <div className="columns is-multiline">
+      {selectedOrg && selectedOrg[0] ? selectedOrg.map((org) => {
+        const widthProp = location && location.includes("template") ? "full": ""
+        if (org.entity && org.entity.name) {
+          return <Fragment key={org.entity.name + "selected"}>
+            <ParentSearchItem item={org} handleDelete={handleDeleteOrg} width={widthProp}/>
+          </Fragment>
+        }
+        return null;
+      }) : null}
+    </div>
+  )
+
+  const renderReorderView = () => (
+    <div className="menu-list">
+      {selectedOrg && selectedOrg[0] ? selectedOrg.map((org, index) => {
+        if (org.entity && org.entity.name) {
+          return (
+            <div 
+              key={org.entity.name + index + "reorder"}
+              className="panel-block is-justify-content-space-between p-3 mb-2"
+              style={{
+                background: 'white',
+                border: '1px solid #dbdbdb',
+                borderRadius: '4px'
+              }}
+            >
+              <div className="is-flex is-align-items-center">
+                <span className="mr-2">{org.entity.name}</span>
+                {org.roles && org.roles[0] && org.roles[0].title && org.roles[0].title[0] && (
+                  <span className="tag is-info is-light">{org.roles[0].title[0].content}</span>
+                )}
+              </div>
+              <div>
+                <button 
+                  className="button is-small mr-1"
+                  onClick={() => moveItem(index, 'up')}
+                  disabled={index === 0}
+                >
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </button>
+                <button 
+                  className="button is-small"
+                  onClick={() => moveItem(index, 'down')}
+                  disabled={index === selectedOrg.length - 1}
+                >
+                  <FontAwesomeIcon icon={faChevronDown} />
+                </button>
+              </div>
+            </div>
+          )
+        }
+        return null;
+      }) : null}
+    </div>
+  )
+
   return <>
  {orgForm ? 
         <div className="modal-card has-background-transparent no-bg mb-6 mt-6">
@@ -162,22 +233,31 @@ const OrganisationParentForm = ({selectedOrg, selectOrg, location, template, lan
                 </div>
         </div>
          : null}
-        { location !== "activity-form" && (template && template.parent_role || !template) && !hideRoles ? <RoleForm scope="parents" location={!location || !location.includes("template") ? "org-parent-doc" : "template-parent-org"} selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} /> : null}
-  {(selectedRoles && selectedRoles[0]) || (template && !template.parent_role) ? <>
-    <SearchForm selectedItems={selectedOrg} handleAddItem={handleAddOrg}searchItems={searchEntities} responseSearchItems={responseSearchEntities} mainField={"name"} setFormModal={setOrgForm} draftValue={organisationValue}/>
-  </> : null}
- <div className="columns is-multiline">
- {selectedOrg && selectedOrg[0] ? selectedOrg.map((org) => {
-        const widthProp = location && location.includes("template") ? "full": ""
-        if (org.entity && org.entity.name) {
-          return <Fragment key={org.entity.name + "selected"}>
-                                     <ParentSearchItem item={org} handleDelete={handleDeleteOrg} width={widthProp}/>
+        {!isReorderMode && (
+      <>
+        {location !== "activity-form" && (template && template.parent_role || !template) && !hideRoles ? 
+          <RoleForm scope="parents" location={!location || !location.includes("template") ? "org-parent-doc" : "template-parent-org"} selectedRoles={selectedRoles} selectRole={selectRole} lang={lang ? lang : idLang} setLang={lang ? null : setIdLang} hasMemory/> 
+        : null}
+        {(selectedRoles && selectedRoles[0]) || (template && !template.parent_role) ? 
+          <SearchForm selectedItems={selectedOrg} handleAddItem={handleAddOrg} searchItems={searchEntities} responseSearchItems={responseSearchEntities} mainField={"name"} setFormModal={setOrgForm} draftValue={organisationValue}/>
+        : null}
+      </>
+    )}
 
-          </Fragment>
-        }
-      }) : null}
- </div>
-   
+    {selectedOrg && selectedOrg.length > 1 && (
+      <div className="field mb-4 is-flex is-justify-content-end">
+        <input 
+          id="reorderSwitch" 
+          type="checkbox" 
+          className="switch is-rounded"
+          checked={isReorderMode}
+          onChange={() => setIsReorderMode(!isReorderMode)}
+        />
+        <label htmlFor="reorderSwitch">Organiser</label>
+      </div>
+    )}
+
+    {isReorderMode ? renderReorderView() : renderNormalView()}
   </>
 }
 

@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 
 import ExemplaryPreviewCard from "../../supports/ExemplaryPreviewCard";
 import { useTranslation } from "react-i18next";
@@ -63,6 +63,13 @@ const ExemplariesForm = ({
     });
     setPendingExemplaries(filtered);
   };
+
+  useEffect(() => {
+    if (template && template.copies_position_default) {
+      setPositionValue(template.copies_position_default);
+    }
+    console.log(template);
+  }, [template]);
 
   return (
     <>

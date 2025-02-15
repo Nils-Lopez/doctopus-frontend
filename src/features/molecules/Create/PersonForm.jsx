@@ -11,7 +11,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-
+import SearchForm from "../../atoms/forms/SearchForm";
+import { useEntities } from "../../../utils/hooks/Entities";
 const PersonForm = ({
   client,
   setAlert,
@@ -34,6 +35,7 @@ const PersonForm = ({
   const [langEnValue, setLangEnValue] = useState("");
   const [langFrValue, setLangFrValue] = useState("");
   const [selectedLangs, selectLang] = useState([]);
+  const [aliases, setAliases] = useState([]);
 
   const [selectedRoles, selectRole] = useState([]);
   const [selectedOrg, selectOrg] = useState([]);
@@ -71,6 +73,11 @@ const PersonForm = ({
     }
   };
 
+
+  const {
+    searchEntities,
+    responseSearchEntities,
+  } = useEntities()
 
 
   const handleDescChange = (e) => {
@@ -117,10 +124,18 @@ const PersonForm = ({
     setCountryValue(e.target.value);
   };
 
+  const handleAliasAdd = (e) => {
+    e.preventDefault();
+    const value = e.target.parentElement.previousElementSibling.querySelector('input').value;
+    if (value && value.trim()) {
+      setAliases([...aliases, value.trim()]);
+      e.target.parentElement.previousElementSibling.querySelector('input').value = '';
+    }
+  };
 
-
-
-
+  const handleAliasRemove = (index) => {
+    setAliases(aliases.filter((_, i) => i !== index));
+  };
 
   useEffect(() => {
     if (dataUpdate) {
@@ -149,8 +164,10 @@ const PersonForm = ({
           selectOrg([...selectedOrg, a]);
         }
       });
+      selectOrg(dataUpdate.associatedEntities);
       selectProj([...selectedProj, dataUpdate.projects]);
       selectRole(dataUpdate.roles);
+      setAliases(dataUpdate.aliases || []);
     }
   }, [dataUpdate]);
   const handlePersonSubmit = (e) => {
@@ -187,6 +204,8 @@ const PersonForm = ({
         lastName: lastNameValue,
         website: urlValue,
         languages: selectedLangs,
+        associatedEntities: selectedOrg,
+        aliases: aliases,
       },
       activities: [...selectedOrg, ...selectedProj],
       projects: selectedProj,
@@ -425,6 +444,27 @@ const PersonForm = ({
               className="input"
             />
           </div>
+          <div className="field ">
+            <label className="label has-text-left">Alias</label>
+            <div className="is-flex is-flex-wrap-wrap mb-2">
+              {aliases.map((alias, index) => (
+                <span key={index} className="tag is-info is-medium mr-2 mb-2">
+                  {alias}
+                  <button className="delete is-small" onClick={() => handleAliasRemove(index)}></button>
+                </span>
+              ))}
+            </div>
+            <div className="field has-addons mt--1">
+              <div className="control is-expanded">
+                <input type="text" className="input"/>
+              </div>
+              <div className="control">
+                <button className="button is-info" onClick={handleAliasAdd}>
+                  {t("add")}
+                </button>
+              </div>
+            </div>
+          </div>
           <label className="label has-text-left mb--1 ">{t("roles")}</label>
           <RoleForm
             scope="parents"
@@ -433,7 +473,11 @@ const PersonForm = ({
             selectRole={selectRole}
             lang={i18n.language}
           />
-
+          <label className="label has-text-left mb--1">
+            {t('Organizations')}
+            </label>
+        <SearchForm selectedItems={selectedOrg} selectItem={selectOrg} searchItems={searchEntities} responseSearchItems={responseSearchEntities} mainField={"name"}/>
+        
           <footer className="card-footer mt-3 pt-4 is-flex is-justify-content-end">
             <button
               className="button is-primary is-radiusless"

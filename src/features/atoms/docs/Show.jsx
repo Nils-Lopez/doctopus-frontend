@@ -57,6 +57,14 @@ const Show = ({
     tags,
     childs,
     child_docs,
+    views,
+    createdBy,
+    createdByEmail,
+    lastUpdatedBy,
+    lastUpdatedByEmail,
+    createdAt,
+    updatedAt,
+    lastViewedAt
   } = doc;
   const [addingWatchlist, setAddingWatchlist] = useState(false);
   const { updateUser, responseUpdateUser } = useUsers();
@@ -207,6 +215,25 @@ const Show = ({
 
   const [displayThumb, setDisplayThumb] = useState(true);
   const [displayVideo, setDisplayVideo] = useState(false);
+  const [showVideoDisclaimerModal, setShowVideoDisclaimerModal] = useState(false);
+
+  const handleDisplayVideo = () => {
+    if (!displayVideo) {
+      console.log(doc)
+      
+      setShowVideoDisclaimerModal(doc.restrictedContent || true);
+    } else {
+      setDisplayVideo(false);
+    }
+  };
+
+  const formatDate = (date) => {
+    return new Date(date).toLocaleString();
+  };
+
+  const isSuperUser = () => {
+    return ['admin', 'moderator', 'Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice'].includes(client?.user?.type)
+  };
 
   return showScapinParent ? (
     <>
@@ -232,6 +259,84 @@ const Show = ({
     </>
   ) : (
     <div className="">
+      {showVideoDisclaimerModal ? (
+       <div className="modal is-active" style={{ // This div is now ONLY for the modal class
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 1000,
+      }}>
+        <div className="modal-background" style={{ // Background is direct child
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+        }} onClick={() => setShowVideoDisclaimerModal(false)}></div>
+      
+      <div className="modal-content" style={{ // Modal content
+    position: "absolute", // Absolute positioning within the container
+    top: "100px", // 100px from the top of the container
+    left: "50%",
+    transform: "translateX(-50%)", // Center horizontally
+    borderRadius: "6px",
+    padding: "20px",
+    maxWidth: "80%", // Optional: prevent content from being too wide
+    boxSizing: "border-box" // Include padding in width calculation
+  }}>
+            <div className="box">
+              <div className="is-flex is-justify-content-right " style={{
+               
+              }}>
+                <span style={{
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  setShowVideoDisclaimerModal(false);
+                }
+                }
+                >
+                <FontAwesomeIcon icon={faCircleXmark} size="lg" />
+
+                </span>
+              </div>
+                <h3 className="title is-4 has-text-left mt-2">
+                  Mentions légales
+                </h3>
+                <p className="has-text-left mb-2 pt-0">
+                  {showVideoDisclaimerModal == "onsite" ? "Cette vidéo est protégée par la législation belge et internationale la propriété intellectuelle, y compris le droit d’auteur. Pour visionner cette vidéo, vous devez en obtenir les codes d’accès, auprès de CONTREDANSE. Veuillez introduire votre demande par e-mail à l’adresse suivante : centrededoc@contredanse.org." : showVideoDisclaimerModal == "researcher" ? "Cette vidéo est protégée par la législation belge et internationale sur la propriété intellectuelle, y compris le droit d’auteur.  Vous êtes autorisé à visionner cette vidéo à distance, uniquement à des fins de recherche ou dans un but pédagogique. Pour en obtenir les codes d’accès, veuillez introduire votre demande par e-mail à l’adresse suivante :  à centrededoc@contredanse.org.": showVideoDisclaimerModal == "all" ? "Cette vidéo est protégée par la législation belge et internationale sur la propriété intellectuelle, y compris le droit d’auteur. Vous êtes autorisé à visionner cette vidéo. Toute autre utilisation ou exploitation de cette vidéo est expressément interdite." : "Cette vidéo est protégée par la législation belge et internationale sur la propriété intellectuelle, y compris le droit d’auteur. Pour consulter cette vidéo nous vous invitons à la visionner sur place, au centre de documentation de Contredanse."}
+                </p>
+                <div className="is-flex is-justify-content-space-between mt-5">
+                <a
+                    className="button is-light is-light"
+                    href="mailto:centrededoc@contredanse.org"
+                  >
+                    <span>
+                      Prendre contact
+                    </span>
+                  </a>
+                  <button
+                    className="button is-primary"
+                    onClick={() => {
+                      setDisplayVideo(true);
+                      setShowVideoDisclaimerModal(false);
+                    }}
+                  >
+                    <span>
+                      Accéder à la vidéo
+                    </span>
+                  </button>
+                </div>
+            </div>
+          </div>
+          </div>
+      ) : null}
       <div className="is-flex is-justify-content-space-between  mb-5">
         <div>
           <div className="actions-btn">
@@ -316,21 +421,7 @@ const Show = ({
                 <span>{t("update")}</span>
               </button>
             ) : null}
-            {client &&
-            client.user &&
-            (client.user.type === "admin" ||
-              client.user.type === "moderator" ||
-              client.user.type ===
-                "Grand:Mafieu:De:La:Tech:s/o:Smith:dans:la:Matrice") &&
-            doc.views &&
-            doc.views !== "" &&
-            doc.views !== null ? (
-              <>
-                <span className=" is-light button  ml-3">
-                  {doc.views} {t("views")}
-                </span>
-              </>
-            ) : null}
+          
           </div>
         </div>
         <div>
@@ -344,7 +435,7 @@ const Show = ({
             <div className="button has-name pl-5 pr-5 mt-0 is-primary file-doc-btn">
               <span
                 className="file-label"
-                onClick={() => setDisplayVideo(!displayVideo)}>
+                onClick={() => handleDisplayVideo()}>
                 {!displayVideo ? (
                   <>
                     {t("show-video")}
@@ -363,6 +454,7 @@ const Show = ({
                   </>
                 )}
               </span>
+              
             </div>
           ) : null}
           {doc &&
@@ -450,6 +542,19 @@ const Show = ({
           </PinterestShareButton>
         </div>
       ) : null}
+           {isSuperUser() && (
+        <div className="box mt-4 has-text-left">
+          <h4 className="title is-5">{t("Tracking")}</h4>
+          <div className="">
+            <p><strong>{t("Vues")}:</strong> {views}</p>
+            <p><strong>{t("Dernière vue")}:</strong> {lastViewedAt ? formatDate(lastViewedAt) : t("Jamais")}</p>
+            <p><strong>{t("Date de création")}:</strong> {formatDate(createdAt)}</p>
+            <p><strong>{t("Créé par")}:</strong> {createdByEmail}</p>
+            <p><strong>{t("Dernière modif")}:</strong> {formatDate(updatedAt)}</p>
+            <p><strong>{t("Modifié par")}:</strong> {lastUpdatedByEmail}</p>
+          </div>
+        </div>
+      )}
       {thumb && thumb !== "" ? (
         <>
           <div className="columns mb-0 pb-0">
@@ -470,7 +575,7 @@ const Show = ({
                   <div className="button has-name pl-5 pr-5 mt-0 is-primary mobile-file-doc-btn">
                     <span
                       className="file-label"
-                      onClick={() => setDisplayVideo(!displayVideo)}>
+                      onClick={() => handleDisplayVideo()}>
                       {!displayVideo ? (
                         <>
                           {t("show-video")}
@@ -902,9 +1007,7 @@ const Show = ({
                     <span
                       className="tag is-medium is-info mr-1 ml-1 mt-1 indextag"
                       onClick={() => handleSearchTag(type)}>
-                      {title && title.length >= 14
-                        ? title.slice(0, 14) + ".."
-                        : title}
+                      {title}
                     </span>
                   </Fragment>
                 );
@@ -1001,48 +1104,57 @@ const Show = ({
                         );
                       }
                     })}
-                  </>
+                    </>
+                  ) : null}
+                  </div>
+                </>
                 ) : null}
-              </div>
-            </>
-          ) : null}
 
-          {includeParentType("person", parents) ? (
-            <>
-              <hr className="mt--1" />
-              <h3 className="subtitle has-text-grey has-text-left is-6 mt--2 pt-1 mb-4 pb-1">
-                {t("people")}
-              </h3>
-              <div className="columns is-multiline is-flex is-justify-content-start">
-                {parents && parents ? (
-                  <>
-                    {parents.map((parent) => {
+                {includeParentType("person", parents) ? (
+                <>
+                  <hr className="mt--1" />
+                  <h3 className="subtitle has-text-grey has-text-left is-6 mt--2 pt-1 mb-4 pb-1">
+                  {t("people")}
+                  </h3>
+                  <div className="columns is-multiline is-flex is-justify-content-start">
+                  {parents && parents ? (
+                    <>
+                    {parents.reduce((acc, parent) => {
                       if (parent.person) {
-                        return (
-                          <Fragment key={JSON.stringify(parent)}>
-                            <BoxItemParent
-                              item={parent}
-                              handleSearchParent={handleSearchParent}
-                              handleSearchDoc={handleSearchDoc}
-                            />
-                          </Fragment>
-                        );
+                      const existingParent = acc.find(p => p.person._id === parent.person._id);
+                      if (existingParent) {
+                        // Merge roles arrays
+                        existingParent.roles = [...new Set([...existingParent.roles || [], ...parent.roles || []])];
+                        return acc;
                       }
+                      return [...acc, parent];
+                      }
+                      return acc;
+                    }, []).map((parent) => {
+                      return (
+                      <Fragment key={JSON.stringify(parent)}>
+                        <BoxItemParent
+                        item={parent}
+                        handleSearchParent={handleSearchParent}
+                        handleSearchDoc={handleSearchDoc}
+                        />
+                      </Fragment>
+                      );
                     })}
-                  </>
+                    </>
+                  ) : null}
+                  </div>
+                </>
                 ) : null}
-              </div>
-            </>
-          ) : null}
-          {includeParentType("entity", parents) ? (
-            <>
-              <hr className="mt--1" />
-              <h3 className="subtitle has-text-grey has-text-left is-6 mt--2 pt-1 mb-4 pb-1">
-                {t("Organizations")}
-              </h3>
-              <div className="columns is-multiline is-flex is-justify-content-start">
-                {parents && parents ? (
-                  <>
+                {includeParentType("entity", parents) ? (
+                <>
+                  <hr className="mt--1" />
+                  <h3 className="subtitle has-text-grey has-text-left is-6 mt--2 pt-1 mb-4 pb-1">
+                  {t("Organizations")}
+                  </h3>
+                  <div className="columns is-multiline is-flex is-justify-content-start">
+                  {parents && parents ? (
+                    <>
                     {parents.map((parent) => {
                       if (parent.entity) {
                         return (
@@ -1108,6 +1220,7 @@ const Show = ({
           </div>
         </>
       ) : null}
+ 
     </div>
   );
 };

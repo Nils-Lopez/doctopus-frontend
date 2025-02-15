@@ -7,6 +7,7 @@ import {
   faAngleLeft,
   faAngleRight,
   faMagnifyingGlass,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
 
@@ -369,7 +370,7 @@ const RoleBlock = ({
     getContent(role.title, "fr")
   );
 
-  const { updateRole, responseUpdateRole, mergeRoles } = useRoles();
+  const { updateRole, responseUpdateRole, mergeRoles, deleteRole } = useRoles();
 
   const { updateTag, responseUpdateTag, mergeTags } = useTags();
 
@@ -432,6 +433,17 @@ const RoleBlock = ({
     setMatchingRoles([]);
   };
 
+  const handleDelete = () => {
+    deleteRole(role._id);
+    const newRoles = [];
+   
+      roles.map((r) => {
+        if (r !== role) newRoles.push(r);
+      });
+      setRoles(newRoles);
+    
+  }
+
   return (
     <>
       <div className="panel-block columns">
@@ -470,6 +482,9 @@ const RoleBlock = ({
           )}
         </p>
         <div className="column is-4 is-flex is-justify-content-end">
+        {role.scope === "docs" && <span className="tag mr-3">
+            Total: {role.count}
+          </span>}
           <button
             className="button is-info mr-2"
             onClick={(e) => {
@@ -509,6 +524,13 @@ const RoleBlock = ({
               <span>{t("merge")}</span>
             </button>
           ) : null}
+         {role.scope== "docs" && role.count == 0 ?  <button
+              className="button is-danger mr-2"
+              onClick={() => {
+                handleDelete();
+              }}>
+              <FontAwesomeIcon icon={faTrash} />
+            </button> : null}
         </div>
       </div>
       {matchingRoles[0] && merging

@@ -66,7 +66,8 @@ const TemplatesForm = ({
   const [materialValue, setMaterialValue] = useState(false);
   const [dimensionsValue, setDimensionsValue] = useState(false);
   const [locationValue, setLocationValue] = useState(false);
-
+  const [copiesPositionDefaultValue, setCopiesPositionDefaultValue] = useState("")
+  const [copiesLocationDefaultValue, setCopiesLocationDefaultValue] = useState("")
   const handleEditTemplate = (template) => {
     setNameValue(template.schema_name);
     setDescValue(template.description);
@@ -118,6 +119,9 @@ const TemplatesForm = ({
     setCopyrightsValue(template.copyrights);
     setDateValue(template.support_date);
     selectDocType(template.type_defaults);
+    setCopiesLocationDefaultValue(template.copies_location_default)
+    console.log("template.copies_position_default", template.copies_position_default)
+    setCopiesPositionDefaultValue(template.copies_position_default)
   };
 
   const handleNewTemplate = () => {
@@ -271,6 +275,8 @@ const TemplatesForm = ({
         support_date: dateValue,
         copyrights: copyrightsValue,
         schema_parent: parentTemplate,
+        copies_location_default: copiesLocationDefaultValue,
+        copies_position_default: copiesPositionDefaultValue
       },
       support_role_defaults: selectedTypes,
       type_defaults: selectedDocTypes,
@@ -1169,13 +1175,31 @@ const TemplatesForm = ({
                   </div>
                 </div>
               </div>
+             
               <hr />
             </>
           ) : null}
+          <div className="columns ml-6">
+                <div className="column is-half">
+                  {!parentTemplate ?  <div className="field">
+                    <label htmlFor="switchLoc" className="label has-text-left">
+                      {`${t("position")} (${t("copies")})`}
+                    </label>
+                    <input
+                      type="text"
+                      value={copiesPositionDefaultValue}
+                      className="input"
+                      
+                      onChange={(e) => setCopiesPositionDefaultValue(e.target.value)}
+                    />
+                    
+                  </div> : null}
+                </div>
+              </div>
           <hr />
 
           <h3 className="title is-4">{t("parents")}</h3>
-
+          
           {(parentTemplate && parentTemplate.parent_entity) ||
           !parentTemplate ? (
             <div className="columns ml-6 mr-6">

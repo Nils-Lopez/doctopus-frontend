@@ -20,7 +20,6 @@ const StaticPage = ({applicationSettings}) => {
     })[0]
 
     const Components = {paragraph, title}
-
     return <>
         <div className="container mt-7 no-overflow box has-background-white has-text-left">
             {page.components?.map((component, i) => {
@@ -38,9 +37,9 @@ const StaticPage = ({applicationSettings}) => {
                         }
                     })}
                 </div>
-                <div className="column is-flex is-justify-content-end">
+                {page && page._id !== "67af54384c03f60444dfe812" && <div className="column is-flex is-justify-content-end">
                     <img src={image} alt="" style={{maxHeight: "660px"}}/>
-                </div>
+                </div>}
             </div>
             {page.components?.map((component, i) => {
                 const ComponentType = Components[component.type]

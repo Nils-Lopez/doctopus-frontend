@@ -19,12 +19,15 @@ const ProjectForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) 
     const [descFrValue, setDescFrValue] = useState("")
     const [slugValue, setSlugValue] = useState("")
     const [dateValue, setDateValue] = useState("")
+    const [aliases, setAliases] = useState([]);
 
     const [selectedActors, selectActor] = useState([])
     const [selectedOrgs, selectOrg] = useState([])
     const [selectedRoles, selectRole] = useState([])
 
     const [loading, setLoading] = useState(false)
+
+    console.log(selectedActors)
 
     const { t, i18n } = useTranslation() 
 
@@ -47,7 +50,8 @@ const ProjectForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) 
                 description: [{ lang: "en", content: descEnValue }, { lang: "fr", content: descFrValue }],
                 title: titleValue,
                 slug: slugValue,
-                date: dateValue
+                date: dateValue,
+                aliases: aliases,
             },
             roles: selectedRoles
         }
@@ -76,6 +80,7 @@ const ProjectForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) 
       selectRole(dataUpdate.roles)
       selectOrg(dataUpdate.entities)
       selectActor(dataUpdate.actors)
+      setAliases(dataUpdate.aliases || []);
       if (dataUpdate.description && dataUpdate.description[0]) {
        setDescFrValue(getContent(dataUpdate.description, "fr"))
        setDescEnValue(getContent(dataUpdate.description, "en"))
@@ -158,6 +163,19 @@ const ProjectForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) 
         responseSearchPeople
       } = usePeople()
 
+      const handleAliasAdd = (e) => {
+        e.preventDefault();
+        const value = e.target.parentElement.previousElementSibling.querySelector('input').value;
+        if (value && value.trim()) {
+            setAliases([...aliases, value.trim()]);
+            e.target.parentElement.previousElementSibling.querySelector('input').value = '';
+        }
+    };
+
+    const handleAliasRemove = (index) => {
+        setAliases(aliases.filter((_, i) => i !== index));
+    };
+
       console.log(dataUpdate)
 
     return loading ? <div className="loader">
@@ -189,12 +207,38 @@ const ProjectForm = ({client, setAlert, setCreated, dataUpdate, setDataUpdate}) 
             </label>
             <input type="date" className="input is-active" value={dateValue} onChange={handleDateChange}/>
         </div>
+        <div className="field">
+            <label className="label has-text-left">Alias</label>
+            <div className="is-flex is-flex-wrap-wrap mb-2">
+                {aliases.map((alias, index) => (
+                    <span key={index} className="tag is-info is-medium mr-2 mb-2">
+                        {alias}
+                        <button className="delete is-small" onClick={() => handleAliasRemove(index)}></button>
+                    </span>
+                ))}
+            </div>
+            <div className="field has-addons mt--1">
+              <div className="control is-expanded">
+                <input type="text" className="input"/>
+              </div>
+              <div className="control">
+                <button className="button is-info" onClick={handleAliasAdd}>
+                  {t("add")}
+                </button>
+              </div>
+            </div>
+          </div>
         <RoleForm scope="parents" location="project-form" selectedRoles={selectedRoles} selectRole={selectRole} lang={idLang} />
 
         <label className="label has-text-left mb--1">
             {t('Organizations')}
             </label>
         <SearchForm selectedItems={selectedOrgs} selectItem={selectOrg} searchItems={searchEntities} responseSearchItems={responseSearchEntities} mainField={"name"}/>
+        <label className="label has-text-left mb--1 mt-3">
+            {t('people')}
+            </label>
+        <SearchForm selectedItems={selectedActors} selectItem={selectActor} searchItems={searchPeople} responseSearchItems={responseSearchPeople} mainField={"name"}/>
+     
         <footer className="card-footer mt-3 pt-4 is-flex is-justify-content-end">
       <button className="button is-primary is-radiusless" onClick={handleSubmit}>
         {t('confirm')}

@@ -79,13 +79,17 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
             }}>
             <div className="is-flex is-justify-content-end mb-0 mt-0">
                     {!relTypes ? <>
-                        {item.project.roles && item.project.roles[0]  && item.project.roles[0].title ? <>
-                        <span className="tag is-white is-medium pb-5 pr-0 has-text-info">
-                        {getContent(item.project.roles[0].title, i18n.language)}
-                    </span>
-                    </> :<span className="tag is-white is-medium pb-5 pr-0 has-text-info">
-                        {t('project')} 
-                    </span>}
+                        {item.project.roles && item.project.roles.length > 0 ? 
+                        <div className="is-flex is-flex-wrap-wrap is-justify-content-end">
+                            {item.project.roles.map(role => (
+                                <span key={JSON.stringify(role)} className="tag is-white is-medium pb-5 pr-0 has-text-info mr-1 mb-1">
+                                    {getContent(role.title, i18n.language)}
+                                </span>
+                            ))}
+                        </div>
+                         : <span className="tag is-white is-medium pb-5 pr-0 has-text-info">
+                            {t('project')} 
+                        </span>}
                     </> : <span className="tag has-text-info">
                         {getContent(relTypes.title, i18n.language)}
                     </span>}
@@ -95,8 +99,8 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
                     </div>
                     <h3 className="subtitle is-5 mb-1 mt-1">{item.project.title}</h3>
                 {item.project.childs && item.project.childs.length > 0 ? <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.project.childs.length} {t('documents')}</span> : null}
-
-            </div>
+                {item.project.related_aliases && item.project.related_aliases[0] ?<span>Retrouvé via: {item.project.related_aliases}</span>:null}
+                </div>
         </div>
     } else if (item.person && parent !== "person" && item.person._id) {
         return <div className={width !== "full" ? "column is-one-quarter-desktop is-half-tablet" : "column"}>
@@ -105,12 +109,16 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
             }}>
             <div className="is-flex is-justify-content-end mt-0 mb-0 tag-bottom">
             {!relTypes ? <>
-                {item.roles && item.roles[0] ? <>
-                        <span className="tag is-white is-medium pb-5 pr-0 has-text-info">
-                        {getContent(item.roles[0].title, i18n.language)}
-                    </span>
-                    </> :<span className="tag is-white is-medium pb-5 pr-0 has-text-info">
-                        {t('person')} 
+                {item.roles && item.roles.length > 0 ? 
+                    <div className="is-flex is-flex-wrap-wrap is-justify-content-end">
+                        {item.roles.map(role => (
+                            <span key={JSON.stringify(role)} className="tag is-white is-medium pb-5 pr-0 has-text-info mr-1 mb-1">
+                                {getContent(role.title, i18n.language)}
+                            </span>
+                        ))}
+                    </div>
+                    : <span className="tag is-white is-medium pb-5 pr-0 has-text-info">
+                        {t('person')}
                     </span>}
             </> : <span className="tag is-white is-medium pb-5 pr-0 has-text-info">
             {getContent(relTypes.title, i18n.language)}
@@ -128,6 +136,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
                         {item.person.childs && item.person.childs.length > 0 ? <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.person.childs.length} {t('documents')}</span> : null}
                         </div>
                     </div>
+                    {item.person.related_aliases && item.person.related_aliases[0] ?<span>Retrouvé via: {item.person.related_aliases}</span>:null}
             </div>
         </div>
     } else if (item.entity && parent !== "entity") {
@@ -136,13 +145,22 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
                 if (!handleDelete) handleSearchParent(item.entity)
             }}>
             <div className="is-flex is-justify-content-end mt-0 mb-0">
-            {item.roles && item.roles[0] ? <>
-                        <span className="tag is-white is-medium pb-5 pr-0 has-text-info">
-                        {getContent(item.roles[0].title, i18n.language)}
+            {item.roles && item.roles.length > 0 ? 
+                <div className="is-flex is-flex-wrap-wrap is-justify-content-end">
+                    {item.roles.map(role => (
+                        <span key={JSON.stringify(role)} className="tag is-white is-medium pb-5 pr-0 has-text-info mr-1 mb-1">
+                            {getContent(role.title, i18n.language)}
+                        </span>
+                    ))}
+                </div>
+                : relTypes ?<div className="is-flex is-flex-wrap-wrap is-justify-content-end">
+                    <span key={JSON.stringify(relTypes)} className="tag is-white is-medium pb-5 pr-0 has-text-info mr-1 mb-1">
+                        {getContent(relTypes.title, i18n.language)}
                     </span>
-                    </> :<span className="tag is-white is-medium pb-5 pr-0 has-text-info">
-                        {t('organization')}
-                    </span>}
+                
+            </div> :<span className="tag is-white is-medium pb-5 pr-0 has-text-info">
+                    {t('organization')}
+                </span>}
                     {handleDelete ? <i className="has-text-danger ml-3 pointer" onClick={(e) => {
                 handleDelete(e, item)
               }}><FontAwesomeIcon icon={faCircleXmark} /></i> : null}
@@ -150,6 +168,7 @@ const BoxItem = ({item, handleSearchParent, handleSearchDoc, relTypes, handleDel
                 <h3 className="subtitle is-5 mb-1 mt-1">{item.entity.name}</h3>
                 <span className='has-text-grey'><small>{item.entity.country ? item.entity.country + ", " : null}{item.entity.city}</small></span>
 -                {item.entity.childs?.length > 0 ? <span className="tag is-light is-small is-flex is-justify-content-start mb-2">{item.entity.childs.length} {t('documents')}</span> : null}
+{item.entity.related_aliases && item.entity.related_aliases[0] ?<span>Retrouvé via: {item.entity.related_aliases}</span>:null}
 
             </div>
         </div>

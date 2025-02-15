@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { useUsers } from "../../../utils/hooks/Users";
 function checkIfMultiple(num1, num2) {
   return num1 % num2 === 0;
 }
@@ -18,6 +19,8 @@ const SearchItem = ({
   handleDelete,
   watchlist,
   i,
+  removeFromWatchlist,
+  readOnly
 }) => {
   const index = i - (i / 5).toString()[0] * 5;
   let colClasses = i || index === 0 ? " smooth-appear" : "";
@@ -40,6 +43,26 @@ const SearchItem = ({
   const { t, i18n } = useTranslation();
 
   const [displayThumb, setDisplayThumb] = useState(true);
+
+  const {updateUser} = useUsers();
+
+  const handleRemoveFromWatchlist = (doc) => {
+    console.log(doc)
+    console.log(client)
+    if (client && client.user) {
+      console.log("NOT NULL")
+        const newList = [];
+        client.user.watchList.map((watch) => {
+          if (watch._id !== doc._id) {
+            newList.push({ _id: watch._id });
+          }
+        });
+  
+        updateUser({ watchList: newList }, client.user._id);
+        removeFromWatchlist(doc)
+    }
+  };
+
   return (
     <div className={"column is-one-fifth"}>
       <div
@@ -52,11 +75,20 @@ const SearchItem = ({
           }
         }}>
         <div className="is-flex is-justify-content-start">
-          {handleDelete ? (
+          {handleDelete || watchlist ? (
             <i
               className="has-text-danger mt--1 pl-1 ml--1  pointer"
+              style={{
+                zIndex: 1000,
+              }}
               onClick={(e) => {
-                handleDelete(e, item);
+                e.preventDefault();
+                e.stopPropagation();
+                if (handleDelete) {
+                  handleDelete(item.doc);
+                } else {
+                  handleRemoveFromWatchlist(item.doc)
+                }
               }}>
               <FontAwesomeIcon icon={faCircleXmark} />
             </i>
@@ -121,14 +153,14 @@ const SearchItem = ({
           </h3>
         ) : item.doc?.publishedAt && item.doc.publishedAt !== "" ? (
           <>
-            <span className="tag is-light is-small is-flex is-justify-content-start mb-2">
+            <span className="tag is-light is-small is-flex is-justify-content-center mb-2">
               {convertDate(item.doc.publishedAt)}{" "}
             </span>
           </>
         ) : null}
 
         {(window.location.host === "localhost:3000"
-          ? "panorama"
+          ? "contredanse"
           : window.location.host.split(".")[0]) === "panorama" ? (
           <span className="tag is-light is-small is-flex is-justify-content-start mb-2">
             {item.doc && item.doc.slug ? item.doc.slug : null}
@@ -267,6 +299,11 @@ const SearchItem = ({
             </div>
           </div>
         ) : null}
+        {watchlist && !readOnly && (
+          <button onClick={() => handleRemoveFromWatchlist()} className="button is-small">
+            <span>{t('remove')}</span>
+          </button>
+        )}
       </div>
     </div>
   );

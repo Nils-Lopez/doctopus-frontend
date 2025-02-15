@@ -89,6 +89,7 @@ const DocForm = ({
     responseDeleteDoc,
   } = useDocs();
 
+
   const handleTitleChange = (e) => {
     e.preventDefault();
     setTitleValue(e.target.value);
@@ -571,7 +572,7 @@ const DocForm = ({
       const orgs = [];
       const people = [];
       const projects = [];
-      const pDocs = [];
+      const pDocs = [...dataUpdate.child_docs];
       const prods = [];
       dataUpdate.parents.map((p) => {
         if (p.project) {
@@ -628,6 +629,8 @@ const DocForm = ({
       isbnValue.replaceAll(" ", "").replaceAll("-", "").replaceAll(".", "")
     );
   };
+
+  
 
   useEffect(() => {
     if (responseFindBookByIsbn && responseFindBookByIsbn.success) {
@@ -1087,6 +1090,7 @@ const DocForm = ({
               onChange={handleRestrictedContent}>
               <option value="all">{t("all")}</option>
               <option value="onsite">{t("onsite")}</option>
+              <option value="researcher">{t("Chercheur")}</option>
             </select>
           </div>
         </div>

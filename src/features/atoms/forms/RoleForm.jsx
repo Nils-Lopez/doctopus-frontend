@@ -6,7 +6,7 @@ import { faTrash, faCircleXmark, faCirclePlus, faArrowRotateLeft, faMagnifyingGl
 import {useRoles} from '../../../utils/hooks/Roles'
 import {useTranslation} from "react-i18next"
 
-const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, setLang}) => {
+const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, setLang, hasMemory}) => {
   const [roleEnValue, setRoleEnValue] = useState("")
   const [roleFrValue, setRoleFrValue] = useState("")
   const [roleForm, setRoleForm] = useState(false)
@@ -17,6 +17,7 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
   const [rolesLoading, setRolesLoading] = useState(false)
   const [pending, setPending] = useState("")
   const { t, i18n } = useTranslation() 
+  const [memoryRoles, setMemoryRoles] = useState([])
 
   const [displayRole, setDisplayRole] = useState(true)
 
@@ -48,6 +49,10 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
       setRoleFrValue(e.target.value)
       setRoleSlug(e.target.value.replaceAll(" ", "-").toLowerCase())
      
+    }
+    // Clear memory roles when typing
+    if (hasMemory) {
+      setMemoryRoles([])
     }
     if (e.target.value.length >= 2) {
       searchRoleValue(e)
@@ -150,6 +155,13 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
     }
   }, [selectedRoles])
 
+  // Add useEffect to update memory when roles change
+  useEffect(() => {
+    if (hasMemory && selectedRoles && selectedRoles.length > 0) {
+      setMemoryRoles(selectedRoles)
+    }
+  }, [selectedRoles])
+
   let inputClasses = (!isRoleExisting() && (roleEnValue.length >= 2 || roleFrValue.length >= 2 )) ? "control has-icons-left min-90" : "control has-icons-left min-100"
   return <>
  
@@ -209,6 +221,21 @@ const RoleForm = ({scope, location, selectedRoles, selectRole, defaults, lang, s
                   </Fragment>
                   }
                 })}  
+       {displayRole &&  hasMemory && memoryRoles.length > 0 && roles.length === 0 && roleEnValue.length === 0 && roleFrValue.length === 0 && 
+        memoryRoles.map((role) => (
+          <Fragment key={role.slug + "-memory"}>
+            <span className="tag is-info mt-2 is-small mr-1 opacity-50" onClick={(e) => {
+              e.preventDefault()
+              selectRole([...selectedRoles, role])
+              setRoles([])
+              setRoleForm(false)
+              setRoleFrValue("")
+              setRoleEnValue("")
+              setDisplayRole(false)
+            }}>{getContent(role.title, i18n.language)} <i className="has-text-light ml-3 pointer"><FontAwesomeIcon icon={faCircleCheck} /></i></span>
+          </Fragment>
+        ))
+      }
        </div>
           </div>
 
