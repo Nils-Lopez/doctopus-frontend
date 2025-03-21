@@ -83,7 +83,7 @@ const SearchResult = ({
       }
     }
   }, [page]);
-
+  console.log("result.docs", result.docs);
   if (result && tags !== result.tags) {
     setTags(result.tags);
   }
