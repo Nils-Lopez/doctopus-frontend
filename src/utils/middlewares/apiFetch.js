@@ -15,16 +15,17 @@ export async function apiFetch(endpoint, options = {}) {
       ClientDatabase:
         window.location.host === "localhost:3000"
           ? "panorama"
-          : window.location.host.split(".")[0],
+          : window.location.host.split(".")[0] !== "doctopus-app" ?window.location.host.split(".")[0] : "contredanse",
     },
     credentials: "include",
     mode: "cors",
     ...options,
   };
 
-  const apiUrl = "https://api.doctopus.app/api";
-  // const apiUrl = "http://localhost:5000/api"
-  console.log('apiUrl: ', apiUrl)
+  // const apiUrl = "https://api.doctopus.app/api";
+  // const apiUrl = "http://localhost:5000/api";
+  const apiUrl = "https://doctopus-api.azurewebsites.net/api";
+  console.log("apiUrl: ", apiUrl);
   // Set the body of the options object to JSON.
   if (options.body !== null && typeof options.body === "object") {
     options.body = JSON.stringify(options.body);
