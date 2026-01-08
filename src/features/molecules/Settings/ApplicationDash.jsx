@@ -7,13 +7,19 @@ import {
   faCheckCircle,
   faCirclePlus,
   faCircleXmark,
+  faDownload,
+  faFileExport,
+  faHourglassHalf,
+  faArrowRotateRight,
   faPencil,
   faTrash,
+  faTriangleExclamation,
   faXmarkCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import SelectForm from "../../atoms/forms/SelectForm";
 import DocParentForm from "../../atoms/forms/docs/DocParentForm";
 import { useApplication } from "../../../utils/hooks/Application";
+import { useDocExportJob } from "../../../utils/hooks/docs/Exports";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { handleDrop } from "../../../utils/helpers/lists";
 import { StrictModeDroppable } from "../../../utils/helpers/droppable";
@@ -57,6 +63,76 @@ const ApplicationDash = ({ applicationSettings, setApplicationSettings }) => {
   const [componentContentEnValue, setComponentContentEnValue] = useState("");
   const [homePageVersion, setHomePageVersion] = useState("0.1");
   const { updateApp, responseUpdateApp } = useApplication();
+
+  const {
+    job: exportJob,
+    loading: exportLoading,
+    error: exportError,
+    downloading: exportDownloading,
+    startExport,
+    downloadExport,
+    refreshStatus: refreshExportStatus,
+    clearJob: clearExportJob,
+  } = useDocExportJob();
+
+  const formatDuration = (ms) => {
+    if (!ms || ms <= 0)
+      return t("almost-done", { defaultValue: "Presque terminé" });
+    const seconds = Math.floor(ms / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    if (hours > 0) {
+      const remainingMinutes = minutes % 60;
+      return `${hours} h ${remainingMinutes} min`;
+    }
+    if (minutes > 0) {
+      const remainingSeconds = seconds % 60;
+      return `${minutes} min ${remainingSeconds} s`;
+    }
+    return `${Math.max(seconds, 1)} s`;
+  };
+
+  const formatTimestamp = (value) => {
+    if (!value) return null;
+    try {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return null;
+      return date.toLocaleString();
+    } catch (err) {
+      return null;
+    }
+  };
+
+  const exportStatusesRequiringAttention = ["failed"];
+  const exportActive =
+    exportJob && ["queued", "running", "retrying"].includes(exportJob.status);
+  const exportFailed =
+    exportJob && exportStatusesRequiringAttention.includes(exportJob.status);
+  const exportReady =
+    exportJob && exportJob.status === "completed" && !exportJob.resultRemoved;
+  const exportExpired =
+    exportJob &&
+    exportJob.status === "completed" &&
+    exportJob.resultRemoved &&
+    !exportDownloading;
+
+  const exportProgressPercent = (() => {
+    if (!exportJob || !exportJob.progress) {
+      return exportReady ? 100 : 0;
+    }
+    const percent = exportJob.progress.percent || 0;
+    return Math.min(100, Math.max(0, Math.round(percent * 100)));
+  })();
+
+  const exportEtaText =
+    exportJob && exportJob.progress && exportJob.progress.etaMs
+      ? formatDuration(exportJob.progress.etaMs)
+      : null;
+
+  const exportExpiryText =
+    exportJob && exportJob.result && exportJob.result.expiresAt
+      ? formatTimestamp(exportJob.result.expiresAt)
+      : null;
 
   const handleUpdateAppSettings = (e) => {
     e.preventDefault();
@@ -908,9 +984,168 @@ const ApplicationDash = ({ applicationSettings, setApplicationSettings }) => {
           onClick={handleUpdateAppSettings}>
           <span>
             <FontAwesomeIcon icon={faCheckCircle} className="mr-3" />
-            {t("confirm")}
+            {t("confirm", { defaultValue: "Confirmer" })}
           </span>
         </button>
+      </div>
+      <hr className="my-5" />
+      <div className="box is-shadowless has-background-light">
+        <div className="is-flex is-justify-content-space-between is-align-items-center mb-4">
+          <div>
+            <h3 className="title is-5 mb-1">
+              <FontAwesomeIcon icon={faFileExport} className="mr-2" />
+              {t("document-export", { defaultValue: "Export des documents" })}
+            </h3>
+            <p className="is-size-6 has-text-grey">
+              {t("document-export-description", {
+                defaultValue:
+                  "Générez un CSV aplati pour la base client courante et téléchargez-le une fois prêt.",
+              })}
+            </p>
+          </div>
+          <div className="buttons">
+            {exportJob ? (
+              <button
+                className={`button is-light ${exportLoading ? "is-loading" : ""}`}
+                onClick={refreshExportStatus}
+                disabled={exportLoading}>
+                <FontAwesomeIcon icon={faArrowRotateRight} className="mr-2" />
+                {t("refresh", { defaultValue: "Actualiser" })}
+              </button>
+            ) : null}
+            <button
+              className={[
+                "button",
+                "is-primary",
+                exportLoading ? "is-loading" : "",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+              onClick={startExport}
+              disabled={exportLoading || exportActive}>
+              <FontAwesomeIcon icon={faFileExport} className="mr-2" />
+              {exportActive
+                ? t("export-running", { defaultValue: "Export en cours" })
+                : t("start-csv-export", {
+                    defaultValue: "Lancer l'export CSV",
+                  })}
+            </button>
+          </div>
+        </div>
+        {exportError ? (
+          <div className="notification is-danger is-light">
+            <FontAwesomeIcon icon={faTriangleExclamation} className="mr-2" />
+            {exportError}
+          </div>
+        ) : null}
+        {exportActive ? (
+          <div>
+            <progress
+              className="progress is-primary is-small"
+              value={exportProgressPercent}
+              max="100">
+              {exportProgressPercent}%
+            </progress>
+            <p className="is-size-6 has-text-grey-dark mt-2">
+              <FontAwesomeIcon icon={faHourglassHalf} className="mr-2" />
+              {[
+                exportJob?.progress?.message ||
+                  t("preparing-export", {
+                    defaultValue: "Préparation de l'export",
+                  }),
+                `${exportProgressPercent}%`,
+                exportEtaText
+                  ? `${t("eta", { defaultValue: "Durée restante" })} ${exportEtaText}`
+                  : null,
+              ]
+                .filter(Boolean)
+                .join(" · ")}
+            </p>
+            {exportJob?.progress?.current && exportJob?.progress?.total ? (
+              <p className="is-size-7 has-text-grey">
+                {exportJob.progress.current} / {exportJob.progress.total}{" "}
+                {t("documents-processed", {
+                  defaultValue: "documents traités",
+                })}
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+        {exportReady ? (
+          <div className="notification is-success is-light mt-4">
+            <div className="is-flex is-justify-content-space-between is-align-items-center">
+              <div>
+                <strong>
+                  {t("export-ready", { defaultValue: "Export prêt." })}
+                </strong>{" "}
+                {exportJob.result?.docCount != null
+                  ? t("export-summary", {
+                      defaultValue:
+                        "{{docCount}} documents, {{rowCount}} lignes.",
+                      docCount: exportJob.result.docCount,
+                      rowCount: exportJob.result.rowCount,
+                    })
+                  : ""}
+                {exportExpiryText
+                  ? ` ${t("export-available-until", {
+                      defaultValue: "Disponible jusqu'au {{date}}.",
+                      date: exportExpiryText,
+                    })}`
+                  : ""}
+              </div>
+              <div className="buttons">
+                <button
+                  className={`button is-success ${exportDownloading ? "is-loading" : ""}`}
+                  onClick={downloadExport}
+                  disabled={exportDownloading}>
+                  <FontAwesomeIcon icon={faDownload} className="mr-2" />
+                  {t("download-csv", { defaultValue: "Télécharger le CSV" })}
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : null}
+        {exportFailed ? (
+          <div className="notification is-danger is-light mt-4">
+            <strong>
+              {t("export-failed", { defaultValue: "Échec de l'export." })}
+            </strong>{" "}
+            {exportJob?.error
+              ? exportJob.error
+              : t("export-failed-help", {
+                  defaultValue:
+                    "Veuillez relancer l'export. Si le problème persiste, contactez le support.",
+                })}
+            <div className="buttons mt-3">
+              <button className="button is-primary" onClick={startExport}>
+                <FontAwesomeIcon icon={faFileExport} className="mr-2" />
+                {t("retry-export", { defaultValue: "Relancer l'export" })}
+              </button>
+            </div>
+          </div>
+        ) : null}
+        {exportExpired ? (
+          <div className="notification is-warning is-light mt-4">
+            {t("export-expired", {
+              defaultValue:
+                "Le fichier d'export a déjà été supprimé. Lancez un nouvel export pour récupérer un lien de téléchargement.",
+            })}
+            <div className="buttons mt-3">
+              <button
+                className={`button is-primary ${exportLoading ? "is-loading" : ""}`}
+                onClick={() => {
+                  clearExportJob();
+                  startExport();
+                }}
+                disabled={exportLoading}>
+                <FontAwesomeIcon icon={faFileExport} className="mr-2" />
+                {t("start-new-export", {
+                  defaultValue: "Lancer un nouvel export",
+                })}
+              </button>
+            </div>
+          </div>
+        ) : null}
       </div>
       <div className="mb-6 pb-0"></div>
     </div>

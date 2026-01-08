@@ -7,39 +7,48 @@
  * @return { Promise } The response from the API or null if no response is returned.
  */
 
+export const API_BASE_URL = "https://doctopus-api.azurewebsites.net/api";
+// export const API_BASE_URL = "http://localhost:5000/api";
+export function buildDefaultHeaders() {
+  const host = typeof window !== "undefined" ? window.location.host : "";
+  let clientDatabase = "contredanse";
+  if (host === "localhost:3000") {
+    clientDatabase = "panorama";
+  } else if (host && host.split(".")[0] !== "doctopus-app") {
+    clientDatabase = host.split(".")[0];
+  }
+
+  return {
+    Accept: "application/json",
+    ClientDatabase: clientDatabase,
+  };
+}
+
 export async function apiFetch(endpoint, options = {}) {
+  const defaultHeaders = buildDefaultHeaders();
   options = {
     method: "GET",
     headers: {
-      Accept: "application/json",
-      ClientDatabase:
-        window.location.host === "localhost:3000"
-          ? "panorama"
-          : window.location.host.split(".")[0] !== "doctopus-app" ?window.location.host.split(".")[0] : "contredanse",
+      ...defaultHeaders,
+      ...(options.headers || {}),
     },
     credentials: "include",
     mode: "cors",
     ...options,
   };
 
-  // const apiUrl = "https://api.doctopus.app/api";
-  // const apiUrl = "http://localhost:5000/api";
-  const apiUrl = "https://doctopus-api.azurewebsites.net/api";
-  console.log("apiUrl: ", apiUrl);
-  // Set the body of the options object to JSON.
+  console.log("apiUrl: ", API_BASE_URL);
   if (options.body !== null && typeof options.body === "object") {
     options.body = JSON.stringify(options.body);
     options.headers["Content-Type"] = "application/json";
   }
-  const response = await fetch(apiUrl + endpoint, {
+  const response = await fetch(API_BASE_URL + endpoint, {
     ...options,
     credentials: "include",
-  }); //add creds
-  // Returns null if the response status code is 204.
+  });
   if (response.status === 204) {
     return null;
   }
-  // Returns the response body as JSON
   if (response.ok) {
     const responseData = await response.json();
     return responseData;

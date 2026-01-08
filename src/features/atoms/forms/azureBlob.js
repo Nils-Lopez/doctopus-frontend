@@ -3,7 +3,7 @@ import { BlobServiceClient} from '@azure/storage-blob';
 const containerName = `contredanse`; // Fill string with your container name
 const storageAccountName = "imagesdoctopus"; // Fill string with your Storage resource name
 // const sasToken = "?sv=2022-11-02&ss=bfqt&srt=sc&sp=rwdlacupiytfx&se=2023-05-14T18:45:28Z&st=2023-05-14T10:45:28Z&spr=https,http&sig=lha3C5lqZRV44reJz0RZVZcnGmTiCgBxvirMEnZorfo%3D";
-const sasToken = "sv=2022-11-02&ss=bfqt&srt=co&sp=rwdlacupiytfx&se=2025-11-22T04:56:47Z&st=2024-11-21T20:56:47Z&spr=https&sig=HzqsAd5axmOTiTPiC2E68QhypdkpEn4gn%2Fw6TW0MRWE%3D"
+const sasToken = "sv=2024-11-04&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2029-01-08T22:14:20Z&st=2026-01-08T13:59:20Z&spr=https&sig=TAXLxRuWwWy%2FmjJu4SNvAetwYsWrjhn0pQ2AiFSPAwU%3D"
 // Feature flag - disable storage feature to app if not configured
 export const isStorageConfigured = () => {
   return !((!storageAccountName || !sasToken));

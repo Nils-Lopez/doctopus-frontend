@@ -11,7 +11,7 @@ import { BlobServiceClient } from "@azure/storage-blob";
 async function fileUpload(file, containerName) {
   try {
     let storageAccount = "imagesdoctopus";
-    let sasToken = "https://imagesdoctopus.blob.core.windows.net/?sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupitfx&se=2023-05-13T04:55:22Z&st=2023-05-12T20:55:22Z&spr=https&sig=X5pZAyrZQgt10f9uCBzRyZ9K4WibCIWpJE6zOjHeWDw%3D";
+    let sasToken = "?sv=2024-11-04&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2029-01-08T22:14:20Z&st=2026-01-08T13:59:20Z&spr=https&sig=TAXLxRuWwWy%2FmjJu4SNvAetwYsWrjhn0pQ2AiFSPAwU%3D";
 
     const blobService = new BlobServiceClient(
       `https://${storageAccount}.blob.core.windows.net/${sasToken}`
