@@ -220,6 +220,17 @@ const DocForm = ({
   const handleDocSubmit = async (e, isDraft) => {
     e.preventDefault();
     setLoading(true);
+    if (!client || !client.user) {
+      setAlert({
+        type: "error",
+        message: {
+          en: "You need to be logged in to create a document. Please sign in again and retry.",
+          fr: "Vous devez être connecté pour créer un document. Veuillez vous reconnecter puis réessayer.",
+        },
+      });
+      setLoading(false);
+      return;
+    }
     const reqData = {
       doc: {
         slug:
