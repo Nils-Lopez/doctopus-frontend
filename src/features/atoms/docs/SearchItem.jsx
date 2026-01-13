@@ -20,7 +20,7 @@ const SearchItem = ({
   watchlist,
   i,
   removeFromWatchlist,
-  readOnly
+  readOnly,
 }) => {
   const index = i - (i / 5).toString()[0] * 5;
   let colClasses = i || index === 0 ? " smooth-appear" : "";
@@ -44,22 +44,22 @@ const SearchItem = ({
 
   const [displayThumb, setDisplayThumb] = useState(true);
 
-  const {updateUser} = useUsers();
+  const { updateUser } = useUsers();
 
   const handleRemoveFromWatchlist = (doc) => {
-    console.log(doc)
-    console.log(client)
+    console.log(doc);
+    console.log(client);
     if (client && client.user) {
-      console.log("NOT NULL")
-        const newList = [];
-        client.user.watchList.map((watch) => {
-          if (watch._id !== doc._id) {
-            newList.push({ _id: watch._id });
-          }
-        });
-  
-        updateUser({ watchList: newList }, client.user._id);
-        removeFromWatchlist(doc)
+      console.log("NOT NULL");
+      const newList = [];
+      client.user.watchList.map((watch) => {
+        if (watch._id !== doc._id) {
+          newList.push({ _id: watch._id });
+        }
+      });
+
+      updateUser({ watchList: newList }, client.user._id);
+      removeFromWatchlist(doc);
     }
   };
 
@@ -87,7 +87,7 @@ const SearchItem = ({
                 if (handleDelete) {
                   handleDelete(item.doc);
                 } else {
-                  handleRemoveFromWatchlist(item.doc)
+                  handleRemoveFromWatchlist(item.doc);
                 }
               }}>
               <FontAwesomeIcon icon={faCircleXmark} />
@@ -161,7 +161,7 @@ const SearchItem = ({
 
         {(window.location.host === "localhost:3000"
           ? "contredanse"
-          : window.location.host.split(".")[0]) === "panorama" ? (
+          : window.location.host.split(".")[0]) === "contredanse" ? (
           <span className="tag is-light is-small is-flex is-justify-content-start mb-2">
             {item.doc && item.doc.slug ? item.doc.slug : null}
           </span>
@@ -300,8 +300,10 @@ const SearchItem = ({
           </div>
         ) : null}
         {watchlist && !readOnly && (
-          <button onClick={() => handleRemoveFromWatchlist()} className="button is-small">
-            <span>{t('remove')}</span>
+          <button
+            onClick={() => handleRemoveFromWatchlist()}
+            className="button is-small">
+            <span>{t("remove")}</span>
           </button>
         )}
       </div>

@@ -89,7 +89,6 @@ const DocForm = ({
     responseDeleteDoc,
   } = useDocs();
 
-
   const handleTitleChange = (e) => {
     e.preventDefault();
     setTitleValue(e.target.value);
@@ -235,8 +234,8 @@ const DocForm = ({
       doc: {
         slug:
           (window.location.host === "localhost:3000"
-            ? "panorama"
-            : window.location.host.split(".")[0]) === "panorama" &&
+            ? "contredanse"
+            : window.location.host.split(".")[0]) === "contredanse" &&
           pendingSupports &&
           pendingSupports[0] &&
           pendingSupports[0].exemplaries &&
@@ -640,8 +639,6 @@ const DocForm = ({
       isbnValue.replaceAll(" ", "").replaceAll("-", "").replaceAll(".", "")
     );
   };
-
-  
 
   useEffect(() => {
     if (responseFindBookByIsbn && responseFindBookByIsbn.success) {

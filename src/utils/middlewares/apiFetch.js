@@ -13,7 +13,7 @@ export function buildDefaultHeaders() {
   const host = typeof window !== "undefined" ? window.location.host : "";
   let clientDatabase = "contredanse";
   if (host === "localhost:3000") {
-    clientDatabase = "panorama";
+    clientDatabase = "contredanse";
   } else if (host && host.split(".")[0] !== "doctopus-app") {
     clientDatabase = host.split(".")[0];
   }
