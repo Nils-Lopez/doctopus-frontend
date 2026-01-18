@@ -73,7 +73,8 @@ const SearchItem = ({
           } else if (setDisplay !== undefined) {
             setDisplay(item.doc);
           }
-        }}>
+        }}
+      >
         <div className="is-flex is-justify-content-start">
           {handleDelete || watchlist ? (
             <i
@@ -89,7 +90,8 @@ const SearchItem = ({
                 } else {
                   handleRemoveFromWatchlist(item.doc);
                 }
-              }}>
+              }}
+            >
               <FontAwesomeIcon icon={faCircleXmark} />
             </i>
           ) : null}
@@ -163,7 +165,11 @@ const SearchItem = ({
           ? "contredanse"
           : window.location.host.split(".")[0]) === "contredanse" ? (
           <span className="tag is-light is-small is-flex is-justify-content-start mb-2">
-            {item.doc && item.doc.slug ? item.doc.slug : null}
+            {item.doc &&
+            item.doc.slug &&
+            item.doc.title.replaceAll(" ", "-").toLowerCase() !== item.doc.slug
+              ? item.doc.slug
+              : null}
           </span>
         ) : null}
         {/* <p>{item.doc.description && item.doc.description[0] ? getContent(item.doc.description, i18n.language).substring(0,20) + "..." : null}</p>
@@ -302,7 +308,8 @@ const SearchItem = ({
         {watchlist && !readOnly && (
           <button
             onClick={() => handleRemoveFromWatchlist()}
-            className="button is-small">
+            className="button is-small"
+          >
             <span>{t("remove")}</span>
           </button>
         )}
